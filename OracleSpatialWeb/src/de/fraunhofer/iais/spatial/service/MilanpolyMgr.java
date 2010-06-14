@@ -15,7 +15,7 @@ import org.jdom.output.XMLOutputter;
 
 import de.fraunhofer.iais.spatial.entity.Milanpoly;
 
-public class MilanpolylMgr {
+public class MilanpolyMgr {
 	
 	public String createKml(List<Milanpoly> ms){
 		Document document = new Document();
