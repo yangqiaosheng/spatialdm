@@ -8,7 +8,12 @@
 	<bean id="areaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.AreaDaoJdbc" />
 	<bean id="areaDaoIbatisImpl" class="de.fraunhofer.iais.spatial.dao.ibatis.AreaDaoIbatis" />
 	<bean id="areaMgr" class="de.fraunhofer.iais.spatial.service.AreaMgr">
-		<property name="areaDao" ref="areaDaoIbatisImpl" />
+		<property name="areaDao" ref="areaDaoJdbcImpl" />
+	</bean>
+	
+	<bean id="milanpolyDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.MilanpolyDaoJdbc" />
+	<bean id="milanpolyDaoIbatisImpl" class="de.fraunhofer.iais.spatial.dao.ibatis.MilanpolyDaoIbatis" />
+	<bean id="milanpolyMgr" class="de.fraunhofer.iais.spatial.service.MilanpolyMgr">	
 	</bean>
 
 </beans>

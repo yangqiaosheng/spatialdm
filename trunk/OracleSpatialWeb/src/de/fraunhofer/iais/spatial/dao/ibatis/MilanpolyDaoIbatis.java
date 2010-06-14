@@ -37,7 +37,6 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 			ms = (List<Milanpoly>) session.selectList(Milanpoly.class.getName() + ".selectAll");
 		} finally {
 			session.close();
-			System.out.println("close");
 		}
 		return ms;
 	}
@@ -50,7 +49,6 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 			m = (Milanpoly) session.selectOne(Milanpoly.class.getName() + ".selectById", id);
 		} finally {
 			session.close();
-			System.out.println("close");
 		}
 		return m;
 	}
@@ -64,7 +62,6 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 			ms = (List<Milanpoly>) session.selectList(Milanpoly.class.getName() + ".select", j_geom);
 		} finally {
 			session.close();
-			System.out.println("close");
 		}
 		return ms;
 	}
@@ -80,7 +77,6 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 			ms = (List<Milanpoly>) session.selectList(Milanpoly.class.getName() + ".select", j_geom);
 		} finally {
 			session.close();
-			System.out.println("close");
 		}
 		return ms;
 	}
