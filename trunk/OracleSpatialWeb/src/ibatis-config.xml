@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration 
+ 	PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-config.dtd"> 
+
+<configuration>
+	<properties resource="jdbc.properties" />
+	<typeAliases>
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.Milanpoly"
+			alias="Milanpoly" />
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.Area"
+			alias="Area" />
+	</typeAliases>
+	<typeHandlers>
+		<typeHandler
+			handler="de.fraunhofer.iais.spatial.dao.ibatis.type.SdoGeometryTypeHandler"
+			javaType="oracle.spatial.geometry.JGeometry" />
+			<typeHandler
+			handler="de.fraunhofer.iais.spatial.dao.ibatis.type.Point2DTypeHandler"
+			javaType="java.awt.geom.Point2D" />
+	</typeHandlers>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+<!--		<mapper resource="de/fraunhofer/iais/spatial/dao/ibatis/Milanpoly.xml" />-->
+		<mapper resource="de/fraunhofer/iais/spatial/dao/ibatis/Area.xml" />
+	</mappers>
+</configuration>
