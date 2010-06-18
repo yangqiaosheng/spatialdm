@@ -90,28 +90,28 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<String> hours = new ArrayList<String>();
 
 		years.add("2005");
-		years.add("2006");
-		years.add("2007");
+//		years.add("2006");
+//		years.add("2007");
 		months.add("01");
-		months.add("03");
-		months.add("07");
-		months.add("08");
-		months.add("09");
-		months.add("10");
+//		months.add("03");
+//		months.add("07");
+//		months.add("08");
+//		months.add("09");
+//		months.add("10");
 		days.add("15");
-		days.add("19");
-		days.add("11");
-		days.add("22");
-		days.add("20");
-		days.add("23");
-		days.add("26");
+//		days.add("19");
+//		days.add("11");
+//		days.add("22");
+//		days.add("20");
+//		days.add("23");
+//		days.add("26");
 		hours.add("02");
-		hours.add("03");
-		hours.add("05");
-		hours.add("12");
-		hours.add("13");
-		hours.add("16");
-		hours.add("22");
+//		hours.add("03");
+//		hours.add("05");
+//		hours.add("12");
+//		hours.add("13");
+//		hours.add("16");
+//		hours.add("22");
 		long init = System.currentTimeMillis();
 		long start = System.currentTimeMillis();
 		// List<Area> as = new ArrayList<Area>();
@@ -125,7 +125,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		// for (Area a : as){
 		// System.out.println(a.getId()+":"+a.getCount());
 		// }
-		// System.out.println(kmlMgr.createKml(as));
+		System.out.println(areaMgr.createKml(as, "test1.kml"));
 		System.out.println("result:" + as.get(0).getCount());
 		System.out.println("init:" + (start - init));
 		System.out.println("select all:" + (count - start));

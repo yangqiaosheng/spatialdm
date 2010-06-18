@@ -1,7 +1,11 @@
 package de.fraunhofer.iais.spatial.util;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +16,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.taglibs.standard.extra.spath.Path;
 
 public class DB {
 	/**
@@ -34,7 +39,15 @@ public class DB {
 		if (pros == null) {
 			pros = new Properties();
 			try {
-				pros.load(new FileReader("src/jdbc.properties"));
+				if (new File("src/jdbc.properties").exists()) {
+					//J2SE Application
+					pros.load(new FileReader("src/jdbc.properties"));
+				} else {
+					//Web Application
+					pros.load(new InputStreamReader(Thread.currentThread()
+							.getContextClassLoader().getResourceAsStream(
+									"jdbc.properties")));
+				}
 			} catch (IOException e1) {
 				logger.error("getConn()", e1); //$NON-NLS-1$
 			}
