@@ -64,4 +64,10 @@ public class StringTF {
 			 .replaceAll("<day>9</day>", "<day>09</day>");
 		return s;
 	}
+	
+	public static String escapeHtml(String s){
+		s = s.replaceAll("<", "&lt")
+			 .replaceAll(">", "&gt");
+		return s;
+	}
 }
