@@ -87,11 +87,11 @@ public class RequestKml extends HttpServlet {
 	 *             - if an error occurs
 	 */
 	public void init() throws ServletException {
-		areaMgr = new AreaMgr();
-		areaMgr.setAreaDao(new AreaDaoIbatis());
-//		ApplicationContext context = new ClassPathXmlApplicationContext(
-//				new String[] { "beans.xml" });
-//		areaMgr = context.getBean("areaMgr", AreaMgr.class);
+//		areaMgr = new AreaMgr();
+//		areaMgr.setAreaDao(new AreaDaoIbatis());
+		ApplicationContext context = new ClassPathXmlApplicationContext(
+				new String[] { "beans.xml" });
+		areaMgr = context.getBean("areaMgr", AreaMgr.class);
 	}
 
 }
