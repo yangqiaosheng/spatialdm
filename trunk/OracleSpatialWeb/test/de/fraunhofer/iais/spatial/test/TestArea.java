@@ -26,21 +26,21 @@ import de.fraunhofer.iais.spatial.util.StringTF;
 @ContextConfiguration("classpath:beans.xml")
 public class TestArea extends AbstractJUnit4SpringContextTests {
 
-	@Resource(name="areaMgr")
+	@Resource(name = "areaMgr")
 	private AreaMgr areaMgr = null;
-	
-//	private static AreaMgr areaMgr = null;
-//	@BeforeClass
-//	public static void initClass(){
-	//Spring IOC
-//		ApplicationContext context =
-//			new ClassPathXmlApplicationContext(new String[] {"beans.xml"});
-//		areaMgr = context.getBean("areaMgr", AreaMgr.class);
-	//init
-//		areaMgr = new AreaMgr();
-//		areaMgr.setAreaDao(new AreaDaoIbatis());
-//	}
-	
+
+	// private static AreaMgr areaMgr = null;
+	// @BeforeClass
+	// public static void initClass(){
+	// Spring IOC
+	// ApplicationContext context =
+	// new ClassPathXmlApplicationContext(new String[] {"beans.xml"});
+	// areaMgr = context.getBean("areaMgr", AreaMgr.class);
+	// init
+	// areaMgr = new AreaMgr();
+	// areaMgr.setAreaDao(new AreaDaoIbatis());
+	// }
+
 	@Test
 	public void testQuery() {
 		AreaDao areaDao = areaMgr.getAreaDao();
@@ -69,7 +69,8 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 			num_person += areaDao.getPersonCount(a.getId(), person);
 		}
 		System.out.println("person:" + num_person);
-		System.out.println("hour:" + areaDao.getHourCount("40 ", "2008-08-14@17"));
+		System.out.println("hour:"
+				+ areaDao.getHourCount("40 ", "2008-08-14@17"));
 		System.out.println("day:" + areaDao.getDayCount("40 ", "2007-10-19"));
 		System.out.println("month:" + areaDao.getMonthCount("40 ", "2007-10"));
 		System.out.println("year:" + areaDao.getYearCount("40 ", "2007"));
@@ -77,7 +78,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testKml2() {
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			testKml();
 		}
 	}
@@ -90,28 +91,28 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<String> hours = new ArrayList<String>();
 
 		years.add("2005");
-//		years.add("2006");
-//		years.add("2007");
+		// years.add("2006");
+		// years.add("2007");
 		months.add("01");
-//		months.add("03");
-//		months.add("07");
-//		months.add("08");
-//		months.add("09");
-//		months.add("10");
+		// months.add("03");
+		// months.add("07");
+		// months.add("08");
+		months.add("09");
+		months.add("10");
 		days.add("15");
-//		days.add("19");
-//		days.add("11");
-//		days.add("22");
-//		days.add("20");
-//		days.add("23");
-//		days.add("26");
+		days.add("19");
+		// days.add("11");
+		// days.add("22");
+		// days.add("20");
+		days.add("23");
+		days.add("26");
 		hours.add("02");
-//		hours.add("03");
-//		hours.add("05");
-//		hours.add("12");
-//		hours.add("13");
-//		hours.add("16");
-//		hours.add("22");
+		// hours.add("03");
+		// hours.add("05");
+		hours.add("12");
+		hours.add("13");
+		// hours.add("16");
+		// hours.add("22");
 		long init = System.currentTimeMillis();
 		long start = System.currentTimeMillis();
 		// List<Area> as = new ArrayList<Area>();
@@ -132,38 +133,51 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		System.out.println("count time:" + (end - count));
 	}
 
-
 	@Test
 	public void testXmlRequestSpeed() throws Exception {
-		long start1 = System.currentTimeMillis();
-		testXmlRequest();
-		long end1 = System.currentTimeMillis();
-
-		long start2 = System.currentTimeMillis();
-		testXmlRequest2();
-		long end2 = System.currentTimeMillis();
-
-		long start3 = System.currentTimeMillis();
-		for (int i = 0; i < 10; i++) {
-			testXmlRequest();
-			testXmlRequest2();
+		List<Long> times = new ArrayList<Long>();
+		long start = System.currentTimeMillis();
+		int iterations = 20;
+		for (int i = 0; i < iterations; i++) {
+			long startn = System.currentTimeMillis();
+			if (i % 2 == 0)
+				testXmlRequest();
+			else
+				testXmlRequest2();
+			long endn = System.currentTimeMillis();
+			times.add(endn - startn);
 		}
-		long end3 = System.currentTimeMillis();
-		
-		System.out.println("spent time1:" + (end1 - start1));
-		System.out.println("spent time2:" + (end2 - start2));
-		System.out.println("spent time3:" + (end3 - start3));
+		long end = System.currentTimeMillis();
+		for (int i = 0; i < times.size(); i++) {
+			System.out.println(i + ":" + times.get(i));
+		}
+		for (int i = 0; i < times.size(); i++) {
+			System.out.println(i);
+		}
+		for (int i = 0; i < times.size(); i++) {
+			System.out.println(times.get(i));
+		}
+		System.out.println("spent time total:" + (end - start));
+		System.out.println("spent time avg:" + (end - start-times.get(0))/(iterations-1));
 	}
-	
-	//pool
-//	spent time1:4828
-//	spent time2:2469
-//	spent time2:29718
-	
-	//cache+pool
-//	spent time1:4171
-//	spent time2:2344
-//	spent time3:17422
+
+	// #polygon:139
+	// #queries = #years * #months * #days *hours
+	// #query1:96*139=13344
+	// #query2:93*139=12927
+
+	// single pool
+	// spent time1:4453
+
+	// pool
+	// spent time1:4203
+	// spent time2:2156
+	// spent time3:62485
+
+	// cache+pool
+	// spent time1:4765
+	// spent time2:422
+	// spent time3:11781
 
 	@Test
 	public void testXmlRequest() throws Exception {
@@ -221,7 +235,8 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		months.add("2006-11");
 		months.add("2006-12");
 
-		AreaDao areaDao = areaMgr.getAreaDao();;
+		AreaDao areaDao = areaMgr.getAreaDao();
+		;
 		Area a = areaMgr.getAreaById("1  ");
 
 		Map<String, Integer> cs = new HashMap<String, Integer>();

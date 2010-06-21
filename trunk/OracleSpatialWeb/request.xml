@@ -14,6 +14,12 @@
 		<month>November</month>
 		<month>December</month>
 	</months>
-	<days></days>
+	<days>
+		<day>03</day>
+		<day>09</day>
+		<day>12</day>
+		<day>17</day>
+	</days>
+	
 	<hours></hours>
 </calendar>
