@@ -275,16 +275,7 @@ function selectbutton()
 		field[argv[0]].style.background='#009933';
 	}	
 }
-function refreshButtons() { // ok number[i] reverse to 0
-	for ( var i = 1; i < 100; i++) {
-		if (number[i] != 0) {			
-			field[i].style.background = '#009933';
-			number[i] = 0;
-		}
-	}	
-	text=""; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
-	document.getElementById("content1").innerHTML = text;
-}
+
 // load xml string parser
 //However, before an XML document can be accessed and manipulated, it must be loaded into an XML DOM object.
 //An XML parser reads XML, and converts it into an XML DOM object that can be accessed with JavaScript. 
@@ -300,6 +291,10 @@ function loadXMLString(txt) {
 	}	
 	return xmlDoc;
 }
+var t=1;
+var kml1_1=null;
+// areas1.kml is from the timecontroller1
+
 
 function ask() {
 	text=""; // text is the data that I send. This must also to be refreshed.
@@ -366,17 +361,55 @@ function ask() {
 		xmlhttp=new XMLHttpRequest();
 
 	}
-	xmlhttp.onreadystatechange = function() {		
-		document.getElementById("content1").innerHTML = xmlhttp.responseText; 
-		//alert(xmlhttp.responseText);
-		
+	xmlhttp.onreadystatechange = function() {			
+		if(xmlhttp.readyState==4){
+			url = xmlhttp.responseXML.getElementsByTagName("url")[0].firstChild.nodeValue;
+			document.getElementById("content1").innerHTML = "kml:" + url; 
+			loadkml_1(url);
+		}			
 	};
 	 xmlhttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
-	 //xmlhttp.open("POST","http://localhost:8080/project2/testCalendar?"+ new Date().getTime(),true); // no cache	
+	 //xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
 	 xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 	 xmlhttp.send("xml="+encodeURIComponent(text));
-     alert("data have been sent to the server"+text);	 	
+    //alert("data have been sent to the server"+text);	 	
+	//alert("loading...");
+	//setTimeout("loadkml_1()", 5000);
+//	loadkml_1();
 }
+
+function loadkml_1(url)
+{
+	alert(url);
+	kml1_1 = new google.maps.KmlLayer(url, {
+                    suppressInfoWindows: false,
+                    preserveViewport: true,
+                    map: map
+                  });
+
+               //alert("put");
+                if (GBrowserIsCompatible()) {
+                        // alert("I am where I should be");                     
+//                        kml.setMap(map);
+                } else {
+                        alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
+                	}
+}
+
+function refreshButtons() { // ok number[i] reverse to 0
+        for ( var i = 1; i < 100; i++) {
+                if (number[i] != 0) {
+                        field[i].style.background = '#009933';
+                        number[i] = 0;
+                }
+        }
+
+        text=""; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
+        document.getElementById("content1").innerHTML = text;	
+	kml1_1.setMap();
+	kml1_1=null;
+}
+
 function radio_buttons() {
 	text_R_Buttons = "";
 	for ( var i = 0; i < document.radio_form.time.length; i++) {

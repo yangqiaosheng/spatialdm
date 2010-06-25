@@ -219,16 +219,49 @@ function selectedCalendar(){
     } else {
 	
          document.write("browser not supported");
-    }			
-	alert("step1");
+    }	
+	xmlHttp.onreadystatechange = function() {			
+		if(xmlHttp.readyState==4){
+			url = xmlHttp.responseXML.getElementsByTagName("url")[0].firstChild.nodeValue;
+			document.getElementById("content1").innerHTML = "kml:" + url; 
+			loadkml_2(url);
+		}			
+	};
+//	alert("step1");
 	xmlHttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
 	//xmlHttp.open("POST","http://localhost:8080/project2/testCalendar?"+ new Date().getTime(),true); // no cache
-	alert("step2");
+//	alert("step2");
 	xmlHttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-	alert("step3");
+//	alert("step3");
 	xmlHttp.send("xml2="+encodeURIComponent(text));
-	alert("step4");
+//	alert("step4");
 	//everything (is)seems to be good till here
 	
-	alert("data have been sent to the server: "+text);	
+	//alert("data have been sent to the server! Loading...");
+	//setTimeout("loadkml_2()", 5000);
+		
 }
+var kml_2=null;
+function loadkml_2(url)
+{
+    kml_2 = new google.maps.KmlLayer(url, {
+                suppressInfoWindows: false,
+                preserveViewport: true,
+                map: map
+              } );
+
+	// alert("put");
+	if (GBrowserIsCompatible()) {
+    // alert("I am where I should be");
+		// kml.setMap(map);
+    } else {
+        alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
+    }
+}
+// it must refresh the calendar and the map. 
+// for now it just refresh the map
+function refreshCalendar(){
+	kml_2.setMap();
+	kml_2 = null;
+}
+
