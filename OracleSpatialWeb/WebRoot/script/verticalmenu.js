@@ -27,31 +27,63 @@ else if (window.attachEvent)
 window.attachEvent("onload", createcssmenu)
 
 
-
-
-
-// from vertical menu
+var t=1;
+var kml=null;
+kml = new google.maps.KmlLayer('http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/areas1.kml?' + new Date().getTime(), {
+		    suppressInfoWindows: false,
+		    preserveViewport: true,
+		    map: map
+		  } );
 function addxml1() {
-
-	if (GBrowserIsCompatible()) {
-		// alert("I am where I should be");
-		var kml = new google.maps.KmlLayer('http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/areas1.kml' + new Date().getTime());
-		kml.setMap(map);
-	} else {
-		alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
-	}
-
-}
-
-function addxml2() {
-	
+	//good	
+	if (t % 2 != 0) {
+		t++;		
+		//alert("put");
 		if (GBrowserIsCompatible()) {
-			// alert("I am where I should be");
-			var kml = new google.maps.KmlLayer('http://sophisnerd.org/peca/project0.3/WebContent/kml/areasWOC.kml?' + new Date().getTime());
+			// alert("I am where I should be");			
 			kml.setMap(map);
 		} else {
 			alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
 		}
+		retun;		
+	}
+	if (t % 2 == 0) {				
+		t++;
+		//alert("delete");			
+		kml.setMap();
+		//alert("finish");
+	}
+} 
+
+// it is working
+var t2=1;
+var kml2=null;
+kml2 = new google.maps.KmlLayer(
+		'http://sophisnerd.org/peca/project0.3/WebContent/kml/areasWOC.kml?' + new Date().getTime(), {
+		    suppressInfoWindows: false,
+		    preserveViewport: true,
+		    map: map
+		  } );
+function addxml2() {
+	
+	//good	
+	if (t2 % 2 != 0) {
+		t2++;		
+		//alert("put");
+		if (GBrowserIsCompatible()) {
+			// alert("I am where I should be");			
+			kml2.setMap(map);
+		} else {
+			alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
+		}
+		retun;		
+	}
+	if (t2 % 2 == 0) {				
+		t2++;
+		//alert("delete");			
+		kml2.setMap();
+		//alert("finish");
+	}
 }
 
 function addxml3() {

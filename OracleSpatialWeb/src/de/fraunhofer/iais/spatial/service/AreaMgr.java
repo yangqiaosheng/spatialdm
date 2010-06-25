@@ -30,9 +30,10 @@ import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.dao.ibatis.AreaDaoIbatis;
 import de.fraunhofer.iais.spatial.dao.jdbc.AreaDaoJdbc;
 import de.fraunhofer.iais.spatial.entity.Area;
+import de.fraunhofer.iais.spatial.util.StringUtil;
 
 public class AreaMgr {
-	
+
 	private AreaDao areaDao = null;
 
 	public AreaDao getAreaDao() {
@@ -106,43 +107,59 @@ public class AreaMgr {
 			a.setTotalCount(areaDao.getTotalCount(a.getId()));
 		}
 	}
+	
+	public void allYears(List<String> years){
+		for (int i = 2005; i <= 2009; i++) {
+			years.add(String.format("%04d", i)); 
+		}
+	}
+	
+	public void allMonths(List<String> months){
+		for (int i = 1; i <= 12; i++) {
+			months.add(String.format("%02d", i)); 
+		}
+	}
+	
+	public void allDays(List<String> days){
+		for (int i = 1; i <= 31; i++) {
+			days.add(String.format("%02d", i)); 
+		}
+	}
+	
+	public void allHours(List<String> hours){
+		for (int i = 0; i <= 23; i++) {
+			hours.add(String.format("%02d", i)); 
+		}
+	}
 
-	public void count(List<Area> as, List<String> years, List<String> months, List<String> days, List<String> hours) {
-		char level = '0';
+	public void count(List<Area> as, List<String> years, List<String> months,
+			List<String> days, List<String> hours) {
 		Set<String> strs = new HashSet<String>();
-		if (years.size() > 0) {
-			level = 'y';
-			for (String y : years) {
-				if (months.size() > 0) {
-					level = 'm';
-					for (String m : months) {
-						if (days.size() > 0) {
-							level = 'd';
-							for (String d : days) {
-								if (hours.size() > 0) {
-									level = 'h';
-									for (String h : hours) {
-										strs.add(y + "-" + m + "-" + d + "@" + h);
-									}
-								} else {
-									strs.add(y + "-" + m + "-" + d);
-								}
-							}
-						} else {
-							strs.add(y + "-" + m);
-						}
+		
+		if (years.size() == 0)
+			this.allYears(years);
+		if (months.size() == 0)
+			this.allMonths(months);
+		if (days.size() == 0)
+			this.allDays(days);
+		if (hours.size() == 0)
+			this.allHours(hours);
+		
+		for (String y : years) {
+			for (String m : months) {
+				for (String d : days) {
+					for (String h : hours) {
+						strs.add(y + "-" + m + "-" + d + "@" + h);
 					}
-				} else {
-					strs.add(y);
 				}
 			}
 		}
-
-		count(as, strs, level);
+		
+		count(as, strs, 'h');
 	}
 
 	public void count(List<Area> as, Set<String> strs, char level) {
-		System.out.println("#query:"+strs.size()*139);
+		System.out.println("#query:" + strs.size() * 139);
 		this.countTotal(as);
 
 		if (strs.size() > 0 && level != '0') {
@@ -163,11 +180,15 @@ public class AreaMgr {
 		}
 	}
 
-	public void parseXmlRequest2(List<Area> as, String xml) throws JDOMException, IOException {
+	@SuppressWarnings("unchecked")
+	public void parseXmlRequest2(List<Area> as, String xml)
+			throws JDOMException, IOException {
+		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
 		char level = '0';
 		Set<String> strs = new HashSet<String>();
 		SAXBuilder builder = new SAXBuilder();
-		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
+		Document document = builder.build(new ByteArrayInputStream(xml
+				.getBytes()));
 		Element rootElement = document.getRootElement();
 		// <years>
 		List<Element> yearElements = rootElement.getChildren("year");
@@ -178,23 +199,23 @@ public class AreaMgr {
 		if (hourElements != null && hourElements.size() > 0) {
 			level = 'h';
 			for (int i = 0; i < hourElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-" +
-						monthElements.get(i).getValue() + "-" +
-						dayElements.get(i).getValue() + "@" +
-						hourElements.get(i).getValue());
+				strs.add(yearElements.get(i).getValue() + "-"
+						+ monthElements.get(i).getValue() + "-"
+						+ dayElements.get(i).getValue() + "@"
+						+ hourElements.get(i).getValue());
 			}
 		} else if (dayElements != null && dayElements.size() > 0) {
 			level = 'd';
 			for (int i = 0; i < dayElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-" +
-						monthElements.get(i).getValue() + "-" +
-						dayElements.get(i).getValue());
+				strs.add(yearElements.get(i).getValue() + "-"
+						+ monthElements.get(i).getValue() + "-"
+						+ dayElements.get(i).getValue());
 			}
 		} else if (monthElements != null && monthElements.size() > 0) {
 			level = 'm';
 			for (int i = 0; i < monthElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-" +
-						monthElements.get(i).getValue());
+				strs.add(yearElements.get(i).getValue() + "-"
+						+ monthElements.get(i).getValue());
 			}
 		} else if (yearElements != null && yearElements.size() > 0) {
 			level = 'y';
@@ -208,16 +229,21 @@ public class AreaMgr {
 		count(as, strs, level);
 	}
 
-	public void parseXmlRequest(List<Area> as, String xml, List<String> years, List<String> months, List<String> days, List<String> hours) throws JDOMException, IOException {
-
+	@SuppressWarnings("unchecked")
+	public void parseXmlRequest(List<Area> as, String xml, List<String> years,
+			List<String> months, List<String> days, List<String> hours)
+			throws JDOMException, IOException {
+		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 
-		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
+		Document document = builder.build(new ByteArrayInputStream(xml
+				.getBytes()));
 		Element rootElement = document.getRootElement();
 		// <years>
 		List<Element> yearsElements = rootElement.getChildren("years");
 		if (yearsElements != null && yearsElements.size() == 1) {
-			List<Element> yearElements = yearsElements.get(0).getChildren("year");
+			List<Element> yearElements = yearsElements.get(0).getChildren(
+					"year");
 			for (Element yearElement : yearElements) {
 				String year = yearElement.getText();
 				if (year != null && !year.trim().equals("")) {
@@ -229,7 +255,8 @@ public class AreaMgr {
 		// <month>
 		List<Element> monthsElements = rootElement.getChildren("months");
 		if (monthsElements != null && monthsElements.size() == 1) {
-			List<Element> monthElements = monthsElements.get(0).getChildren("month");
+			List<Element> monthElements = monthsElements.get(0).getChildren(
+					"month");
 			for (Element monthElement : monthElements) {
 				String month = monthElement.getText();
 				if (month != null && !month.trim().equals("")) {
@@ -254,7 +281,8 @@ public class AreaMgr {
 		// <hours>
 		List<Element> hoursElements = rootElement.getChildren("hours");
 		if (hoursElements != null && hoursElements.size() == 1) {
-			List<Element> hourElements = hoursElements.get(0).getChildren("hour");
+			List<Element> hourElements = hoursElements.get(0).getChildren(
+					"hour");
 			for (Element yearElement : hourElements) {
 				String hour = yearElement.getText();
 				if (hour != null && !hour.trim().equals("")) {
@@ -267,6 +295,7 @@ public class AreaMgr {
 		count(as, years, months, days, hours);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void createChart(Map<String, Integer> cs) {
 		System.out.println("chart");
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -274,11 +303,12 @@ public class AreaMgr {
 		Iterator it = cs.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
-			dataset.addValue((Integer) pairs.getValue(), (String) pairs.getKey(), "Category 1");
+			dataset.addValue((Integer) pairs.getValue(), (String) pairs
+					.getKey(), "Category 1");
 		}
 
 		JFreeChart chart = ChartFactory.createBarChart(
-				// JFreeChart chart = ChartFactory.createLineChart(
+		// JFreeChart chart = ChartFactory.createLineChart(
 				// JFreeChart chart = ChartFactory.createPieChart3D(
 
 				"Chart", // Title
@@ -296,7 +326,7 @@ public class AreaMgr {
 		try {
 			fos_jpg = new FileOutputStream("chart.jpg");
 			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 400, 300,
-						null);
+					null);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -313,7 +343,8 @@ public class AreaMgr {
 
 	public String createKml(List<Area> as, String file) {
 		Document document = new Document();
-		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
+		Namespace namespace = Namespace
+				.getNamespace("http://earth.google.com/kml/2.1");
 		Element rootElement = new Element("kml", namespace);
 
 		document.setRootElement(rootElement);
@@ -321,31 +352,42 @@ public class AreaMgr {
 		Element documentElement = new Element("Document", namespace);
 		rootElement.addContent(documentElement);
 
-		//GroundOverlay
-		for (Area a : as) {
-			if(a.getCount() != 0){
-				Element groundOverlayElement = new Element("GroundOverlay", namespace);
+		// GroundOverlay
+		for (Area a : as) {			
+			if (a.getCount() != 0) {
+				String name = "total:" + a.getTotalCount();
+				String description = "select:" + String.valueOf(a.getCount());
+				
+				Element groundOverlayElement = new Element("GroundOverlay",
+						namespace);
 				documentElement.addContent(groundOverlayElement);
 				Element iconElement = new Element("Icon", namespace);
 				groundOverlayElement.addContent(iconElement);
+				Element nameElement = new Element("name", namespace);
+				nameElement.addContent(name);
+				Element descriptionElement = new Element("description", namespace);
+				descriptionElement.addContent(description);				
 				Element hrefElement = new Element("href", namespace);
+				iconElement.addContent(nameElement);
+				iconElement.addContent(descriptionElement);
 				iconElement.addContent(hrefElement);
 				double r = 0;
 				String icon = "";
 
-				if(a.getCount()<100){
-					r = (double)Math.log10(a.getCount())/85.0;
+				if (a.getCount() < 100) {
+					r = (double) Math.log10(a.getCount()) / 85.0;
 					icon = "http://cdn.iconfinder.net/data/icons/function_icon_set/circle_blue.png";
-				}else if(a.getCount()<1000){
-					r = (double)Math.log10(a.getCount())/80.0;
+				} else if (a.getCount() < 1000) {
+					r = (double) Math.log10(a.getCount()) / 80.0;
 					icon = "http://cdn.iconfinder.net/data/icons/function_icon_set/circle_green.png";
-				}else if(a.getCount()<10000){
-					r = (double)Math.log10(a.getCount())/70.0;
+				} else if (a.getCount() < 10000) {
+					r = (double) Math.log10(a.getCount()) / 70.0;
 					icon = "http://cdn.iconfinder.net/data/icons/developperss/PNG/Green%20Ball.png";
-				}else{
-					r = (double)Math.log10(a.getCount())/60.0;
+				} else {
+					r = (double) Math.log10(a.getCount()) / 60.0;
 					icon = "http://cdn.iconfinder.net/data/icons/function_icon_set/circle_orange.png";
-					if(r > 0.1) r = 0.1;
+					if (r > 0.1)
+						r = 0.1;
 				}
 				hrefElement.addContent(icon);
 
@@ -360,25 +402,29 @@ public class AreaMgr {
 				latLonBoxElement.addContent(eastElement);
 				latLonBoxElement.addContent(westElement);
 
-				northElement.addContent(Double.toString(a.getCenter().getY()+r*0.6));
-				southElement.addContent(Double.toString(a.getCenter().getY()-r*0.6));
-				eastElement.addContent(Double.toString(a.getCenter().getX()+r));
-				westElement.addContent(Double.toString(a.getCenter().getX()-r));
+				northElement.addContent(Double.toString(a.getCenter().getY()
+						+ r * 0.6));
+				southElement.addContent(Double.toString(a.getCenter().getY()
+						- r * 0.6));
+				eastElement.addContent(Double
+						.toString(a.getCenter().getX() + r));
+				westElement.addContent(Double
+						.toString(a.getCenter().getX() - r));
 			}
 		}
 
-		//Polygon
+		// Polygon
 		for (Area a : as) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			JGeometry shape = a.getGeom();
 			String name = "total:" + a.getTotalCount();
 			String description = "select:" + String.valueOf(a.getCount());
-			String polyStyleColor = "440000";
-//			String polyStyleColor = "000000ff"; //transparency
+//			String polyStyleColor = "440000";	   	//not transparent
+			String polyStyleColor = "00000000"; 	//transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
-			String lineStyleWidth = "2";
-			String lineStyleColor = "ffff0000";
+			String lineStyleWidth = "1";
+			String lineStyleColor = "88ff0000";
 			String coordinates = "\n";
 
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
@@ -399,16 +445,18 @@ public class AreaMgr {
 			placemarkElement.addContent(nameElement);
 			placemarkElement.addContent(descriptionElement);
 			placemarkElement.addContent(styleElement);
+			
 
 			Element polyStyleElement = new Element("PolyStyle", namespace);
 			styleElement.addContent(polyStyleElement);
 
 			Element polyColorElement = new Element("color", namespace);
-			int i = a.getTotalCount()/30;
+			int i = a.getTotalCount() / 30;
 			if (i > 255)
 				i = 255;
 
-			polyColorElement.addContent(polyStyleColor + Integer.toHexString(i));
+			polyColorElement
+					.addContent(polyStyleColor + Integer.toHexString(i));
 			Element polyFillElement = new Element("fill", namespace);
 			polyFillElement.addContent(polyStyleFill);
 			Element polyOutlineElement = new Element("outline", namespace);
@@ -427,9 +475,11 @@ public class AreaMgr {
 			lineStyleElement.addContent(lindWidthElement);
 			lineStyleElement.addContent(lineColorElement2);
 
-			Element multiGeometryElement = new Element("MultiGeometry", namespace);
+			Element multiGeometryElement = new Element("MultiGeometry",
+					namespace);
 			Element polygonElement = new Element("Polygon", namespace);
-			Element outerBoundaryIsElement = new Element("outerBoundaryIs", namespace);
+			Element outerBoundaryIsElement = new Element("outerBoundaryIs",
+					namespace);
 			Element linearRingElement = new Element("LinearRing", namespace);
 			Element coordinatesElement = new Element("coordinates", namespace);
 			placemarkElement.addContent(multiGeometryElement);
@@ -441,7 +491,7 @@ public class AreaMgr {
 		}
 		xml2File(document, file);
 		return xml2String(document);
-//		return xml2String(document).replaceAll("\r\n", " ");
+		// return xml2String(document).replaceAll("\r\n", " ");
 	}
 
 	private static String xml2String(Document document) {

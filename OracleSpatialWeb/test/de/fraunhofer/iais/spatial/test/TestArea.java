@@ -3,7 +3,9 @@ package de.fraunhofer.iais.spatial.test;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,7 @@ import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.dao.ibatis.AreaDaoIbatis;
 import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
-import de.fraunhofer.iais.spatial.util.StringTF;
+import de.fraunhofer.iais.spatial.util.StringUtil;
 
 @ContextConfiguration("classpath:beans.xml")
 public class TestArea extends AbstractJUnit4SpringContextTests {
@@ -40,6 +42,11 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	// areaMgr = new AreaMgr();
 	// areaMgr.setAreaDao(new AreaDaoIbatis());
 	// }
+	
+	@Test
+	public void testFileName() {
+		System.out.println(StringUtil.genFilename(new Date()));
+	}
 
 	@Test
 	public void testQuery() {
@@ -90,29 +97,79 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<String> days = new ArrayList<String>();
 		List<String> hours = new ArrayList<String>();
 
-		years.add("2005");
-		// years.add("2006");
-		// years.add("2007");
-		months.add("01");
-		// months.add("03");
-		// months.add("07");
-		// months.add("08");
-		months.add("09");
-		months.add("10");
-		days.add("15");
-		days.add("19");
-		// days.add("11");
-		// days.add("22");
-		// days.add("20");
-		days.add("23");
-		days.add("26");
-		hours.add("02");
-		// hours.add("03");
-		// hours.add("05");
-		hours.add("12");
-		hours.add("13");
-		// hours.add("16");
-		// hours.add("22");
+//		years.add("2005");
+//		years.add("2006");
+//		years.add("2007");
+//		months.add("01");
+//		months.add("02");
+//		months.add("03");
+//		months.add("04");
+		months.add("05");
+//		months.add("06");
+//		months.add("07");
+//		months.add("08");
+//		months.add("09");
+//		months.add("10");
+//		months.add("11");
+//		months.add("12");
+//		days.add("01");
+//		days.add("02");
+//		days.add("03");
+//		days.add("04");
+//		days.add("05");
+//		days.add("06");
+//		days.add("07");
+//		days.add("08");
+//		days.add("09");
+//		days.add("10");
+//		days.add("11");
+//		days.add("12");
+//		days.add("13");
+//		days.add("14");
+//		days.add("15");
+//		days.add("16");
+//		days.add("17");
+//		days.add("18");
+//		days.add("19");
+//		days.add("20");
+//		days.add("21");
+//		days.add("22");
+//		days.add("23");
+//		days.add("24");
+//		days.add("25");
+//		days.add("26");
+//		days.add("27");
+//		days.add("28");
+//		days.add("29");
+//		days.add("30");
+//		days.add("31");
+//		
+//		hours.add("00");
+//		hours.add("01");
+//		hours.add("02");
+//		hours.add("03");
+//		hours.add("04");
+//		hours.add("05");
+//		hours.add("06");
+//		hours.add("07");
+//		hours.add("08");
+//		hours.add("09");
+//		hours.add("10");
+//		hours.add("11");		
+//		hours.add("12");
+//		hours.add("13");
+//		hours.add("14");
+//		hours.add("15");
+//		hours.add("16");
+//		hours.add("17");
+//		hours.add("18");
+//		hours.add("19");
+//		hours.add("20");
+//		hours.add("21");
+//		hours.add("22");
+//		hours.add("23");
+//		hours.add("24");
+		
 		long init = System.currentTimeMillis();
 		long start = System.currentTimeMillis();
 		// List<Area> as = new ArrayList<Area>();
@@ -122,15 +179,12 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		long count = System.currentTimeMillis();
 		areaMgr.count(as, years, months, days, hours);
 		long end = System.currentTimeMillis();
-
-		// for (Area a : as){
-		// System.out.println(a.getId()+":"+a.getCount());
-		// }
+		
 		System.out.println(areaMgr.createKml(as, "test1.kml"));
-		System.out.println("result:" + as.get(0).getCount());
-		System.out.println("init:" + (start - init));
-		System.out.println("select all:" + (count - start));
-		System.out.println("count time:" + (end - count));
+//		System.out.println("result:" + as.get(0).getCount());
+//		System.out.println("init:" + (start - init));
+//		System.out.println("select all:" + (count - start));
+//		System.out.println("count time:" + (end - count));
 	}
 
 	@Test
@@ -193,7 +247,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<String> hours = new ArrayList<String>();
 
 		List<Area> as = areaMgr.getAllAreas();
-		areaMgr.parseXmlRequest(as, StringTF.FullMonth2Num(xml.toString()),
+		areaMgr.parseXmlRequest(as, StringUtil.FullMonth2Num(xml.toString()),
 				years, months, days, hours);
 		System.out.println(areaMgr.createKml(as, "areas1.kml"));
 
@@ -209,7 +263,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 			xml.append(thisLine);
 		}
 		List<Area> as = areaMgr.getAllAreas();
-		areaMgr.parseXmlRequest2(as, StringTF.ShortNum2Long(StringTF
+		areaMgr.parseXmlRequest2(as, StringUtil.ShortNum2Long(StringUtil
 				.FullMonth2Num(xml.toString())));
 		// for(Area a : as)
 		// System.out.println(a.getTotalCount()+":"+a.getCount());
