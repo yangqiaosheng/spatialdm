@@ -220,4 +220,19 @@ public class StringUtil {
 		}
 		return sb.toString().toUpperCase();
 	}
+	
+	/**
+	 * convert the one byte to the 2 bit Hex String
+	 * @param byte
+	 * @return Hex String
+	 */
+	public static String byteToHexString(byte b) {
+		StringBuffer sb = new StringBuffer(2);
+		int v = b & 0xff;
+		if (v < 16) {
+			sb.append('0');
+		}
+		sb.append(Integer.toHexString(v));
+		return sb.toString().toUpperCase();
+	}
 }
