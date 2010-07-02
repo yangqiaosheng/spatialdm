@@ -21,5 +21,12 @@
 		<day>17</day>
 	</days>
 	
-	<hours></hours>
+	<hours>
+		<hour>15</hour>
+	</hours>
+	
+	<weekdays>
+<!--		<weekday>Saturday</weekday>-->
+<!--		<weekday>Sunday</weekday>-->
+	</weekdays>
 </calendar>
