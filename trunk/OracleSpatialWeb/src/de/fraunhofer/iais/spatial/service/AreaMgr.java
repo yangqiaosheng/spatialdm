@@ -356,6 +356,40 @@ public class AreaMgr {
 		}
 
 	}
+	
+	public String createMarkersXml(List<Area> as, String file) {
+		Document document = new Document();
+		Element rootElement = new Element("polygons");
+		document.setRootElement(rootElement);
+		for (Area a : as) {			
+			String polyColor = "#0000";
+			int color = a.getTotalCount() / 30;
+			if (color > 255)
+				color = 255;
+			
+			Element polygonElement = new Element("polygon");
+			rootElement.addContent(polygonElement);
+			polygonElement.setAttribute("color", polyColor + StringUtil.byteToHexString((byte)color));
+			polygonElement.setAttribute("opacity", "2");
+			
+			Element lineElement = new Element("line");
+			polygonElement.addContent(lineElement);
+			lineElement.setAttribute("color", "#111111");
+			lineElement.setAttribute("width", "2");
+			lineElement.setAttribute("opacity", "1");
+			
+			
+			JGeometry shape = a.getGeom();
+			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
+				Element pointElement = new Element("point");
+				lineElement.addContent(pointElement);
+					pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i++]));
+					pointElement.setAttribute("lng", String.valueOf(shape.getOrdinatesArray()[i]));
+			}
+		}
+		xml2File(document, file);
+		return xml2String(document);
+	}
 
 	public String createKml(List<Area> as, String file) {
 		Document document = new Document();
@@ -432,17 +466,17 @@ public class AreaMgr {
 		// Polygon
 		for (Area a : as) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
-			JGeometry shape = a.getGeom();
 			String name = "total:" + a.getTotalCount();
 			String description = "select:" + String.valueOf(a.getCount());
 //			String polyStyleColor = "440000";	   	//not transparent
-			String polyStyleColor = "00000000"; 	//transparent
+			String polyStyleColor = "000000"; 	//transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
 			String lineStyleWidth = "1";
 			String lineStyleColor = "88ff0000";
 			String coordinates = "\n";
 
+			JGeometry shape = a.getGeom();
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				coordinates += shape.getOrdinatesArray()[i] + ", ";
 				if (i % 2 == 1)
@@ -467,12 +501,11 @@ public class AreaMgr {
 			styleElement.addContent(polyStyleElement);
 
 			Element polyColorElement = new Element("color", namespace);
-			int i = a.getTotalCount() / 30;
-			if (i > 255)
-				i = 255;
+			int color = a.getTotalCount() / 30;
+			if (color > 255)
+				color = 255;
 
-			polyColorElement
-					.addContent(polyStyleColor + Integer.toHexString(i));
+			polyColorElement.addContent(polyStyleColor + Integer.toHexString(color));
 			Element polyFillElement = new Element("fill", namespace);
 			polyFillElement.addContent(polyStyleFill);
 			Element polyOutlineElement = new Element("outline", namespace);

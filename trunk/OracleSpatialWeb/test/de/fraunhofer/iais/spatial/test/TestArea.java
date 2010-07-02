@@ -204,27 +204,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		areaMgr.count(as, years, months, days, hours, weekdays);
 		long end = System.currentTimeMillis();
 		
-		for(Area a:as){
-			System.out.println(a.getId()+":"+a.getCount());
-		}
-		
-		List<Area> as2 = areaMgr.getAllAreas();
-		
-		List<String> years2 = new ArrayList<String>();
-		List<String> months2 = new ArrayList<String>();
-		List<String> days2 = new ArrayList<String>();
-		List<String> hours2 = new ArrayList<String>();
-		Set<String> weekdays2 = new HashSet<String>();
-		years2.add("2009");
-		months2.add("05");
-		days2.add("20");
-		weekdays2.add("Thursday");
-		areaMgr.count(as2, years2, months2, days2, hours2, weekdays2);
-		
-		for(Area a:as2){
-			System.out.println("-"+a.getId()+":"+a.getCount());
-		}
-		
+		System.out.println(areaMgr.createMarkersXml(as, "Markers.xml"));
 //		System.out.println(areaMgr.createKml(as, "test1.kml"));
 //		System.out.println("result:" + as.get(0).getCount());
 //		System.out.println("init:" + (start - init));
