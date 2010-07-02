@@ -2,12 +2,7 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>OracleSpatialWeb2</display-name>
   <welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>default.html</welcome-file>
-		<welcome-file>default.htm</welcome-file>
-		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
   <mime-mapping>
     <extension>kml</extension>
@@ -20,10 +15,11 @@
     <servlet-class>de.fraunhofer.iais.spatial.servlet.TestServlet</servlet-class>
   </servlet>
   <servlet>
-    <description>This is the description of my J2EE component</description>
-    <display-name>This is the display name of my J2EE component</display-name>
+    <description>Retrieve the data to create a kml</description>
+    <display-name>RequestKml</display-name>
     <servlet-name>RequestKml</servlet-name>
     <servlet-class>de.fraunhofer.iais.spatial.servlet.RequestKml</servlet-class>
+ 	<load-on-startup>1</load-on-startup>
   </servlet>
 
   <servlet-mapping>

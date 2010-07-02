@@ -27,13 +27,14 @@ import de.fraunhofer.iais.spatial.util.StringUtil;
 public class RequestKml extends HttpServlet {
 
 //	public static final String kmlPath = "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
+	public static final String kmlPath = "kml/";
 	
 	private static AreaMgr areaMgr = null;
 	
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String kmlPath = "kml/";
+		
 		String localBasePath = "../webapps/"+request.getContextPath() +"/";
 		String remoteBasePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 //		String remoteBasePath = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/";

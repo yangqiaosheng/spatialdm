@@ -1,6 +1,7 @@
 package de.fraunhofer.iais.spatial.test;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.taglibs.standard.extra.spath.Path;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +28,7 @@ import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.dao.ibatis.AreaDaoIbatis;
 import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
+import de.fraunhofer.iais.spatial.servlet.RequestKml;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
 @ContextConfiguration("classpath:beans.xml")
@@ -45,6 +48,31 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	// areaMgr = new AreaMgr();
 	// areaMgr.setAreaDao(new AreaDaoIbatis());
 	// }
+	
+	@Test
+	public void testDeleteKmls() {
+		// period of existing, format yyMMddHHmmss
+		long period = 000000010000;	// 1 hour
+		File kmlPath = new File("WebRoot/"+RequestKml.kmlPath);
+		File files[]=kmlPath.listFiles(); 
+		System.out.println(files.length);	
+		long currentDate = Long.parseLong(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
+		System.out.println(currentDate);		
+		for(File f : files){
+			String filename = f.getName();
+			if(filename.length()==25 && filename.matches("\\d{12}-\\w{8}.kml")){
+				long fileDate = Long.parseLong(filename.substring(0, 12));
+				if(currentDate > fileDate + period){
+					System.out.println("expire:"+filename);		
+					f.delete();
+				}
+				else
+					System.out.println("exist:"+filename);		
+			}
+				
+		}
+		
+	}
 	@Test
 	public void testCalendar() {
 		Calendar calendar = Calendar.getInstance();

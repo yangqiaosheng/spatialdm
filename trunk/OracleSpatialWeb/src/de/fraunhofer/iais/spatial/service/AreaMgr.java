@@ -383,8 +383,8 @@ public class AreaMgr {
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
-					pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i++]));
-					pointElement.setAttribute("lng", String.valueOf(shape.getOrdinatesArray()[i]));
+					pointElement.setAttribute("lng", String.valueOf(shape.getOrdinatesArray()[i++]));
+					pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i]));
 			}
 		}
 		xml2File(document, file);

@@ -104,18 +104,18 @@ function mapAddMakers() {
 }
 	
 
-function drawPolylines() {                                                                                                                             	var flightPlanCoordinates= [new google.maps.LatLng(50.73, 6.12),
+function drawPolylines() {                                         	 	                                                                         var flightPlanCoordinates= [new google.maps.LatLng(50.73, 6.12),
 	                            new google.maps.LatLng(51.73, 7.12),
 	                            new google.maps.LatLng(50.73, 7.12),
 	                            new google.maps.LatLng(50.73, 6.12)];
+
 	 var flightPath = new google.maps.Polyline({
 	      path: flightPlanCoordinates,
 	      strokeColor: "#FF0000",
 	      strokeOpacity: 1.0,
-	      strokeWeight: 2
+	      strokeWeight: 2 // the thickness of a line
 	    });
 	 flightPath.setMap(map);
-
 
 }
 function addMapGPolygon(){
