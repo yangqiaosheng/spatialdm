@@ -23,10 +23,10 @@ public class DB {
 	 * Logger for this class
 	 */
 
-	private static Properties pros = null;
-
 	private static final Log logger = LogFactory.getLog(DB.class);
 
+	private static Properties pros = null;
+	
 	private DB() {
 
 	}

@@ -4,7 +4,8 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
 
 <mapper namespace="de.fraunhofer.iais.spatial.entity.Area">
-<!--<cache eviction="LRU" size="512" readOnly="true"></cache>-->
+<!-- cache: flushInterval: 24hours -->
+<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>
 	<select id="selectAll" resultType="Area">
 		select
 			ID,
