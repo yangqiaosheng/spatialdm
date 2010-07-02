@@ -4,12 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -72,33 +76,25 @@ public class AreaMgr {
 
 	public void countHours(List<Area> as, Set<String> hours) {
 		for (Area a : as) {
-			int count = 0;
-			count = areaDao.getHourCount(a.getId(), hours);
-			a.setCount(count);
+			a.setCount(areaDao.getHourCount(a.getId(), hours));
 		}
 	}
 
 	public void countDays(List<Area> as, Set<String> days) {
 		for (Area a : as) {
-			int count = 0;
-			count = areaDao.getDayCount(a.getId(), days);
-			a.setCount(count);
+			a.setCount(areaDao.getDayCount(a.getId(), days));
 		}
 	}
 
 	public void countMonths(List<Area> as, Set<String> months) {
 		for (Area a : as) {
-			int count = 0;
-			count = areaDao.getMonthCount(a.getId(), months);
-			a.setCount(count);
+			a.setCount(areaDao.getMonthCount(a.getId(), months));
 		}
 	}
 
 	public void countYears(List<Area> as, Set<String> years) {
 		for (Area a : as) {
-			int count = 0;
-			count = areaDao.getYearCount(a.getId(), years);
-			a.setCount(count);
+			a.setCount(areaDao.getYearCount(a.getId(), years));
 		}
 	}
 
@@ -133,7 +129,7 @@ public class AreaMgr {
 	}
 
 	public void count(List<Area> as, List<String> years, List<String> months,
-			List<String> days, List<String> hours) {
+			List<String> days, List<String> hours, Set<String> weekdays) {
 		Set<String> strs = new HashSet<String>();
 		
 		if (years.size() == 0)
@@ -144,12 +140,21 @@ public class AreaMgr {
 			this.allDays(days);
 		if (hours.size() == 0)
 			this.allHours(hours);
+		Calendar calendar = Calendar.getInstance();		
+		// day of week in English format
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH); 
 		
 		for (String y : years) {
 			for (String m : months) {
 				for (String d : days) {
 					for (String h : hours) {
-						strs.add(y + "-" + m + "-" + d + "@" + h);
+						calendar.set(Integer.parseInt(y), Integer.parseInt(m)-1, Integer.parseInt(d));
+						// filter out the selected weekdays
+						if(weekdays.size()==0 || weekdays.contains(sdf.format(calendar.getTime()))){
+							strs.add(y + "-" + m + "-" + d + "@" + h);			
+//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
+						}
+						
 					}
 				}
 			}
@@ -162,7 +167,7 @@ public class AreaMgr {
 		System.out.println("#query:" + strs.size() * 139);
 		this.countTotal(as);
 
-		if (strs.size() > 0 && level != '0') {
+		if (level != '0') {
 			switch (level) {
 			case 'h':
 				this.countHours(as, strs);
@@ -181,6 +186,83 @@ public class AreaMgr {
 	}
 
 	@SuppressWarnings("unchecked")
+	public void parseXmlRequest(List<Area> as, String xml, List<String> years,
+			List<String> months, List<String> days, List<String> hours, Set<String> weekdays)
+			throws JDOMException, IOException {
+		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
+		SAXBuilder builder = new SAXBuilder();
+
+		Document document = builder.build(new ByteArrayInputStream(xml
+				.getBytes()));
+		Element rootElement = document.getRootElement();
+		// <years>
+		List<Element> yearsElements = rootElement.getChildren("years");
+		if (yearsElements != null && yearsElements.size() == 1) {
+			List<Element> yearElements = yearsElements.get(0).getChildren("year");
+			for (Element yearElement : yearElements) {
+				String year = yearElement.getText();
+				if (year != null && !year.trim().equals("")) {
+					System.out.println("year:" + year.trim());
+					years.add(year.trim());
+				}
+			}
+		}
+		// <month>
+		List<Element> monthsElements = rootElement.getChildren("months");
+		if (monthsElements != null && monthsElements.size() == 1) {
+			List<Element> monthElements = monthsElements.get(0).getChildren("month");
+			for (Element monthElement : monthElements) {
+				String month = monthElement.getText();
+				if (month != null && !month.trim().equals("")) {
+					System.out.println("month:" + month.trim());
+					months.add(month.trim());
+				}
+			}
+		}
+		// <days>
+		List<Element> daysElements = rootElement.getChildren("days");
+		if (daysElements != null && daysElements.size() == 1) {
+			List<Element> dayElements = daysElements.get(0).getChildren("day");
+			for (Element dayElement : dayElements) {
+				String day = dayElement.getText();
+				if (day != null && !day.trim().equals("")) {
+					System.out.println("day:" + day.trim());
+					days.add(day.trim());
+				}
+			}
+		}
+
+		// <hours>
+		List<Element> hoursElements = rootElement.getChildren("hours");
+		if (hoursElements != null && hoursElements.size() == 1) {
+			List<Element> hourElements = hoursElements.get(0).getChildren(
+					"hour");
+			for (Element hourElement : hourElements) {
+				String hour = hourElement.getText();
+				if (hour != null && !hour.trim().equals("")) {
+					System.out.println("hour:" + hour.trim());
+					hours.add(hour.trim());
+				}
+			}
+		}
+		
+		// <weekday>
+		List<Element> weekdaysElements = rootElement.getChildren("weekdays");
+		if (weekdaysElements != null && weekdaysElements.size() == 1) {
+			List<Element> weekdayElements = weekdaysElements.get(0).getChildren("weekday");
+			for (Element weekdayElement : weekdayElements) {
+				String weekday = weekdayElement.getText();
+				if (weekday != null && !weekday.trim().equals("")) {
+					System.out.println("weekday:" + weekday.trim());
+					weekdays.add(weekday.trim());
+				}
+			}
+		}
+
+		count(as, years, months, days, hours, weekdays);
+	}
+
+	@SuppressWarnings("unchecked")
 	public void parseXmlRequest2(List<Area> as, String xml)
 			throws JDOMException, IOException {
 		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
@@ -195,7 +277,7 @@ public class AreaMgr {
 		List<Element> monthElements = rootElement.getChildren("month");
 		List<Element> dayElements = rootElement.getChildren("day");
 		List<Element> hourElements = rootElement.getChildren("hour");
-
+	
 		if (hourElements != null && hourElements.size() > 0) {
 			level = 'h';
 			for (int i = 0; i < hourElements.size(); i++) {
@@ -223,76 +305,10 @@ public class AreaMgr {
 				strs.add(yearElements.get(i).getValue());
 			}
 		}
-
+	
 		System.out.println("level:" + level);
 		System.out.println(strs.size());
 		count(as, strs, level);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void parseXmlRequest(List<Area> as, String xml, List<String> years,
-			List<String> months, List<String> days, List<String> hours)
-			throws JDOMException, IOException {
-		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
-		SAXBuilder builder = new SAXBuilder();
-
-		Document document = builder.build(new ByteArrayInputStream(xml
-				.getBytes()));
-		Element rootElement = document.getRootElement();
-		// <years>
-		List<Element> yearsElements = rootElement.getChildren("years");
-		if (yearsElements != null && yearsElements.size() == 1) {
-			List<Element> yearElements = yearsElements.get(0).getChildren(
-					"year");
-			for (Element yearElement : yearElements) {
-				String year = yearElement.getText();
-				if (year != null && !year.trim().equals("")) {
-					System.out.println("year:" + year.trim());
-					years.add(year.trim());
-				}
-			}
-		}
-		// <month>
-		List<Element> monthsElements = rootElement.getChildren("months");
-		if (monthsElements != null && monthsElements.size() == 1) {
-			List<Element> monthElements = monthsElements.get(0).getChildren(
-					"month");
-			for (Element monthElement : monthElements) {
-				String month = monthElement.getText();
-				if (month != null && !month.trim().equals("")) {
-					System.out.println("month:" + month.trim());
-					months.add(month.trim());
-				}
-			}
-		}
-		// <days>
-		List<Element> daysElements = rootElement.getChildren("days");
-		if (daysElements != null && daysElements.size() == 1) {
-			List<Element> dayElements = daysElements.get(0).getChildren("day");
-			for (Element yearElement : dayElements) {
-				String day = yearElement.getText();
-				if (day != null && !day.trim().equals("")) {
-					System.out.println("day:" + day.trim());
-					days.add(day.trim());
-				}
-			}
-		}
-
-		// <hours>
-		List<Element> hoursElements = rootElement.getChildren("hours");
-		if (hoursElements != null && hoursElements.size() == 1) {
-			List<Element> hourElements = hoursElements.get(0).getChildren(
-					"hour");
-			for (Element yearElement : hourElements) {
-				String hour = yearElement.getText();
-				if (hour != null && !hour.trim().equals("")) {
-					System.out.println("hour:" + hour.trim());
-					hours.add(hour.trim());
-				}
-			}
-		}
-
-		count(as, years, months, days, hours);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -361,15 +377,15 @@ public class AreaMgr {
 				Element groundOverlayElement = new Element("GroundOverlay",
 						namespace);
 				documentElement.addContent(groundOverlayElement);
-				Element iconElement = new Element("Icon", namespace);
-				groundOverlayElement.addContent(iconElement);
 				Element nameElement = new Element("name", namespace);
 				nameElement.addContent(name);
 				Element descriptionElement = new Element("description", namespace);
 				descriptionElement.addContent(description);				
+				groundOverlayElement.addContent(nameElement);
+				groundOverlayElement.addContent(descriptionElement);
+				Element iconElement = new Element("Icon", namespace);
+				groundOverlayElement.addContent(iconElement);				
 				Element hrefElement = new Element("href", namespace);
-				iconElement.addContent(nameElement);
-				iconElement.addContent(descriptionElement);
 				iconElement.addContent(hrefElement);
 				double r = 0;
 				String icon = "";

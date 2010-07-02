@@ -5,10 +5,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -42,6 +45,18 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	// areaMgr = new AreaMgr();
 	// areaMgr.setAreaDao(new AreaDaoIbatis());
 	// }
+	@Test
+	public void testCalendar() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2010, 05, 27);
+		SimpleDateFormat sdf = new SimpleDateFormat("E");
+		System.out.println(calendar.getTime());
+		System.out.println(sdf.format(calendar.getTime()));
+		
+		calendar.set(2010, 05, 28);
+		System.out.println(calendar.getTime());
+		System.out.println(sdf.format(calendar.getTime()));
+	}
 	
 	@Test
 	public void testFileName() {
@@ -96,9 +111,10 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<String> months = new ArrayList<String>();
 		List<String> days = new ArrayList<String>();
 		List<String> hours = new ArrayList<String>();
+		Set<String> weekdays = new HashSet<String>();
 
 //		years.add("2005");
-//		years.add("2006");
+		years.add("2006");
 //		years.add("2007");
 //		months.add("01");
 //		months.add("02");
@@ -117,15 +133,15 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 //		days.add("03");
 //		days.add("04");
 //		days.add("05");
-//		days.add("06");
-//		days.add("07");
-//		days.add("08");
-//		days.add("09");
-//		days.add("10");
-//		days.add("11");
-//		days.add("12");
-//		days.add("13");
-//		days.add("14");
+		days.add("06");
+		days.add("07");
+		days.add("08");
+		days.add("09");
+		days.add("10");
+		days.add("11");
+		days.add("12");
+		days.add("13");
+		days.add("14");
 //		days.add("15");
 //		days.add("16");
 //		days.add("17");
@@ -169,6 +185,14 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 //		hours.add("22");
 //		hours.add("23");
 //		hours.add("24");
+//		weekdays.add("Monday");
+//		weekdays.add("Tuesday");
+//		weekdays.add("Wednesday");
+//		weekdays.add("Thursday");
+//		weekdays.add("Friday");
+//		weekdays.add("Saturday");
+//		weekdays.add("Sunday");
+		
 		
 		long init = System.currentTimeMillis();
 		long start = System.currentTimeMillis();
@@ -177,10 +201,31 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 
 		List<Area> as = areaMgr.getAllAreas();
 		long count = System.currentTimeMillis();
-		areaMgr.count(as, years, months, days, hours);
+		areaMgr.count(as, years, months, days, hours, weekdays);
 		long end = System.currentTimeMillis();
 		
-		System.out.println(areaMgr.createKml(as, "test1.kml"));
+		for(Area a:as){
+			System.out.println(a.getId()+":"+a.getCount());
+		}
+		
+		List<Area> as2 = areaMgr.getAllAreas();
+		
+		List<String> years2 = new ArrayList<String>();
+		List<String> months2 = new ArrayList<String>();
+		List<String> days2 = new ArrayList<String>();
+		List<String> hours2 = new ArrayList<String>();
+		Set<String> weekdays2 = new HashSet<String>();
+		years2.add("2009");
+		months2.add("05");
+		days2.add("20");
+		weekdays2.add("Thursday");
+		areaMgr.count(as2, years2, months2, days2, hours2, weekdays2);
+		
+		for(Area a:as2){
+			System.out.println("-"+a.getId()+":"+a.getCount());
+		}
+		
+//		System.out.println(areaMgr.createKml(as, "test1.kml"));
 //		System.out.println("result:" + as.get(0).getCount());
 //		System.out.println("init:" + (start - init));
 //		System.out.println("select all:" + (count - start));
@@ -191,7 +236,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	public void testXmlRequestSpeed() throws Exception {
 		List<Long> times = new ArrayList<Long>();
 		long start = System.currentTimeMillis();
-		int iterations = 20;
+		int iterations = 10;
 		for (int i = 0; i < iterations; i++) {
 			long startn = System.currentTimeMillis();
 			if (i % 2 == 0)
@@ -215,11 +260,13 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		System.out.println("spent time avg:" + (end - start-times.get(0))/(iterations-1));
 	}
 
-	// #polygon:139
-	// #queries = #years * #months * #days *hours
+	// #polygons:139
+	// #queries = #years * #months * #days * #hours * #polygons
 	// #query1:96*139=13344
 	// #query2:93*139=12927
-
+	// single jdbc
+	// spent time:12563
+	
 	// single pool
 	// spent time1:4453
 
@@ -245,10 +292,12 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<String> months = new ArrayList<String>();
 		List<String> days = new ArrayList<String>();
 		List<String> hours = new ArrayList<String>();
+		Set<String> weekdays = new HashSet<String>();
+
 
 		List<Area> as = areaMgr.getAllAreas();
 		areaMgr.parseXmlRequest(as, StringUtil.FullMonth2Num(xml.toString()),
-				years, months, days, hours);
+				years, months, days, hours, weekdays);
 		System.out.println(areaMgr.createKml(as, "areas1.kml"));
 
 		br.close();
@@ -290,7 +339,6 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		months.add("2006-12");
 
 		AreaDao areaDao = areaMgr.getAreaDao();
-		;
 		Area a = areaMgr.getAreaById("1  ");
 
 		Map<String, Integer> cs = new HashMap<String, Integer>();

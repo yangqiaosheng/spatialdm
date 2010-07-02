@@ -3,6 +3,9 @@ var number= new Array(200);
 var field= new Array(200);
 var nameString = new Array(200); // in this string I map months, years, days hours.
 var text="";
+var numberHeader = new Array(7);
+var fieldHeader = new Array(7);
+
 // this function is executed in the begining onload on body
 function loadStart()
 {
@@ -259,7 +262,11 @@ function loadStart()
 			break;
 		}
 	}
-	
+	for (var i=1;i<6;i++)// here are actually 73 elements in sjp, but dosn't matter if I put more
+        {
+                fieldHeader[i] = document.getElementById('controltime_header' + i);
+                numberHeader[i]=0;
+        }	
 }
 //this fucntion receive a parameter as number of the argument- even if the parameter is not visible
 function selectbutton()
@@ -275,6 +282,52 @@ function selectbutton()
 		field[argv[0]].style.background='#009933';
 	}	
 }
+
+function selectbuttonHeader() {	 
+        var argv = selectbuttonHeader.arguments;
+        numberHeader[argv[0]]++; // even, odd for selection deselection
+        fieldHeader[argv[0]].style.background = '#E9FF25';
+        if (argv[0] == 1) { // years
+                for ( var i = 1; i <= 6; i++) { // in the beginning I have the years
+                        if (number[i] % 2 != 0) { // I take the selections
+                                selectbutton(i);
+                        } else {
+                                selectbutton(i);
+                        }
+                }
+        }
+        if (argv[0] == 2) {
+                for ( var i = 7; i <= 18; i++) { // in the beginning I have the
+                                                                                        // months
+                        if (number[i] % 2 != 0) { // I take the selections
+                                selectbutton(i);
+                        } else {
+                                selectbutton(i);
+                        }
+                }
+        }
+        if (argv[0] == 3) {
+                for ( var i = 19; i <= 49; i++) { // in the beginning I have the days
+                        if (number[i] % 2 != 0) { // I take the selections
+                                selectbutton(i);
+                        } else {
+                                selectbutton(i);
+                        }
+                }
+        }
+        if (argv[0] == 4) {
+                for ( var i = 50; i <= 73; i++) {
+                        if (number[i] % 2 != 0) {
+                                selectbutton(i);
+                        } else {
+                                selectbutton(i);
+                        }
+                }
+        }
+}
+
+
+
 
 // load xml string parser
 //However, before an XML document can be accessed and manipulated, it must be loaded into an XML DOM object.
@@ -292,11 +345,15 @@ function loadXMLString(txt) {
 	return xmlDoc;
 }
 var t=1;
-var kml1_1=null;
+var kml1_1= new Array(10000);
+var countkml = 0;
 // areas1.kml is from the timecontroller1
+// in this function the xml thata I send to the server is constructed.
+// text=xml to send to the server
 
 
 function ask() {
+//	countkml = 0;
 	text=""; // text is the data that I send. This must also to be refreshed.
 	document.getElementById("content1").innerHTML = text;
 	
@@ -361,8 +418,10 @@ function ask() {
 		xmlhttp=new XMLHttpRequest();
 
 	}
+	//I don't need to wait some seconds because of this function
 	xmlhttp.onreadystatechange = function() {			
 		if(xmlhttp.readyState==4){
+			// from the response get the element with url and the kml which now is generated for each user.
 			url = xmlhttp.responseXML.getElementsByTagName("url")[0].firstChild.nodeValue;
 			document.getElementById("content1").innerHTML = "kml:" + url; 
 			loadkml_1(url);
@@ -372,28 +431,30 @@ function ask() {
 	 //xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
 	 xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 	 xmlhttp.send("xml="+encodeURIComponent(text));
-    //alert("data have been sent to the server"+text);	 	
-	//alert("loading...");
-	//setTimeout("loadkml_1()", 5000);
-//	loadkml_1();
 }
-
+//var t_count=0;
+var l=0;
 function loadkml_1(url)
 {
-	alert(url);
-	kml1_1 = new google.maps.KmlLayer(url, {
-                    suppressInfoWindows: false,
-                    preserveViewport: true,
-                    map: map
-                  });
 
-               //alert("put");
-                if (GBrowserIsCompatible()) {
-                        // alert("I am where I should be");                     
-//                        kml.setMap(map);
-                } else {
-                        alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
-                	}
+		for (var i=countkml-l; i<countkml;i++)
+ 	      	{
+                	kml1_1[i].setMap(); // this is deleting from the map the polygons 
+        	}
+		//this put on the map the polygons!
+		kml1_1[countkml] = new google.maps.KmlLayer(url, {
+	                    suppressInfoWindows: false,
+                	    preserveViewport: true,
+        	            map: map
+	                  });              
+	                if (GBrowserIsCompatible()) {
+        	                // alert("I am where I should be");                     
+				// kml.setMap(map);
+        	        } else {
+                	        alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
+                		}
+	countkml++;
+	l=1;
 }
 
 function refreshButtons() { // ok number[i] reverse to 0
@@ -404,10 +465,10 @@ function refreshButtons() { // ok number[i] reverse to 0
                 }
         }
 
-        text=""; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
+        text="refresh"; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
         document.getElementById("content1").innerHTML = text;	
-	kml1_1.setMap();
-	kml1_1=null;
+	kml1_1[countkml-1].setMap(); // this is deleting from the map the polygons that are on the map just one step before.
+	
 }
 
 function radio_buttons() {

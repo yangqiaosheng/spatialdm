@@ -104,11 +104,7 @@ function mapAddMakers() {
 }
 	
 
-// I have to do: draw polylines from XML file //xml/Markers.xml
-function drawPolylines() {
-	// classes:
-	//http://code.google.com/intl/de-DE/apis/maps/documentation/javascript/reference.html	
-	var flightPlanCoordinates= [new google.maps.LatLng(50.73, 6.12),
+function drawPolylines() {                                                                                                                             	var flightPlanCoordinates= [new google.maps.LatLng(50.73, 6.12),
 	                            new google.maps.LatLng(51.73, 7.12),
 	                            new google.maps.LatLng(50.73, 7.12),
 	                            new google.maps.LatLng(50.73, 6.12)];
@@ -119,6 +115,8 @@ function drawPolylines() {
 	      strokeWeight: 2
 	    });
 	 flightPath.setMap(map);
+
+
 }
 function addMapGPolygon(){
 	 var StartTriangle;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,8 +35,8 @@ public class RequestKml extends HttpServlet {
 			throws ServletException, IOException {
 		String kmlPath = "kml/";
 		String localBasePath = "../webapps/"+request.getContextPath() +"/";
-//		String remoteBasePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
-		String remoteBasePath = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/";
+		String remoteBasePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
+//		String remoteBasePath = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/";
 		response.setContentType("text/xml");
 		// response.setContentType("application/vnd.google-earth.kml+xml");
 
@@ -63,13 +64,15 @@ public class RequestKml extends HttpServlet {
 			List<String> months = new ArrayList<String>();
 			List<String> days = new ArrayList<String>();
 			List<String> hours = new ArrayList<String>();
+			Set<String> weekdays = new HashSet<String>();
 			try {
 				System.out.println("xml1:" + xml1);
-				areaMgr.parseXmlRequest(as, xml1, years, months, days, hours);
+				areaMgr.parseXmlRequest(as, xml1, years, months, days, hours, weekdays);
 				System.out.println("years:" + years.size());
 				System.out.println("months:" + months.size());
 				System.out.println("days:" + days.size());
 				System.out.println("hours:" + hours.size());
+				System.out.println("weekdays:" + weekdays.size());
 			} catch (JDOMException e) {
 				e.printStackTrace();
 			}
@@ -87,7 +90,6 @@ public class RequestKml extends HttpServlet {
 		areaMgr.createKml(as, localBasePath + kmlPath + filename);
 		out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
 		out.print("<response><url>"+ remoteBasePath + kmlPath + filename +"</url></response>");
-//		out.print(remoteBasePath + kmlPath + filename);
 		out.flush();
 		out.close();
 	}

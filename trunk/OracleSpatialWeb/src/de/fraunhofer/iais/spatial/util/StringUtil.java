@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class StringUtil {
 
@@ -80,6 +81,28 @@ public class StringUtil {
 		return s;
 	}
 	
+	/**
+	 * change the format of the weekday for the xml request
+	 * eg. "Monday" --> "Mon"
+	 * @param s - String
+	 * @return String
+	 */
+	public static String LongWeekday2Short(String s){
+		s = s.replaceAll("<weekday>Monday</weekday>", "<weekday>Mon</weekday>")
+			 .replaceAll("<weekday>Tuesday</weekday>", "<weekday>Tue</weekday>")
+			 .replaceAll("<weekday>Wednesday</weekday>", "<weekday>Wed</weekday>")
+			 .replaceAll("<weekday>Thursday</weekday>", "<weekday>Thu</weekday>")
+			 .replaceAll("<weekday>Friday</weekday>", "<weekday>Fri</weekday>")
+			 .replaceAll("<weekday>Saturday</weekday>", "<weekday>Sat</weekday>")
+			 .replaceAll("<weekday>Sunday</weekday>", "<weekday>Sun</weekday>");
+		return s;
+	}
+	
+	/**
+	 * replace all the html tag
+	 * @param s - String
+	 * @return String
+	 */
 	public static String escapeHtml(String s){
 		s = s.replaceAll("<", "&lt")
 			 .replaceAll(">", "&gt");
@@ -87,14 +110,14 @@ public class StringUtil {
 	}
 	
 	/**
-	 * generate a pseudo random file name 
-	 * format: yyMMddHHmmss-HMAC(first 8 bit)
-	 * @param d - Date Object: seed for the pseudo random generator
-	 * @return pseudo random file name
+	 * generate a random file name 
+	 * format: yyMMddHHmmss-UUID(first 8 bit)
+	 * @param d - current Date
+	 * @return random file name
 	 */
 	public static String genFilename(Date d){
 		String dateStr = new SimpleDateFormat("yyMMddHHmmss-").format(d);
-		return dateStr+hmac(dateStr.getBytes()).substring(0, 8);
+		return dateStr+UUID.randomUUID().toString().substring(0, 8);
 	}
 	
 	/**
@@ -113,15 +136,13 @@ public class StringUtil {
 	 *	    return hash(o_key_pad + hash(i_key_pad + message)) // Where + is concatenation
 	 *	end function 
 	 * @param message - input byte array
+	 * @param keyString - key
 	 * @return hmac byte array
 	 */
-	private static String hmac(byte[] message) {
+	private static String hmac(byte[] message, String keyString) {
 		
 		//Hash Function: MD5/SHA/SHA512
 		String hashFunction = "MD5";
-		
-		// key for the hmac
-		String keyString = "gennady";
 		
 		// Block Size for MD5 and SHA-1
 		int blockSize = 512; 
