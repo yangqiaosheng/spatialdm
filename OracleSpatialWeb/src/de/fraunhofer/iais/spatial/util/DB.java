@@ -39,15 +39,7 @@ public class DB {
 		if (pros == null) {
 			pros = new Properties();
 			try {
-				if (new File("src/jdbc.properties").exists()) {
-					//J2SE Application
-					pros.load(new FileReader("src/jdbc.properties"));
-				} else {
-					//Web Application
-					pros.load(new InputStreamReader(Thread.currentThread()
-							.getContextClassLoader().getResourceAsStream(
-									"jdbc.properties")));
-				}
+				pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
 			} catch (IOException e1) {
 				logger.error("getConn()", e1); //$NON-NLS-1$
 			}

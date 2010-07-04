@@ -14,22 +14,24 @@ import de.fraunhofer.iais.spatial.servlet.RequestKml;
  */
 public class CleanOldKmlsTimerTask extends TimerTask {
 	
-	// period of existing, format "yyMMddHHmmss"
+	// delay deleting period to avoid threads competition,
+	// format: "yyMMddHHmmss"
 	private long period = 000000000100;	// 1 minute
 	
 	@Override
 	public void run() {
-		System.out.println("delete kmls:");		
-		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
-		File files[]=kmlPath.listFiles(); 
-		System.out.println(kmlPath.getAbsolutePath());	
+		System.out.println("delete kmls:");
+//		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
+		File kmlPath = new File(this.getClass().getResource("/../../" + RequestKml.kmlPath).getPath());
+		File files[] = kmlPath.listFiles();
+		System.out.println(kmlPath.getAbsolutePath());
 		long currentDate = Long.parseLong(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
-		for(File f : files){
+		for (File f : files) {
 			String filename = f.getName();
-			if(filename.length()==25 && filename.matches("\\d{12}-\\w{8}.kml")){
+			if (filename.length() == 25 && filename.matches("\\d{12}-\\w{8}.kml")) {
 				long fileDate = Long.parseLong(filename.substring(0, 12));
-				if(currentDate > fileDate + period){
-					System.out.println("delete:"+filename);		
+				if (currentDate > fileDate + period) {
+					System.out.println("delete:" + filename);
 					f.delete();
 				}
 			}

@@ -1,11 +1,14 @@
 package de.fraunhofer.iais.spatial.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -35,9 +38,11 @@ public class RequestKml extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String localBasePath = "../webapps/"+request.getContextPath() +"/";
+		// web base path for local operation
+		String localBasePath = this.getClass().getResource("/../../").getPath();
+		// web base path for remote access
 		String remoteBasePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
-//		String remoteBasePath = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/";
+		
 		response.setContentType("text/xml");
 		// response.setContentType("application/vnd.google-earth.kml+xml");
 
@@ -110,8 +115,10 @@ public class RequestKml extends HttpServlet {
 //		 areaMgr = new AreaMgr();
 //		 areaMgr.setAreaDao(new AreaDaoJdbc());
 		ApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { "beans.xml" });
+				new String[] { "beans.xml", "schedulingContext-timer.xml" });
 		areaMgr = context.getBean("areaMgr", AreaMgr.class);
+		
+		System.setProperty("log4jdir", this.getClass().getResource("/../../logs/").getPath());
 	}
 
 }
