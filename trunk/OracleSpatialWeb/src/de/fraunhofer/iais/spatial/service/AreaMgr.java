@@ -453,9 +453,9 @@ public class AreaMgr {
 				latLonBoxElement.addContent(westElement);
 
 				northElement.addContent(Double.toString(a.getCenter().getY()
-						+ r * 0.6));
+						+ r * 0.7));
 				southElement.addContent(Double.toString(a.getCenter().getY()
-						- r * 0.6));
+						- r * 0.7));
 				eastElement.addContent(Double
 						.toString(a.getCenter().getX() + r));
 				westElement.addContent(Double
