@@ -26,8 +26,8 @@ public class AreaDaoIbatis implements AreaDao {
 		if (sqlSessionFactory == null)
 			try {
 				Reader reader = Resources.getResourceAsReader(resource);
-				sqlSessionFactory = new SqlSessionFactoryBuilder()
-						.build(reader);
+				sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+				System.out.println("initializing session factory");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

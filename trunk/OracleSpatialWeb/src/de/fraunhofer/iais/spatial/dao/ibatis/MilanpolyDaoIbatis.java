@@ -23,7 +23,7 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 			try {
 				Reader reader = Resources.getResourceAsReader(resource);
 				sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-				System.out.println("session factory");
+				System.out.println("initializing session factory");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
