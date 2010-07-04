@@ -1,33 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-  <display-name>OracleSpatialWeb2</display-name>
-  <welcome-file-list>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>OracleSpatialWeb</display-name>
+
+	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-  <mime-mapping>
-    <extension>kml</extension>
-    <mime-type>application/vnd.google-earth.kml+xml</mime-type>
-  </mime-mapping>
-  <servlet>
-    <description>test the sevlet</description>
-    <display-name>TestServlet</display-name>
-    <servlet-name>TestServlet</servlet-name>
-    <servlet-class>de.fraunhofer.iais.spatial.servlet.TestServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <description>Retrieve the data to create a kml</description>
-    <display-name>RequestKml</display-name>
-    <servlet-name>RequestKml</servlet-name>
-    <servlet-class>de.fraunhofer.iais.spatial.servlet.RequestKml</servlet-class>
- 	<load-on-startup>1</load-on-startup>
-  </servlet>
 
-  <servlet-mapping>
-    <servlet-name>TestServlet</servlet-name>
-    <url-pattern>/TestServlet</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>RequestKml</servlet-name>
-    <url-pattern>/RequestKml</url-pattern>
-  </servlet-mapping>
+	<mime-mapping>
+		<extension>kml</extension>
+		<mime-type>application/vnd.google-earth.kml+xml</mime-type>
+	</mime-mapping>
+
+	<!--
+		- Location of the XML file that defines the root application context.
+		/WEB-INF/classes/beans.xml for JavaBeans initialization,
+		/WEB-INF/classes/schedulingContext-timer.xml for Timer
+		scheduling.
+	-->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/beans.xml, /WEB-INF/classes/schedulingContext-timer.xml</param-value>
+	</context-param>
+
+	<!--
+		- Loads the root application context of this web app at startup,
+	-->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!--
+		character encoding for all requests.
+	-->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+	<servlet>
+		<description>test the sevlet</description>
+		<display-name>TestServlet</display-name>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.servlet.TestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<description>Retrieve the data to create a kml</description>
+		<display-name>RequestKml</display-name>
+		<servlet-name>RequestKml</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.servlet.RequestKml</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/TestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RequestKml</servlet-name>
+		<url-pattern>/RequestKml</url-pattern>
+	</servlet-mapping>
 </web-app>
