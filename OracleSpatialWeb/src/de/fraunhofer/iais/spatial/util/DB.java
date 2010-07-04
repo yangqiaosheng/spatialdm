@@ -152,8 +152,9 @@ public class DB {
 
 			} catch (SQLException e) {
 				logger.error("close(Connection)", e); //$NON-NLS-1$
+			} finally{
+				conn = null;
 			}
-			conn = null;
 		}
 
 		if (logger.isDebugEnabled()) {
@@ -171,8 +172,9 @@ public class DB {
 				stmt.close();
 			} catch (SQLException e) {
 				logger.error("close(Statement)", e); //$NON-NLS-1$
+			} finally {
+				stmt = null;
 			}
-			stmt = null;
 		}
 
 		if (logger.isDebugEnabled()) {
@@ -190,8 +192,9 @@ public class DB {
 				rs.close();
 			} catch (SQLException e) {
 				logger.error("close(ResultSet)", e); //$NON-NLS-1$
+			} finally{
+				rs = null;
 			}
-			rs = null;
 		}
 
 		if (logger.isDebugEnabled()) {
