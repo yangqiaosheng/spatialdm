@@ -118,7 +118,7 @@ public class RequestKml extends HttpServlet {
 				new String[] { "beans.xml", "schedulingContext-timer.xml" });
 		areaMgr = context.getBean("areaMgr", AreaMgr.class);
 		
-		System.setProperty("log4jdir", this.getClass().getResource("/../../logs/").getPath());
+		System.setProperty("webapp.root", this.getClass().getResource("/../../").getPath());
 	}
 
 }
