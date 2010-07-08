@@ -38,7 +38,7 @@ public class TestGeoDataObject {
 			eval.setClusterer(clusterer);
 			eval.evaluateClusterer(insts);
 			System.out.println(eval.clusterResultsToString());
-			BufferedWriter writer = new BufferedWriter(new FileWriter("clustering.arff"));
+			BufferedWriter writer = new BufferedWriter(new FileWriter("output/berlin_sub_clustering.arff"));
 			writer.write("@relation results \n \n");
 			writer.write("@attribute x numeric \n");
 			writer.write("@attribute y numeric \n");

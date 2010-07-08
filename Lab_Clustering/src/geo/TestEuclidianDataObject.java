@@ -41,7 +41,7 @@ public class TestEuclidianDataObject {
 			eval.setClusterer(clusterer);
 			eval.evaluateClusterer(insts);
 			System.out.println(eval.clusterResultsToString());
-			BufferedWriter writer = new BufferedWriter(new FileWriter("clustering.arff"));
+			BufferedWriter writer = new BufferedWriter(new FileWriter("output/simple_clustering.arff"));
 			writer.write("@relation results \n \n");
 			writer.write("@attribute x numeric \n");
 			writer.write("@attribute y numeric \n");
