@@ -306,7 +306,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<Area> as = areaMgr.getAllAreas();
 		areaMgr.parseXmlRequest(as, StringUtil.FullMonth2Num(xml.toString()),
 				years, months, days, hours, weekdays);
-		System.out.println(areaMgr.createKml(as, "areas1.kml"));
+		System.out.println(areaMgr.createKml(as, "areas1.kml", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/"));
 
 		br.close();
 	}
@@ -324,7 +324,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 				.FullMonth2Num(xml.toString())));
 		// for(Area a : as)
 		// System.out.println(a.getTotalCount()+":"+a.getCount());
-		System.out.println(areaMgr.createKml(as, "areas2.kml"));
+		System.out.println(areaMgr.createKml(as, "areas2.kml", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/"));
 		br.close();
 
 	}
