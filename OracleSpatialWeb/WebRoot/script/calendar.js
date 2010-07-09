@@ -179,6 +179,8 @@ function GetYMD(txtSelected, stringtest){
 		return daytext;
 	}
 }
+var kml_2 = new Array(10000);
+var countkml = 0;
 
 function selectedCalendar(){	
 	/*I should eliminate duplicates from selected and also from deselected*/		
@@ -241,27 +243,33 @@ function selectedCalendar(){
 	//setTimeout("loadkml_2()", 5000);
 		
 }
-var kml_2=null;
+var l=0;
 function loadkml_2(url)
-{
-    kml_2 = new google.maps.KmlLayer(url, {
-                suppressInfoWindows: false,
-                preserveViewport: true,
-                map: map
-              } );
-
-	// alert("put");
+{               
+	for (var i=countkml-l; i<countkml;i++){
+		kml_2[i].setMap(); // this is deleting from the map the polygons 
+	}
+                //this put on the map the polygons!
+        kml_2[countkml] = new google.maps.KmlLayer(url, {
+                            suppressInfoWindows: false,
+                            preserveViewport: true,
+                            map: map
+                          });
 	if (GBrowserIsCompatible()) {
-    // alert("I am where I should be");
-		// kml.setMap(map);
-    } else {
-        alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
-    }
+                                // alert("I am where I should be");                     
+                                // kml.setMap(map);
+        } else {
+		alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
+        }
+        countkml++;
+        l=1;
 }
 // it must refresh the calendar and the map. 
 // for now it just refresh the map
 function refreshCalendar(){
-	kml_2.setMap();
-	kml_2 = null;
+	text="refresh"; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
+        document.getElementById("content1").innerHTML = text;
+        kml_2[countkml-1].setMap(); // this is deleting from the map the polygons that are on the map just one step before.
+
 }
 
