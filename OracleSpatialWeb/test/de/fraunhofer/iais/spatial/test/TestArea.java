@@ -16,7 +16,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.taglibs.standard.extra.spath.Path;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -127,14 +126,14 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testKml2() {
+	public void testKml2() throws Exception {
 		for (int i = 0; i < 10; i++) {
 			testKml();
 		}
 	}
 
 	@Test
-	public void testKml() {
+	public void testKml() throws Exception {
 		List<String> years = new ArrayList<String>();
 		List<String> months = new ArrayList<String>();
 		List<String> days = new ArrayList<String>();
@@ -233,7 +232,6 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		long end = System.currentTimeMillis();
 		
 		System.out.println(areaMgr.createMarkersXml(as, "Markers.xml"));
-//		System.out.println(areaMgr.createKml(as, "test1.kml"));
 //		System.out.println("result:" + as.get(0).getCount());
 //		System.out.println("init:" + (start - init));
 //		System.out.println("select all:" + (count - start));
@@ -306,7 +304,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<Area> as = areaMgr.getAllAreas();
 		areaMgr.parseXmlRequest(as, StringUtil.FullMonth2Num(xml.toString()),
 				years, months, days, hours, weekdays);
-		System.out.println(areaMgr.createKml(as, "areas1.kml", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/"));
+		System.out.println(areaMgr.createKml(as, "temp/areas1.kml", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/"));
 
 		br.close();
 	}
@@ -324,7 +322,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 				.FullMonth2Num(xml.toString())));
 		// for(Area a : as)
 		// System.out.println(a.getTotalCount()+":"+a.getCount());
-		System.out.println(areaMgr.createKml(as, "areas2.kml", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/"));
+		System.out.println(areaMgr.createKml(as, "temp/areas2.kml", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/"));
 		br.close();
 
 	}
@@ -333,6 +331,18 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	public void testChart() throws IOException {
 
 		List<String> months = new ArrayList<String>();
+		months.add("2005-01");
+		months.add("2005-02");
+		months.add("2005-03");
+		months.add("2005-04");
+		months.add("2005-05");
+		months.add("2005-06");
+		months.add("2005-07");
+		months.add("2005-08");
+		months.add("2005-09");
+		months.add("2005-10");
+		months.add("2005-11");
+		months.add("2005-12");
 		months.add("2006-01");
 		months.add("2006-02");
 		months.add("2006-03");
@@ -345,6 +355,18 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		months.add("2006-10");
 		months.add("2006-11");
 		months.add("2006-12");
+		months.add("2007-01");
+		months.add("2007-02");
+		months.add("2007-03");
+		months.add("2007-04");
+		months.add("2007-05");
+		months.add("2007-06");
+		months.add("2007-07");
+		months.add("2007-08");
+		months.add("2007-09");
+		months.add("2007-10");
+		months.add("2007-11");
+		months.add("2007-12");
 
 		AreaDao areaDao = areaMgr.getAreaDao();
 		Area a = areaMgr.getAreaById("1  ");
