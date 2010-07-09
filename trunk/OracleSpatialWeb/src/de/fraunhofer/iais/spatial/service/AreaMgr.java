@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,13 +12,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 
 import oracle.spatial.geometry.JGeometry;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
@@ -31,8 +28,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import de.fraunhofer.iais.spatial.dao.AreaDao;
-import de.fraunhofer.iais.spatial.dao.ibatis.AreaDaoIbatis;
-import de.fraunhofer.iais.spatial.dao.jdbc.AreaDaoJdbc;
 import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
@@ -129,9 +124,10 @@ public class AreaMgr {
 	}
 
 	public void count(List<Area> as, List<String> years, List<String> months,
-			List<String> days, List<String> hours, Set<String> weekdays) {
+			List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
 		Set<String> strs = new HashSet<String>();
 		
+		// complete the options when they are not selected
 		if (years.size() == 0)
 			this.allYears(years);
 		if (months.size() == 0)
@@ -140,6 +136,7 @@ public class AreaMgr {
 			this.allDays(days);
 		if (hours.size() == 0)
 			this.allHours(hours);
+		
 		Calendar calendar = Calendar.getInstance();		
 		// day of week in English format
 		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH); 
@@ -163,10 +160,15 @@ public class AreaMgr {
 		count(as, strs, 'h');
 	}
 
-	public void count(List<Area> as, Set<String> strs, char level) {
+	public void count(List<Area> as, Set<String> strs, char level) throws Exception {
 		System.out.println("#query:" + strs.size() * 139);
 		this.countTotal(as);
 
+		if (strs.size() > 5 * 12 * 31 * 24) {
+			throw new Exception("excceed the maximun #queries!");
+		}
+			
+		
 		if (level != '0') {
 			switch (level) {
 			case 'h':
@@ -188,7 +190,7 @@ public class AreaMgr {
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest(List<Area> as, String xml, List<String> years,
 			List<String> months, List<String> days, List<String> hours, Set<String> weekdays)
-			throws JDOMException, IOException {
+			throws Exception {
 		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 
@@ -264,7 +266,7 @@ public class AreaMgr {
 
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest2(List<Area> as, String xml)
-			throws JDOMException, IOException {
+			throws Exception {
 		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
 		char level = '0';
 		Set<String> strs = new HashSet<String>();
@@ -324,7 +326,7 @@ public class AreaMgr {
 		}
 
 		JFreeChart chart = ChartFactory.createBarChart(
-		// JFreeChart chart = ChartFactory.createLineChart(
+//		JFreeChart chart = ChartFactory.createLineChart3D(
 				// JFreeChart chart = ChartFactory.createPieChart3D(
 
 				"Chart", // Title
@@ -332,7 +334,7 @@ public class AreaMgr {
 				"Amount of Photo", // Y Label
 				dataset, // dataset
 				PlotOrientation.VERTICAL, // Plot Orientation
-				true, // Print the Case
+				false, // Print the Case
 				false, // Generate the tool
 				false // Generate the url
 				);
@@ -340,8 +342,8 @@ public class AreaMgr {
 		FileOutputStream fos_jpg = null;
 
 		try {
-			fos_jpg = new FileOutputStream("chart.jpg");
-			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 400, 300,
+			fos_jpg = new FileOutputStream("temp/chart.jpg");
+			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 800, 600,
 					null);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -391,7 +393,7 @@ public class AreaMgr {
 		return xml2String(document);
 	}
 
-	public String createKml(List<Area> as, String file) {
+	public String createKml(List<Area> as, String file, String remoteBasePath) {
 		Document document = new Document();
 		Namespace namespace = Namespace
 				.getNamespace("http://earth.google.com/kml/2.1");
@@ -426,16 +428,16 @@ public class AreaMgr {
 
 				if (a.getCount() < 100) {
 					r = (double) Math.log10(a.getCount()) / 85.0;
-					icon = "http://cdn.iconfinder.net/data/icons/function_icon_set/circle_blue.png";
+					icon = remoteBasePath + "images/circle_bl.ico";
 				} else if (a.getCount() < 1000) {
 					r = (double) Math.log10(a.getCount()) / 80.0;
-					icon = "http://cdn.iconfinder.net/data/icons/function_icon_set/circle_green.png";
+					icon = remoteBasePath + "images/circle_gr.ico";
 				} else if (a.getCount() < 10000) {
 					r = (double) Math.log10(a.getCount()) / 70.0;
-					icon = "http://cdn.iconfinder.net/data/icons/developperss/PNG/Green%20Ball.png";
+					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
 					r = (double) Math.log10(a.getCount()) / 60.0;
-					icon = "http://cdn.iconfinder.net/data/icons/function_icon_set/circle_orange.png";
+					icon = remoteBasePath + "images/circle_or.ico";
 					if (r > 0.1)
 						r = 0.1;
 				}
