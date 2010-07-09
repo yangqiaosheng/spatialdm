@@ -80,6 +80,8 @@ public class RequestKml extends HttpServlet {
 				System.out.println("weekdays:" + weekdays.size());
 			} catch (JDOMException e) {
 				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -89,10 +91,12 @@ public class RequestKml extends HttpServlet {
 				areaMgr.parseXmlRequest2(as, xml2);
 			} catch (JDOMException e) {
 				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
-		areaMgr.createKml(as, localBasePath + kmlPath + filename);
+		areaMgr.createKml(as, localBasePath + kmlPath + filename, remoteBasePath);
 		out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
 		out.print("<response><url>" + remoteBasePath + kmlPath + filename + "</url></response>");
 		out.flush();
@@ -116,9 +120,8 @@ public class RequestKml extends HttpServlet {
 		// ApplicationContext context = new ClassPathXmlApplicationContext(
 		// new String[] { "beans.xml", "schedulingContext-timer.xml" });
 		// areaMgr = context.getBean("areaMgr", AreaMgr.class);
-
+ 
 		areaMgr = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext()).getBean("areaMgr", AreaMgr.class);
-		System.setProperty("webapp.root", this.getClass().getResource("/../../").getPath());
 	}
 
 }
