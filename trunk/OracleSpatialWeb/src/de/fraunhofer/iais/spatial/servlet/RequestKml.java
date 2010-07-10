@@ -121,7 +121,7 @@ public class RequestKml extends HttpServlet {
 		// new String[] { "beans.xml", "schedulingContext-timer.xml" });
 		// areaMgr = context.getBean("areaMgr", AreaMgr.class);
  
-		areaMgr = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext()).getBean("areaMgr", AreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("areaMgr", AreaMgr.class);
 	}
 
 }
