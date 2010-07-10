@@ -96,7 +96,7 @@ public class RequestKml extends HttpServlet {
 			}
 		}
 
-		areaMgr.createKml(as, localBasePath + kmlPath + filename, remoteBasePath);
+		areaMgr.createKml(as, localBasePath + kmlPath + filename);
 		out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
 		out.print("<response><url>" + remoteBasePath + kmlPath + filename + "</url></response>");
 		out.flush();
