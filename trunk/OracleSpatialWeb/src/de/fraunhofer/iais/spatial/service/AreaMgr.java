@@ -393,7 +393,8 @@ public class AreaMgr {
 		return xml2String(document);
 	}
 
-	public String createKml(List<Area> as, String file, String remoteBasePath) {
+	public String createKml(List<Area> as, String file) {
+		String remoteBasePath = System.getProperty("webapp.root");
 		Document document = new Document();
 		Namespace namespace = Namespace
 				.getNamespace("http://earth.google.com/kml/2.1");
