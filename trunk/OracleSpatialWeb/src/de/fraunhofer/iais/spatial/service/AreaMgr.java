@@ -99,25 +99,25 @@ public class AreaMgr {
 		}
 	}
 	
-	public void allYears(List<String> years){
+	private void allYears(List<String> years){
 		for (int i = 2005; i <= 2009; i++) {
 			years.add(String.format("%04d", i)); 
 		}
 	}
 	
-	public void allMonths(List<String> months){
+	private void allMonths(List<String> months){
 		for (int i = 1; i <= 12; i++) {
 			months.add(String.format("%02d", i)); 
 		}
 	}
 	
-	public void allDays(List<String> days){
+	private void allDays(List<String> days){
 		for (int i = 1; i <= 31; i++) {
 			days.add(String.format("%02d", i)); 
 		}
 	}
 	
-	public void allHours(List<String> hours){
+	private void allHours(List<String> hours){
 		for (int i = 0; i <= 23; i++) {
 			hours.add(String.format("%02d", i)); 
 		}
@@ -151,7 +151,6 @@ public class AreaMgr {
 							strs.add(y + "-" + m + "-" + d + "@" + h);			
 //							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
 						}
-						
 					}
 				}
 			}
@@ -311,6 +310,10 @@ public class AreaMgr {
 		System.out.println("level:" + level);
 		System.out.println(strs.size());
 		count(as, strs, level);
+	}
+	
+	public void createTimeChart(String id) {
+		
 	}
 
 	@SuppressWarnings("unchecked")
