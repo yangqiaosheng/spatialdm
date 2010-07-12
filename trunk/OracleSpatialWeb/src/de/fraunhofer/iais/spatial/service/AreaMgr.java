@@ -147,7 +147,7 @@ public class AreaMgr {
 					for (String h : hours) {
 						calendar.set(Integer.parseInt(y), Integer.parseInt(m)-1, Integer.parseInt(d));
 						// filter out the selected weekdays
-						if(weekdays.size()==0 || weekdays.contains(sdf.format(calendar.getTime()))){
+						if (weekdays.size() == 0 || weekdays.contains(sdf.format(calendar.getTime()))){
 							strs.add(y + "-" + m + "-" + d + "@" + h);			
 //							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
 						}
@@ -169,7 +169,7 @@ public class AreaMgr {
 		}
 			
 		
-		if (level != '0') {
+		if (strs.size() > 0 && level != '0') {
 			switch (level) {
 			case 'h':
 				this.countHours(as, strs);
@@ -314,7 +314,7 @@ public class AreaMgr {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void createChart(Map<String, Integer> cs) {
+	public void createBarChart(Map<String, Integer> cs) {
 		System.out.println("chart");
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 

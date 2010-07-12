@@ -2,6 +2,7 @@ package de.fraunhofer.iais.spatial.dao.ibatis;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -41,6 +42,7 @@ public class AreaDaoIbatis implements AreaDao {
 		try {
 			as = (List<Area>) session.selectList(Area.class.getName()
 					+ ".selectAll");
+			initAreas(as);
 		} finally {
 			session.close();
 		}
@@ -54,6 +56,7 @@ public class AreaDaoIbatis implements AreaDao {
 		try {
 			a = (Area) session.selectOne(Area.class.getName() + ".selectById",
 					id);
+			initArea(a);
 		} finally {
 			session.close();
 		}
@@ -69,6 +72,7 @@ public class AreaDaoIbatis implements AreaDao {
 		try {
 			as = (List<Area>) session.selectList(Area.class.getName()
 					+ ".select", j_geom);
+			initAreas(as);
 		} finally {
 			session.close();
 			System.out.println("close");
@@ -87,6 +91,7 @@ public class AreaDaoIbatis implements AreaDao {
 		try {
 			as = (List<Area>) session.selectList(Area.class.getName()
 					+ ".select", j_geom);
+			initAreas(as);
 		} finally {
 			session.close();
 		}
@@ -299,6 +304,17 @@ public class AreaDaoIbatis implements AreaDao {
 			session.close();
 		}
 		return num;
+	}
+
+	private void initAreas(List<Area> as) {
+		for (Area a : as) {
+			initArea(a);
+		}
+	}
+
+	private void initArea(Area a) {
+		a.setCount(0);
+		a.setTotalCount(0);
 	}
 
 }

@@ -3,7 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>  
 		<head>  
-		<!-- include yui core -->
+			<!-- define global variables -->
+			<script type="text/javascript">
+				g_kml_layer = new Array(10000);
+				g_kml_counter = 0;
+			</script>
+			
+			<!-- include yui core -->
 			<script type="text/javascript" src="http://yui.yahooapis.com/3.1.0/build/yui/yui.js"></script>
 			<!-- include all requirements for node -->
 			<script type="text/javascript" src="http://yui.yahooapis.com/3.1.0/build/oop/oop.js"></script>
@@ -18,7 +24,7 @@
 			<!-- for example -->
 			<script type="text/javascript" src="http://yui.yahooapis.com/3.1.0/build/yui/yui-min.js"></script>		  		  		
 			<meta http-equiv="content-type" content="text/html; charset=utf-8">
-			<title>Web Aplication</title>
+			<title>Spatial Data Visualization</title>
 						
 			<link rel="stylesheet" type="text/css" href="css/fonts.css"> <!--for carousel -->
 			<link type="text/css" rel="stylesheet" href="css/carousel.css">	<!-- for carousel -->

@@ -179,8 +179,8 @@ function GetYMD(txtSelected, stringtest){
 		return daytext;
 	}
 }
-var kml_2 = new Array(10000);
-var countkml = 0;
+//var kml_2 = new Array(10000);
+//var countkml = 0;
 
 function selectedCalendar(){	
 	/*I should eliminate duplicates from selected and also from deselected*/		
@@ -231,7 +231,7 @@ function selectedCalendar(){
 	};
 //	alert("step1");
 	xmlHttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
-	//xmlHttp.open("POST","http://localhost:8080/project2/testCalendar?"+ new Date().getTime(),true); // no cache
+//	xmlHttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
 //	alert("step2");
 	xmlHttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 //	alert("step3");
@@ -244,13 +244,12 @@ function selectedCalendar(){
 		
 }
 var l=0;
-function loadkml_2(url)
-{               
-	for (var i=countkml-l; i<countkml;i++){
-		kml_2[i].setMap(); // this is deleting from the map the polygons 
+function loadkml_2(url) {               
+	for (var i=g_kml_counter-l; i<g_kml_counter;i++){
+		g_kml_layer[i].setMap(); // this is deleting from the map the polygons 
 	}
                 //this put on the map the polygons!
-        kml_2[countkml] = new google.maps.KmlLayer(url, {
+        g_kml_layer[g_kml_counter] = new google.maps.KmlLayer(url, {
                             suppressInfoWindows: false,
                             preserveViewport: true,
                             map: map
@@ -261,7 +260,7 @@ function loadkml_2(url)
         } else {
 		alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
         }
-        countkml++;
+        g_kml_counter++;
         l=1;
 }
 // it must refresh the calendar and the map. 
@@ -269,7 +268,7 @@ function loadkml_2(url)
 function refreshCalendar(){
 	text="refresh"; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
         document.getElementById("content1").innerHTML = text;
-        kml_2[countkml-1].setMap(); // this is deleting from the map the polygons that are on the map just one step before.
+        kml_2[g_kml_counter-1].setMap(); // this is deleting from the map the polygons that are on the map just one step before.
 
 }
 
