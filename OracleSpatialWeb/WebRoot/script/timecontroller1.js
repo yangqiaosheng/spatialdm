@@ -345,15 +345,13 @@ function loadXMLString(txt) {
 	return xmlDoc;
 }
 var t=1;
-var kml1_1= new Array(10000);
-var countkml = 0;
 // areas1.kml is from the timecontroller1
 // in this function the xml thata I send to the server is constructed.
 // text=xml to send to the server
 
 
 function ask() {
-//	countkml = 0;
+//	g_kml_counter = 0;
 	text=""; // text is the data that I send. This must also to be refreshed.
 	document.getElementById("content1").innerHTML = text;
 	
@@ -427,22 +425,20 @@ function ask() {
 			loadkml_1(url);
 		}			
 	};
-//	 xmlhttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
-	 xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
+	 xmlhttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
+//	 xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
 	 xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 	 xmlhttp.send("xml="+encodeURIComponent(text));
 }
 //var t_count=0;
 var l=0;
-function loadkml_1(url)
-{
-
-		for (var i=countkml-l; i<countkml;i++)
+function loadkml_1(url) {
+		for (var i=g_kml_counter-l; i<g_kml_counter;i++)
  	      	{
-                	kml1_1[i].setMap(); // this is deleting from the map the polygons 
+                	g_kml_layer[i].setMap(); // this is deleting from the map the polygons 
         	}
 		//this put on the map the polygons!
-		kml1_1[countkml] = new google.maps.KmlLayer(url, {
+		g_kml_layer[g_kml_counter] = new google.maps.KmlLayer(url, {
 	                    suppressInfoWindows: false,
                 	    preserveViewport: true,
         	            map: map
@@ -453,7 +449,7 @@ function loadkml_1(url)
         	        } else {
                 	        alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
                 		}
-	countkml++;
+	g_kml_counter++;
 	l=1;
 }
 
@@ -467,7 +463,7 @@ function refreshButtons() { // ok number[i] reverse to 0
 
         text="refresh"; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
         document.getElementById("content1").innerHTML = text;	
-	kml1_1[countkml-1].setMap(); // this is deleting from the map the polygons that are on the map just one step before.
+        g_kml_layer[g_kml_counter-1].setMap(); // this is deleting from the map the polygons that are on the map just one step before.
 	
 }
 

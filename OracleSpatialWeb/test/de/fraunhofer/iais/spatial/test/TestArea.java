@@ -376,6 +376,6 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 			System.out.println(m + areaDao.getMonthCount(a.getId(), m));
 			cs.put(m, areaDao.getMonthCount(a.getId(), m));
 		}
-		areaMgr.createChart(cs);
+		areaMgr.createBarChart(cs);
 	}
 }
