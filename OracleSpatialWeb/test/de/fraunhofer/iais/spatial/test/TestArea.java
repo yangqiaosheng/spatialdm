@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,6 +48,21 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	// areaMgr = new AreaMgr();
 	// areaMgr.setAreaDao(new AreaDaoIbatis());
 	// }
+	
+	@Test
+	public void showCalendar() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH); 
+		Calendar calendar = Calendar.getInstance();	
+		calendar.set(2005, 00, 01);
+		Calendar end = Calendar.getInstance();	
+		end.set(2007, 00, 01);
+		System.out.println(calendar.getTime());
+		while(calendar.getTime().before(end.getTime())){
+			System.out.println(sdf.format(calendar.getTime())+":" + (int)(Math.random()*400));
+			calendar.add(Calendar.DATE, 1);
+		}
+		
+	}
 	
 	@Test
 	public void testDeleteKmls() {
