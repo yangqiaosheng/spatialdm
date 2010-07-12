@@ -49,7 +49,7 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 				}
 			}
 		}
-
+		
 		if (logger.isDebugEnabled()) {
 			logger.debug("run() - end"); //$NON-NLS-1$
 		}
