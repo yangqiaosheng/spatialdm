@@ -38,7 +38,7 @@ public class RequestKml extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// web base path for local operation
-		String localBasePath = this.getClass().getResource("/../../").getPath();
+		String localBasePath = System.getProperty("oraclespatialweb.root");
 		// web base path for remote access
 		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 

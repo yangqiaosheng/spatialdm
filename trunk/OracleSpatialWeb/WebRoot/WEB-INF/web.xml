@@ -19,7 +19,7 @@
 	-->
 	<context-param>
 		<param-name>webAppRootKey</param-name>
-		<param-value>webapp.root</param-value>
+		<param-value>oraclespatialweb.root</param-value>
 	</context-param>
 
 	<!--

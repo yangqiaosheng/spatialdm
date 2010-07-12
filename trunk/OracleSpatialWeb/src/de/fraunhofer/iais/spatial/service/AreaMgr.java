@@ -394,7 +394,7 @@ public class AreaMgr {
 	}
 
 	public String createKml(List<Area> as, String file) {
-		String remoteBasePath = System.getProperty("webapp.root");
+		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
 		Document document = new Document();
 		Namespace namespace = Namespace
 				.getNamespace("http://earth.google.com/kml/2.1");
