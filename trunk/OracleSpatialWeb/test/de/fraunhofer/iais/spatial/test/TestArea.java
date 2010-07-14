@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,6 +30,7 @@ import de.fraunhofer.iais.spatial.dao.ibatis.AreaDaoIbatis;
 import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
 import de.fraunhofer.iais.spatial.servlet.RequestKml;
+import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
 @ContextConfiguration("classpath:beans.xml")
@@ -384,14 +386,20 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		months.add("2007-11");
 		months.add("2007-12");
 
-		AreaDao areaDao = areaMgr.getAreaDao();
-		Area a = areaMgr.getAreaById("1  ");
+//		AreaDao areaDao = areaMgr.getAreaDao();
+//		Area a = areaMgr.getAreaById("1  ");
 
 		Map<String, Integer> cs = new HashMap<String, Integer>();
 		for (String m : months) {
-			System.out.println(m + areaDao.getMonthCount(a.getId(), m));
-			cs.put(m, areaDao.getMonthCount(a.getId(), m));
+//			System.out.println(m + areaDao.getMonthCount(a.getId(), m));
+//			cs.put(m, areaDao.getMonthCount(a.getId(), m));
+			cs.put(m, (int)(Math.random()*400));
 		}
 		areaMgr.createBarChart(cs);
+	}
+	
+	@Test
+	public void testChart2() throws IOException{
+		ChartUtil.createLineChart(null, "temp/line.jpg");
 	}
 }
