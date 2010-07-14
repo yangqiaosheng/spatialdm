@@ -3,7 +3,9 @@ package de.fraunhofer.iais.spatial.dao.ibatis;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,6 +165,31 @@ public class AreaDaoIbatis implements AreaDao {
 	}
 
 	@Override
+	public void loadHoursCount(Area a) {
+		if (a.getHoursCount() != null) {
+			return; 	// cached
+		}
+		
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+		a.setHoursCount(hoursCount);
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		try {
+			String count = (String) session.selectOne(Area.class.getName()
+					+ ".hourCount", a.getId());
+			if (count != null) {
+				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
+				Matcher m = p.matcher(count);
+				while (m.find()) {
+					hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+				}
+			}
+		} finally {
+			session.close();
+		}
+	}
+	
+	@Override
 	public int getDayCount(String areaid, String day) {
 		int num = 0;
 
@@ -313,7 +340,7 @@ public class AreaDaoIbatis implements AreaDao {
 	}
 
 	private void initArea(Area a) {
-		a.setCount(0);
+		a.setSelectCount(0);
 		a.setTotalCount(0);
 	}
 

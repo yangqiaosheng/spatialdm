@@ -111,6 +111,12 @@ public class AreaDaoJdbc implements AreaDao{
 	}
 
 	@Override
+	public void loadHoursCount(Area a) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public int getDayCount(String areaid, String day) {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
