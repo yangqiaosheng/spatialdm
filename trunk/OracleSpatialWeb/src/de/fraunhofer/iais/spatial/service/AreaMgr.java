@@ -65,31 +65,40 @@ public class AreaMgr {
 			for (String p : persons) {
 				count += areaDao.getPersonCount(a.getId(), p);
 			}
-			a.setCount(count);
+			a.setSelectCount(count);
 		}
 	}
 
 	public void countHours(List<Area> as, Set<String> hours) {
 		for (Area a : as) {
-			a.setCount(areaDao.getHourCount(a.getId(), hours));
+
+//			a.setSelectCount(areaDao.getHourCount(a.getId(), hours));
+			int num = 0;
+			areaDao.loadHoursCount(a);
+			for (Map.Entry<String, Integer> e : a.getHoursCount().entrySet()) {
+				if (hours.contains(e.getKey())) {
+					num += e.getValue();
+				}
+			}
+			a.setSelectCount(num);
 		}
 	}
 
 	public void countDays(List<Area> as, Set<String> days) {
 		for (Area a : as) {
-			a.setCount(areaDao.getDayCount(a.getId(), days));
+			a.setSelectCount(areaDao.getDayCount(a.getId(), days));
 		}
 	}
 
 	public void countMonths(List<Area> as, Set<String> months) {
 		for (Area a : as) {
-			a.setCount(areaDao.getMonthCount(a.getId(), months));
+			a.setSelectCount(areaDao.getMonthCount(a.getId(), months));
 		}
 	}
 
 	public void countYears(List<Area> as, Set<String> years) {
 		for (Area a : as) {
-			a.setCount(areaDao.getYearCount(a.getId(), years));
+			a.setSelectCount(areaDao.getYearCount(a.getId(), years));
 		}
 	}
 
@@ -410,9 +419,9 @@ public class AreaMgr {
 
 		// GroundOverlay
 		for (Area a : as) {			
-			if (a.getCount() != 0) {
+			if (a.getSelectCount() != 0) {
 				String name = "total:" + a.getTotalCount();
-				String description = "select:" + String.valueOf(a.getCount());
+				String description = "select:" + String.valueOf(a.getSelectCount());
 				
 				Element groundOverlayElement = new Element("GroundOverlay",
 						namespace);
@@ -430,17 +439,17 @@ public class AreaMgr {
 				double r = 0;
 				String icon = "";
 
-				if (a.getCount() < 100) {
-					r = (double) Math.log10(a.getCount()) / 85.0;
+				if (a.getSelectCount() < 100) {
+					r = (double) Math.log10(a.getSelectCount()) / 85.0;
 					icon = remoteBasePath + "images/circle_bl.ico";
-				} else if (a.getCount() < 1000) {
-					r = (double) Math.log10(a.getCount()) / 80.0;
+				} else if (a.getSelectCount() < 1000) {
+					r = (double) Math.log10(a.getSelectCount()) / 80.0;
 					icon = remoteBasePath + "images/circle_gr.ico";
-				} else if (a.getCount() < 10000) {
-					r = (double) Math.log10(a.getCount()) / 70.0;
+				} else if (a.getSelectCount() < 10000) {
+					r = (double) Math.log10(a.getSelectCount()) / 70.0;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
-					r = (double) Math.log10(a.getCount()) / 60.0;
+					r = (double) Math.log10(a.getSelectCount()) / 60.0;
 					icon = remoteBasePath + "images/circle_or.ico";
 					if (r > 0.1)
 						r = 0.1;
@@ -473,7 +482,7 @@ public class AreaMgr {
 		for (Area a : as) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
-			String description = "select:" + String.valueOf(a.getCount());
+			String description = "select:" + String.valueOf(a.getSelectCount());
 //			String polyStyleColor = "440000";	   	//not transparent
 			String polyStyleColor = "000000"; 	//transparent
 			String polyStyleFill = "1";
