@@ -29,6 +29,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.entity.Area;
+import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
 public class AreaMgr {
@@ -325,51 +326,7 @@ public class AreaMgr {
 		
 	}
 
-	@SuppressWarnings("unchecked")
-	public void createBarChart(Map<String, Integer> cs) {
-		System.out.println("chart");
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-		Iterator it = cs.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry) it.next();
-			dataset.addValue((Integer) pairs.getValue(), (String) pairs
-					.getKey(), "Category 1");
-		}
-
-		JFreeChart chart = ChartFactory.createBarChart(
-//		JFreeChart chart = ChartFactory.createLineChart3D(
-				// JFreeChart chart = ChartFactory.createPieChart3D(
-
-				"Chart", // Title
-				"Month", // X Label
-				"Amount of Photo", // Y Label
-				dataset, // dataset
-				PlotOrientation.VERTICAL, // Plot Orientation
-				false, // Print the Case
-				false, // Generate the tool
-				false // Generate the url
-				);
-
-		FileOutputStream fos_jpg = null;
-
-		try {
-			fos_jpg = new FileOutputStream("temp/chart.jpg");
-			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 800, 600,
-					null);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				fos_jpg.close();
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-			}
-		}
-
-	}
+	
 	
 	public String createMarkersXml(List<Area> as, String file) {
 		Document document = new Document();
@@ -556,6 +513,10 @@ public class AreaMgr {
 		xml2File(document, file);
 		return xml2String(document);
 		// return xml2String(document).replaceAll("\r\n", " ");
+	}
+	
+	public void createBarChart(Map<String, Integer> cs) {
+		ChartUtil.createBarChart(cs, "temp/bar.jpg");
 	}
 
 	private static String xml2String(Document document) {
