@@ -399,6 +399,7 @@ public class AreaMgr {
 				String description = "<p>select:" + String.valueOf(a.getSelectCount())
 				+ "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='TimeSeriesChart?id=" + URLEncoder.encode(a.getId(), "UTF-8")
 				+ "&xml=" + URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
+				String groundOverlayColor = "aaffffff"; 	//transparency
 				
 				Element groundOverlayElement = new Element("GroundOverlay",
 						namespace);
@@ -406,9 +407,12 @@ public class AreaMgr {
 				Element nameElement = new Element("name", namespace);
 				nameElement.addContent(name);
 				Element descriptionElement = new Element("description", namespace);
-				descriptionElement.addContent(description);				
+				descriptionElement.addContent(description);			
+				Element colorElement = new Element("name", namespace);
+				colorElement.addContent(groundOverlayColor);
 				groundOverlayElement.addContent(nameElement);
 				groundOverlayElement.addContent(descriptionElement);
+				groundOverlayElement.addContent(colorElement);
 				Element iconElement = new Element("Icon", namespace);
 				groundOverlayElement.addContent(iconElement);				
 				Element hrefElement = new Element("href", namespace);
@@ -445,9 +449,9 @@ public class AreaMgr {
 				latLonBoxElement.addContent(westElement);
 
 				northElement.addContent(Double.toString(a.getCenter().getY()
-						+ r * 0.7));
+						+ r * 0.55));
 				southElement.addContent(Double.toString(a.getCenter().getY()
-						- r * 0.7));
+						- r * 0.55));
 				eastElement.addContent(Double
 						.toString(a.getCenter().getX() + r));
 				westElement.addContent(Double
