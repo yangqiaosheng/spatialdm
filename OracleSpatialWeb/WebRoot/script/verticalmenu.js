@@ -45,7 +45,7 @@ function addxml1() {
 		} else {
 			alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
 		}
-		retun;		
+		return;		
 	}
 	if (t % 2 == 0) {				
 		t++;
@@ -76,7 +76,7 @@ function addxml2() {
 		} else {
 			alert("Sorry, the Google Maps API is not compatible with this browser in kml overlay section");
 		}
-		retun;		
+		return;		
 	}
 	if (t2 % 2 == 0) {				
 		t2++;

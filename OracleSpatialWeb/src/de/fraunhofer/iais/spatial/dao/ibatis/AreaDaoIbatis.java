@@ -56,8 +56,7 @@ public class AreaDaoIbatis implements AreaDao {
 		SqlSession session = sqlSessionFactory.openSession();
 		Area a = null;
 		try {
-			a = (Area) session.selectOne(Area.class.getName() + ".selectById",
-					id);
+			a = (Area) session.selectOne(Area.class.getName() + ".selectById", id);
 			initArea(a);
 		} finally {
 			session.close();
@@ -164,8 +163,7 @@ public class AreaDaoIbatis implements AreaDao {
 		return num;
 	}
 
-	@Override
-	public void loadHoursCount(Area a) {
+	private void loadHoursCount(Area a) {
 		if (a.getHoursCount() != null) {
 			return; 	// cached
 		}
@@ -232,6 +230,30 @@ public class AreaDaoIbatis implements AreaDao {
 		return num;
 	}
 
+	private void loadDaysCount(Area a) {
+		if (a.getDaysCount() != null) {
+			return; 	// cached
+		}
+		
+		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();	
+		a.setDaysCount(daysCount);
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		try {
+			String count = (String) session.selectOne(Area.class.getName()
+					+ ".dayCount", a.getId());
+			if (count != null) {
+				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
+				Matcher m = p.matcher(count);
+				while (m.find()) {
+					daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
+				}
+			}
+		} finally {
+			session.close();
+		}
+	}
+
 	@Override
 	public int getMonthCount(String areaid, String month) {
 		int num = 0;
@@ -272,6 +294,30 @@ public class AreaDaoIbatis implements AreaDao {
 			session.close();
 		}
 		return num;
+	}
+	
+	private void loadMonthsCount(Area a) {
+		if (a.getMonthsCount() != null) {
+			return; 	// cached
+		}
+		
+		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();	
+		a.setMonthsCount(monthsCount);
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		try {
+			String count = (String) session.selectOne(Area.class.getName()
+					+ ".monthCount", a.getId());
+			if (count != null) {
+				Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
+				Matcher m = p.matcher(count);
+				while (m.find()) {
+					monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
+				}
+			}
+		} finally {
+			session.close();
+		}
 	}
 
 	@Override
@@ -316,6 +362,30 @@ public class AreaDaoIbatis implements AreaDao {
 		}
 		return num;
 	}
+	
+	private void loadYearsCount(Area a) {
+		if (a.getYearsCount() != null) {
+			return; 	// cached
+		}
+		
+		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();	
+		a.setYearsCount(yearsCount);
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		try {
+			String count = (String) session.selectOne(Area.class.getName()
+					+ ".yearCount", a.getId());
+			if (count != null) {
+				Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
+				Matcher m = p.matcher(count);
+				while (m.find()) {
+					yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
+				}
+			}
+		} finally {
+			session.close();
+		}
+	}
 
 	@Override
 	public int getTotalCount(String areaid) {
@@ -340,8 +410,14 @@ public class AreaDaoIbatis implements AreaDao {
 	}
 
 	private void initArea(Area a) {
-		a.setSelectCount(0);
-		a.setTotalCount(0);
+		if (a != null) {
+			a.setSelectCount(0);
+			a.setTotalCount(0);
+			loadYearsCount(a);
+			loadMonthsCount(a);
+			loadDaysCount(a);
+			loadHoursCount(a);
+		}
 	}
 
 }
