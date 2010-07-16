@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,11 +111,36 @@ public class AreaDaoJdbc implements AreaDao{
 		}
 		return num;		
 	}
-
-	@Override
-	public void loadHoursCount(Area a) {
-		// TODO Auto-generated method stub
+	
+	private void loadHoursCount(Area a) {
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
 		
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+		a.setHoursCount(hoursCount);
+		
+		try {
+			selectStmt = DB.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt.setString(1, a.getId());
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				String count = rs.getString("hour");
+				if(count!=null){
+					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
+					Matcher m = p.matcher(count);
+					while(m.find()){
+						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+					}		
+				}						
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
 	}
 
 	@Override
@@ -178,6 +205,37 @@ public class AreaDaoJdbc implements AreaDao{
 		return num;		
 	}
 	
+	private void loadDaysCount(Area a) {
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+		
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+		a.setHoursCount(hoursCount);
+		
+		try {
+			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt.setString(1, a.getId());
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				String count = rs.getString("day");
+				if(count!=null){
+					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
+					Matcher m = p.matcher(count);
+					while(m.find()){
+						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+					}		
+				}						
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+	}
+	
 	@Override
 	public int getMonthCount(String areaid, String month) {
 		Connection conn = DB.getConn();
@@ -238,6 +296,37 @@ public class AreaDaoJdbc implements AreaDao{
 			DB.close(conn);
 		}
 		return num;		
+	}
+	
+	private void loadMonthsCount(Area a) {
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+		
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+		a.setHoursCount(hoursCount);
+		
+		try {
+			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt.setString(1, a.getId());
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				String count = rs.getString("month");
+				if(count!=null){
+					Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
+					Matcher m = p.matcher(count);
+					while(m.find()){
+						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+					}		
+				}						
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
 	}
 	
 	@Override
@@ -302,6 +391,37 @@ public class AreaDaoJdbc implements AreaDao{
 		return num;		
 	}
 	
+	private void loadYearsCount(Area a) {
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+		
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+		a.setHoursCount(hoursCount);
+		
+		try {
+			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt.setString(1, a.getId());
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				String count = rs.getString("year");
+				if(count!=null){
+					Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
+					Matcher m = p.matcher(count);
+					while(m.find()){
+						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+					}		
+				}						
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+	}
+	
 	@Override
 	public int getTotalCount(String areaid) {
 		Connection conn = DB.getConn();
@@ -340,6 +460,7 @@ public class AreaDaoJdbc implements AreaDao{
 				initFromRs(a, rs);
 				as.add(a);
 			}
+			initAreas(as);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -365,6 +486,7 @@ public class AreaDaoJdbc implements AreaDao{
 			while (rs.next()) {
 				initFromRs(a, rs);
 			}
+			initArea(a);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -395,6 +517,7 @@ public class AreaDaoJdbc implements AreaDao{
 				initFromRs(a, rs);
 				as.add(a);
 			}
+			initAreas(as);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -428,6 +551,7 @@ public class AreaDaoJdbc implements AreaDao{
 				initFromRs(a, rs);
 				as.add(a);
 			}
+			initAreas(as);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -457,6 +581,23 @@ public class AreaDaoJdbc implements AreaDao{
 			a.setArea(rs.getFloat("area"));
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void initAreas(List<Area> as) {
+		for (Area a : as) {
+			initArea(a);
+		}
+	}
+
+	private void initArea(Area a) {
+		if (a != null) {
+			a.setSelectCount(0);
+			a.setTotalCount(0);
+			loadYearsCount(a);
+			loadMonthsCount(a);
+			loadDaysCount(a);
+			loadHoursCount(a);
 		}
 	}
 }

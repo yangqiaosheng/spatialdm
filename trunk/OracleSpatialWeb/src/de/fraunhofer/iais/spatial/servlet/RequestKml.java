@@ -1,6 +1,9 @@
 package de.fraunhofer.iais.spatial.servlet;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -60,9 +63,12 @@ public class RequestKml extends HttpServlet {
 			return;
 		}
 
-		String filename = StringUtil.genFilename(new Date()) + ".kml";
+		String filenamePrefix = StringUtil.genFilename(new Date());
 
 		List<Area> as = areaMgr.getAllAreas();
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
+		
 
 		if (xml1 != null && !xml1.equals("")) {
 			List<String> years = new ArrayList<String>();
@@ -78,6 +84,7 @@ public class RequestKml extends HttpServlet {
 				System.out.println("days:" + days.size());
 				System.out.println("hours:" + hours.size());
 				System.out.println("weekdays:" + weekdays.size());
+				bw.write(xml1);
 			} catch (JDOMException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -89,16 +96,20 @@ public class RequestKml extends HttpServlet {
 			try {
 				System.out.println("xml2:" + xml2);
 				areaMgr.parseXmlRequest2(as, xml2);
+				bw.write(xml2);
 			} catch (JDOMException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
-		areaMgr.createKml(as, localBasePath + kmlPath + filename);
+		
+		bw.close();
+		
+		areaMgr.createKml(as, kmlPath + filenamePrefix);
+		
 		out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
-		out.print("<response><url>" + remoteBasePath + kmlPath + filename + "</url></response>");
+		out.print("<response><url>" + remoteBasePath + kmlPath + filenamePrefix + ".kml" + "</url></response>");
 		out.flush();
 		out.close();
 	}

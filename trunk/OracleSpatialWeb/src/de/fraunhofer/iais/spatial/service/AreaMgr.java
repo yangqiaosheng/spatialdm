@@ -4,10 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -21,11 +27,6 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.entity.Area;
@@ -72,10 +73,7 @@ public class AreaMgr {
 
 	public void countHours(List<Area> as, Set<String> hours) {
 		for (Area a : as) {
-
-//			a.setSelectCount(areaDao.getHourCount(a.getId(), hours));
 			int num = 0;
-			areaDao.loadHoursCount(a);
 			for (Map.Entry<String, Integer> e : a.getHoursCount().entrySet()) {
 				if (hours.contains(e.getKey())) {
 					num += e.getValue();
@@ -87,19 +85,37 @@ public class AreaMgr {
 
 	public void countDays(List<Area> as, Set<String> days) {
 		for (Area a : as) {
-			a.setSelectCount(areaDao.getDayCount(a.getId(), days));
+			int num = 0;
+			for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
+				if (days.contains(e.getKey())) {
+					num += e.getValue();
+				}
+			}
+			a.setSelectCount(num);
 		}
 	}
 
 	public void countMonths(List<Area> as, Set<String> months) {
 		for (Area a : as) {
-			a.setSelectCount(areaDao.getMonthCount(a.getId(), months));
+			int num = 0;
+			for (Map.Entry<String, Integer> e : a.getMonthsCount().entrySet()) {
+				if (months.contains(e.getKey())) {
+					num += e.getValue();
+				}
+			}
+			a.setSelectCount(num);
 		}
 	}
 
 	public void countYears(List<Area> as, Set<String> years) {
 		for (Area a : as) {
-			a.setSelectCount(areaDao.getYearCount(a.getId(), years));
+			int num = 0;
+			for (Map.Entry<String, Integer> e : a.getYearsCount().entrySet()) {
+				if (years.contains(e.getKey())) {
+					num += e.getValue();
+				}
+			}
+			a.setSelectCount(num);
 		}
 	}
 
@@ -362,7 +378,8 @@ public class AreaMgr {
 		return xml2String(document);
 	}
 
-	public String createKml(List<Area> as, String file) {
+	public String createKml(List<Area> as, String file) throws UnsupportedEncodingException {
+		String localBasePath = System.getProperty("oraclespatialweb.root");
 		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
 		Document document = new Document();
 		Namespace namespace = Namespace
@@ -378,7 +395,10 @@ public class AreaMgr {
 		for (Area a : as) {			
 			if (a.getSelectCount() != 0) {
 				String name = "total:" + a.getTotalCount();
-				String description = "select:" + String.valueOf(a.getSelectCount());
+//				String description = "select:" + String.valueOf(a.getSelectCount());
+				String description = "<p>select:" + String.valueOf(a.getSelectCount())
+				+ "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='TimeSeriesChart?id=" + URLEncoder.encode(a.getId(), "UTF-8")
+				+ "&xml=" + URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 				
 				Element groundOverlayElement = new Element("GroundOverlay",
 						namespace);
@@ -510,13 +530,25 @@ public class AreaMgr {
 			linearRingElement.addContent(coordinatesElement);
 			coordinatesElement.addContent(coordinates);
 		}
-		xml2File(document, file);
+		xml2File(document, localBasePath + file + ".kml");
 		return xml2String(document);
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
 	
 	public void createBarChart(Map<String, Integer> cs) {
 		ChartUtil.createBarChart(cs, "temp/bar.jpg");
+	}
+	
+	public void createTimeSeriesChart(Area a, Set<String> years, OutputStream os) throws ParseException, IOException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Map<Date, Integer> countsMap = new LinkedHashMap<Date, Integer>();
+		for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
+			if (years.contains(e.getKey().substring(0, 4))){
+				countsMap.put(sdf.parse(e.getKey()), e.getValue());
+			}
+		}
+		
+		ChartUtil.createTimeSeriesChart(countsMap, os);
 	}
 
 	private static String xml2String(Document document) {

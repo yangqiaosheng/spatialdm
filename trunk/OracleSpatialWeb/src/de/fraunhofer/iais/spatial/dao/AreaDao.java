@@ -117,6 +117,4 @@ public interface AreaDao {
 	 */
 	public abstract List<Area> getAreasByRect(double x1, double y1, double x2, double y2);
 
-	public abstract void loadHoursCount(Area a);
-
 }

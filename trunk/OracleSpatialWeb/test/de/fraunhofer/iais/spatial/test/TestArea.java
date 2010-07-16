@@ -2,6 +2,7 @@ package de.fraunhofer.iais.spatial.test;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -40,8 +42,8 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	private AreaMgr areaMgr = null;
 
 	// private static AreaMgr areaMgr = null;
-	// @BeforeClass
-	// public static void initClass(){
+	 @BeforeClass
+	 public static void initClass(){
 	// Spring IOC
 	// ApplicationContext context =
 	// new ClassPathXmlApplicationContext(new String[] {"beans.xml"});
@@ -49,7 +51,9 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	// init
 	// areaMgr = new AreaMgr();
 	// areaMgr.setAreaDao(new AreaDaoIbatis());
-	// }
+		 System.setProperty("oraclespatialweb.root", "C:/java_file/eclipse/MyEclipse/OracleSpatialWeb/");
+		 System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
+	 }
 	
 	@Test
 	public void showCalendar() {
@@ -260,7 +264,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	public void testXmlRequestSpeed() throws Exception {
 		List<Long> times = new ArrayList<Long>();
 		long start = System.currentTimeMillis();
-		int iterations = 10;
+		int iterations = 30;
 		for (int i = 0; i < iterations; i++) {
 			long startn = System.currentTimeMillis();
 			if (i % 2 == 0)
@@ -322,7 +326,8 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		List<Area> as = areaMgr.getAllAreas();
 		areaMgr.parseXmlRequest(as, StringUtil.FullMonth2Num(xml.toString()),
 				years, months, days, hours, weekdays);
-		System.out.println(areaMgr.createKml(as, "temp/areas1.kml"));
+		areaMgr.createKml(as, "temp/areas1");
+		System.out.println();
 
 		br.close();
 	}
@@ -340,7 +345,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 				.FullMonth2Num(xml.toString())));
 		// for(Area a : as)
 		// System.out.println(a.getTotalCount()+":"+a.getCount());
-		System.out.println(areaMgr.createKml(as, "temp/areas2.kml"));
+		System.out.println(areaMgr.createKml(as, "temp/areas2"));
 		br.close();
 
 	}
@@ -399,7 +404,33 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	}
 	
 	@Test
-	public void testChart2() throws IOException{
-		ChartUtil.createLineChart(null, "temp/line.jpg");
+	public void testChart2() throws Exception{
+
+
+		List<Area> as = areaMgr.getAllAreas();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		Set<String> years = new HashSet<String>();
+		years.add("2005");
+		years.add("2009");
+		years.add("2007");
+		years.add("2006");
+		years.add("2008");
+		
+		long start = System.currentTimeMillis();
+		for(int i = 0 ; i < 30 ; i++) {
+			long innerstart = System.currentTimeMillis();
+			Map<Date, Integer> countsMap = new LinkedHashMap<Date, Integer>();
+			for (Map.Entry<String, Integer> e : as.get(i).getDaysCount().entrySet()) {
+				countsMap.put(sdf.parse(e.getKey()), e.getValue());
+			}
+			FileOutputStream fos = new FileOutputStream("temp/line"+as.get(i).getId()+".jpg");
+			areaMgr.createTimeSeriesChart(as.get(i), years, fos);
+			long innerend = System.currentTimeMillis();
+			System.out.println(i + ":" + (innerend - innerstart));
+		}
+		long end = System.currentTimeMillis();
+		System.out.println("avg:" + (end - start)/30);
 	}
 }

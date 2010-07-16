@@ -1,42 +1,25 @@
 package de.fraunhofer.iais.spatial.util;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Stroke;
-import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.AxisSpace;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
-import org.jfree.chart.axis.SegmentedTimeline;
-import org.jfree.chart.axis.Timeline;
-import org.jfree.chart.labels.BubbleXYItemLabelGenerator;
-import org.jfree.chart.labels.HighLowItemLabelGenerator;
-import org.jfree.chart.labels.IntervalXYItemLabelGenerator;
-import org.jfree.chart.labels.MultipleXYSeriesLabelGenerator;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
-import org.jfree.chart.labels.StandardXYItemLabelGenerator;
-import org.jfree.chart.labels.StandardXYSeriesLabelGenerator;
-import org.jfree.chart.labels.SymbolicXYItemLabelGenerator;
-import org.jfree.chart.labels.XYItemLabelGenerator;
-import org.jfree.chart.labels.XYSeriesLabelGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -54,51 +37,53 @@ import org.jfree.ui.VerticalAlignment;
 
 public class ChartUtil {
 
-	public static void createLineChart(Map<String, Integer> cs, String filename) throws IOException {
-		XYDataset xydataset = createXYDataset();
-		JFreeChart jfreechart = createChart(xydataset);
-		FileOutputStream file = new FileOutputStream(filename);
-		ChartUtilities.writeChartAsJPEG(file, 0.8f, jfreechart, 500, 300, null);
+	public static void createTimeSeriesChart(Map<Date, Integer> countsMap, 
+			OutputStream os) throws IOException {
+		XYDataset xydataset = createXYDataset(countsMap);
+		JFreeChart jfreechart = createXYChart(xydataset);
+		ChartUtilities.writeChartAsJPEG(os, 0.8f, jfreechart, 600, 300, null);
 	}
 
-	private static XYDataset createXYDataset() {
+	private static XYDataset createXYDataset(Map<Date, Integer> countsMap) {
 		TimeSeriesCollection timeseriescollection = new TimeSeriesCollection();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 		SimpleDateFormat dsdf = new SimpleDateFormat("dd", Locale.ENGLISH);
 		SimpleDateFormat msdf = new SimpleDateFormat("MM", Locale.ENGLISH);
+		SimpleDateFormat ysdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
 
-		List<Integer> years = new ArrayList<Integer>();
-		years.add(2005);
-		// years.add(2006);
-		years.add(2007);
-		double d = 100D;
-		Calendar calendar = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		for (int y : years) {
-			calendar.set(y, 00, 01);
-			end.set(y + 1, 00, 01);
-
-			TimeSeries timeseries = new TimeSeries(String.valueOf(y));
-			while (calendar.getTime().before(end.getTime())) {
-				// System.out.println(sdf.format(calendar.getTime()));
-				d = (d + Math.random()) - 0.5D;
-				timeseries.add(new Day(Integer.parseInt(dsdf.format(calendar.getTime())), Integer.parseInt(msdf.format(calendar.getTime())), 2000), d);
-				// timeseries.add(new Day(calendar.getTime()), d);
-				calendar.add(Calendar.DATE, 1);
+		// group the values by year
+		Map<Integer, Map<Date, Integer>> countsGroupedMap = new TreeMap<Integer, Map<Date, Integer>>();
+		for (Map.Entry<Date, Integer> e : countsMap.entrySet()) {
+			int year = Integer.valueOf(ysdf.format(e.getKey().getTime()));
+			if(!countsGroupedMap.containsKey(year)){
+				Map<Date, Integer> countsSubMap = new TreeMap<Date, Integer>();
+				countsGroupedMap.put(year, countsSubMap);
 			}
+			countsGroupedMap.get(year).put(e.getKey(), e.getValue());
+		}
 
-			timeseriescollection.addSeries(timeseries);
+		for (int year : countsGroupedMap.keySet()) {
+			TimeSeries timeseries = new TimeSeries(String.valueOf(year));
+			for (Map.Entry<Date, Integer> e : countsGroupedMap.get(year).entrySet()) {
+				timeseries.add(new Day(
+						Integer.parseInt(dsdf.format(e.getKey())),	//day
+						Integer.parseInt(msdf.format(e.getKey())),	//month
+						2000),										//year
+						e.getValue());								//value
+			}
+//			timeseriescollection.addSeries(timeseries);
 
-			TimeSeries avgtimeseries = MovingAverage.createMovingAverage(timeseries, "30 day moving average", 30, 0);
-//			timeseriescollection.addSeries(avgtimeseries);
+			TimeSeries avgtimeseries = MovingAverage.createMovingAverage(
+					timeseries, String.valueOf(year), 5, 0);
+			timeseriescollection.addSeries(avgtimeseries);
 		}
 
 		return timeseriescollection;
 	}
 
-	private static JFreeChart createChart(XYDataset xydataset) {
+	private static JFreeChart createXYChart(XYDataset xydataset) {
 
-		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("TimeSeriesChart", // Title
+		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
+				"#Photos Distribution", // Title
 				"Time", // X Label
 				"#photos", // Y Label
 				xydataset, // dataset
@@ -109,7 +94,7 @@ public class ChartUtil {
 
 		jfreechart.setBackgroundPaint(Color.WHITE);
 		jfreechart.setBorderPaint(Color.BLACK);
-//		jfreechart.setBackgroundPaint(Color.LIGHT_GRAY);
+		// jfreechart.setBackgroundPaint(Color.LIGHT_GRAY);
 
 		XYPlot xyplot = (XYPlot) jfreechart.getPlot();
 		xyplot.setBackgroundPaint(Color.LIGHT_GRAY);
@@ -118,14 +103,13 @@ public class ChartUtil {
 		xyplot.setAxisOffset(new RectangleInsets(5D, 5D, 5D, 5D));
 		xyplot.setDomainCrosshairVisible(true);
 		xyplot.setRangeCrosshairVisible(true);
-		
+
 		LegendTitle legend = jfreechart.getLegend();
 		legend.setBackgroundPaint(Color.LIGHT_GRAY);
 		legend.setPosition(RectangleEdge.RIGHT);
 		legend.setVerticalAlignment(VerticalAlignment.CENTER);
 		legend.setMargin(10, 0, 10, 10);
-	
-		
+
 		XYItemRenderer xyitemrenderer = xyplot.getRenderer();
 		XYLineAndShapeRenderer xylineandshaperenderer = (XYLineAndShapeRenderer) xyitemrenderer;
 		xylineandshaperenderer.setBaseShapesVisible(false);
@@ -133,19 +117,21 @@ public class ChartUtil {
 		DateAxis dateaxis = (DateAxis) xyplot.getDomainAxis();
 		dateaxis.setTickUnit(new DateTickUnit(DateTickUnitType.MONTH, 1));
 		dateaxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
-		dateaxis.setDateFormatOverride(new SimpleDateFormat("MMM", Locale.ENGLISH));
+		dateaxis.setDateFormatOverride(new SimpleDateFormat("MMM",
+				Locale.ENGLISH));
 		return jfreechart;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void createBarChart(Map<String, Integer> cs, String filename) {
+	public static void createBarChart(Map<String, Integer> countsMap, String filename) {
 		System.out.println("chart");
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-		Iterator it = cs.entrySet().iterator();
+		Iterator it = countsMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
-			dataset.addValue((Integer) pairs.getValue(), (String) pairs.getKey(), "Category 1");
+			dataset.addValue((Integer) pairs.getValue(), (String) pairs
+					.getKey(), "Category 1");
 		}
 
 		JFreeChart chart = ChartFactory.createBarChart(
@@ -164,7 +150,8 @@ public class ChartUtil {
 
 		try {
 			fos_jpg = new FileOutputStream(filename);
-			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 800, 600, null);
+			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 800, 600,
+					null);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

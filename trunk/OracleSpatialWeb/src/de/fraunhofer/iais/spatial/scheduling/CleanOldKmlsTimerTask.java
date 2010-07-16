@@ -31,7 +31,8 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 		}
 
 //		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
-		File kmlPath = new File(this.getClass().getResource("/../../" + RequestKml.kmlPath).getPath());
+//		File kmlPath = new File(this.getClass().getResource("/../../" + RequestKml.kmlPath).getPath());
+		File kmlPath = new File(System.getProperty("oraclespatialweb.root") + RequestKml.kmlPath);
 		File files[] = kmlPath.listFiles();
 		if (logger.isDebugEnabled()) {
 			logger.debug("run() - kmlPath:" + kmlPath.getAbsolutePath()); //$NON-NLS-1$
@@ -39,7 +40,7 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 		long currentDate = Long.parseLong(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
 		for (File f : files) {
 			String filename = f.getName();
-			if (filename.length() == 25 && filename.matches("\\d{12}-\\w{8}.kml")) {
+			if (filename.length() == 25 && filename.matches("\\d{12}-\\w{8}.\\w{1}ml")) {
 				long fileDate = Long.parseLong(filename.substring(0, 12));
 				if (currentDate > fileDate + period) {
 					if (logger.isDebugEnabled()) {

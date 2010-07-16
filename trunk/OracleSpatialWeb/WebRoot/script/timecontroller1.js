@@ -425,8 +425,8 @@ function ask() {
 			loadkml_1(url);
 		}			
 	};
-	 xmlhttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
-//	 xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
+//	 xmlhttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
+	 xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
 	 xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 	 xmlhttp.send("xml="+encodeURIComponent(text));
 }
