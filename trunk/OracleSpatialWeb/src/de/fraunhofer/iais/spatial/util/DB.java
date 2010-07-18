@@ -93,11 +93,10 @@ public class DB {
 		if (conn != null) {
 			try {
 				conn.close();
-
 			} catch (SQLException e) {
 				logger.error("close(Connection)", e); //$NON-NLS-1$
 			} finally {
-				conn = null;
+//				conn = null;
 			}
 		}
 	}
