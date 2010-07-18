@@ -31,7 +31,7 @@ public class Point2DTypeHandler implements TypeHandler {
 	}
 
 	@Override
-	public void setParameter(PreparedStatement ps, int i, Object parameter,JdbcType jdbcType) throws SQLException {
+	public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
 	}
 
 }

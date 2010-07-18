@@ -12,15 +12,15 @@ public interface AreaDao {
 	 * @param areaid
 	 * @param person
 	 * @return int - number of photos
-	 */	
+	 */
 	public abstract int getPersonCount(String areaid, String person);
-	
+
 	/**
 	 * count the amount of photos uploaded during this hour within this area
 	 * @param areaid
 	 * @param hour
 	 * @return int - number of photos
-	 */	
+	 */
 	public abstract int getHourCount(String areaid, String hour);
 
 	/**
@@ -36,9 +36,9 @@ public interface AreaDao {
 	 * @param areaid
 	 * @param day
 	 * @return int - number of photos
-	 */	
+	 */
 	public abstract int getDayCount(String areaid, String day);
-	
+
 	/**
 	 * count the amount of photos uploaded during these days within this area
 	 * @param areaid
@@ -52,9 +52,9 @@ public interface AreaDao {
 	 * @param areaid
 	 * @param month
 	 * @return int - number of photos
-	 */	
+	 */
 	public abstract int getMonthCount(String areaid, String month);
-	
+
 	/**
 	 * count the amount of photos uploaded during these months within this area
 	 * @param areaid
@@ -68,9 +68,9 @@ public interface AreaDao {
 	 * @param areaid
 	 * @param year
 	 * @return int - number of photos
-	 */	
+	 */
 	public abstract int getYearCount(String areaid, String year);
-	
+
 	/**
 	 * get the amount of photos uploaded during these years within this area
 	 * @param areaid
@@ -85,13 +85,13 @@ public interface AreaDao {
 	 * @return int - number of photos
 	 */
 	public abstract int getTotalCount(String areaid);
-	
+
 	/**
 	 * Returns a List of all the Area instances
 	 * @return List<Area>
 	 */
 	public abstract List<Area> getAllAreas();
-	
+
 	/**
 	 * Returns the instance of Area related to that areaid 
 	 * @param areaid

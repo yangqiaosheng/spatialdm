@@ -1,11 +1,11 @@
 package de.fraunhofer.iais.spatial.scheduling;
 
-import org.apache.log4j.Logger;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimerTask;
+
+import org.apache.log4j.Logger;
 
 import de.fraunhofer.iais.spatial.servlet.RequestKml;
 
@@ -19,19 +19,19 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 	 * Logger for this class
 	 */
 	private static final Logger logger = Logger.getLogger(CleanOldKmlsTimerTask.class);
-	
+
 	// delay deleting period to avoid threads competition,
 	// format: "yyMMddHHmmss"
-	private long period = 000000000100;	// 1 minute
-	
+	private long period = 000000000100; // 1 minute
+
 	@Override
 	public void run() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("run() - start"); //$NON-NLS-1$
 		}
 
-//		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
-//		File kmlPath = new File(this.getClass().getResource("/../../" + RequestKml.kmlPath).getPath());
+		//		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
+		//		File kmlPath = new File(this.getClass().getResource("/../../" + RequestKml.kmlPath).getPath());
 		File kmlPath = new File(System.getProperty("oraclespatialweb.root") + RequestKml.kmlPath);
 		File files[] = kmlPath.listFiles();
 		if (logger.isDebugEnabled()) {
@@ -50,7 +50,7 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 				}
 			}
 		}
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("run() - end"); //$NON-NLS-1$
 		}

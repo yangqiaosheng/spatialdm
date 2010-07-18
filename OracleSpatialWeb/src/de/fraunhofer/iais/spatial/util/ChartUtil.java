@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.jfree.chart.ChartFactory;
@@ -37,8 +36,7 @@ import org.jfree.ui.VerticalAlignment;
 
 public class ChartUtil {
 
-	public static void createTimeSeriesChart(Map<Date, Integer> countsMap, 
-			OutputStream os) throws IOException {
+	public static void createTimeSeriesChart(Map<Date, Integer> countsMap, OutputStream os) throws IOException {
 		XYDataset xydataset = createXYDataset(countsMap);
 		JFreeChart jfreechart = createXYChart(xydataset);
 		ChartUtilities.writeChartAsJPEG(os, 0.8f, jfreechart, 600, 300, null);
@@ -54,7 +52,7 @@ public class ChartUtil {
 		Map<Integer, Map<Date, Integer>> countsGroupedMap = new TreeMap<Integer, Map<Date, Integer>>();
 		for (Map.Entry<Date, Integer> e : countsMap.entrySet()) {
 			int year = Integer.valueOf(ysdf.format(e.getKey().getTime()));
-			if(!countsGroupedMap.containsKey(year)){
+			if (!countsGroupedMap.containsKey(year)) {
 				Map<Date, Integer> countsSubMap = new TreeMap<Date, Integer>();
 				countsGroupedMap.put(year, countsSubMap);
 			}
@@ -64,16 +62,14 @@ public class ChartUtil {
 		for (int year : countsGroupedMap.keySet()) {
 			TimeSeries timeseries = new TimeSeries(String.valueOf(year));
 			for (Map.Entry<Date, Integer> e : countsGroupedMap.get(year).entrySet()) {
-				timeseries.add(new Day(
-						Integer.parseInt(dsdf.format(e.getKey())),	//day
-						Integer.parseInt(msdf.format(e.getKey())),	//month
-						2000),										//year
-						e.getValue());								//value
+				timeseries.add(new Day(Integer.parseInt(dsdf.format(e.getKey())), //day
+						Integer.parseInt(msdf.format(e.getKey())), //month
+						2000), //year
+						e.getValue()); //value
 			}
-//			timeseriescollection.addSeries(timeseries);
+			//			timeseriescollection.addSeries(timeseries);
 
-			TimeSeries avgtimeseries = MovingAverage.createMovingAverage(
-					timeseries, String.valueOf(year), 5, 0);
+			TimeSeries avgtimeseries = MovingAverage.createMovingAverage(timeseries, String.valueOf(year), 5, 0);
 			timeseriescollection.addSeries(avgtimeseries);
 		}
 
@@ -82,8 +78,7 @@ public class ChartUtil {
 
 	private static JFreeChart createXYChart(XYDataset xydataset) {
 
-		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
-				"#Photos Distribution", // Title
+		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("#Photos Distribution", // Title
 				"Time", // X Label
 				"#photos", // Y Label
 				xydataset, // dataset
@@ -117,8 +112,7 @@ public class ChartUtil {
 		DateAxis dateaxis = (DateAxis) xyplot.getDomainAxis();
 		dateaxis.setTickUnit(new DateTickUnit(DateTickUnitType.MONTH, 1));
 		dateaxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
-		dateaxis.setDateFormatOverride(new SimpleDateFormat("MMM",
-				Locale.ENGLISH));
+		dateaxis.setDateFormatOverride(new SimpleDateFormat("MMM", Locale.ENGLISH));
 		return jfreechart;
 	}
 
@@ -130,8 +124,7 @@ public class ChartUtil {
 		Iterator it = countsMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
-			dataset.addValue((Integer) pairs.getValue(), (String) pairs
-					.getKey(), "Category 1");
+			dataset.addValue((Integer) pairs.getValue(), (String) pairs.getKey(), "Category 1");
 		}
 
 		JFreeChart chart = ChartFactory.createBarChart(
@@ -150,8 +143,7 @@ public class ChartUtil {
 
 		try {
 			fos_jpg = new FileOutputStream(filename);
-			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 800, 600,
-					null);
+			ChartUtilities.writeChartAsJPEG(fos_jpg, 0.8f, chart, 800, 600, null);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -28,8 +28,8 @@ public class SdoGeometryTypeHandler implements TypeHandler {
 	}
 
 	@Override
-	public void setParameter(PreparedStatement ps, int i, Object parameter,JdbcType jdbcType) throws SQLException {
-		STRUCT dbObject = JGeometry.store ((JGeometry)parameter, ps.getConnection()); 
+	public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
+		STRUCT dbObject = JGeometry.store((JGeometry) parameter, ps.getConnection());
 		ps.setObject(i, dbObject);
 	}
 

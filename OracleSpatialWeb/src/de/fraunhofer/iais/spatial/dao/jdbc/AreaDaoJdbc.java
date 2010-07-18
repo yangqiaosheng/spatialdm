@@ -18,7 +18,7 @@ import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.util.DB;
 
-public class AreaDaoJdbc implements AreaDao{
+public class AreaDaoJdbc implements AreaDao {
 
 	@Override
 	public int getPersonCount(String areaid, String person) {
@@ -32,24 +32,24 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("person");
-				if(count!=null){
-					Pattern p = Pattern.compile(person+":(\\d{1,});");
+				if (count != null) {
+					Pattern p = Pattern.compile(person + ":(\\d{1,});");
 					Matcher m = p.matcher(count);
-					if(m.find()){
-						num+=Integer.parseInt(m.group(1));
-					}	
-				}						
+					if (m.find()) {
+						num += Integer.parseInt(m.group(1));
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	@Override
 	public int getHourCount(String areaid, String hour) {
 		Connection conn = DB.getConn();
@@ -62,24 +62,24 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("hour");
-				if(count!=null){
-					Pattern p = Pattern.compile(hour+":(\\d{1,});");
+				if (count != null) {
+					Pattern p = Pattern.compile(hour + ":(\\d{1,});");
 					Matcher m = p.matcher(count);
-					if(m.find()){
-						num+=Integer.parseInt(m.group(1));
-					}	
-				}						
+					if (m.find()) {
+						num += Integer.parseInt(m.group(1));
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	@Override
 	public int getHourCount(String areaid, Set<String> hours) {
 		Connection conn = DB.getConn();
@@ -92,51 +92,51 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("hour");
-				if(count!=null){
+				if (count != null) {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
 					Matcher m = p.matcher(count);
-					while(m.find()){
-						if(hours.contains(m.group(1))){
-							num+=Integer.parseInt(m.group(2));
+					while (m.find()) {
+						if (hours.contains(m.group(1))) {
+							num += Integer.parseInt(m.group(2));
 						}
-					}		
-				}						
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	private void loadHoursCount(Area a) {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-		
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
 		a.setHoursCount(hoursCount);
-		
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setString(1, a.getId());
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("hour");
-				if(count!=null){
+				if (count != null) {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
 					Matcher m = p.matcher(count);
-					while(m.find()){
+					while (m.find()) {
 						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}		
-				}						
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
@@ -155,24 +155,24 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("day");
-				if(count!=null){
-					Pattern p = Pattern.compile(day+":(\\d{1,});");
+				if (count != null) {
+					Pattern p = Pattern.compile(day + ":(\\d{1,});");
 					Matcher m = p.matcher(count);
-					if(m.find()){
-						num+=Integer.parseInt(m.group(1));
-					}	
-				}						
+					if (m.find()) {
+						num += Integer.parseInt(m.group(1));
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	@Override
 	public int getDayCount(String areaid, Set<String> days) {
 		Connection conn = DB.getConn();
@@ -185,57 +185,57 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("day");
-				if(count!=null){
+				if (count != null) {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
 					Matcher m = p.matcher(count);
-					while(m.find()){
-						if(days.contains(m.group(1))){
-							num+=Integer.parseInt(m.group(2));
+					while (m.find()) {
+						if (days.contains(m.group(1))) {
+							num += Integer.parseInt(m.group(2));
 						}
-					}		
-				}						
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	private void loadDaysCount(Area a) {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-		
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
 		a.setHoursCount(hoursCount);
-		
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setString(1, a.getId());
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("day");
-				if(count!=null){
+				if (count != null) {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
 					Matcher m = p.matcher(count);
-					while(m.find()){
+					while (m.find()) {
 						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}		
-				}						
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
 	}
-	
+
 	@Override
 	public int getMonthCount(String areaid, String month) {
 		Connection conn = DB.getConn();
@@ -248,24 +248,24 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("month");
-				if(count!=null){
-					Pattern p = Pattern.compile(month+":(\\d{1,});");
+				if (count != null) {
+					Pattern p = Pattern.compile(month + ":(\\d{1,});");
 					Matcher m = p.matcher(count);
-					if(m.find()){
-						num+=Integer.parseInt(m.group(1));
-					}	
-				}						
+					if (m.find()) {
+						num += Integer.parseInt(m.group(1));
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	@Override
 	public int getMonthCount(String areaid, Set<String> months) {
 		Connection conn = DB.getConn();
@@ -278,57 +278,57 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("month");
-				if(count!=null){
+				if (count != null) {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
 					Matcher m = p.matcher(count);
-					while(m.find()){
-						if(months.contains(m.group(1))){
-							num+=Integer.parseInt(m.group(2));
+					while (m.find()) {
+						if (months.contains(m.group(1))) {
+							num += Integer.parseInt(m.group(2));
 						}
-					}		
-				}						
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	private void loadMonthsCount(Area a) {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-		
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
 		a.setHoursCount(hoursCount);
-		
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setString(1, a.getId());
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("month");
-				if(count!=null){
+				if (count != null) {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
 					Matcher m = p.matcher(count);
-					while(m.find()){
+					while (m.find()) {
 						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}		
-				}						
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
 	}
-	
+
 	@Override
 	public int getYearCount(String areaid, String year) {
 		Connection conn = DB.getConn();
@@ -341,24 +341,24 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("year");
-				if(count!=null){
-					Pattern p = Pattern.compile(year+":(\\d{1,});");
+				if (count != null) {
+					Pattern p = Pattern.compile(year + ":(\\d{1,});");
 					Matcher m = p.matcher(count);
-					if(m.find()){
-						num+=Integer.parseInt(m.group(1));
-					}	
-				}						
+					if (m.find()) {
+						num += Integer.parseInt(m.group(1));
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	@Override
 	public int getYearCount(String areaid, Set<String> years) {
 		Connection conn = DB.getConn();
@@ -371,57 +371,57 @@ public class AreaDaoJdbc implements AreaDao{
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("year");
-				if(count!=null){
+				if (count != null) {
 					Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
 					Matcher m = p.matcher(count);
-					while(m.find()){
-						if(years.contains(m.group(1))){
-							num+=Integer.parseInt(m.group(2));
+					while (m.find()) {
+						if (years.contains(m.group(1))) {
+							num += Integer.parseInt(m.group(2));
 						}
-					}		
-				}						
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
-	
+
 	private void loadYearsCount(Area a) {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-		
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();	
+
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
 		a.setHoursCount(hoursCount);
-		
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setString(1, a.getId());
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("year");
-				if(count!=null){
+				if (count != null) {
 					Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
 					Matcher m = p.matcher(count);
-					while(m.find()){
+					while (m.find()) {
 						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}		
-				}						
+					}
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
 	}
-	
+
 	@Override
 	public int getTotalCount(String areaid) {
 		Connection conn = DB.getConn();
@@ -437,23 +437,22 @@ public class AreaDaoJdbc implements AreaDao{
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			DB.close(rs);
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		return num;		
+		return num;
 	}
 
 	@Override
 	public List<Area> getAllAreas() {
 		List<Area> as = new ArrayList<Area>();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" +
-				" from AREAS20KMRADIUS c, user_sdo_geom_metadata m" +
-				" where m.table_name = 'AREAS20KMRADIUS'");
+		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
+				+ " where m.table_name = 'AREAS20KMRADIUS'");
 		ResultSet rs = DB.getRs(pstmt);
-	
+
 		try {
 			while (rs.next()) {
 				Area a = new Area();
@@ -475,9 +474,7 @@ public class AreaDaoJdbc implements AreaDao{
 	public Area getAreaById(String id) {
 		Area a = new Area();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" +
-				" from AREAS20KMRADIUS c, user_sdo_geom_metadata m" +
-				" WHERE c.ID = ?");
+		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m" + " WHERE c.ID = ?");
 
 		ResultSet rs = null;
 		try {
@@ -497,14 +494,12 @@ public class AreaDaoJdbc implements AreaDao{
 		return a;
 	}
 
-	
 	@Override
 	public List<Area> getAreasByPoint(double x, double y) {
 		List<Area> as = new ArrayList<Area>();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" +
-				" from AREAS20KMRADIUS c, user_sdo_geom_metadata m" +
-				" WHERE m.table_name = 'AREAS20KMRADIUS' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
+		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
+				+ " WHERE m.table_name = 'AREAS20KMRADIUS' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
 
 		ResultSet rs = null;
 
@@ -527,16 +522,14 @@ public class AreaDaoJdbc implements AreaDao{
 		}
 		return as;
 	}
-	
-	
+
 	@Override
 	public List<Area> getAreasByRect(double x1, double y1, double x2, double y2) {
 		List<Area> as = new ArrayList<Area>();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "" +
-				"select ID, NAME, GEOM, CLUSTERING_OF_SOM_CELL, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" +
-				" from AREAS20KMRADIUS c, user_sdo_geom_metadata m" +
-				" WHERE m.table_name = 'AREAS20KMRADIUS' and sdo_relate(c.geom, SDO_geometry(2003,8307,NULL,SDO_elem_info_array(1,1003,3), SDO_ordinate_array(?,?, ?,?)),'mask=anyinteract') = 'TRUE'");
+		PreparedStatement pstmt = DB.getPstmt(conn, "" + "select ID, NAME, GEOM, CLUSTERING_OF_SOM_CELL, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center"
+				+ " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
+				+ " WHERE m.table_name = 'AREAS20KMRADIUS' and sdo_relate(c.geom, SDO_geometry(2003,8307,NULL,SDO_elem_info_array(1,1003,3), SDO_ordinate_array(?,?, ?,?)),'mask=anyinteract') = 'TRUE'");
 
 		ResultSet rs = null;
 
@@ -571,19 +564,19 @@ public class AreaDaoJdbc implements AreaDao{
 		try {
 			a.setId(rs.getString("ID"));
 			a.setName(rs.getString("NAME"));
-			
+
 			STRUCT st = (STRUCT) rs.getObject("GEOM");
 			// convert STRUCT into geometry
 			JGeometry j_geom = JGeometry.load(st);
 			a.setGeom(j_geom);
-			
+
 			a.setCenter(JGeometry.load((STRUCT) rs.getObject("center")).getJavaPoint());
 			a.setArea(rs.getFloat("area"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void initAreas(List<Area> as) {
 		for (Area a : as) {
 			initArea(a);
