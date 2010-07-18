@@ -19,7 +19,7 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 	public static SqlSessionFactory sqlSessionFactory = null;
 
 	public MilanpolyDaoIbatis() {
-		if (sqlSessionFactory == null)
+		if (sqlSessionFactory == null) {
 			try {
 				Reader reader = Resources.getResourceAsReader(resource);
 				sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
@@ -27,14 +27,16 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Milanpoly> getAllMilanpolys() {
 		SqlSession session = sqlSessionFactory.openSession();
 		List<Milanpoly> ms = null;
 		try {
-			ms = (List<Milanpoly>) session.selectList(Milanpoly.class.getName() + ".selectAll");
+			ms = session.selectList(Milanpoly.class.getName() + ".selectAll");
 		} finally {
 			session.close();
 		}
@@ -53,19 +55,21 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 		return m;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Milanpoly> getMilanpolysByPoint(double x, double y) {
 		SqlSession session = sqlSessionFactory.openSession();
 		JGeometry j_geom = new JGeometry(2001, 8307, x, y, 0, null, null);
 		List<Milanpoly> ms = null;
 		try {
-			ms = (List<Milanpoly>) session.selectList(Milanpoly.class.getName() + ".select", j_geom);
+			ms = session.selectList(Milanpoly.class.getName() + ".select", j_geom);
 		} finally {
 			session.close();
 		}
 		return ms;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Milanpoly> getMilanpolysByRect(double x1, double y1, double x2, double y2) {
 		SqlSession session = sqlSessionFactory.openSession();
@@ -74,7 +78,7 @@ public class MilanpolyDaoIbatis implements MilanpolyDao {
 		JGeometry j_geom = new JGeometry(2003, 8307, elemInfo, ordinates);
 		List<Milanpoly> ms = null;
 		try {
-			ms = (List<Milanpoly>) session.selectList(Milanpoly.class.getName() + ".select", j_geom);
+			ms = session.selectList(Milanpoly.class.getName() + ".select", j_geom);
 		} finally {
 			session.close();
 		}

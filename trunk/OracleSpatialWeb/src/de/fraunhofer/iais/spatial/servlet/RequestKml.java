@@ -1,17 +1,13 @@
 package de.fraunhofer.iais.spatial.servlet;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -20,24 +16,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jdom.JDOMException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dao.AreaDao;
-import de.fraunhofer.iais.spatial.dao.ibatis.AreaDaoIbatis;
-import de.fraunhofer.iais.spatial.dao.jdbc.AreaDaoJdbc;
 import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
 public class RequestKml extends HttpServlet {
 
+	private static final long serialVersionUID = -6814809670117597713L;
+
 	// "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
 	public static final String kmlPath = "kml/";
 
 	private static AreaMgr areaMgr = null;
 
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// web base path for local operation
@@ -66,9 +60,8 @@ public class RequestKml extends HttpServlet {
 		String filenamePrefix = StringUtil.genFilename(new Date());
 
 		List<Area> as = areaMgr.getAllAreas();
-		
+
 		BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
-		
 
 		if (xml1 != null && !xml1.equals("")) {
 			List<String> years = new ArrayList<String>();
@@ -103,17 +96,18 @@ public class RequestKml extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-		
+
 		bw.close();
-		
+
 		areaMgr.createKml(as, kmlPath + filenamePrefix);
-		
+
 		out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
 		out.print("<response><url>" + remoteBasePath + kmlPath + filenamePrefix + ".kml" + "</url></response>");
 		out.flush();
 		out.close();
 	}
 
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
@@ -124,6 +118,7 @@ public class RequestKml extends HttpServlet {
 	 * @throws ServletException
 	 *             - if an error occurs
 	 */
+	@Override
 	public void init() throws ServletException {
 		// areaMgr = new AreaMgr();
 		// areaMgr.setAreaDao(new AreaDaoJdbc());
@@ -131,7 +126,7 @@ public class RequestKml extends HttpServlet {
 		// ApplicationContext context = new ClassPathXmlApplicationContext(
 		// new String[] { "beans.xml", "schedulingContext-timer.xml" });
 		// areaMgr = context.getBean("areaMgr", AreaMgr.class);
- 
+
 		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("areaMgr", AreaMgr.class);
 	}
 

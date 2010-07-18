@@ -11,20 +11,19 @@ import oracle.spatial.geometry.JGeometry;
  */
 public class Area {
 
-
 	private String id;
 	private String name;
 	private JGeometry geom;
 	private float area;
 	private Point2D center;
-	
+
 	private Map<String, Integer> yearsCount;
 	private Map<String, Integer> monthsCount;
 	private Map<String, Integer> daysCount;
-	private Map<String, Integer> hoursCount;	
+	private Map<String, Integer> hoursCount;
 	private int totalCount;
 	private int selectCount;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -64,7 +63,6 @@ public class Area {
 	public void setArea(float area) {
 		this.area = area;
 	}
-
 
 	public int getTotalCount() {
 		return totalCount;

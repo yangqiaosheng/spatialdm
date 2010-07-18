@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -124,64 +123,67 @@ public class AreaMgr {
 			a.setTotalCount(areaDao.getTotalCount(a.getId()));
 		}
 	}
-	
-	private void allYears(List<String> years){
+
+	private void allYears(List<String> years) {
 		for (int i = 2005; i <= 2009; i++) {
-			years.add(String.format("%04d", i)); 
-		}
-	}
-	
-	private void allMonths(List<String> months){
-		for (int i = 1; i <= 12; i++) {
-			months.add(String.format("%02d", i)); 
-		}
-	}
-	
-	private void allDays(List<String> days){
-		for (int i = 1; i <= 31; i++) {
-			days.add(String.format("%02d", i)); 
-		}
-	}
-	
-	private void allHours(List<String> hours){
-		for (int i = 0; i <= 23; i++) {
-			hours.add(String.format("%02d", i)); 
+			years.add(String.format("%04d", i));
 		}
 	}
 
-	public void count(List<Area> as, List<String> years, List<String> months,
-			List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
+	private void allMonths(List<String> months) {
+		for (int i = 1; i <= 12; i++) {
+			months.add(String.format("%02d", i));
+		}
+	}
+
+	private void allDays(List<String> days) {
+		for (int i = 1; i <= 31; i++) {
+			days.add(String.format("%02d", i));
+		}
+	}
+
+	private void allHours(List<String> hours) {
+		for (int i = 0; i <= 23; i++) {
+			hours.add(String.format("%02d", i));
+		}
+	}
+
+	public void count(List<Area> as, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
 		Set<String> strs = new HashSet<String>();
-		
+
 		// complete the options when they are not selected
-		if (years.size() == 0)
+		if (years.size() == 0) {
 			this.allYears(years);
-		if (months.size() == 0)
+		}
+		if (months.size() == 0) {
 			this.allMonths(months);
-		if (days.size() == 0)
+		}
+		if (days.size() == 0) {
 			this.allDays(days);
-		if (hours.size() == 0)
+		}
+		if (hours.size() == 0) {
 			this.allHours(hours);
-		
-		Calendar calendar = Calendar.getInstance();		
+		}
+
+		Calendar calendar = Calendar.getInstance();
 		// day of week in English format
-		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH); 
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
+
 		for (String y : years) {
 			for (String m : months) {
 				for (String d : days) {
 					for (String h : hours) {
-						calendar.set(Integer.parseInt(y), Integer.parseInt(m)-1, Integer.parseInt(d));
+						calendar.set(Integer.parseInt(y), Integer.parseInt(m) - 1, Integer.parseInt(d));
 						// filter out the selected weekdays
-						if (weekdays.size() == 0 || weekdays.contains(sdf.format(calendar.getTime()))){
-							strs.add(y + "-" + m + "-" + d + "@" + h);			
-//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
+						if (weekdays.size() == 0 || weekdays.contains(sdf.format(calendar.getTime()))) {
+							strs.add(y + "-" + m + "-" + d + "@" + h);
+							//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
 						}
 					}
 				}
 			}
 		}
-		
+
 		count(as, strs, 'h');
 	}
 
@@ -189,11 +191,9 @@ public class AreaMgr {
 		System.out.println("#query:" + strs.size() * 139);
 		this.countTotal(as);
 
-		if (strs.size() > 5 * 12 * 31 * 24) {
+		if (strs.size() > 5 * 12 * 31 * 24)
 			throw new Exception("excceed the maximun #queries!");
-		}
-			
-		
+
 		if (strs.size() > 0 && level != '0') {
 			switch (level) {
 			case 'h':
@@ -213,14 +213,11 @@ public class AreaMgr {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void parseXmlRequest(List<Area> as, String xml, List<String> years,
-			List<String> months, List<String> days, List<String> hours, Set<String> weekdays)
-			throws Exception {
+	public void parseXmlRequest(List<Area> as, String xml, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
 		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 
-		Document document = builder.build(new ByteArrayInputStream(xml
-				.getBytes()));
+		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
 		Element rootElement = document.getRootElement();
 		// <years>
 		List<Element> yearsElements = rootElement.getChildren("years");
@@ -262,8 +259,7 @@ public class AreaMgr {
 		// <hours>
 		List<Element> hoursElements = rootElement.getChildren("hours");
 		if (hoursElements != null && hoursElements.size() == 1) {
-			List<Element> hourElements = hoursElements.get(0).getChildren(
-					"hour");
+			List<Element> hourElements = hoursElements.get(0).getChildren("hour");
 			for (Element hourElement : hourElements) {
 				String hour = hourElement.getText();
 				if (hour != null && !hour.trim().equals("")) {
@@ -272,7 +268,7 @@ public class AreaMgr {
 				}
 			}
 		}
-		
+
 		// <weekday>
 		List<Element> weekdaysElements = rootElement.getChildren("weekdays");
 		if (weekdaysElements != null && weekdaysElements.size() == 1) {
@@ -290,41 +286,33 @@ public class AreaMgr {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void parseXmlRequest2(List<Area> as, String xml)
-			throws Exception {
+	public void parseXmlRequest2(List<Area> as, String xml) throws Exception {
 		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
 		char level = '0';
 		Set<String> strs = new HashSet<String>();
 		SAXBuilder builder = new SAXBuilder();
-		Document document = builder.build(new ByteArrayInputStream(xml
-				.getBytes()));
+		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
 		Element rootElement = document.getRootElement();
 		// <years>
 		List<Element> yearElements = rootElement.getChildren("year");
 		List<Element> monthElements = rootElement.getChildren("month");
 		List<Element> dayElements = rootElement.getChildren("day");
 		List<Element> hourElements = rootElement.getChildren("hour");
-	
+
 		if (hourElements != null && hourElements.size() > 0) {
 			level = 'h';
 			for (int i = 0; i < hourElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-"
-						+ monthElements.get(i).getValue() + "-"
-						+ dayElements.get(i).getValue() + "@"
-						+ hourElements.get(i).getValue());
+				strs.add(yearElements.get(i).getValue() + "-" + monthElements.get(i).getValue() + "-" + dayElements.get(i).getValue() + "@" + hourElements.get(i).getValue());
 			}
 		} else if (dayElements != null && dayElements.size() > 0) {
 			level = 'd';
 			for (int i = 0; i < dayElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-"
-						+ monthElements.get(i).getValue() + "-"
-						+ dayElements.get(i).getValue());
+				strs.add(yearElements.get(i).getValue() + "-" + monthElements.get(i).getValue() + "-" + dayElements.get(i).getValue());
 			}
 		} else if (monthElements != null && monthElements.size() > 0) {
 			level = 'm';
 			for (int i = 0; i < monthElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-"
-						+ monthElements.get(i).getValue());
+				strs.add(yearElements.get(i).getValue() + "-" + monthElements.get(i).getValue());
 			}
 		} else if (yearElements != null && yearElements.size() > 0) {
 			level = 'y';
@@ -332,46 +320,44 @@ public class AreaMgr {
 				strs.add(yearElements.get(i).getValue());
 			}
 		}
-	
+
 		System.out.println("level:" + level);
 		System.out.println(strs.size());
 		count(as, strs, level);
 	}
-	
+
 	public void createTimeChart(String id) {
-		
+
 	}
 
-	
-	
 	public String createMarkersXml(List<Area> as, String file) {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
-		for (Area a : as) {			
+		for (Area a : as) {
 			String polyColor = "#0000";
 			int color = a.getTotalCount() / 30;
-			if (color > 255)
+			if (color > 255) {
 				color = 255;
-			
+			}
+
 			Element polygonElement = new Element("polygon");
 			rootElement.addContent(polygonElement);
-			polygonElement.setAttribute("color", polyColor + StringUtil.byteToHexString((byte)color));
+			polygonElement.setAttribute("color", polyColor + StringUtil.byteToHexString((byte) color));
 			polygonElement.setAttribute("opacity", "2");
-			
+
 			Element lineElement = new Element("line");
 			polygonElement.addContent(lineElement);
 			lineElement.setAttribute("color", "#111111");
 			lineElement.setAttribute("width", "2");
 			lineElement.setAttribute("opacity", "1");
-			
-			
+
 			JGeometry shape = a.getGeom();
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
-					pointElement.setAttribute("lng", String.valueOf(shape.getOrdinatesArray()[i++]));
-					pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i]));
+				pointElement.setAttribute("lng", String.valueOf(shape.getOrdinatesArray()[i++]));
+				pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i]));
 			}
 		}
 		xml2File(document, file);
@@ -382,8 +368,7 @@ public class AreaMgr {
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
 		Document document = new Document();
-		Namespace namespace = Namespace
-				.getNamespace("http://earth.google.com/kml/2.1");
+		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
 		Element rootElement = new Element("kml", namespace);
 
 		document.setRootElement(rootElement);
@@ -392,29 +377,27 @@ public class AreaMgr {
 		rootElement.addContent(documentElement);
 
 		// GroundOverlay
-		for (Area a : as) {			
+		for (Area a : as) {
 			if (a.getSelectCount() != 0) {
 				String name = "total:" + a.getTotalCount();
-//				String description = "select:" + String.valueOf(a.getSelectCount());
-				String description = "<p>select:" + String.valueOf(a.getSelectCount())
-				+ "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='TimeSeriesChart?id=" + URLEncoder.encode(a.getId(), "UTF-8")
-				+ "&xml=" + URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
-				String groundOverlayColor = "aaffffff"; 	//transparency
-				
-				Element groundOverlayElement = new Element("GroundOverlay",
-						namespace);
+				//				String description = "select:" + String.valueOf(a.getSelectCount());
+				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='TimeSeriesChart?id=" + URLEncoder.encode(a.getId(), "UTF-8") + "&xml="
+						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
+				String groundOverlayColor = "aaffffff"; //transparency
+
+				Element groundOverlayElement = new Element("GroundOverlay", namespace);
 				documentElement.addContent(groundOverlayElement);
 				Element nameElement = new Element("name", namespace);
 				nameElement.addContent(name);
 				Element descriptionElement = new Element("description", namespace);
-				descriptionElement.addContent(description);			
+				descriptionElement.addContent(description);
 				Element colorElement = new Element("name", namespace);
 				colorElement.addContent(groundOverlayColor);
 				groundOverlayElement.addContent(nameElement);
 				groundOverlayElement.addContent(descriptionElement);
 				groundOverlayElement.addContent(colorElement);
 				Element iconElement = new Element("Icon", namespace);
-				groundOverlayElement.addContent(iconElement);				
+				groundOverlayElement.addContent(iconElement);
 				Element hrefElement = new Element("href", namespace);
 				iconElement.addContent(hrefElement);
 				double r = 0;
@@ -432,8 +415,9 @@ public class AreaMgr {
 				} else {
 					r = (double) Math.log10(a.getSelectCount()) / 60.0;
 					icon = remoteBasePath + "images/circle_or.ico";
-					if (r > 0.1)
+					if (r > 0.1) {
 						r = 0.1;
+					}
 				}
 				hrefElement.addContent(icon);
 
@@ -448,14 +432,10 @@ public class AreaMgr {
 				latLonBoxElement.addContent(eastElement);
 				latLonBoxElement.addContent(westElement);
 
-				northElement.addContent(Double.toString(a.getCenter().getY()
-						+ r * 0.55));
-				southElement.addContent(Double.toString(a.getCenter().getY()
-						- r * 0.55));
-				eastElement.addContent(Double
-						.toString(a.getCenter().getX() + r));
-				westElement.addContent(Double
-						.toString(a.getCenter().getX() - r));
+				northElement.addContent(Double.toString(a.getCenter().getY() + r * 0.55));
+				southElement.addContent(Double.toString(a.getCenter().getY() - r * 0.55));
+				eastElement.addContent(Double.toString(a.getCenter().getX() + r));
+				westElement.addContent(Double.toString(a.getCenter().getX() - r));
 			}
 		}
 
@@ -464,8 +444,8 @@ public class AreaMgr {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
 			String description = "select:" + String.valueOf(a.getSelectCount());
-//			String polyStyleColor = "440000";	   	//not transparent
-			String polyStyleColor = "000000"; 	//transparent
+			//			String polyStyleColor = "440000";	   	//not transparent
+			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
 			String lineStyleWidth = "1";
@@ -475,8 +455,9 @@ public class AreaMgr {
 			JGeometry shape = a.getGeom();
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				coordinates += shape.getOrdinatesArray()[i] + ", ";
-				if (i % 2 == 1)
+				if (i % 2 == 1) {
 					coordinates += "0\n";
+				}
 			}
 
 			// create kml
@@ -491,15 +472,15 @@ public class AreaMgr {
 			placemarkElement.addContent(nameElement);
 			placemarkElement.addContent(descriptionElement);
 			placemarkElement.addContent(styleElement);
-			
 
 			Element polyStyleElement = new Element("PolyStyle", namespace);
 			styleElement.addContent(polyStyleElement);
 
 			Element polyColorElement = new Element("color", namespace);
 			int color = a.getTotalCount() / 30;
-			if (color > 255)
+			if (color > 255) {
 				color = 255;
+			}
 
 			polyColorElement.addContent(polyStyleColor + Integer.toHexString(color));
 			Element polyFillElement = new Element("fill", namespace);
@@ -520,11 +501,9 @@ public class AreaMgr {
 			lineStyleElement.addContent(lindWidthElement);
 			lineStyleElement.addContent(lineColorElement2);
 
-			Element multiGeometryElement = new Element("MultiGeometry",
-					namespace);
+			Element multiGeometryElement = new Element("MultiGeometry", namespace);
 			Element polygonElement = new Element("Polygon", namespace);
-			Element outerBoundaryIsElement = new Element("outerBoundaryIs",
-					namespace);
+			Element outerBoundaryIsElement = new Element("outerBoundaryIs", namespace);
 			Element linearRingElement = new Element("LinearRing", namespace);
 			Element coordinatesElement = new Element("coordinates", namespace);
 			placemarkElement.addContent(multiGeometryElement);
@@ -538,20 +517,20 @@ public class AreaMgr {
 		return xml2String(document);
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
-	
+
 	public void createBarChart(Map<String, Integer> cs) {
 		ChartUtil.createBarChart(cs, "temp/bar.jpg");
 	}
-	
+
 	public void createTimeSeriesChart(Area a, Set<String> years, OutputStream os) throws ParseException, IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<Date, Integer> countsMap = new LinkedHashMap<Date, Integer>();
 		for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
-			if (years.contains(e.getKey().substring(0, 4))){
+			if (years.contains(e.getKey().substring(0, 4))) {
 				countsMap.put(sdf.parse(e.getKey()), e.getValue());
 			}
 		}
-		
+
 		ChartUtil.createTimeSeriesChart(countsMap, os);
 	}
 
@@ -574,8 +553,9 @@ public class AreaMgr {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (o != null)
+				if (o != null) {
 					o.close();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

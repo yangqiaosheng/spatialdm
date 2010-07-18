@@ -16,8 +16,8 @@ import org.jdom.output.XMLOutputter;
 import de.fraunhofer.iais.spatial.entity.Milanpoly;
 
 public class MilanpolyMgr {
-	
-	public String createKml(List<Milanpoly> ms){
+
+	public String createKml(List<Milanpoly> ms) {
 		Document document = new Document();
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
 		Element rootElement = new Element("kml", namespace);
@@ -27,9 +27,9 @@ public class MilanpolyMgr {
 		Element documentElement = new Element("Document", namespace);
 		rootElement.addContent(documentElement);
 
-		for(Milanpoly m:ms) {
+		for (Milanpoly m : ms) {
 			JGeometry shape = m.getGeom();
-			
+
 			String name = m.getName();
 			String description = "This is Lancashire link";
 			String polyStyleColor = "44ff0000";
@@ -41,8 +41,9 @@ public class MilanpolyMgr {
 
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				coordinates += shape.getOrdinatesArray()[i] + ", ";
-				if (i % 2 == 1)
+				if (i % 2 == 1) {
 					coordinates += "0\n";
+				}
 			}
 
 			//create kml
@@ -95,7 +96,7 @@ public class MilanpolyMgr {
 		}
 		return xml2String(document);
 	}
-	
+
 	private static String xml2String(Document document) {
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		xmlOutputter.setFormat(Format.getPrettyFormat());
@@ -115,8 +116,9 @@ public class MilanpolyMgr {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (o != null)
+				if (o != null) {
 					o.close();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

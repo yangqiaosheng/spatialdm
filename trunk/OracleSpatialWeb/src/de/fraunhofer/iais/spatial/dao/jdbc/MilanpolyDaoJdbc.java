@@ -42,8 +42,7 @@ public class MilanpolyDaoJdbc implements MilanpolyDao {
 	public Milanpoly getMilanpolyById(int id) {
 		Milanpoly m = new Milanpoly();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, CLUSTERING_OF_SOM_CELL, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area from MILANPOLY c "
-				+ "WHERE c.ID = ?");
+		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, CLUSTERING_OF_SOM_CELL, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area from MILANPOLY c " + "WHERE c.ID = ?");
 
 		ResultSet rs = null;
 		try {
