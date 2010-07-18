@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DB {
+	
 	/**
 	 * Logger for this class
 	 */
-
 	private static final Logger logger = LoggerFactory.getLogger(DB.class);
 
 	private static Properties pros = null;
