@@ -23,23 +23,20 @@ public class DB {
 	private static Properties pros = null;
 
 	private DB() {
-
+		// initialize the JDBC Configuration
+		pros = new Properties();
+		try {
+			pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
+		} catch (IOException e1) {
+			logger.error("getConn()", e1); //$NON-NLS-1$
+		}
 	}
 
 	public static Connection getConn() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getConn() - start"); //$NON-NLS-1$
 		}
-		// initialize the JDBC Configuration
-		if (pros == null) {
-			pros = new Properties();
-			try {
-				pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
-			} catch (IOException e1) {
-				logger.error("getConn()", e1); //$NON-NLS-1$
-			}
-		}
-
+		
 		Connection conn = null;
 
 		// Use JDBC Connection

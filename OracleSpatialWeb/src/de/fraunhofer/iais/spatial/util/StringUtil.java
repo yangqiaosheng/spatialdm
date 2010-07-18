@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+import org.springframework.web.util.HtmlUtils;
+
 public class StringUtil {
 
 	/**
@@ -65,8 +67,7 @@ public class StringUtil {
 	 * @return String
 	 */
 	public static String escapeHtml(String s) {
-		s = s.replaceAll("<", "&lt").replaceAll(">", "&gt");
-		return s;
+		return HtmlUtils.htmlEscape(s);
 	}
 
 	/**
