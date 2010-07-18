@@ -1,0 +1,6 @@
+#labels Featured
+ = Introduction =
+
+  * Query the number of Photos taken in different regions by parameters: Year/Month/Day/Hour
+  * visulize the result using kml and ajax.
+  * Plot the distribution of Photos in different years.
