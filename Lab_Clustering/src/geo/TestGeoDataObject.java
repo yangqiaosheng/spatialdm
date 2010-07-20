@@ -30,7 +30,7 @@ public class TestGeoDataObject {
 			// set minimum neighbourhood radius
 			clusterer.setEpsilon(300);
 			// set minimum number of neighbours
-			clusterer.setMinPoints(2);
+			clusterer.setMinPoints(30);
 			// generate clusters
 			clusterer.buildClusterer(insts);
 			// new evaluation for the clustering

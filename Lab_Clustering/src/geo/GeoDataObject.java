@@ -112,7 +112,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 			return Double.NaN;
 
 		if (getInstance().equalHeaders(dataObject.getInstance())) {
-			dist = GeoDistance.geoDist(getInstance().valueSparse(0), getInstance().valueSparse(1), dataObject.getInstance().valueSparse(0),
+			dist = GeoDistance.geoDist(this.getInstance().valueSparse(0), this.getInstance().valueSparse(1), dataObject.getInstance().valueSparse(0),
 					dataObject.getInstance().valueSparse(1));
 			return dist;
 		}
