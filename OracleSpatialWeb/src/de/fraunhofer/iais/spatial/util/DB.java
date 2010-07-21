@@ -1,5 +1,6 @@
 package de.fraunhofer.iais.spatial.util;
 
+import java.beans.PropertyVetoException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jolbox.bonecp.BoneCPConfig;
 import com.jolbox.bonecp.BoneCPDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class DB {
 
@@ -25,7 +27,7 @@ public class DB {
 	private static final Logger logger = LoggerFactory.getLogger(DB.class);
 
 	private static Properties pros = null;
-	private static DataSource ds = null;
+	private static BoneCPDataSource ds = null;
 
 	private DB() {
 
@@ -33,10 +35,11 @@ public class DB {
 
 	/**
 	 * initialize the c3p0 Connection Pool
-	*/
-	/*
+	*//*
 	static {
 	// initialize the JDBC Configuration
+	logger.debug("static() - begin to setup Connection Pool");
+	
 	pros = new Properties();
 	try {
 		pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
@@ -48,6 +51,7 @@ public class DB {
 		// setup the connection pool
 		ComboPooledDataSource cpds = new ComboPooledDataSource();
 			cpds.setDriverClass(pros.getProperty("driver"));
+		
 		 //loads the jdbc driver            
 		cpds.setJdbcUrl(pros.getProperty("url"));
 		cpds.setUser(pros.getProperty("username"));                                  
@@ -56,8 +60,10 @@ public class DB {
 		cpds.setMinPoolSize(5);
 		ds = cpds;
 	} catch (PropertyVetoException e) {
-		e.printStackTrace();
+		logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$
 	}
+	
+	logger.debug("static() - finish to setup Connection Pool");
 	}*/
 
 	/**
@@ -65,6 +71,8 @@ public class DB {
 	 */
 	static {
 		// initialize the JDBC Configuration
+		logger.debug("static() - begin to setup Connection Pool");
+		
 		pros = new Properties();
 		try {
 			pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
@@ -77,7 +85,6 @@ public class DB {
 			Class.forName(pros.getProperty("driver"));
 
 			// setup the connection pool
-
 			BoneCPConfig config = new BoneCPConfig();
 			config.setJdbcUrl(pros.getProperty("url")); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
 			config.setUsername(pros.getProperty("username"));
@@ -88,14 +95,16 @@ public class DB {
 
 			ds = new BoneCPDataSource(config);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$
 		}
+		
+		logger.debug("static() - finish to setup Connection Pool");
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
 		// shutdown connection pool.
-		((BoneCPDataSource) ds).close();
+		ds.close();
 		super.finalize();
 	}
 
