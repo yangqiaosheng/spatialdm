@@ -289,11 +289,11 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	// single pool
 	// spent time1:4453
 
-	// BoneCP pool: 10 iteration 
+	// BoneCP pool(5,10): 10 iteration 
 	//	spent time total:33781
 	//	spent time avg:2902
 
-	// c3p0 pool: 10 iteration 
+	// c3p0 pool(5,10): 10 iteration 
 	//	spent time total:37484
 	//	spent time avg:3272
 	
