@@ -3,35 +3,125 @@ package de.fraunhofer.iais.spatial.util;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jolbox.bonecp.BoneCPConfig;
+import com.jolbox.bonecp.BoneCPDataSource;
+
 public class DB {
-	
+
 	/**
 	 * Logger for this class
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(DB.class);
 
 	private static Properties pros = null;
+	private static DataSource ds = null;
 
 	private DB() {
+
+	}
+
+	/**
+	 * initialize the c3p0 Connection Pool
+	*/
+	/*
+	static {
+	// initialize the JDBC Configuration
+	pros = new Properties();
+	try {
+		pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+
+	try {
+		// setup the connection pool
+		ComboPooledDataSource cpds = new ComboPooledDataSource();
+			cpds.setDriverClass(pros.getProperty("driver"));
+		 //loads the jdbc driver            
+		cpds.setJdbcUrl(pros.getProperty("url"));
+		cpds.setUser(pros.getProperty("username"));                                  
+		cpds.setPassword(pros.getProperty("password"));
+		cpds.setMaxPoolSize(10);
+		cpds.setMinPoolSize(5);
+		ds = cpds;
+	} catch (PropertyVetoException e) {
+		e.printStackTrace();
+	}
+	}*/
+
+	/**
+	 * initialize the BoneCP Connection Pool
+	 */
+	static {
 		// initialize the JDBC Configuration
 		pros = new Properties();
 		try {
 			pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
-		} catch (IOException e1) {
-			logger.error("getConn()", e1); //$NON-NLS-1$
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			// load the database driver (make sure this is in your classpath!)
+			Class.forName(pros.getProperty("driver"));
+
+			// setup the connection pool
+
+			BoneCPConfig config = new BoneCPConfig();
+			config.setJdbcUrl(pros.getProperty("url")); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
+			config.setUsername(pros.getProperty("username"));
+			config.setPassword(pros.getProperty("password"));
+			config.setMinConnectionsPerPartition(5);
+			config.setMaxConnectionsPerPartition(10);
+			config.setPartitionCount(1);
+
+			ds = new BoneCPDataSource(config);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		// shutdown connection pool.
+		((BoneCPDataSource) ds).close();
+		super.finalize();
+	}
+
+	/**
+	 * get Connection from Connection Pool
+	 * @return
+	 */
+	public static Connection getConn() {
+
+		Connection conn = null;
+
+		try {
+			// fetch a connection
+			conn = ds.getConnection();
+		} catch (SQLException e) {
+			logger.error("getConn() - Could not Connect to the Web_SQL Server", e); //$NON-NLS-1$
+		}
+
+		return conn;
+	}
+
+	/**
+	 * get Connection without using Connection Pool
+	 * @return
+	 */
+	/*
 	public static Connection getConn() {
 
 		Connection conn = null;
@@ -47,7 +137,7 @@ public class DB {
 		}
 
 		return conn;
-	}
+	}*/
 
 	public static PreparedStatement getPstmt(Connection conn, String sql) {
 
@@ -87,7 +177,6 @@ public class DB {
 		return rs;
 	}
 
-
 	public static void close(Connection conn) {
 
 		if (conn != null) {
@@ -96,7 +185,7 @@ public class DB {
 			} catch (SQLException e) {
 				logger.error("close(Connection)", e); //$NON-NLS-1$
 			} finally {
-//				conn = null;
+				//				conn = null;
 			}
 		}
 	}

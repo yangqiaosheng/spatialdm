@@ -15,7 +15,7 @@ public class PropertiesUtil {
 
 	public void showSystemProperties() {
 		Properties p = System.getProperties();
-		for (Enumeration e = p.propertyNames(); e.hasMoreElements();) {
+		for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
 			String key = (String) e.nextElement();
 			System.out.println(key + "===>" + p.getProperty(key));
 		}
