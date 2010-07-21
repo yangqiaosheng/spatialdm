@@ -210,8 +210,8 @@ public class AreaDaoJdbc implements AreaDao {
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
-		a.setHoursCount(hoursCount);
+		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();
+		a.setDaysCount(daysCount);
 
 		try {
 			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
@@ -223,7 +223,7 @@ public class AreaDaoJdbc implements AreaDao {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
 					Matcher m = p.matcher(count);
 					while (m.find()) {
-						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+						daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
 					}
 				}
 			}
@@ -303,8 +303,8 @@ public class AreaDaoJdbc implements AreaDao {
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
-		a.setHoursCount(hoursCount);
+		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();
+		a.setMonthsCount(monthsCount);
 
 		try {
 			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
@@ -316,7 +316,7 @@ public class AreaDaoJdbc implements AreaDao {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
 					Matcher m = p.matcher(count);
 					while (m.find()) {
-						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+						monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
 					}
 				}
 			}
@@ -396,8 +396,8 @@ public class AreaDaoJdbc implements AreaDao {
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
-		a.setHoursCount(hoursCount);
+		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();
+		a.setYearsCount(yearsCount);
 
 		try {
 			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
@@ -409,7 +409,7 @@ public class AreaDaoJdbc implements AreaDao {
 					Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
 					Matcher m = p.matcher(count);
 					while (m.find()) {
-						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+						yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
 					}
 				}
 			}

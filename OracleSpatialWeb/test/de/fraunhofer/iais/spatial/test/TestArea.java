@@ -253,7 +253,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	public void testXmlRequestSpeed() throws Exception {
 		List<Long> times = new ArrayList<Long>();
 		long start = System.currentTimeMillis();
-		int iterations = 30;
+		int iterations = 10;
 		for (int i = 0; i < iterations; i++) {
 			long startn = System.currentTimeMillis();
 			if (i % 2 == 0) {
@@ -282,21 +282,28 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	// #queries = #years * #months * #days * #hours * #polygons
 	// #query1:96*139=13344
 	// #query2:93*139=12927
+	
 	// single jdbc
 	// spent time:12563
 
 	// single pool
 	// spent time1:4453
 
-	// pool
-	// spent time1:4203
-	// spent time2:2156
-	// spent time3:62485
+	// BoneCP pool: 10 iteration 
+	//	spent time total:33781
+	//	spent time avg:2902
 
-	// cache+pool
-	// spent time1:4765
-	// spent time2:422
-	// spent time3:11781
+	// c3p0 pool: 10 iteration 
+	//	spent time total:37484
+	//	spent time avg:3272
+	
+	// Ibatis pool: 10 iteration 
+	//	spent time total:34594
+	//	spent time avg:3102
+	
+	// cache+pool: 10 iteration 
+	//	spent time total:12250
+	//	spent time avg:550
 
 	@Test
 	public void testXmlRequest() throws Exception {
