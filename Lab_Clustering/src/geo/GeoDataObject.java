@@ -215,6 +215,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 		return r_dist;
 	}
 
+	@Override
 	public String toString() {
 		return instance.toString();
 	}

@@ -1,0 +1,6 @@
+@relation berlin
+
+@attribute x numeric
+@attribute y numeric
+
+@data
