@@ -23,8 +23,9 @@ public class TestGeoDataObjectIDBScan {
 		try {
 			// load the arff file
 			ArffLoader loader = new ArffLoader();
-			loader.setFile(new File("data/berlin_sub_test1.arff"));
-//			loader.setFile(new File("data/berlin_sub_testt.arff"));
+			loader.setFile(new File("data/berlin_sub_total1.arff"));
+//			loader.setFile(new File("data/berlin_sub2.arff"));
+//			loader.setFile(new File("data/berlin_sub_test1.arff"));
 
 			// get the instances from the arff file
 			Instances insts = loader.getDataSet();
@@ -42,7 +43,9 @@ public class TestGeoDataObjectIDBScan {
 
 			
 			ArffLoader loader2 = new ArffLoader();
-			loader2.setFile(new File("data/berlin_sub_test2.arff"));
+			loader2.setFile(new File("data/berlin_sub_total2.arff"));
+//			loader2.setFile(new File("data/berlin_sub3.arff"));
+//			loader2.setFile(new File("data/berlin_sub_test2.arff"));
 			Instances insts2 = loader2.getDataSet();
 			clusterer.insert(insts2);
 			
@@ -63,6 +66,8 @@ public class TestGeoDataObjectIDBScan {
 			writer.write("@data \n");
 			double[] res = eval.getClusterAssignments();
 			for (int i = 0; i < res.length; i++) {
+//				if( res[i]==3 || res[i] == 5 || res[i] == 8 || res[i] == 10 || res[i] == 11)
+				if( res[i]!=-1)
 				writer.write(insts.instance(i).valueSparse(0) + "," + insts.instance(i).valueSparse(1) + "," + res[i] + " \n");
 			}
 			writer.close();

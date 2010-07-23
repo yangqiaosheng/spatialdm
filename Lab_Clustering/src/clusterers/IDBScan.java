@@ -569,49 +569,49 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	}
 
 	public void insert(Instances instances) throws Exception {
-		replaceMissingValues_Filter = new ReplaceMissingValues();
-		replaceMissingValues_Filter.setInputFormat(instances);
-		Instances filteredInstances = Filter.useFilter(instances, replaceMissingValues_Filter);
 
-		System.out.println("filteredInstances:" + filteredInstances.numInstances());
 		int size = database.size();
-		for (int i = 0; i < filteredInstances.numInstances(); i++) {
-			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), filteredInstances.instance(i), Integer.toString(size + i), database);
-//			System.out.print(i + " ");
+		for (int i = 0; i < instances.numInstances(); i++) {
+			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), instances.instance(i), Integer.toString(size + i), database);
+			System.out.println(i + " ");
 			database.insert(dataObject);
 			expandCluster2(dataObject);
 		}
 
+		//DBSCAN
 		//				for (int i = 0; i < filteredInstances.numInstances(); i++) {
 		//					expandCluster2(database.getDataObject(String.valueOf(i + psize)));
 		//				}
 
-		System.out.println("database size:" + database.size());
 
 		database.setMinMaxValues();
 
 		//sort cluster labels
-//		Set<Integer> clusterLabels = new TreeSet<Integer>();
-//		for (int i = 0; i < database.size(); i++) {
-//			int clusterLabel = database.getDataObject(Integer.toString(i)).getClusterLabel();
-//			if (clusterLabel != DataObject.NOISE) {
-//				clusterLabels.add(clusterLabel);
-//			}
-//		}
-//		numberOfGeneratedClusters = clusterLabels.size();
-//
-//		Map<Integer, Integer> clusterLabelMaps = new TreeMap<Integer, Integer>();
-//		int jlable = 0;
-//		for (int clusterLabel : clusterLabels) {
-//			clusterLabelMaps.put(clusterLabel, jlable++);
-//		}
-//
-//		for (int i = 0; i < database.size(); i++) {
-//			DataObject tochange = database.getDataObject(Integer.toString(i));
-//			if (tochange.getClusterLabel() != DataObject.NOISE) {
-//				tochange.setClusterLabel(clusterLabelMaps.get(tochange.getClusterLabel()));
-//			}
-//		}
+		sortClusterLabels();
+	}
+
+	private void sortClusterLabels() {
+		Set<Integer> clusterLabels = new TreeSet<Integer>();
+		for (int i = 0; i < database.size(); i++) {
+			int clusterLabel = database.getDataObject(Integer.toString(i)).getClusterLabel();
+			if (clusterLabel != DataObject.NOISE) {
+				clusterLabels.add(clusterLabel);
+			}
+		}
+		numberOfGeneratedClusters = clusterLabels.size();
+
+		Map<Integer, Integer> clusterLabelMaps = new TreeMap<Integer, Integer>();
+		int jlable = 0;
+		for (int clusterLabel : clusterLabels) {
+			clusterLabelMaps.put(clusterLabel, jlable++);
+		}
+
+		for (int i = 0; i < database.size(); i++) {
+			DataObject tochange = database.getDataObject(Integer.toString(i));
+			if (tochange.getClusterLabel() != DataObject.NOISE) {
+				tochange.setClusterLabel(clusterLabelMaps.get(tochange.getClusterLabel()));
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -629,7 +629,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
 			List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
 
-			if (seedListDataObject_Neighbourhood.size() >= getMinPoints()) {
+			if (seedListDataObject_Neighbourhood.size() >= getMinPoints() ) {
 			/** neighbourhoodDataObject is coreObject */
 				if (neighbourhoodDataObject.getClusterLabel() != DataObject.NOISE) {
 					/** absorb or merge */
@@ -638,18 +638,24 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 						DataObject p = seedListDataObject_Neighbourhood.get(i);
 						if (p.getClusterLabel() == DataObject.NOISE) {
 							p.setClusterLabel(neighbourhoodDataObject.getClusterLabel());
+						}else {
+//							neighbourhoodClusterLabels.add(p.getClusterLabel());
 						}
+//						if (p.getClusterLabel() != DataObject.NOISE) {
+//							neighbourhoodClusterLabels.add(p.getClusterLabel());
+//						}
 					}
 				} else {
 					/** create */
 					for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
 						DataObject p = seedListDataObject_Neighbourhood.get(i);
-						if (p.getClusterLabel() == DataObject.NOISE) {
-							p.setClusterLabel(clusterID);
-							if(clusterID == 39){
-								System.out.println("here!"+seedListDataObject_Neighbourhood.size());
-							}
+						if (p.getClusterLabel() != DataObject.NOISE) {
+							neighbourhoodClusterLabels.add(p.getClusterLabel());
 						}
+						p.setClusterLabel(clusterID);
+//						if (p.getClusterLabel() != DataObject.NOISE) {
+//							neighbourhoodClusterLabels.add(p.getClusterLabel());
+//						}
 					}
 					clusterID++;
 					numberOfGeneratedClusters++;

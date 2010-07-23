@@ -23,7 +23,9 @@ public class TestGeoDataObjectDBScan {
 		try {
 			// load the arff file
 			ArffLoader loader = new ArffLoader();
-			loader.setFile(new File("data/berlin_sub_total.arff"));
+//			loader.setFile(new File("data/berlin_sub.arff"));
+			loader.setFile(new File("data/berlin_sub_testt.arff"));
+//			loader.setFile(new File("data/berlin_subt.arff"));
 
 			// get the instances from the arff file
 			Instances insts = loader.getDataSet();
@@ -53,6 +55,7 @@ public class TestGeoDataObjectDBScan {
 			writer.write("@data \n");
 			double[] res = eval.getClusterAssignments();
 			for (int i = 0; i < res.length; i++) {
+				if(res[i]!=-1)
 				writer.write(insts.instance(i).valueSparse(0) + "," + insts.instance(i).valueSparse(1) + "," + res[i] + " \n");
 			}
 			writer.close();
