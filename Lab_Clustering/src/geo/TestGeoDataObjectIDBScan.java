@@ -23,9 +23,9 @@ public class TestGeoDataObjectIDBScan {
 		try {
 			// load the arff file
 			ArffLoader loader = new ArffLoader();
-			loader.setFile(new File("data/berlin_sub_total1.arff"));
+//			loader.setFile(new File("data/berlin_sub_total1.arff"));
 //			loader.setFile(new File("data/berlin_sub2.arff"));
-//			loader.setFile(new File("data/berlin_sub_test1.arff"));
+			loader.setFile(new File("data/berlin_sub_test1.arff"));
 
 			// get the instances from the arff file
 			Instances insts = loader.getDataSet();
@@ -43,9 +43,9 @@ public class TestGeoDataObjectIDBScan {
 
 			
 			ArffLoader loader2 = new ArffLoader();
-			loader2.setFile(new File("data/berlin_sub_total2.arff"));
+//			loader2.setFile(new File("data/berlin_sub_total2.arff"));
 //			loader2.setFile(new File("data/berlin_sub3.arff"));
-//			loader2.setFile(new File("data/berlin_sub_test2.arff"));
+			loader2.setFile(new File("data/berlin_sub_test2.arff"));
 			Instances insts2 = loader2.getDataSet();
 			clusterer.insert(insts2);
 			

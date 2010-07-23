@@ -575,7 +575,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), instances.instance(i), Integer.toString(size + i), database);
 			System.out.println(i + " ");
 			database.insert(dataObject);
-			expandCluster2(dataObject);
+			expandCluster3(dataObject);
 		}
 
 		//DBSCAN
@@ -628,7 +628,6 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		for (int j = 0; j < neighbourhoodList.size(); j++) {
 			DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
 			List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
-
 			if (seedListDataObject_Neighbourhood.size() >= getMinPoints() ) {
 			/** neighbourhoodDataObject is coreObject */
 				if (neighbourhoodDataObject.getClusterLabel() != DataObject.NOISE) {
@@ -667,6 +666,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		if (neighbourhoodClusterLabels.size() > 1) {
 			if (neighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
+				return;
 			}else{
 				System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
 			}
@@ -683,4 +683,96 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		}
 
 	}
+
+	@SuppressWarnings("unchecked")
+		private void expandCluster3(DataObject dataObject) {
+			List<DataObject> updSeed = new ArrayList<DataObject>();
+			List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
+	
+			dataObject.setClusterLabel(DataObject.NOISE);
+			/** remove */
+	//		neighbourhoodList.remove(dataObject);
+			
+			
+	
+			/** Iterate the neighbourhoodList of the startDataObject */
+			for (int j = 0; j < neighbourhoodList.size(); j++) {
+				DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
+				List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
+				if (seedListDataObject_Neighbourhood.size() == getMinPoints() ) {
+				/** neighbourhoodDataObject is new coreObject */
+					
+					for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
+						DataObject p = seedListDataObject_Neighbourhood.get(i);
+						if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
+							if(!updSeed.contains(p))
+								updSeed.add(p);
+						}
+					}
+				}
+			}
+			
+			//count clusterlabel
+			TreeSet<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
+			for(int i = 0; i < updSeed.size(); i++ ){
+				DataObject o = updSeed.get(i);
+				if(o.getClusterLabel() != DataObject.NOISE){
+					neighbourhoodClusterLabels.add(o.getClusterLabel());
+				}
+			}
+			
+			if(updSeed.size()==0)
+				return;
+			
+			if(neighbourhoodClusterLabels.size() == 0){
+				for(int i = 0; i < updSeed.size(); i++ ){
+					DataObject o = updSeed.get(i);
+					List<DataObject> createList = database.epsilonRangeQuery(getEpsilon(), o);
+					for(DataObject create : createList){
+						create.setClusterLabel(clusterID);
+					}
+				}
+				clusterID++;
+				numberOfGeneratedClusters++;
+			}
+			
+			if(neighbourhoodClusterLabels.size() == 1){
+				int absorptClusterID = neighbourhoodClusterLabels.iterator().next();
+				for(int i = 0; i < updSeed.size(); i++ ){
+					DataObject o = updSeed.get(i);
+					List<DataObject> absorptList = database.epsilonRangeQuery(getEpsilon(), o);
+					for(DataObject absorpt : absorptList){
+						absorpt.setClusterLabel(absorptClusterID);
+					}
+				}
+			}
+			
+			/** merge */
+			if (neighbourhoodClusterLabels.size() > 1) {
+				if (neighbourhoodList.size() < getMinPoints()) {
+					System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
+				}else{
+					System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
+				}
+					
+				int mergeClusterID = neighbourhoodClusterLabels.iterator().next();
+				neighbourhoodClusterLabels.remove(mergeClusterID);
+	
+				for(int i = 0; i < updSeed.size(); i++ ){
+					DataObject o = updSeed.get(i);
+					List<DataObject> absorptList = database.epsilonRangeQuery(getEpsilon(), o);
+					for(DataObject absorpt : absorptList){
+						absorpt.setClusterLabel(mergeClusterID);
+					}
+				}
+				
+				for (int i = 0; i < database.size(); i++) {
+					DataObject mergedataObject = database.getDataObject(Integer.toString(i));
+					if (neighbourhoodClusterLabels.contains(mergedataObject.getClusterLabel())) {
+						mergedataObject.setClusterLabel(mergeClusterID);
+					}
+				}
+			}
+	
+		}
 }
