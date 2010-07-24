@@ -528,6 +528,98 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private void expandCluster3(DataObject dataObject) {
+		List<DataObject> updSeed = new ArrayList<DataObject>();
+		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
+
+		dataObject.setClusterLabel(DataObject.NOISE);
+		/** remove */
+		//		neighbourhoodList.remove(dataObject);
+
+		/** Iterate the neighbourhoodList of the startDataObject */
+		for (int j = 0; j < neighbourhoodList.size(); j++) {
+			DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
+			List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
+			if (seedListDataObject_Neighbourhood.size() == getMinPoints()) {
+				/** neighbourhoodDataObject is new coreObject */
+
+				for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
+					DataObject p = seedListDataObject_Neighbourhood.get(i);
+					if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
+						if (!updSeed.contains(p))
+							updSeed.add(p);
+					}
+				}
+			}
+		}
+
+		//count clusterlabel
+		TreeSet<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
+		for (int i = 0; i < updSeed.size(); i++) {
+			DataObject o = updSeed.get(i);
+			if (o.getClusterLabel() != DataObject.NOISE) {
+				neighbourhoodClusterLabels.add(o.getClusterLabel());
+			}
+		}
+
+		if (updSeed.size() == 0)
+			return;
+
+		if (neighbourhoodClusterLabels.size() == 0) {
+			for (int i = 0; i < updSeed.size(); i++) {
+				DataObject o = updSeed.get(i);
+				List<DataObject> createList = database.epsilonRangeQuery(getEpsilon(), o);
+				for (DataObject create : createList) {
+					create.setClusterLabel(clusterID);
+				}
+			}
+			clusterID++;
+			numberOfGeneratedClusters++;
+		}
+
+		if (neighbourhoodClusterLabels.size() == 1) {
+			int absorptClusterID = neighbourhoodClusterLabels.iterator().next();
+			for (int i = 0; i < updSeed.size(); i++) {
+				DataObject o = updSeed.get(i);
+				List<DataObject> absorptList = database.epsilonRangeQuery(getEpsilon(), o);
+				for (DataObject absorpt : absorptList) {
+					if (absorpt.getClusterLabel() == DataObject.NOISE)
+						absorpt.setClusterLabel(absorptClusterID);
+				}
+			}
+		}
+
+		/** merge */
+		if (neighbourhoodClusterLabels.size() > 1) {
+			if (neighbourhoodList.size() < getMinPoints()) {
+				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
+			} else {
+				System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
+			}
+
+			int mergeClusterID = neighbourhoodClusterLabels.iterator().next();
+			neighbourhoodClusterLabels.remove(mergeClusterID);
+
+			for (int i = 0; i < updSeed.size(); i++) {
+				DataObject o = updSeed.get(i);
+				List<DataObject> absorptList = database.epsilonRangeQuery(getEpsilon(), o);
+				for (DataObject absorpt : absorptList) {
+					if (absorpt.getClusterLabel() == DataObject.NOISE)
+						absorpt.setClusterLabel(mergeClusterID);
+				}
+			}
+
+			for (int i = 0; i < database.size(); i++) {
+				DataObject mergedataObject = database.getDataObject(Integer.toString(i));
+				if (neighbourhoodClusterLabels.contains(mergedataObject.getClusterLabel())) {
+					mergedataObject.setClusterLabel(mergeClusterID);
+				}
+			}
+		}
+
+	}
+
 	/**
 	 * Returns a description of the clusterer
 	 * 
@@ -546,11 +638,11 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		DecimalFormat decimalFormat = new DecimalFormat(".##");
 		stringBuffer.append("Elapsed time: " + decimalFormat.format(elapsedTime) + "\n\n");
 
-//		for (int i = 0; i < database.size(); i++) {
-//			DataObject dataObject = database.getDataObject(Integer.toString(i));
-//			stringBuffer.append("(" + Utils.doubleToString(Double.parseDouble(dataObject.getKey()), (Integer.toString(database.size()).length()), 0) + ".) " + Utils.padRight(dataObject.toString(), 69) + "  -->  "
-//					+ ((dataObject.getClusterLabel() == DataObject.NOISE) ? "NOISE\n" : dataObject.getClusterLabel() + "\n"));
-//		}
+		//		for (int i = 0; i < database.size(); i++) {
+		//			DataObject dataObject = database.getDataObject(Integer.toString(i));
+		//			stringBuffer.append("(" + Utils.doubleToString(Double.parseDouble(dataObject.getKey()), (Integer.toString(database.size()).length()), 0) + ".) " + Utils.padRight(dataObject.toString(), 69) + "  -->  "
+		//					+ ((dataObject.getClusterLabel() == DataObject.NOISE) ? "NOISE\n" : dataObject.getClusterLabel() + "\n"));
+		//		}
 		return stringBuffer.toString() + "\n";
 	}
 
@@ -575,19 +667,44 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), instances.instance(i), Integer.toString(size + i), database);
 			System.out.println(i + " ");
 			database.insert(dataObject);
-			expandCluster3(dataObject);
+			expandCluster2(dataObject);
 		}
-
+//		testNeighbourList(size);
+		
 		//DBSCAN
 		//				for (int i = 0; i < filteredInstances.numInstances(); i++) {
 		//					expandCluster2(database.getDataObject(String.valueOf(i + psize)));
 		//				}
 
-
 		database.setMinMaxValues();
 
 		//sort cluster labels
 		sortClusterLabels();
+	}
+
+	private void testNeighbourList(int size) {
+		DataObject object = database.getDataObject(String.valueOf(size -10));
+		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), object);
+		System.out.println("----------------first" + neighbourhoodList.size());
+		for(int i = 0; i<neighbourhoodList.size();i++){
+//		for(int i = neighbourhoodList.size()-1; i>=0;i--){
+			DataObject n = neighbourhoodList.get(i);
+			if(object==n){
+				System.out.println("original");
+				neighbourhoodList.remove(object);
+			}else{
+				System.out.println("neighbour");
+			}
+		}
+		System.out.println("----------------second" + neighbourhoodList.size());
+		for(int i = 0; i<neighbourhoodList.size();i++){
+			DataObject n = neighbourhoodList.get(i);
+			if(object==n){
+				System.out.println("original");
+			}else{
+				System.out.println("neighbour");
+			}
+		}
 	}
 
 	private void sortClusterLabels() {
@@ -620,57 +737,71 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 		dataObject.setClusterLabel(DataObject.NOISE);
 		/** remove */
-//		neighbourhoodList.remove(dataObject);
-		
+		//		neighbourhoodList.remove(dataObject);
+
 		TreeSet<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
 
+//		if(neighbourhoodList.size() >= getMinPoints()){
+//			if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
+//				neighbourhoodClusterLabels.add(p.getClusterLabel());
+//			}
+//		}
+		
 		/** Iterate the neighbourhoodList of the startDataObject */
-		for (int j = 0; j < neighbourhoodList.size(); j++) {
+//		for (int j = 0; j < neighbourhoodList.size(); j++) {
+		for (int j = neighbourhoodList.size() - 1; j >= 0 ; j--) {
 			DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
 			List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
-			if (seedListDataObject_Neighbourhood.size() >= getMinPoints() ) {
-			/** neighbourhoodDataObject is coreObject */
-				if (neighbourhoodDataObject.getClusterLabel() != DataObject.NOISE) {
+			
+			if (seedListDataObject_Neighbourhood.size() >= getMinPoints()) {
+				/** neighbourhoodDataObject is coreObject */
+				
+				if (neighbourhoodDataObject.getClusterLabel() == DataObject.NOISE) {
+					/** create */
+					for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
+						DataObject p = seedListDataObject_Neighbourhood.get(i);
+						if (p.getClusterLabel() != DataObject.NOISE) {
+							if (neighbourhoodDataObject == dataObject) {
+								if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
+									neighbourhoodClusterLabels.add(p.getClusterLabel());
+								}
+							}
+						}
+						p.setClusterLabel(clusterID);
+						neighbourhoodClusterLabels.add(clusterID);
+					}
+					clusterID++;
+					numberOfGeneratedClusters++;
+				} else {
 					/** absorb or merge */
 					neighbourhoodClusterLabels.add(neighbourhoodDataObject.getClusterLabel());
 					for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
 						DataObject p = seedListDataObject_Neighbourhood.get(i);
 						if (p.getClusterLabel() == DataObject.NOISE) {
 							p.setClusterLabel(neighbourhoodDataObject.getClusterLabel());
-						}else {
-//							neighbourhoodClusterLabels.add(p.getClusterLabel());
+						} else {
+							if(seedListDataObject_Neighbourhood.size() == getMinPoints())
+							if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
+								neighbourhoodClusterLabels.add(p.getClusterLabel());
+							}
+							//							if(neighbourhoodDataObject.equals(dataObject)){
+							//								not possible
+							//							}
 						}
-//						if (p.getClusterLabel() != DataObject.NOISE) {
-//							neighbourhoodClusterLabels.add(p.getClusterLabel());
-//						}
 					}
-				} else {
-					/** create */
-					for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
-						DataObject p = seedListDataObject_Neighbourhood.get(i);
-						if (p.getClusterLabel() != DataObject.NOISE) {
-							neighbourhoodClusterLabels.add(p.getClusterLabel());
-						}
-						p.setClusterLabel(clusterID);
-//						if (p.getClusterLabel() != DataObject.NOISE) {
-//							neighbourhoodClusterLabels.add(p.getClusterLabel());
-//						}
-					}
-					clusterID++;
-					numberOfGeneratedClusters++;
 				}
 			}
 		}
-		
+
 		/** merge */
 		if (neighbourhoodClusterLabels.size() > 1) {
 			if (neighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
-				return;
-			}else{
+//				return;
+			} else {
 				System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
 			}
-				
+
 			int mergeClusterID = neighbourhoodClusterLabels.iterator().next();
 			neighbourhoodClusterLabels.remove(mergeClusterID);
 
@@ -683,96 +814,4 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		}
 
 	}
-
-	@SuppressWarnings("unchecked")
-		private void expandCluster3(DataObject dataObject) {
-			List<DataObject> updSeed = new ArrayList<DataObject>();
-			List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
-	
-			dataObject.setClusterLabel(DataObject.NOISE);
-			/** remove */
-	//		neighbourhoodList.remove(dataObject);
-			
-			
-	
-			/** Iterate the neighbourhoodList of the startDataObject */
-			for (int j = 0; j < neighbourhoodList.size(); j++) {
-				DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
-				List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
-				if (seedListDataObject_Neighbourhood.size() == getMinPoints() ) {
-				/** neighbourhoodDataObject is new coreObject */
-					
-					for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
-						DataObject p = seedListDataObject_Neighbourhood.get(i);
-						if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
-							if(!updSeed.contains(p))
-								updSeed.add(p);
-						}
-					}
-				}
-			}
-			
-			//count clusterlabel
-			TreeSet<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
-			for(int i = 0; i < updSeed.size(); i++ ){
-				DataObject o = updSeed.get(i);
-				if(o.getClusterLabel() != DataObject.NOISE){
-					neighbourhoodClusterLabels.add(o.getClusterLabel());
-				}
-			}
-			
-			if(updSeed.size()==0)
-				return;
-			
-			if(neighbourhoodClusterLabels.size() == 0){
-				for(int i = 0; i < updSeed.size(); i++ ){
-					DataObject o = updSeed.get(i);
-					List<DataObject> createList = database.epsilonRangeQuery(getEpsilon(), o);
-					for(DataObject create : createList){
-						create.setClusterLabel(clusterID);
-					}
-				}
-				clusterID++;
-				numberOfGeneratedClusters++;
-			}
-			
-			if(neighbourhoodClusterLabels.size() == 1){
-				int absorptClusterID = neighbourhoodClusterLabels.iterator().next();
-				for(int i = 0; i < updSeed.size(); i++ ){
-					DataObject o = updSeed.get(i);
-					List<DataObject> absorptList = database.epsilonRangeQuery(getEpsilon(), o);
-					for(DataObject absorpt : absorptList){
-						absorpt.setClusterLabel(absorptClusterID);
-					}
-				}
-			}
-			
-			/** merge */
-			if (neighbourhoodClusterLabels.size() > 1) {
-				if (neighbourhoodList.size() < getMinPoints()) {
-					System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
-				}else{
-					System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
-				}
-					
-				int mergeClusterID = neighbourhoodClusterLabels.iterator().next();
-				neighbourhoodClusterLabels.remove(mergeClusterID);
-	
-				for(int i = 0; i < updSeed.size(); i++ ){
-					DataObject o = updSeed.get(i);
-					List<DataObject> absorptList = database.epsilonRangeQuery(getEpsilon(), o);
-					for(DataObject absorpt : absorptList){
-						absorpt.setClusterLabel(mergeClusterID);
-					}
-				}
-				
-				for (int i = 0; i < database.size(); i++) {
-					DataObject mergedataObject = database.getDataObject(Integer.toString(i));
-					if (neighbourhoodClusterLabels.contains(mergedataObject.getClusterLabel())) {
-						mergedataObject.setClusterLabel(mergeClusterID);
-					}
-				}
-			}
-	
-		}
 }
