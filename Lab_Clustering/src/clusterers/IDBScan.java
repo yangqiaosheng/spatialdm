@@ -89,6 +89,11 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 * Replace missing values in training instances
 	 */
 	private ReplaceMissingValues replaceMissingValues_Filter;
+	
+	/**
+	 * Replace missing values in training instances
+	 */
+	private boolean isMerged = false;
 
 	/**
 	 * Generate Clustering via DBScan
@@ -119,9 +124,10 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		System.out.println("s:" + database.size());
 		database.setMinMaxValues();
 
-		Iterator iterator = database.dataObjectIterator();
+		@SuppressWarnings("unchecked")
+		Iterator<DataObject> iterator = database.dataObjectIterator();
 		while (iterator.hasNext()) {
-			DataObject dataObject = (DataObject) iterator.next();
+			DataObject dataObject = iterator.next();
 			if (dataObject.getClusterLabel() == DataObject.UNCLASSIFIED) {
 				if (expandCluster(dataObject)) {
 					clusterID++;
@@ -148,6 +154,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 * @return true, if the DataObject could be assigned, else false
 	 */
 	private boolean expandCluster(DataObject dataObject) {
+		@SuppressWarnings("unchecked")
 		List<DataObject> seedList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 		/** dataObject is NO coreObject */
 		if (seedList.size() < getMinPoints()) {
@@ -169,6 +176,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		/** Iterate the seedList of the startDataObject */
 		for (int j = 0; j < seedList.size(); j++) {
 			DataObject seedListDataObject = seedList.get(j);
+			@SuppressWarnings("unchecked")
 			List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), seedListDataObject);
 
 			/** seedListDataObject is coreObject */
@@ -648,39 +656,39 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 	@Override
 	public void updateClusterer(Instance newInstance) throws Exception {
-
+		DataObject dataObject = dataObjectForName(getDatabase_distanceType(), newInstance, Integer.toString(database.size()), database);
+		database.insert(dataObject);
+		incrementalExpandCluster(dataObject);
+		System.out.println(database.size());
 	}
 
 	@Override
 	public void updateFinished() {
-
-	}
-
-	public void insert(Instance newInstance) throws Exception {
-
-	}
-
-	public void insert(Instances instances) throws Exception {
-
-		int size = database.size();
-		for (int i = 0; i < instances.numInstances(); i++) {
-			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), instances.instance(i), Integer.toString(size + i), database);
-			System.out.println(i + " ");
-			database.insert(dataObject);
-			expandCluster2(dataObject);
-		}
-//		testNeighbourList(size);
-		
-		//DBSCAN
-		//				for (int i = 0; i < filteredInstances.numInstances(); i++) {
-		//					expandCluster2(database.getDataObject(String.valueOf(i + psize)));
-		//				}
-
 		database.setMinMaxValues();
-
-		//sort cluster labels
-		sortClusterLabels();
+		if(isMerged){
+			sortClusterLabels();
+			isMerged = false;
+		}
 	}
+
+//	public void insert(Instances instances) throws Exception {
+//
+//		int size = database.size();
+//		for (int i = 0; i < instances.numInstances(); i++) {
+//			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), instances.instance(i), Integer.toString(size + i), database);
+//			System.out.println(i + " ");
+//			database.insert(dataObject);
+//			incrementalExpandCluster(dataObject);
+//		}
+//
+//		database.setMinMaxValues();
+//
+//		//sort cluster labels
+//		if(isMerged){
+//			sortClusterLabels();
+//			isMerged = false;
+//		}
+//	}
 
 	private void testNeighbourList(int size) {
 		DataObject object = database.getDataObject(String.valueOf(size -10));
@@ -732,24 +740,16 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	}
 
 	@SuppressWarnings("unchecked")
-	private void expandCluster2(DataObject dataObject) {
+	private void incrementalExpandCluster(DataObject dataObject) {
 		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 
 		dataObject.setClusterLabel(DataObject.NOISE);
-		/** remove */
-		//		neighbourhoodList.remove(dataObject);
 
-		TreeSet<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
+		Set<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
 
-//		if(neighbourhoodList.size() >= getMinPoints()){
-//			if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
-//				neighbourhoodClusterLabels.add(p.getClusterLabel());
-//			}
-//		}
 		
 		/** Iterate the neighbourhoodList of the startDataObject */
-//		for (int j = 0; j < neighbourhoodList.size(); j++) {
-		for (int j = neighbourhoodList.size() - 1; j >= 0 ; j--) {
+		for (int j = 0; j < neighbourhoodList.size(); j++) {
 			DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
 			List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
 			
@@ -795,6 +795,8 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 		/** merge */
 		if (neighbourhoodClusterLabels.size() > 1) {
+			isMerged = true;
+			
 			if (neighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
 //				return;

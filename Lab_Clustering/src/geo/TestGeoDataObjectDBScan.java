@@ -23,7 +23,8 @@ public class TestGeoDataObjectDBScan {
 		try {
 			// load the arff file
 			ArffLoader loader = new ArffLoader();
-			loader.setFile(new File("data/berlin_sub_2500.arff"));
+			loader.setFile(new File("data/berlin_sub.arff"));
+//			loader.setFile(new File("data/berlin_sub_2500.arff"));
 //			loader.setFile(new File("data/berlin_sub_testt.arff"));
 //			loader.setFile(new File("data/berlin_subt.arff"));
 
@@ -37,7 +38,7 @@ public class TestGeoDataObjectDBScan {
 			// set minimum neighbourhood radius
 			clusterer.setEpsilon(300);
 			// set minimum number of neighbours
-			clusterer.setMinPoints(8);
+			clusterer.setMinPoints(30);
 			// generate clusters
 			clusterer.buildClusterer(insts);
 
