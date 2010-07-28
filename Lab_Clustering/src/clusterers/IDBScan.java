@@ -61,9 +61,14 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	private String database_Type = "weka.clusterers.forOPTICSAndDBScan.Databases.SequentialDatabase";
 
 	/**
-	 * Holds the time-value (seconds) for the duration of the clustering-process
+	 * Holds the time-value (seconds) for the duration of the DBSCAN clustering-process
 	 */
-	private double elapsedTime;
+	private double elapsedTimeForDBSCAN;
+
+	/**
+	 * Holds the time-value (seconds) for the duration of the Incremental DBSCAN clustering-process
+	 */
+	private double elapsedTimeForIDBSCAN;
 
 	/**
 	 * Specifies the radius for a range-query
@@ -89,7 +94,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 * Replace missing values in training instances
 	 */
 	private ReplaceMissingValues replaceMissingValues_Filter;
-	
+
 	/**
 	 * Replace missing values in training instances
 	 */
@@ -121,7 +126,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), database.getInstances().instance(i), Integer.toString(i), database);
 			database.insert(dataObject);
 		}
-		System.out.println("s:" + database.size());
+//		System.out.println("Clustered Instances by DBScan:" + database.size());
 		database.setMinMaxValues();
 
 		@SuppressWarnings("unchecked")
@@ -137,7 +142,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		}
 
 		long time_2 = System.currentTimeMillis();
-		elapsedTime = (time_2 - time_1) / 1000.0;
+		elapsedTimeForDBSCAN = (time_2 - time_1) / 1000.0;
 	}
 
 	// *****************************************************************************************************************
@@ -365,6 +370,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 *
 	 * @return String[] The list of current option settings as an array of strings
 	 */
+	@Override
 	public String[] getOptions() {
 		String[] options = new String[8];
 		int current = 0;
@@ -398,6 +404,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 * 
 	 * @return the technical information about this class
 	 */
+	@Override
 	public TechnicalInformation getTechnicalInformation() {
 		TechnicalInformation result;
 
@@ -426,6 +433,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 *
 	 * @return Enumeration An enumeration of all available options.
 	 */
+	@Override
 	public Enumeration<Option> listOptions() {
 		Vector<Option> vector = new Vector<Option>();
 
@@ -514,6 +522,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 * @param options The list of options as an array of strings
 	 * @throws java.lang.Exception If an option is not supported
 	 */
+	@Override
 	public void setOptions(String[] options) throws Exception {
 		String optionString = Utils.getOption('E', options);
 		if (optionString.length() != 0) {
@@ -536,7 +545,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private void expandCluster3(DataObject dataObject) {
 		List<DataObject> updSeed = new ArrayList<DataObject>();
 		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
@@ -644,7 +653,8 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		stringBuffer.append("Distance-type: " + getDatabase_distanceType() + "\n");
 		stringBuffer.append("Number of generated clusters: " + numberOfGeneratedClusters + "\n");
 		DecimalFormat decimalFormat = new DecimalFormat(".##");
-		stringBuffer.append("Elapsed time: " + decimalFormat.format(elapsedTime) + "\n\n");
+		stringBuffer.append("Elapsed time for DBScan: " + decimalFormat.format(elapsedTimeForDBSCAN) + "\n");
+		stringBuffer.append("Elapsed time for IDBScan: " + decimalFormat.format(elapsedTimeForIDBSCAN) + "\n\n");
 
 		//		for (int i = 0; i < database.size(); i++) {
 		//			DataObject dataObject = database.getDataObject(Integer.toString(i));
@@ -656,60 +666,68 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 	@Override
 	public void updateClusterer(Instance newInstance) throws Exception {
+		long start = System.currentTimeMillis();
 		DataObject dataObject = dataObjectForName(getDatabase_distanceType(), newInstance, Integer.toString(database.size()), database);
 		database.insert(dataObject);
 		incrementalExpandCluster(dataObject);
 		System.out.println(database.size());
+		long end = System.currentTimeMillis();
+		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
 	}
 
 	@Override
 	public void updateFinished() {
+		long start = System.currentTimeMillis();
 		database.setMinMaxValues();
-		if(isMerged){
+		if (isMerged) {
+			sortClusterLabels();
+			isMerged = false;
+		}
+		long end = System.currentTimeMillis();
+		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
+	}
+
+	public void insert(Instances instances) throws Exception {
+
+		int size = database.size();
+		for (int i = 0; i < instances.numInstances(); i++) {
+			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), instances.instance(i), Integer.toString(size + i), database);
+			System.out.println(i + " ");
+			database.insert(dataObject);
+			incrementalExpandCluster(dataObject);
+		}
+
+		database.setMinMaxValues();
+
+		//sort cluster labels
+		if (isMerged) {
 			sortClusterLabels();
 			isMerged = false;
 		}
 	}
 
-//	public void insert(Instances instances) throws Exception {
-//
-//		int size = database.size();
-//		for (int i = 0; i < instances.numInstances(); i++) {
-//			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), instances.instance(i), Integer.toString(size + i), database);
-//			System.out.println(i + " ");
-//			database.insert(dataObject);
-//			incrementalExpandCluster(dataObject);
-//		}
-//
-//		database.setMinMaxValues();
-//
-//		//sort cluster labels
-//		if(isMerged){
-//			sortClusterLabels();
-//			isMerged = false;
-//		}
-//	}
-
+	@SuppressWarnings("unused")
 	private void testNeighbourList(int size) {
-		DataObject object = database.getDataObject(String.valueOf(size -10));
+		DataObject object = database.getDataObject(String.valueOf(size - 10));
+		@SuppressWarnings("unchecked")
 		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), object);
 		System.out.println("----------------first" + neighbourhoodList.size());
-		for(int i = 0; i<neighbourhoodList.size();i++){
-//		for(int i = neighbourhoodList.size()-1; i>=0;i--){
+		for (int i = 0; i < neighbourhoodList.size(); i++) {
+			//		for(int i = neighbourhoodList.size()-1; i>=0;i--){
 			DataObject n = neighbourhoodList.get(i);
-			if(object==n){
+			if (object == n) {
 				System.out.println("original");
 				neighbourhoodList.remove(object);
-			}else{
+			} else {
 				System.out.println("neighbour");
 			}
 		}
 		System.out.println("----------------second" + neighbourhoodList.size());
-		for(int i = 0; i<neighbourhoodList.size();i++){
+		for (int i = 0; i < neighbourhoodList.size(); i++) {
 			DataObject n = neighbourhoodList.get(i);
-			if(object==n){
+			if (object == n) {
 				System.out.println("original");
-			}else{
+			} else {
 				System.out.println("neighbour");
 			}
 		}
@@ -747,15 +765,14 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 		Set<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
 
-		
 		/** Iterate the neighbourhoodList of the startDataObject */
 		for (int j = 0; j < neighbourhoodList.size(); j++) {
 			DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
 			List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
-			
+
 			if (seedListDataObject_Neighbourhood.size() >= getMinPoints()) {
 				/** neighbourhoodDataObject is coreObject */
-				
+
 				if (neighbourhoodDataObject.getClusterLabel() == DataObject.NOISE) {
 					/** create */
 					for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
@@ -780,10 +797,10 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 						if (p.getClusterLabel() == DataObject.NOISE) {
 							p.setClusterLabel(neighbourhoodDataObject.getClusterLabel());
 						} else {
-							if(seedListDataObject_Neighbourhood.size() == getMinPoints())
-							if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
-								neighbourhoodClusterLabels.add(p.getClusterLabel());
-							}
+							if (seedListDataObject_Neighbourhood.size() == getMinPoints())
+								if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
+									neighbourhoodClusterLabels.add(p.getClusterLabel());
+								}
 							//							if(neighbourhoodDataObject.equals(dataObject)){
 							//								not possible
 							//							}
@@ -796,10 +813,10 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		/** merge */
 		if (neighbourhoodClusterLabels.size() > 1) {
 			isMerged = true;
-			
+
 			if (neighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
-//				return;
+				//				return;
 			} else {
 				System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
 			}

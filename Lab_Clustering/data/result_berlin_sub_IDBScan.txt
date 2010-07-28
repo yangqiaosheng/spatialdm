@@ -1,3 +1,14 @@
+IDBScan clustering results
+========================================================================================
+
+Clustered DataObjects: 3828
+Number of attributes: 2
+Epsilon: 300.0; minPoints: 30
+Index: weka.clusterers.forOPTICSAndDBScan.Databases.SequentialDatabase
+Distance-type: geo.GeoDataObject
+Number of generated clusters: 7
+Elapsed time for DBScan: 1,47
+Elapsed time for IDBScan: 119,24
 
 Clustered Instances (30,300)
 
