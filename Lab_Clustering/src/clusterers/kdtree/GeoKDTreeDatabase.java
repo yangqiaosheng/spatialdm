@@ -46,16 +46,15 @@ import weka.core.RevisionUtils;
 
 /**
  * <p>
- * SequentialDatabase.java <br/>
  * Authors: Haolin Zhi, Peca Iulian <br/>
- * Date: Aug 01, 2010 <br/>
+ * Date: August, 01, 2010 <br/>
  * Time: 1:23:38 PM <br/>
- * $ Revision 1.4 $ <br/>
+ * $ Revision 1.5 $ <br/>
  * </p>
  *
  * @author Haolin Zhi (zhi@cs.uni-bonn.de)
  * @author Peca Iulian (pkiulian@gmail.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandler {
 

@@ -11,8 +11,9 @@ import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
 
 /**
- * @author Matthias Schubert (schubert@dbs.ifi.lmu.de)
- * @version $Revision: 1.5 $
+ *  @author Haolin Zhi (zhi@cs.uni-bonn.de)
+ *  @author Peca Iulian (pkiulian@gmail.com)
+ *  @version $Revision: 1.5 $
  */
 public class GeoDataObject implements DataObject, RevisionHandler, Serializable {
 

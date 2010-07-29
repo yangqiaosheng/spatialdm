@@ -32,7 +32,7 @@ public class TestGeoDataObjectDBScan {
 			// new clusterer
 			DBScan clusterer = new DBScan();
 			// set database type
-			//			clusterer.setDatabase_Type("clusterers.kdtree.GeoKDTreeDatabase");
+			// clusterer.setDatabase_Type("clusterers.kdtree.GeoKDTreeDatabase");
 			// set objects type to be clustered
 			clusterer.setDatabase_distanceType("geo.GeoDataObject");
 			// set minimum neighbourhood radius

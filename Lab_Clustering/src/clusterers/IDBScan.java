@@ -1,23 +1,17 @@
 package clusterers;
 
-import geo.GeoDataObject;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
-
-import clusterers.kdtree.GeoKDTreeDatabase;
 
 import weka.clusterers.AbstractClusterer;
 import weka.clusterers.UpdateableClusterer;
@@ -38,7 +32,24 @@ import weka.core.TechnicalInformation.Type;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
+/**
+ *  <p>
+ *  Authors: Haolin Zhi, Peca Iulian <br/>
+ *  Date: August, 01, 2010 <br/>
+ *  Time: 1:23:38 PM <br/>
+ *  $ Revision 1.5 $ <br/>
+ *  </p>
+ *
+ *  @author Haolin Zhi (zhi@cs.uni-bonn.de)
+ *  @author Peca Iulian (pkiulian@gmail.com)
+ *  @version $Revision: 1.5 $
+ */
 public class IDBScan extends AbstractClusterer implements OptionHandler, TechnicalInformationHandler, UpdateableClusterer {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8518412307828035277L;
 
 	/**
 	 * Holds the current clusterID
