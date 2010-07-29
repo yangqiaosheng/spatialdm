@@ -12,6 +12,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
 import weka.core.converters.ArffLoader;
+import weka.core.converters.CSVLoader;
 
 /**
  * @author Haolin Zhi
@@ -22,8 +23,10 @@ public class TestGeoDataObjectDBScan {
 	public static void main(String[] args) {
 		try {
 			// load the arff file
-			ArffLoader loader = new ArffLoader();
-			loader.setFile(new File("data/berlin_sub.arff"));
+//			ArffLoader loader = new ArffLoader();
+//			loader.setFile(new File("data/berlin_sub.arff"));
+			CSVLoader loader = new CSVLoader();
+			loader.setFile(new File("data/berlin_sample_positions.csv"));
 //			loader.setFile(new File("data/berlin_sub_2500.arff"));
 //			loader.setFile(new File("data/berlin_sub_testt.arff"));
 //			loader.setFile(new File("data/berlin_subt.arff"));
@@ -33,7 +36,9 @@ public class TestGeoDataObjectDBScan {
 
 			// new clusterer
 			DBScan clusterer = new DBScan();
-			// set objects to be clustered
+			// set database type
+			clusterer.setDatabase_Type("clusterers.kdtree.GeoKDTreeDatabase");
+			// set objects type to be clustered
 			clusterer.setDatabase_distanceType("geo.GeoDataObject");
 			// set minimum neighbourhood radius
 			clusterer.setEpsilon(300);

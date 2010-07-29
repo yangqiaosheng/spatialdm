@@ -1,6 +1,5 @@
 package geo;
 
-
 import java.io.Serializable;
 
 import edu.wlu.cs.levy.CG.GeoDistance;
@@ -112,8 +111,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 			return Double.NaN;
 
 		if (getInstance().equalHeaders(dataObject.getInstance())) {
-			dist = GeoDistance.geoDist(this.getInstance().valueSparse(0), this.getInstance().valueSparse(1), dataObject.getInstance().valueSparse(0),
-					dataObject.getInstance().valueSparse(1));
+			dist = GeoDistance.geoDist(this.getInstance().value(2), this.getInstance().value(3), dataObject.getInstance().value(2), dataObject.getInstance().value(3));
 			return dist;
 		}
 		return Double.NaN;

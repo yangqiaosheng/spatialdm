@@ -1,12 +1,24 @@
+DBScan clustering results
+========================================================================================
 
-Clustered Instances (30,300)
+Clustered DataObjects: 3828
+Number of attributes: 4
+Epsilon: 300.0; minPoints: 30
+Index: weka.clusterers.forOPTICSAndDBScan.Databases.SequentialDatabase
+Distance-type: geo.GeoDataObject
+Number of generated clusters: 7
+Elapsed time: 23.84
 
-0      1657 ( 84%)
-1        35 (  2%)
-2       120 (  6%)
-3        56 (  3%)
-4        44 (  2%)
-5        30 (  2%)
-6        33 (  2%)
+
+Evaluation:
+Clustered Instances (30, 300)
+
+0        30 (  2%)
+1        33 (  2%)
+2        35 (  2%)
+3        44 (  2%)
+4        56 (  3%)
+5       120 (  6%)
+6      1657 ( 84%)
 
 Unclustered instances : 1853

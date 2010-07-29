@@ -17,6 +17,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import clusterers.kdtree.GeoKDTreeDatabase;
+
 import weka.clusterers.AbstractClusterer;
 import weka.clusterers.UpdateableClusterer;
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
@@ -760,7 +762,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	@SuppressWarnings("unchecked")
 	private void incrementalExpandCluster(DataObject dataObject) {
 		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
-
+		
 		dataObject.setClusterLabel(DataObject.NOISE);
 
 		Set<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
@@ -831,6 +833,5 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 				}
 			}
 		}
-
 	}
 }

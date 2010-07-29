@@ -10,6 +10,7 @@ import clusterers.IDBScan;
 import weka.clusterers.ClusterEvaluation;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
+import weka.core.converters.CSVLoader;
 
 /**
  * @author Haolin Zhi
@@ -26,7 +27,10 @@ public class TestGeoDataObjectIDBScan {
 		//Incremental DBSCAN Clusterer
 		clusterer = new IDBScan();
 
-		// set objects to be clustered
+		// set database type
+		clusterer.setDatabase_Type("clusterers.kdtree.GeoKDTreeDatabase");
+		
+		// set objects type to be clustered
 		clusterer.setDatabase_distanceType("geo.GeoDataObject");
 
 		// set minimum neighborhood radius
@@ -38,8 +42,10 @@ public class TestGeoDataObjectIDBScan {
 
 	public static void main(String[] args) throws Exception {
 		// load the arff file
-		ArffLoader loader = new ArffLoader();
-		loader.setFile(new File("data/berlin_sub.arff"));
+		CSVLoader loader = new CSVLoader();
+		loader.setFile(new File("data/berlin_sample_positions.csv"));
+//		ArffLoader loader = new ArffLoader();
+//		loader.setFile(new File("data/berlin_sub.arff"));
 		//			loader.setFile(new File("data/berlin_sub2.arff"));
 		//			loader.setFile(new File("data/berlin_sub_2500.arff"));
 
