@@ -13,10 +13,11 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import clusterers.database.Database;
+
 import weka.clusterers.AbstractClusterer;
 import weka.clusterers.UpdateableClusterer;
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
-import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
 import weka.core.Instance;
@@ -47,7 +48,7 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 public class IDBScan extends AbstractClusterer implements OptionHandler, TechnicalInformationHandler, UpdateableClusterer {
 
 	/**
-	 * 
+	 *  for serialization 
 	 */
 	private static final long serialVersionUID = -8518412307828035277L;
 
@@ -268,7 +269,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		Constructor<Database> co = null;
 		try {
 			co = (Constructor<Database>) (Class.forName(database_Type)).getConstructor(new Class[] { Instances.class });
-			database = (Database) co.newInstance(new Object[] { instances });
+			database = co.newInstance(new Object[] { instances });
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
@@ -850,4 +851,28 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			}
 		}
 	}
+	
+	public void deleteInstance(String key){
+		DataObject deleteDataObject = database.getDataObject(key);
+		if(deleteDataObject.getClusterLabel() == DataObject.NOISE){
+			database.remove(key);
+		}else{
+			List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), deleteDataObject);
+			for (int i = 0; i < neighbourhoodList.size(); i++) {
+				DataObject neighbourhoodDataObject = neighbourhoodList.get(i);
+				if(neighbourhoodDataObject.getClusterLabel() == deleteDataObject.getClusterLabel()){
+					List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
+					if(seedListDataObject_Neighbourhood.size() >= getMinPoints()){
+						database.remove(key);
+						break;
+					}
+				}
+				
+				
+			}
+		}
+		
+		
+	}
+	
 }
