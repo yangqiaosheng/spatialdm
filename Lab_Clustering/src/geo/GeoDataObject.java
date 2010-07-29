@@ -2,13 +2,12 @@ package geo;
 
 import java.io.Serializable;
 
-import edu.wlu.cs.levy.CG.GeoDistance;
-
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
 import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
 import weka.core.Instance;
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
+import edu.wlu.cs.levy.CG.GeoDistance;
 
 /**
  *  @author Haolin Zhi (zhi@cs.uni-bonn.de)
@@ -123,6 +122,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @return originalInstance
 	 */
+	@Override
 	public Instance getInstance() {
 		return instance;
 	}
@@ -132,6 +132,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @return key
 	 */
+	@Override
 	public String getKey() {
 		return key;
 	}
@@ -142,6 +143,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * @param key
 	 *            The key is represented as string
 	 */
+	@Override
 	public void setKey(String key) {
 		this.key = key;
 	}
@@ -151,6 +153,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @param clusterID Number of the Cluster
 	 */
+	@Override
 	public void setClusterLabel(int clusterID) {
 		this.clusterID = clusterID;
 	}
@@ -160,6 +163,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @return clusterID
 	 */
+	@Override
 	public int getClusterLabel() {
 		return clusterID;
 	}
@@ -169,6 +173,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @param processed True, if the DataObject has been already processed, false else
 	 */
+	@Override
 	public void setProcessed(boolean processed) {
 		this.processed = processed;
 	}
@@ -178,6 +183,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @return True, if this dataObject has been processed, else false
 	 */
+	@Override
 	public boolean isProcessed() {
 		return processed;
 	}
@@ -187,6 +193,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @param c_dist coreDistance
 	 */
+	@Override
 	public void setCoreDistance(double c_dist) {
 		this.c_dist = c_dist;
 	}
@@ -196,6 +203,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @return coreDistance
 	 */
+	@Override
 	public double getCoreDistance() {
 		return c_dist;
 	}
@@ -203,13 +211,19 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	/**
 	 * Sets a new reachability-distance for this dataObject
 	 */
+	@Override
 	public void setReachabilityDistance(double r_dist) {
 		this.r_dist = r_dist;
+	}
+
+	public Database getDatabase() {
+		return database;
 	}
 
 	/**
 	 * Returns the reachabilityDistance for this dataObject
 	 */
+	@Override
 	public double getReachabilityDistance() {
 		return r_dist;
 	}
@@ -224,6 +238,7 @@ public class GeoDataObject implements DataObject, RevisionHandler, Serializable 
 	 * 
 	 * @return the revision
 	 */
+	@Override
 	public String getRevision() {
 		return RevisionUtils.extract("$Revision: 1.5 $");
 	}

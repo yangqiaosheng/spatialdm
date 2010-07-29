@@ -27,13 +27,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Stack;
 import java.util.TreeMap;
-
-import edu.wlu.cs.levy.CG.Checker;
-import edu.wlu.cs.levy.CG.KDTree;
-import edu.wlu.cs.levy.CG.KeyDuplicateException;
-import edu.wlu.cs.levy.CG.KeySizeException;
 
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
 import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
@@ -43,6 +37,9 @@ import weka.clusterers.forOPTICSAndDBScan.Utils.PriorityQueueElement;
 import weka.core.Instances;
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
+import edu.wlu.cs.levy.CG.KDTree;
+import edu.wlu.cs.levy.CG.KeyDuplicateException;
+import edu.wlu.cs.levy.CG.KeySizeException;
 
 /**
  * <p>
@@ -65,7 +62,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Internal, sorted Treemap for storing all the DataObjects
 	 */
 	private TreeMap<String, DataObject> treeMap;
-	
+
 	/**
 	 * Internal, sorted KDTree for storing all the DataObjects
 	 */
@@ -109,6 +106,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * @param key The key that is associated with the dataObject
 	 * @return dataObject
 	 */
+	@Override
 	public DataObject getDataObject(String key) {
 		return treeMap.get(key);
 	}
@@ -117,6 +115,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Sets the minimum and maximum values for each attribute in different arrays
 	 * by walking through every DataObject of the database
 	 */
+	@Override
 	public void setMinMaxValues() {
 		attributeMinValues = new double[getInstances().numAttributes()];
 		attributeMaxValues = new double[getInstances().numAttributes()];
@@ -149,6 +148,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Returns the array of minimum-values for each attribute
 	 * @return attributeMinValues
 	 */
+	@Override
 	public double[] getAttributeMinValues() {
 		return attributeMinValues;
 	}
@@ -157,6 +157,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Returns the array of maximum-values for each attribute
 	 * @return attributeMaxValues
 	 */
+	@Override
 	public double[] getAttributeMaxValues() {
 		return attributeMaxValues;
 	}
@@ -167,23 +168,24 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * @param queryDataObject The dataObject that is used as query-object for epsilon range query
 	 * @return List with all the DataObjects that are within the specified range
 	 */
+	@Override
 	public List<DataObject> epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
 		List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
 		List<List<String>> epsilonRangeKeys_List = null;
 		try {
-			epsilonRangeKeys_List = kt.nearestGeo(new double [] {queryDataObject.getInstance().value(2), queryDataObject.getInstance().value(3)}, epsilon);
+			epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(2), queryDataObject.getInstance().value(3) }, epsilon);
 		} catch (KeySizeException e) {
 			e.printStackTrace();
 		}
-		
-		if(epsilonRangeKeys_List !=null && epsilonRangeKeys_List.size() > 0){
-			for (List<String> keys: epsilonRangeKeys_List) {
+
+		if (epsilonRangeKeys_List != null && epsilonRangeKeys_List.size() > 0) {
+			for (List<String> keys : epsilonRangeKeys_List) {
 				for (String key : keys) {
 					epsilonRange_List.add(treeMap.get(key));
 				}
 			}
 		}
-		
+
 		return epsilonRange_List;
 	}
 
@@ -198,6 +200,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * @return list with the k-next neighbours (PriorityQueueElements) and a list
 	 *         with candidates from the epsilon-range-query (EpsilonRange_ListElements)
 	 */
+	@Override
 	public List k_nextNeighbourQuery(int k, double epsilon, DataObject dataObject) {
 		Iterator<DataObject> iterator = dataObjectIterator();
 
@@ -247,6 +250,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 *         with candidates from the epsilon-range-query (EpsilonRange_ListElements) and
 	 *         the double-value for the calculated coreDistance
 	 */
+	@Override
 	public List coreDistance(int minPoints, double epsilon, DataObject dataObject) {
 		List list = k_nextNeighbourQuery(minPoints, epsilon, dataObject);
 
@@ -270,6 +274,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Returns the size of the database (the number of dataObjects in the database)
 	 * @return size
 	 */
+	@Override
 	public int size() {
 		return treeMap.size();
 	}
@@ -278,6 +283,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Returns an iterator over all the keys
 	 * @return iterator
 	 */
+	@Override
 	public Iterator<String> keyIterator() {
 		return treeMap.keySet().iterator();
 	}
@@ -286,6 +292,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Returns an iterator over all the dataObjects in the database
 	 * @return iterator
 	 */
+	@Override
 	public Iterator<DataObject> dataObjectIterator() {
 		return treeMap.values().iterator();
 	}
@@ -295,6 +302,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * @param dataObject_Query The query-object
 	 * @return true if the database contains dataObject_Query, else false
 	 */
+	@Override
 	public boolean contains(DataObject dataObject_Query) {
 		Iterator<DataObject> iterator = dataObjectIterator();
 		while (iterator.hasNext()) {
@@ -309,17 +317,18 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Inserts a new dataObject into the database
 	 * @param dataObject
 	 */
+	@Override
 	public void insert(DataObject dataObject) {
 		treeMap.put(dataObject.getKey(), dataObject);
 		try {
 			List<String> keys = new ArrayList<String>();
 			keys.add(dataObject.getKey());
-			kt.insert(new double [] {dataObject.getInstance().value(2), dataObject.getInstance().value(3)}, keys);
+			kt.insert(new double[] { dataObject.getInstance().value(2), dataObject.getInstance().value(3) }, keys);
 		} catch (KeySizeException e) {
 			e.printStackTrace();
 		} catch (KeyDuplicateException e) {
 			try {
-				List<String> keys = kt.search(new double [] {dataObject.getInstance().value(2), dataObject.getInstance().value(3)});
+				List<String> keys = kt.search(new double[] { dataObject.getInstance().value(2), dataObject.getInstance().value(3) });
 				keys.add(dataObject.getKey());
 			} catch (KeySizeException e1) {
 				e1.printStackTrace();
@@ -331,6 +340,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Returns the original instances delivered from WEKA
 	 * @return instances
 	 */
+	@Override
 	public Instances getInstances() {
 		return instances;
 	}
@@ -340,6 +350,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * 
 	 * @return		the revision
 	 */
+	@Override
 	public String getRevision() {
 		return RevisionUtils.extract("$Revision: 1.4 $");
 	}

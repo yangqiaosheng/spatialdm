@@ -4,14 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import clusterers.IDBScan;
-
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.DBScan;
-import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
-import weka.core.converters.ArffLoader;
 import weka.core.converters.CSVLoader;
 
 /**

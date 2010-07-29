@@ -5,12 +5,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import clusterers.IDBScan;
-
 import weka.clusterers.ClusterEvaluation;
 import weka.core.Instances;
-import weka.core.converters.ArffLoader;
 import weka.core.converters.CSVLoader;
+import clusterers.IDBScan;
 
 /**
  * @author Haolin Zhi

@@ -18,17 +18,17 @@ import weka.clusterers.UpdateableClusterer;
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
 import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
 import weka.core.Capabilities;
+import weka.core.Capabilities.Capability;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
 import weka.core.OptionHandler;
 import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
-import weka.core.Capabilities.Capability;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
+import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
@@ -139,7 +139,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), database.getInstances().instance(i), Integer.toString(i), database);
 			database.insert(dataObject);
 		}
-//		System.out.println("Clustered Instances by DBScan:" + database.size());
+		//		System.out.println("Clustered Instances by DBScan:" + database.size());
 		database.setMinMaxValues();
 
 		@SuppressWarnings("unchecked")
@@ -261,12 +261,13 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 * @param instances Instances that were delivered from WEKA
 	 * @return Database New constructed Database
 	 */
+	@SuppressWarnings("unchecked")
 	public Database databaseForName(String database_Type, Instances instances) {
 		Database database = null;
 
-		Constructor co = null;
+		Constructor<Database> co = null;
 		try {
-			co = (Class.forName(database_Type)).getConstructor(new Class[] { Instances.class });
+			co = (Constructor<Database>) (Class.forName(database_Type)).getConstructor(new Class[] { Instances.class });
 			database = (Database) co.newInstance(new Object[] { instances });
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
@@ -293,12 +294,13 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 * @param database Link to the database
 	 * @return DataObject New constructed DataObject
 	 */
+	@SuppressWarnings("unchecked")
 	public DataObject dataObjectForName(String database_distanceType, Instance instance, String key, Database database) {
 		Object o = null;
 
-		Constructor co = null;
+		Constructor<Database> co = null;
 		try {
-			co = (Class.forName(database_distanceType)).getConstructor(new Class[] { Instance.class, String.class, Database.class });
+			co = (Constructor<Database>) (Class.forName(database_distanceType)).getConstructor(new Class[] { Instance.class, String.class, Database.class });
 			o = co.newInstance(new Object[] { instance, key, database });
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
@@ -577,8 +579,9 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 				for (int i = 0; i < seedListDataObject_Neighbourhood.size(); i++) {
 					DataObject p = seedListDataObject_Neighbourhood.get(i);
 					if (database.epsilonRangeQuery(getEpsilon(), p).size() >= getMinPoints()) {
-						if (!updSeed.contains(p))
+						if (!updSeed.contains(p)) {
 							updSeed.add(p);
+						}
 					}
 				}
 			}
@@ -614,8 +617,9 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 				DataObject o = updSeed.get(i);
 				List<DataObject> absorptList = database.epsilonRangeQuery(getEpsilon(), o);
 				for (DataObject absorpt : absorptList) {
-					if (absorpt.getClusterLabel() == DataObject.NOISE)
+					if (absorpt.getClusterLabel() == DataObject.NOISE) {
 						absorpt.setClusterLabel(absorptClusterID);
+					}
 				}
 			}
 		}
@@ -635,8 +639,9 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 				DataObject o = updSeed.get(i);
 				List<DataObject> absorptList = database.epsilonRangeQuery(getEpsilon(), o);
 				for (DataObject absorpt : absorptList) {
-					if (absorpt.getClusterLabel() == DataObject.NOISE)
+					if (absorpt.getClusterLabel() == DataObject.NOISE) {
 						absorpt.setClusterLabel(mergeClusterID);
+					}
 				}
 			}
 
@@ -773,7 +778,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	@SuppressWarnings("unchecked")
 	private void incrementalExpandCluster(DataObject dataObject) {
 		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
-		
+
 		dataObject.setClusterLabel(DataObject.NOISE);
 
 		Set<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
