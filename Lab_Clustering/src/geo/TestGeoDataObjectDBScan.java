@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.DBScan;
 import weka.core.Instances;
+import weka.core.converters.ArffLoader;
 import weka.core.converters.CSVLoader;
 
 /**
@@ -18,9 +19,12 @@ public class TestGeoDataObjectDBScan {
 	public static void main(String[] args) {
 		try {
 			// load the arff file
-			CSVLoader loader = new CSVLoader();
-			loader.setFile(new File("data/berlin_sample_positions.csv"));
+//			CSVLoader loader = new CSVLoader();
+//			loader.setFile(new File("data/berlin_sample_positions.csv"));
 
+			
+			ArffLoader loader = new ArffLoader();
+			loader.setFile(new File("data/berlin_sub_2500.arff"));
 			// get the instances from the arff file
 			Instances insts = loader.getDataSet();
 
@@ -33,7 +37,7 @@ public class TestGeoDataObjectDBScan {
 			// set minimum neighbourhood radius
 			clusterer.setEpsilon(300);
 			// set minimum number of neighbours
-			clusterer.setMinPoints(30);
+			clusterer.setMinPoints(8);
 			// generate clusters
 			clusterer.buildClusterer(insts);
 

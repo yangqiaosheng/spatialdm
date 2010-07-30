@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import weka.clusterers.ClusterEvaluation;
 import weka.core.Instances;
+import weka.core.converters.ArffLoader;
 import weka.core.converters.CSVLoader;
 import clusterers.IDBScan;
 
@@ -26,7 +27,7 @@ public class TestGeoDataObjectIDBScan {
 		clusterer = new IDBScan();
 
 		// set database type
-		clusterer.setDatabase_Type("clusterers.kdtree.GeoKDTreeDatabase");
+		clusterer.setDatabase_Type("clusterers.database.CachedSequentialDatabase");
 
 		// set objects type to be clustered
 		clusterer.setDatabase_distanceType("geo.GeoDataObject");
@@ -35,13 +36,16 @@ public class TestGeoDataObjectIDBScan {
 		clusterer.setEpsilon(300);
 
 		// set minimum number of neighbors
-		clusterer.setMinPoints(30);
+		clusterer.setMinPoints(8);
 	}
 
 	public static void main(String[] args) throws Exception {
 		// load the arff file
-		CSVLoader loader = new CSVLoader();
-		loader.setFile(new File("data/berlin_sample_positions.csv"));
+//		CSVLoader loader = new CSVLoader();
+//		loader.setFile(new File("data/berlin_sample_positions.csv"));
+		
+		ArffLoader loader = new ArffLoader();
+		loader.setFile(new File("data/berlin_sub_2500.arff"));
 
 		// get the instances from the arff file
 		Instances totalInstances = loader.getDataSet();
