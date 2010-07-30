@@ -758,8 +758,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	}
 
 	/**
-	* implement the incremental method occording to the paper
-	* Map<DataObject, List<DataObject>> updSeeds = new HashMap<DataObject, List<DataObject>>();
+	* implement the incremental method according to the paper
 	* @param dataObject
 	*/
 	@SuppressWarnings( { "unchecked" })
@@ -850,7 +849,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	}
 
 	/**
-	* implement the incremental method occording to the paper
+	* implement the incremental method according to the paper
 	* @param dataObject
 	*/
 	@SuppressWarnings( { "unchecked" })
@@ -943,7 +942,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	}
 
 	/**
-		* implement the incremental method occording to the paper
+		* implement the incremental method according to the paper
 		* @param dataObject
 		*/
 		private void paperExpandClusterCached(DataObject dataObject) {

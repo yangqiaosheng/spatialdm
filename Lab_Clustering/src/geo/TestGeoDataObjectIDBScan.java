@@ -40,14 +40,14 @@ public class TestGeoDataObjectIDBScan {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// load the arff file
+		// load the csv file
 //		CSVLoader loader = new CSVLoader();
 //		loader.setFile(new File("data/berlin_sample_positions.csv"));
 		
 		ArffLoader loader = new ArffLoader();
 		loader.setFile(new File("data/berlin_sub_2500.arff"));
 
-		// get the instances from the arff file
+		// get the instances from the file
 		Instances totalInstances = loader.getDataSet();
 
 		// split the total instances into 2 subsets
