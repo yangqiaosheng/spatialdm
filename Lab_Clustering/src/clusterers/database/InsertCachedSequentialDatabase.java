@@ -51,7 +51,7 @@ import weka.core.RevisionUtils;
  *  @author Peca Iulian (pkiulian@gmail.com)
  *  @version $Revision: 1.5 $
  */
-public class CachedSequentialDatabase implements Database, Serializable, RevisionHandler {
+public class InsertCachedSequentialDatabase implements Database, Serializable, RevisionHandler {
 
 	/** for serialization */
 	private static final long serialVersionUID = 787245523118665778L;
@@ -59,7 +59,7 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	/**
 	 * Internal, sorted Treemap for storing all the DataObjects
 	 */
-	private TreeMap<String, DataObject> treeMap;
+	private Map<String, DataObject> treeMap;
 
 	/**
 	 * Holds the original instances delivered from WEKA
@@ -82,12 +82,9 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	private Map<DataObject, List<DataObject>> epsilonRangeQueryResults;
 
 	/**
-	 * flag to specify whether the cache for epsilonRangeQuery results need to be flushed
-	 * set to true:  after a new DataObject inserted
-	 * set to false: after a query performed
+	 * Specifies the radius for a range-query
 	 */
-	private boolean needFlush;
-
+	private double epsilon;
 	// *****************************************************************************************************************
 	// constructors
 	// *****************************************************************************************************************
@@ -96,9 +93,10 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 * Constructs a new sequential database and holds the original instances
 	 * @param instances
 	 */
-	public CachedSequentialDatabase(Instances instances) {
+	public InsertCachedSequentialDatabase(Instances instances) {
 		this.instances = instances;
 		treeMap = new TreeMap<String, DataObject>();
+		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
 	}
 
 	// *****************************************************************************************************************
@@ -175,17 +173,12 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	@Override
 	public List<DataObject> epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
 
-		if (needFlush == true) {
-			epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
-			needFlush = false;
-		}
 		if (epsilonRangeQueryResults.containsKey(queryDataObject))
 			return epsilonRangeQueryResults.get(queryDataObject);
 		else {
+			this.epsilon = epsilon;
 			ArrayList<DataObject> epsilonRange_List = new ArrayList<DataObject>();
-			Iterator<DataObject> iterator = dataObjectIterator();
-			while (iterator.hasNext()) {
-				DataObject dataObject = iterator.next();
+			for(DataObject dataObject : treeMap.values()){
 				double distance = queryDataObject.distance(dataObject);
 				if (distance < epsilon) {
 					epsilonRange_List.add(dataObject);
@@ -193,7 +186,6 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 			}
 			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
 			return epsilonRange_List;
-
 		}
 
 	}
@@ -324,12 +316,18 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 
 	/**
 	 * Inserts a new dataObject into the database
-	 * @param dataObject
+	 * @param newDataObject
 	 */
 	@Override
-	public void insert(DataObject dataObject) {
-		treeMap.put(dataObject.getKey(), dataObject);
-		needFlush = true;
+	public void insert(DataObject newDataObject) {
+		treeMap.put(newDataObject.getKey(), newDataObject);
+		for(DataObject dataObject : treeMap.values()){
+			if(dataObject.distance(newDataObject) < epsilon){
+				if(epsilonRangeQueryResults.containsKey(dataObject)){
+					epsilonRangeQueryResults.get(dataObject).add(newDataObject);
+				}
+			}
+		}
 	}
 
 	/**
@@ -354,6 +352,6 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	@Override
 	public void remove(String key) {
 		treeMap.remove(key);
-		needFlush = true;
+		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
 	}
 }

@@ -172,7 +172,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 		List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
 		List<List<String>> epsilonRangeKeys_List = null;
 		try {
-			epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(2), queryDataObject.getInstance().value(3) }, epsilon);
+			epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(0), queryDataObject.getInstance().value(1) }, epsilon);
 		} catch (KeySizeException e) {
 			e.printStackTrace();
 		}

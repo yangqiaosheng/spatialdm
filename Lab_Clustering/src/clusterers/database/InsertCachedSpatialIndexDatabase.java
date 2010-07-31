@@ -28,7 +28,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
+
+import edu.wlu.cs.levy.CG.GeoDistance;
+import edu.wlu.cs.levy.CG.KeySizeException;
 
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
 import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
@@ -51,7 +57,7 @@ import weka.core.RevisionUtils;
  *  @author Peca Iulian (pkiulian@gmail.com)
  *  @version $Revision: 1.5 $
  */
-public class CachedSequentialDatabase implements Database, Serializable, RevisionHandler {
+public class InsertCachedSpatialIndexDatabase implements Database, Serializable, RevisionHandler {
 
 	/** for serialization */
 	private static final long serialVersionUID = 787245523118665778L;
@@ -59,7 +65,14 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	/**
 	 * Internal, sorted Treemap for storing all the DataObjects
 	 */
-	private TreeMap<String, DataObject> treeMap;
+	private Map<String, DataObject> treeMap;
+
+	/**
+	 * Internal, 2-d spatial index
+	 */
+	private SortedMap<Double, Set<String>> xIndex;
+
+	private TreeMap<Double, Set<String>> yIndex;
 
 	/**
 	 * Holds the original instances delivered from WEKA
@@ -82,12 +95,10 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	private Map<DataObject, List<DataObject>> epsilonRangeQueryResults;
 
 	/**
-	 * flag to specify whether the cache for epsilonRangeQuery results need to be flushed
-	 * set to true:  after a new DataObject inserted
-	 * set to false: after a query performed
+	 * Specifies the radius for a range-query
 	 */
-	private boolean needFlush;
-
+	private double epsilon;
+	
 	// *****************************************************************************************************************
 	// constructors
 	// *****************************************************************************************************************
@@ -96,9 +107,12 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 * Constructs a new sequential database and holds the original instances
 	 * @param instances
 	 */
-	public CachedSequentialDatabase(Instances instances) {
+	public InsertCachedSpatialIndexDatabase(Instances instances) {
 		this.instances = instances;
 		treeMap = new TreeMap<String, DataObject>();
+		xIndex = new TreeMap<Double, Set<String>>();
+		yIndex = new TreeMap<Double, Set<String>>();
+		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
 	}
 
 	// *****************************************************************************************************************
@@ -175,27 +189,43 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	@Override
 	public List<DataObject> epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
 
-		if (needFlush == true) {
-			epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
-			needFlush = false;
-		}
 		if (epsilonRangeQueryResults.containsKey(queryDataObject))
 			return epsilonRangeQueryResults.get(queryDataObject);
 		else {
-			ArrayList<DataObject> epsilonRange_List = new ArrayList<DataObject>();
-			Iterator<DataObject> iterator = dataObjectIterator();
-			while (iterator.hasNext()) {
-				DataObject dataObject = iterator.next();
-				double distance = queryDataObject.distance(dataObject);
-				if (distance < epsilon) {
-					epsilonRange_List.add(dataObject);
+			this.epsilon = epsilon;
+			double lon = queryDataObject.getInstance().value(0);
+			double lat = queryDataObject.getInstance().value(1);
+			SortedMap<Double, Set<String>> xResults = xIndex.subMap(GeoDistance.geoLon(lon, lat, epsilon, false), GeoDistance.geoLon(lon, lat, epsilon, true));
+			SortedMap<Double, Set<String>> yResults = yIndex.subMap(GeoDistance.geoLat(lon, lat, epsilon, false), GeoDistance.geoLat(lon, lat, epsilon, true));
+			List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
+			
+			Set<String> xResultSet = new TreeSet<String>();
+			for (Set<String> keys : xResults.values()) {
+				xResultSet.addAll(keys);
+			}
+
+			Set<String> yResultSet = new TreeSet<String>();
+			for (Set<String> keys : yResults.values()) {
+				yResultSet.addAll(keys);
+			}
+			xResultSet.retainAll(yResultSet);
+
+			for (String key : xResultSet) {
+				if (queryDataObject.distance(treeMap.get(key)) < epsilon) {
+					epsilonRange_List.add(treeMap.get(key));
 				}
 			}
+
+//			for (Set<String> keys : yResults.values()) {
+//				for (String key : keys) {
+//					if (queryDataObject.distance(treeMap.get(key)) < epsilon) {
+//						epsilonRange_List.add(treeMap.get(key));
+//					}
+//				}
+//			}
 			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
 			return epsilonRange_List;
-
 		}
-
 	}
 
 	/**
@@ -324,12 +354,59 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 
 	/**
 	 * Inserts a new dataObject into the database
-	 * @param dataObject
+	 * @param newDataObject
 	 */
 	@Override
-	public void insert(DataObject dataObject) {
-		treeMap.put(dataObject.getKey(), dataObject);
-		needFlush = true;
+	public void insert(DataObject newDataObject) {
+		if (epsilon != 0) {
+			double lon = newDataObject.getInstance().value(0);
+			double lat = newDataObject.getInstance().value(1);
+			SortedMap<Double, Set<String>> xResults = xIndex.subMap(GeoDistance.geoLon(lon, lat, epsilon, false), GeoDistance.geoLon(lon, lat, epsilon, true));
+			SortedMap<Double, Set<String>> yResults = yIndex.subMap(GeoDistance.geoLat(lon, lat, epsilon, false), GeoDistance.geoLat(lon, lat, epsilon, true));
+			
+			Set<String> xResultSet = new TreeSet<String>();
+			for (Set<String> keys : xResults.values()) {
+				xResultSet.addAll(keys);
+			}
+
+			Set<String> yResultSet = new TreeSet<String>();
+			for (Set<String> keys : yResults.values()) {
+				yResultSet.addAll(keys);
+			}
+			xResultSet.retainAll(yResultSet);
+
+			for (String key : xResultSet) {
+				if (newDataObject.distance(treeMap.get(key)) < epsilon) {
+					if (epsilonRangeQueryResults.containsKey(treeMap.get(key))) {
+						epsilonRangeQueryResults.get(treeMap.get(key)).add(newDataObject);
+					}
+				}
+			}
+//			for (Set<String> keys : xResults.values()) {
+//				for (String key : keys) {
+//					if (epsilonRangeQueryResults.containsKey(treeMap.get(key))) {
+//						epsilonRangeQueryResults.get(treeMap.get(key)).add(newDataObject);
+//					}
+//				}
+//			}
+		}
+		
+		treeMap.put(newDataObject.getKey(), newDataObject);
+		
+		Set<String> keys = new TreeSet<String>();
+		keys.add(newDataObject.getKey());
+
+		if (xIndex.containsKey(newDataObject.getInstance().value(0))) {
+			xIndex.get(newDataObject.getInstance().value(0)).add(newDataObject.getKey());
+		} else {
+			xIndex.put(newDataObject.getInstance().value(0), keys);
+		}
+
+		if (yIndex.containsKey(newDataObject.getInstance().value(1))) {
+			yIndex.get(newDataObject.getInstance().value(1)).add(newDataObject.getKey());
+		} else {
+			yIndex.put(newDataObject.getInstance().value(1), keys);
+		}
 	}
 
 	/**
@@ -354,6 +431,6 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	@Override
 	public void remove(String key) {
 		treeMap.remove(key);
-		needFlush = true;
+		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
 	}
 }

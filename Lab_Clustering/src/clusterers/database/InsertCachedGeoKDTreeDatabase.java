@@ -38,28 +38,36 @@ import weka.clusterers.forOPTICSAndDBScan.Utils.PriorityQueueElement;
 import weka.core.Instances;
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
+import edu.wlu.cs.levy.CG.KDTree;
+import edu.wlu.cs.levy.CG.KeyDuplicateException;
+import edu.wlu.cs.levy.CG.KeySizeException;
 
 /**
- *  <p>
- *  Authors: Haolin Zhi, Peca Iulian <br/>
- *  Date: August, 01, 2010 <br/>
- *  Time: 1:23:38 PM <br/>
- *  $ Revision 1.5 $ <br/>
- *  </p>
+ * <p>
+ * Authors: Haolin Zhi, Peca Iulian <br/>
+ * Date: August, 01, 2010 <br/>
+ * Time: 1:23:38 PM <br/>
+ * $ Revision 1.5 $ <br/>
+ * </p>
  *
- *  @author Haolin Zhi (zhi@cs.uni-bonn.de)
- *  @author Peca Iulian (pkiulian@gmail.com)
- *  @version $Revision: 1.5 $
+ * @author Haolin Zhi (zhi@cs.uni-bonn.de)
+ * @author Peca Iulian (pkiulian@gmail.com)
+ * @version $Revision: 1.5 $
  */
-public class CachedSequentialDatabase implements Database, Serializable, RevisionHandler {
+public class InsertCachedGeoKDTreeDatabase implements Database, Serializable, RevisionHandler {
 
 	/** for serialization */
-	private static final long serialVersionUID = 787245523118665778L;
+	private static final long serialVersionUID = 7117297133674562411L;
 
 	/**
 	 * Internal, sorted Treemap for storing all the DataObjects
 	 */
 	private TreeMap<String, DataObject> treeMap;
+
+	/**
+	 * Internal, sorted KDTree for storing all the DataObjects
+	 */
+	private KDTree<List<String>> kt;
 
 	/**
 	 * Holds the original instances delivered from WEKA
@@ -82,11 +90,9 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	private Map<DataObject, List<DataObject>> epsilonRangeQueryResults;
 
 	/**
-	 * flag to specify whether the cache for epsilonRangeQuery results need to be flushed
-	 * set to true:  after a new DataObject inserted
-	 * set to false: after a query performed
+	 * Specifies the radius for a range-query
 	 */
-	private boolean needFlush;
+	private double epsilon;
 
 	// *****************************************************************************************************************
 	// constructors
@@ -96,9 +102,11 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 * Constructs a new sequential database and holds the original instances
 	 * @param instances
 	 */
-	public CachedSequentialDatabase(Instances instances) {
+	public InsertCachedGeoKDTreeDatabase(Instances instances) {
 		this.instances = instances;
 		treeMap = new TreeMap<String, DataObject>();
+		kt = new KDTree<List<String>>(2);
+		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
 	}
 
 	// *****************************************************************************************************************
@@ -174,28 +182,28 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 */
 	@Override
 	public List<DataObject> epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
-
-		if (needFlush == true) {
-			epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
-			needFlush = false;
-		}
 		if (epsilonRangeQueryResults.containsKey(queryDataObject))
 			return epsilonRangeQueryResults.get(queryDataObject);
 		else {
-			ArrayList<DataObject> epsilonRange_List = new ArrayList<DataObject>();
-			Iterator<DataObject> iterator = dataObjectIterator();
-			while (iterator.hasNext()) {
-				DataObject dataObject = iterator.next();
-				double distance = queryDataObject.distance(dataObject);
-				if (distance < epsilon) {
-					epsilonRange_List.add(dataObject);
+			this.epsilon = epsilon;
+			List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
+			List<List<String>> epsilonRangeKeys_List = null;
+			try {
+				epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(0), queryDataObject.getInstance().value(1) }, epsilon);
+			} catch (KeySizeException e) {
+				e.printStackTrace();
+			}
+
+			if (epsilonRangeKeys_List != null && epsilonRangeKeys_List.size() > 0) {
+				for (List<String> keys : epsilonRangeKeys_List) {
+					for (String key : keys) {
+						epsilonRange_List.add(treeMap.get(key));
+					}
 				}
 			}
 			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
 			return epsilonRange_List;
-
 		}
-
 	}
 
 	/**
@@ -324,12 +332,45 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 
 	/**
 	 * Inserts a new dataObject into the database
-	 * @param dataObject
+	 * @param newDataObject
 	 */
 	@Override
-	public void insert(DataObject dataObject) {
-		treeMap.put(dataObject.getKey(), dataObject);
-		needFlush = true;
+	public void insert(DataObject newDataObject) {
+		if (epsilon != 0) {
+			List<List<String>> epsilonRangeKeys_List = null;
+			try {
+				epsilonRangeKeys_List = kt.nearestGeo(new double[] { newDataObject.getInstance().value(0), newDataObject.getInstance().value(1) }, epsilon);
+			} catch (KeySizeException e) {
+				e.printStackTrace();
+			}
+
+			if (epsilonRangeKeys_List != null && epsilonRangeKeys_List.size() > 0) {
+				for (List<String> keys : epsilonRangeKeys_List) {
+					for (String key : keys) {
+						if (epsilonRangeQueryResults.containsKey(treeMap.get(key))) {
+							epsilonRangeQueryResults.get(treeMap.get(key)).add(newDataObject);
+						}
+					}
+				}
+			}
+		}
+		
+		treeMap.put(newDataObject.getKey(), newDataObject);
+		try {
+			List<String> keys = new ArrayList<String>();
+			keys.add(newDataObject.getKey());
+			kt.insert(new double[] { newDataObject.getInstance().value(0), newDataObject.getInstance().value(1) }, keys);
+		} catch (KeySizeException e) {
+			e.printStackTrace();
+		} catch (KeyDuplicateException e) {
+			try {
+				List<String> keys = kt.search(new double[] { newDataObject.getInstance().value(0), newDataObject.getInstance().value(1) });
+				keys.add(newDataObject.getKey());
+			} catch (KeySizeException e1) {
+				e1.printStackTrace();
+			}
+		}
+
 	}
 
 	/**
@@ -354,6 +395,6 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	@Override
 	public void remove(String key) {
 		treeMap.remove(key);
-		needFlush = true;
+		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
 	}
 }
