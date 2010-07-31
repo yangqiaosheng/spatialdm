@@ -27,8 +27,11 @@ public class TestGeoDataObjectIDBScan {
 		clusterer = new IDBScan();
 
 		// set database type
-		clusterer.setDatabase_Type("clusterers.database.CachedGeoKDTreeDatabase");
-
+//		clusterer.setDatabase_Type("clusterers.database.CachedSpatialIndexDatabase");
+		clusterer.setDatabase_Type("clusterers.database.InsertCachedSpatialIndexDatabase");
+//		clusterer.setDatabase_Type("clusterers.database.CachedSequentialDatabase");
+//		clusterer.setDatabase_Type("clusterers.database.InsertCachedSequentialDatabase");
+//		clusterer.setDatabase_Type("weka.clusterers.forOPTICSAndDBScan.Databases.SequentialDatabase");
 		// set objects type to be clustered
 		clusterer.setDatabase_distanceType("geo.GeoDataObject");
 
@@ -45,7 +48,7 @@ public class TestGeoDataObjectIDBScan {
 //		loader.setFile(new File("data/berlin_sample_positions.csv"));
 		
 		ArffLoader loader = new ArffLoader();
-		loader.setFile(new File("data/berlin_sub_1500.arff"));
+		loader.setFile(new File("data/berlin_sub.arff"));
 
 		// get the instances from the file
 		Instances totalInstances = loader.getDataSet();
