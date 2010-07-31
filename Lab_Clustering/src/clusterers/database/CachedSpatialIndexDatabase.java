@@ -209,7 +209,7 @@ public class CachedSpatialIndexDatabase implements Database, Serializable, Revis
 		if(positive) {
 			result = lat + (epsilon * 180) / (Math.PI * R_EARTH);
 		} else {
-			result = lat + (epsilon * 180) / (Math.PI * R_EARTH);
+			result = lat - (epsilon * 180) / (Math.PI * R_EARTH);
 		}
 		return result;
 	}

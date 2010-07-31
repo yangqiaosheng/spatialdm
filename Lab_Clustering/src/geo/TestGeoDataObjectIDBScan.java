@@ -48,7 +48,7 @@ public class TestGeoDataObjectIDBScan {
 //		loader.setFile(new File("data/berlin_sample_positions.csv"));
 		
 		ArffLoader loader = new ArffLoader();
-		loader.setFile(new File("data/berlin_sub.arff"));
+		loader.setFile(new File("data/berlin.arff"));
 
 		// get the instances from the file
 		Instances totalInstances = loader.getDataSet();

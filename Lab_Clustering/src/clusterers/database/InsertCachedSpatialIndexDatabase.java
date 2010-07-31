@@ -216,7 +216,7 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 		if(positive) {
 			result = lat + (epsilon * 180) / (Math.PI * R_EARTH);
 		} else {
-			result = lat + (epsilon * 180) / (Math.PI * R_EARTH);
+			result = lat - (epsilon * 180) / (Math.PI * R_EARTH);
 		}
 		return result;
 	}

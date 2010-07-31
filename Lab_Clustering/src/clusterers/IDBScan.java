@@ -122,6 +122,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 */
 	@Override
 	public void buildClusterer(Instances instances) throws Exception {
+		int num = 0;
 		// can clusterer handle the data?
 		getCapabilities().testWithFail(instances);
 
@@ -149,6 +150,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		while (iterator.hasNext()) {
 			DataObject dataObject = iterator.next();
 			if (dataObject.getClusterLabel() == DataObject.UNCLASSIFIED) {
+				System.out.println(num++);
 				if (expandCluster(dataObject)) {
 					clusterID++;
 					numberOfGeneratedClusters++;
