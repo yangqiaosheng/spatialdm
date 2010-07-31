@@ -28,9 +28,10 @@ public class TestGeoDataObjectIDBScan {
 
 		// set database type
 //		clusterer.setDatabase_Type("clusterers.database.CachedSpatialIndexDatabase");
-		clusterer.setDatabase_Type("clusterers.database.InsertCachedSpatialIndexDatabase");
+//		clusterer.setDatabase_Type("clusterers.database.InsertCachedSpatialIndexDatabase");
 //		clusterer.setDatabase_Type("clusterers.database.CachedSequentialDatabase");
 //		clusterer.setDatabase_Type("clusterers.database.InsertCachedSequentialDatabase");
+		clusterer.setDatabase_Type("clusterers.database.InsertCachedGeoKDTreeDatabase");
 //		clusterer.setDatabase_Type("weka.clusterers.forOPTICSAndDBScan.Databases.SequentialDatabase");
 		// set objects type to be clustered
 		clusterer.setDatabase_distanceType("geo.GeoDataObject");

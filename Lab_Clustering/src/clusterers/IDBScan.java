@@ -596,8 +596,8 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		long start = System.currentTimeMillis();
 		DataObject dataObject = dataObjectForName(getDatabase_distanceType(), newInstance, Integer.toString(database.size()), database);
 		database.insert(dataObject);
-//		incrementalExpandCluster(dataObject);
-		paperExpandCluster(dataObject);
+		fastInsert(dataObject);
+//		paperInsert(dataObject);
 		System.out.println(database.size());
 		long end = System.currentTimeMillis();
 		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
@@ -639,8 +639,13 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		}
 	}
 
+	/**
+	 * optimized implementation of Incremental DBScan
+	 * double the efficiency of the paperInsert(DataObject dataObject)
+	 * @param dataObject
+	 */
 	@SuppressWarnings("unchecked")
-	private void incrementalExpandCluster(DataObject dataObject) {
+	private void fastInsert(DataObject dataObject) {
 		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 
 		dataObject.setClusterLabel(DataObject.NOISE);
@@ -718,99 +723,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	* @param dataObject
 	*/
 	@SuppressWarnings( { "unchecked" })
-	private void paperExpandClusterMap(DataObject dataObject) {
-		Map<DataObject, List<DataObject>> updSeeds = new HashMap<DataObject, List<DataObject>>();
-		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
-
-		dataObject.setClusterLabel(DataObject.NOISE);
-
-		/** Iterate the neighbourhoodList of the startDataObject */
-		for (int j = 0; j < firstNeighbourhoodList.size(); j++) {
-			DataObject firstNeighbourhood = firstNeighbourhoodList.get(j);
-			List<DataObject> SecondNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), firstNeighbourhood);
-//			if (seedListDataObject_Neighbourhood.size() == getMinPoints()) {
-			if (SecondNeighbourhoodList.size() >= getMinPoints()) {
-				/** neighbourhoodDataObject is new coreObject p' */
-				for (int i = 0; i < SecondNeighbourhoodList.size(); i++) {
-					DataObject secondNeighbourhood = SecondNeighbourhoodList.get(i);
-					List<DataObject> ThirdNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), secondNeighbourhood);
-					if (ThirdNeighbourhoodList.size() >= getMinPoints()) {
-						updSeeds.put(secondNeighbourhood, ThirdNeighbourhoodList);
-					}
-				}
-			}
-		}
-
-		// count cluster label
-		TreeSet<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
-		for (Map.Entry<DataObject, List<DataObject>> updSeed : updSeeds.entrySet()) {
-			if (updSeed.getKey().getClusterLabel() != DataObject.NOISE) {
-				neighbourhoodClusterLabels.add(updSeed.getKey().getClusterLabel());
-			}
-		}
-
-		if (updSeeds.size() == 0)
-			return;
-
-		/** creation */
-		if (neighbourhoodClusterLabels.size() == 0) {
-			for (Map.Entry<DataObject, List<DataObject>> updSeed : updSeeds.entrySet()) {
-				for (DataObject create : updSeed.getValue()) {
-					create.setClusterLabel(clusterID);
-				}
-			}
-			clusterID++;
-			numberOfGeneratedClusters++;
-		}
-
-		/** absorption */
-		if (neighbourhoodClusterLabels.size() == 1) {
-			int absorptClusterID = neighbourhoodClusterLabels.iterator().next();
-			for (Map.Entry<DataObject, List<DataObject>> updSeed : updSeeds.entrySet()) {
-				for (DataObject absorpt : updSeed.getValue()) {
-					if (absorpt.getClusterLabel() == DataObject.NOISE) {
-						absorpt.setClusterLabel(absorptClusterID);
-					}
-				}
-			}
-		}
-
-		/** merge */
-		if (neighbourhoodClusterLabels.size() > 1) {
-			isMerged = true;
-			if (firstNeighbourhoodList.size() < getMinPoints()) {
-				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
-			} else {
-				System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
-			}
-
-			int mergeClusterID = neighbourhoodClusterLabels.iterator().next();
-			neighbourhoodClusterLabels.remove(mergeClusterID);
-
-			for (Map.Entry<DataObject, List<DataObject>> updSeed : updSeeds.entrySet()) {
-				for (DataObject merge : updSeed.getValue()) {
-					if (merge.getClusterLabel() == DataObject.NOISE) {
-						merge.setClusterLabel(mergeClusterID);
-					}
-				}
-			}
-
-			for (int i = 0; i < database.size(); i++) {
-				DataObject mergedataObject = database.getDataObject(Integer.toString(i));
-				if (neighbourhoodClusterLabels.contains(mergedataObject.getClusterLabel())) {
-					mergedataObject.setClusterLabel(mergeClusterID);
-				}
-			}
-		}
-
-	}
-
-	/**
-	* implement the incremental method according to the paper
-	* @param dataObject
-	*/
-	@SuppressWarnings( { "unchecked" })
-	private void paperExpandCluster(DataObject dataObject) {
+	private void paperInsert(DataObject dataObject) {
 		Set<DataObject> updSeeds = new HashSet<DataObject>();
 		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 
@@ -895,102 +808,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 				}
 			}
 		}
-
 	}
-
-	/**
-		* implement the incremental method according to the paper
-		* @param dataObject
-		*/
-		private void paperExpandClusterCached(DataObject dataObject) {
-			Map<DataObject, List<DataObject>> epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
-			Set<DataObject> updSeeds = new HashSet<DataObject>();
-			List<DataObject> firstNeighbourhoodList = cachedEpsilonRangeQuery(epsilonRangeQueryResults, dataObject);
-	
-			dataObject.setClusterLabel(DataObject.NOISE);
-	
-			/** Iterate the neighbourhoodList of the startDataObject */
-			for (int j = 0; j < firstNeighbourhoodList.size(); j++) {
-				DataObject firstNeighbourhood = firstNeighbourhoodList.get(j);
-				List<DataObject> secondNeighbourhoodList = cachedEpsilonRangeQuery(epsilonRangeQueryResults, firstNeighbourhood);
-	//			if (seedListDataObject_Neighbourhood.size() == getMinPoints()) {
-				if (secondNeighbourhoodList.size() >= getMinPoints()) {
-					/** neighbourhoodDataObject is new coreObject p' */
-					for (int i = 0; i < secondNeighbourhoodList.size(); i++) {
-						DataObject secondNeighbourhood = secondNeighbourhoodList.get(i);
-						if (cachedEpsilonRangeQuery(epsilonRangeQueryResults, secondNeighbourhood).size() >= getMinPoints()) {
-							updSeeds.add(secondNeighbourhood);
-						}
-					}
-				}
-			}
-	
-			// count cluster label
-			TreeSet<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
-			for (DataObject updSeed : updSeeds) {
-				if (updSeed.getClusterLabel() != DataObject.NOISE) {
-					neighbourhoodClusterLabels.add(updSeed.getClusterLabel());
-				}
-			}
-	
-			if (updSeeds.size() == 0)
-				return;
-	
-			/** creation */
-			if (neighbourhoodClusterLabels.size() == 0) {
-				for (DataObject updSeed : updSeeds) {
-					List<DataObject> createList = cachedEpsilonRangeQuery(epsilonRangeQueryResults, updSeed);
-					for (DataObject create : createList) {
-						create.setClusterLabel(clusterID);
-					}
-				}
-				clusterID++;
-				numberOfGeneratedClusters++;
-			}
-	
-			/** absorption */
-			if (neighbourhoodClusterLabels.size() == 1) {
-				int absorptClusterID = neighbourhoodClusterLabels.iterator().next();
-				for (DataObject updSeed : updSeeds) {
-					List<DataObject> absorptList = cachedEpsilonRangeQuery(epsilonRangeQueryResults, updSeed);
-					for (DataObject absorpt : absorptList) {
-						if (absorpt.getClusterLabel() == DataObject.NOISE) {
-							absorpt.setClusterLabel(absorptClusterID);
-						}
-					}
-				}
-			}
-	
-			/** merge */
-			if (neighbourhoodClusterLabels.size() > 1) {
-				isMerged = true;
-				if (firstNeighbourhoodList.size() < getMinPoints()) {
-					System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
-				} else {
-					System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
-				}
-	
-				int mergeClusterID = neighbourhoodClusterLabels.iterator().next();
-				neighbourhoodClusterLabels.remove(mergeClusterID);
-	
-				for (DataObject updSeed : updSeeds) {
-					List<DataObject> absorptList = cachedEpsilonRangeQuery(epsilonRangeQueryResults, updSeed);
-					for (DataObject merge : absorptList) {
-						if (merge.getClusterLabel() == DataObject.NOISE) {
-							merge.setClusterLabel(mergeClusterID);
-						}
-					}
-				}
-	
-				for (int i = 0; i < database.size(); i++) {
-					DataObject mergedataObject = database.getDataObject(Integer.toString(i));
-					if (neighbourhoodClusterLabels.contains(mergedataObject.getClusterLabel())) {
-						mergedataObject.setClusterLabel(mergeClusterID);
-					}
-				}
-			}
-	
-		}
 
 	public void deleteInstance(String key) {
 //		DataObject deleteDataObject = database.getDataObject(key);
@@ -1013,15 +831,6 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 //		}
 //		
 //		
-	}
-	private List<DataObject> cachedEpsilonRangeQuery(Map<DataObject, List<DataObject>> epsilonRangeQueryResults, DataObject dataObject){
-		if (epsilonRangeQueryResults.containsKey(dataObject)) {
-			return epsilonRangeQueryResults.get(dataObject);
-		} else {
-			List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
-			epsilonRangeQueryResults.put(dataObject, neighbourhoodList);
-			return neighbourhoodList;
-		}
 	}
 
 }
