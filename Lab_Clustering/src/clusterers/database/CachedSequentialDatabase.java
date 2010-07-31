@@ -59,7 +59,7 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	/**
 	 * Internal, sorted Treemap for storing all the DataObjects
 	 */
-	private TreeMap treeMap;
+	private TreeMap<String, DataObject> treeMap;
 
 	/**
 	 * Holds the original instances delivered from WEKA
@@ -98,7 +98,7 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 */
 	public CachedSequentialDatabase(Instances instances) {
 		this.instances = instances;
-		treeMap = new TreeMap();
+		treeMap = new TreeMap<String, DataObject>();
 	}
 
 	// *****************************************************************************************************************
@@ -112,7 +112,7 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 */
 	@Override
 	public DataObject getDataObject(String key) {
-		return (DataObject) treeMap.get(key);
+		return treeMap.get(key);
 	}
 
 	/**
@@ -129,9 +129,9 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 			attributeMinValues[i] = attributeMaxValues[i] = Double.NaN;
 		}
 
-		Iterator iterator = dataObjectIterator();
+		Iterator<DataObject> iterator = dataObjectIterator();
 		while (iterator.hasNext()) {
-			DataObject dataObject = (DataObject) iterator.next();
+			DataObject dataObject = iterator.next();
 			for (int j = 0; j < getInstances().numAttributes(); j++) {
 				if (Double.isNaN(attributeMinValues[j])) {
 					attributeMinValues[j] = dataObject.getInstance().value(j);
@@ -173,19 +173,19 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 * @return List with all the DataObjects that are within the specified range
 	 */
 	@Override
-	public List epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
+	public List<DataObject> epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
 
 		if (needFlush == true) {
 			epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
 			needFlush = false;
-		} 
-		if (epsilonRangeQueryResults.containsKey(queryDataObject)) {
+		}
+		if (epsilonRangeQueryResults.containsKey(queryDataObject))
 			return epsilonRangeQueryResults.get(queryDataObject);
-		} else {
-			ArrayList epsilonRange_List = new ArrayList();
-			Iterator iterator = dataObjectIterator();
+		else {
+			ArrayList<DataObject> epsilonRange_List = new ArrayList<DataObject>();
+			Iterator<DataObject> iterator = dataObjectIterator();
 			while (iterator.hasNext()) {
-				DataObject dataObject = (DataObject) iterator.next();
+				DataObject dataObject = iterator.next();
 				double distance = queryDataObject.distance(dataObject);
 				if (distance < epsilon) {
 					epsilonRange_List.add(dataObject);
@@ -193,9 +193,9 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 			}
 			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
 			return epsilonRange_List;
-			
+
 		}
-		
+
 	}
 
 	/**
@@ -210,17 +210,17 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 *         with candidates from the epsilon-range-query (EpsilonRange_ListElements)
 	 */
 	@Override
-	public List k_nextNeighbourQuery(int k, double epsilon, DataObject dataObject) {
-		Iterator iterator = dataObjectIterator();
+	public List<Object> k_nextNeighbourQuery(int k, double epsilon, DataObject dataObject) {
+		Iterator<DataObject> iterator = dataObjectIterator();
 
-		List return_List = new ArrayList();
-		List nextNeighbours_List = new ArrayList();
-		List epsilonRange_List = new ArrayList();
+		List<Object> return_List = new ArrayList<Object>();
+		List<PriorityQueueElement> nextNeighbours_List = new ArrayList<PriorityQueueElement>();
+		List<EpsilonRange_ListElement> epsilonRange_List = new ArrayList<EpsilonRange_ListElement>();
 
 		PriorityQueue priorityQueue = new PriorityQueue();
 
 		while (iterator.hasNext()) {
-			DataObject next_dataObject = (DataObject) iterator.next();
+			DataObject next_dataObject = iterator.next();
 			double dist = dataObject.distance(next_dataObject);
 
 			if (dist <= epsilon) {
@@ -260,8 +260,8 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 *         the double-value for the calculated coreDistance
 	 */
 	@Override
-	public List coreDistance(int minPoints, double epsilon, DataObject dataObject) {
-		List list = k_nextNeighbourQuery(minPoints, epsilon, dataObject);
+	public List<Object> coreDistance(int minPoints, double epsilon, DataObject dataObject) {
+		List<Object> list = k_nextNeighbourQuery(minPoints, epsilon, dataObject);
 
 		if (((List) list.get(1)).size() < minPoints) {
 			list.add(new Double(DataObject.UNDEFINED));
@@ -293,7 +293,7 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 * @return iterator
 	 */
 	@Override
-	public Iterator keyIterator() {
+	public Iterator<String> keyIterator() {
 		return treeMap.keySet().iterator();
 	}
 
@@ -302,7 +302,7 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 * @return iterator
 	 */
 	@Override
-	public Iterator dataObjectIterator() {
+	public Iterator<DataObject> dataObjectIterator() {
 		return treeMap.values().iterator();
 	}
 
@@ -313,9 +313,9 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	 */
 	@Override
 	public boolean contains(DataObject dataObject_Query) {
-		Iterator iterator = dataObjectIterator();
+		Iterator<DataObject> iterator = dataObjectIterator();
 		while (iterator.hasNext()) {
-			DataObject dataObject = (DataObject) iterator.next();
+			DataObject dataObject = iterator.next();
 			if (dataObject.equals(dataObject_Query))
 				return true;
 		}
@@ -349,5 +349,10 @@ public class CachedSequentialDatabase implements Database, Serializable, Revisio
 	@Override
 	public String getRevision() {
 		return RevisionUtils.extract("$Revision: 1.4 $");
+	}
+
+	@Override
+	public void remove(String key) {
+		treeMap.remove(key);
 	}
 }

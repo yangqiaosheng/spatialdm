@@ -594,8 +594,8 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		long start = System.currentTimeMillis();
 		DataObject dataObject = dataObjectForName(getDatabase_distanceType(), newInstance, Integer.toString(database.size()), database);
 		database.insert(dataObject);
-//		incrementalExpandCluster(dataObject);
-		paperExpandCluster(dataObject);
+		incrementalExpandCluster(dataObject);
+//		paperExpandCluster(dataObject);
 		System.out.println(database.size());
 		long end = System.currentTimeMillis();
 		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
@@ -611,52 +611,6 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		}
 		long end = System.currentTimeMillis();
 		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
-	}
-
-	public void insert(Instances instances) throws Exception {
-
-		int size = database.size();
-		for (int i = 0; i < instances.numInstances(); i++) {
-			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), instances.instance(i), Integer.toString(size + i), database);
-			System.out.println(i + " ");
-			database.insert(dataObject);
-			incrementalExpandCluster(dataObject);
-		}
-
-		database.setMinMaxValues();
-
-		//sort cluster labels
-		if (isMerged) {
-			sortClusterLabels();
-			isMerged = false;
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void testNeighbourList(int size) {
-		DataObject object = database.getDataObject(String.valueOf(size - 10));
-		@SuppressWarnings("unchecked")
-		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), object);
-		System.out.println("----------------first" + neighbourhoodList.size());
-		for (int i = 0; i < neighbourhoodList.size(); i++) {
-//		for(int i = neighbourhoodList.size()-1; i>=0;i--){
-			DataObject n = neighbourhoodList.get(i);
-			if (object == n) {
-				System.out.println("original");
-				neighbourhoodList.remove(object);
-			} else {
-				System.out.println("neighbour");
-			}
-		}
-		System.out.println("----------------second" + neighbourhoodList.size());
-		for (int i = 0; i < neighbourhoodList.size(); i++) {
-			DataObject n = neighbourhoodList.get(i);
-			if (object == n) {
-				System.out.println("original");
-			} else {
-				System.out.println("neighbour");
-			}
-		}
 	}
 
 	private void sortClusterLabels() {
@@ -762,7 +716,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	* @param dataObject
 	*/
 	@SuppressWarnings( { "unchecked" })
-	private void paperExpandCluster(DataObject dataObject) {
+	private void paperExpandClusterMap(DataObject dataObject) {
 		Map<DataObject, List<DataObject>> updSeeds = new HashMap<DataObject, List<DataObject>>();
 		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 
@@ -853,7 +807,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	* @param dataObject
 	*/
 	@SuppressWarnings( { "unchecked" })
-	private void paperExpandClusterMap(DataObject dataObject) {
+	private void paperExpandCluster(DataObject dataObject) {
 		Set<DataObject> updSeeds = new HashSet<DataObject>();
 		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 
@@ -863,7 +817,6 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		for (int j = 0; j < firstNeighbourhoodList.size(); j++) {
 			DataObject firstNeighbourhood = firstNeighbourhoodList.get(j);
 			List<DataObject> secondNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), firstNeighbourhood);
-//			if (seedListDataObject_Neighbourhood.size() == getMinPoints()) {
 			if (secondNeighbourhoodList.size() >= getMinPoints()) {
 				/** neighbourhoodDataObject is new coreObject p' */
 				for (int i = 0; i < secondNeighbourhoodList.size(); i++) {

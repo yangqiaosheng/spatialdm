@@ -21,7 +21,7 @@
  *    & Rainer Holzmann (holzmann@cip.ifi.lmu.de)
  */
 
-package clusterers.database;
+package weka.clusterers.forOPTICSAndDBScan.Databases;
 
 import java.util.Iterator;
 import java.util.List;

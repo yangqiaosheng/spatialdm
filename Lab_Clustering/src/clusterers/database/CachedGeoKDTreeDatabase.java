@@ -24,8 +24,10 @@ package clusterers.database;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
@@ -36,28 +38,36 @@ import weka.clusterers.forOPTICSAndDBScan.Utils.PriorityQueueElement;
 import weka.core.Instances;
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
+import edu.wlu.cs.levy.CG.KDTree;
+import edu.wlu.cs.levy.CG.KeyDuplicateException;
+import edu.wlu.cs.levy.CG.KeySizeException;
 
 /**
- *  <p>
- *  Authors: Haolin Zhi, Peca Iulian <br/>
- *  Date: August, 01, 2010 <br/>
- *  Time: 1:23:38 PM <br/>
- *  $ Revision 1.5 $ <br/>
- *  </p>
+ * <p>
+ * Authors: Haolin Zhi, Peca Iulian <br/>
+ * Date: August, 01, 2010 <br/>
+ * Time: 1:23:38 PM <br/>
+ * $ Revision 1.5 $ <br/>
+ * </p>
  *
- *  @author Haolin Zhi (zhi@cs.uni-bonn.de)
- *  @author Peca Iulian (pkiulian@gmail.com)
- *  @version $Revision: 1.5 $
+ * @author Haolin Zhi (zhi@cs.uni-bonn.de)
+ * @author Peca Iulian (pkiulian@gmail.com)
+ * @version $Revision: 1.5 $
  */
-public class SequentialDatabase implements Database, Serializable, RevisionHandler {
+public class CachedGeoKDTreeDatabase implements Database, Serializable, RevisionHandler {
 
 	/** for serialization */
-	private static final long serialVersionUID = 787245523118665778L;
+	private static final long serialVersionUID = 7117297133674562411L;
 
 	/**
 	 * Internal, sorted Treemap for storing all the DataObjects
 	 */
-	private TreeMap treeMap;
+	private TreeMap<String, DataObject> treeMap;
+
+	/**
+	 * Internal, sorted KDTree for storing all the DataObjects
+	 */
+	private KDTree<List<String>> kt;
 
 	/**
 	 * Holds the original instances delivered from WEKA
@@ -74,6 +84,18 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 */
 	private double[] attributeMaxValues;
 
+	/**
+	 * cache for the epsilonRangeQuery results
+	 */
+	private Map<DataObject, List<DataObject>> epsilonRangeQueryResults;
+
+	/**
+	 * flag to specify whether the cache for epsilonRangeQuery results need to be flushed
+	 * set to true:  after a new DataObject inserted
+	 * set to false: after a query performed
+	 */
+	private boolean needFlush;
+
 	// *****************************************************************************************************************
 	// constructors
 	// *****************************************************************************************************************
@@ -82,9 +104,10 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 * Constructs a new sequential database and holds the original instances
 	 * @param instances
 	 */
-	public SequentialDatabase(Instances instances) {
+	public CachedGeoKDTreeDatabase(Instances instances) {
 		this.instances = instances;
-		treeMap = new TreeMap();
+		treeMap = new TreeMap<String, DataObject>();
+		kt = new KDTree<List<String>>(2);
 	}
 
 	// *****************************************************************************************************************
@@ -98,7 +121,7 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 */
 	@Override
 	public DataObject getDataObject(String key) {
-		return (DataObject) treeMap.get(key);
+		return treeMap.get(key);
 	}
 
 	/**
@@ -115,9 +138,9 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 			attributeMinValues[i] = attributeMaxValues[i] = Double.NaN;
 		}
 
-		Iterator iterator = dataObjectIterator();
+		Iterator<DataObject> iterator = dataObjectIterator();
 		while (iterator.hasNext()) {
-			DataObject dataObject = (DataObject) iterator.next();
+			DataObject dataObject = iterator.next();
 			for (int j = 0; j < getInstances().numAttributes(); j++) {
 				if (Double.isNaN(attributeMinValues[j])) {
 					attributeMinValues[j] = dataObject.getInstance().value(j);
@@ -159,18 +182,32 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 * @return List with all the DataObjects that are within the specified range
 	 */
 	@Override
-	public List epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
-		ArrayList epsilonRange_List = new ArrayList();
-		Iterator iterator = dataObjectIterator();
-		while (iterator.hasNext()) {
-			DataObject dataObject = (DataObject) iterator.next();
-			double distance = queryDataObject.distance(dataObject);
-			if (distance < epsilon) {
-				epsilonRange_List.add(dataObject);
-			}
+	public List<DataObject> epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
+		if (needFlush == true) {
+			epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
+			needFlush = false;
 		}
+		if (epsilonRangeQueryResults.containsKey(queryDataObject))
+			return epsilonRangeQueryResults.get(queryDataObject);
+		else {
+			List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
+			List<List<String>> epsilonRangeKeys_List = null;
+			try {
+				epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(0), queryDataObject.getInstance().value(1) }, epsilon);
+			} catch (KeySizeException e) {
+				e.printStackTrace();
+			}
 
-		return epsilonRange_List;
+			if (epsilonRangeKeys_List != null && epsilonRangeKeys_List.size() > 0) {
+				for (List<String> keys : epsilonRangeKeys_List) {
+					for (String key : keys) {
+						epsilonRange_List.add(treeMap.get(key));
+					}
+				}
+			}
+			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
+			return epsilonRange_List;
+		}
 	}
 
 	/**
@@ -185,17 +222,17 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 *         with candidates from the epsilon-range-query (EpsilonRange_ListElements)
 	 */
 	@Override
-	public List k_nextNeighbourQuery(int k, double epsilon, DataObject dataObject) {
-		Iterator iterator = dataObjectIterator();
+	public List<Object> k_nextNeighbourQuery(int k, double epsilon, DataObject dataObject) {
+		Iterator<DataObject> iterator = dataObjectIterator();
 
-		List return_List = new ArrayList();
-		List nextNeighbours_List = new ArrayList();
-		List epsilonRange_List = new ArrayList();
+		List<Object> return_List = new ArrayList<Object>();
+		List<PriorityQueueElement> nextNeighbours_List = new ArrayList<PriorityQueueElement>();
+		List<EpsilonRange_ListElement> epsilonRange_List = new ArrayList<EpsilonRange_ListElement>();
 
 		PriorityQueue priorityQueue = new PriorityQueue();
 
 		while (iterator.hasNext()) {
-			DataObject next_dataObject = (DataObject) iterator.next();
+			DataObject next_dataObject = iterator.next();
 			double dist = dataObject.distance(next_dataObject);
 
 			if (dist <= epsilon) {
@@ -235,8 +272,8 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 *         the double-value for the calculated coreDistance
 	 */
 	@Override
-	public List coreDistance(int minPoints, double epsilon, DataObject dataObject) {
-		List list = k_nextNeighbourQuery(minPoints, epsilon, dataObject);
+	public List<Object> coreDistance(int minPoints, double epsilon, DataObject dataObject) {
+		List<Object> list = k_nextNeighbourQuery(minPoints, epsilon, dataObject);
 
 		if (((List) list.get(1)).size() < minPoints) {
 			list.add(new Double(DataObject.UNDEFINED));
@@ -268,7 +305,7 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 * @return iterator
 	 */
 	@Override
-	public Iterator keyIterator() {
+	public Iterator<String> keyIterator() {
 		return treeMap.keySet().iterator();
 	}
 
@@ -277,7 +314,7 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 * @return iterator
 	 */
 	@Override
-	public Iterator dataObjectIterator() {
+	public Iterator<DataObject> dataObjectIterator() {
 		return treeMap.values().iterator();
 	}
 
@@ -288,9 +325,9 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	 */
 	@Override
 	public boolean contains(DataObject dataObject_Query) {
-		Iterator iterator = dataObjectIterator();
+		Iterator<DataObject> iterator = dataObjectIterator();
 		while (iterator.hasNext()) {
-			DataObject dataObject = (DataObject) iterator.next();
+			DataObject dataObject = iterator.next();
 			if (dataObject.equals(dataObject_Query))
 				return true;
 		}
@@ -304,11 +341,21 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	@Override
 	public void insert(DataObject dataObject) {
 		treeMap.put(dataObject.getKey(), dataObject);
-	}
-
-	@Override
-	public void remove(String key) {
-		treeMap.remove(key);
+		try {
+			List<String> keys = new ArrayList<String>();
+			keys.add(dataObject.getKey());
+			kt.insert(new double[] { dataObject.getInstance().value(0), dataObject.getInstance().value(1) }, keys);
+		} catch (KeySizeException e) {
+			e.printStackTrace();
+		} catch (KeyDuplicateException e) {
+			try {
+				List<String> keys = kt.search(new double[] { dataObject.getInstance().value(0), dataObject.getInstance().value(1) });
+				keys.add(dataObject.getKey());
+			} catch (KeySizeException e1) {
+				e1.printStackTrace();
+			}
+		}
+		needFlush = true;
 	}
 
 	/**
@@ -328,5 +375,10 @@ public class SequentialDatabase implements Database, Serializable, RevisionHandl
 	@Override
 	public String getRevision() {
 		return RevisionUtils.extract("$Revision: 1.4 $");
+	}
+
+	@Override
+	public void remove(String key) {
+		treeMap.remove(key);
 	}
 }
