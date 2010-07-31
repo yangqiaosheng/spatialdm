@@ -181,6 +181,47 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 	}
 
 	/**
+	 * calculate the Longitude boundary according to an reference coordinate and epsilon
+	 * @param lon
+	 * @param lat
+	 * @param epsilon
+	 * @param positive  true  - return the upper boundary
+	 * 				    false - return the lower boundary
+	 * @return
+	 */
+	private static double geoLon(double lon, double lat, double epsilon,  boolean positive) {
+	    long R_EARTH = 6371000;
+		double result = 0;
+		if (positive) {
+			result =  lon + (epsilon * 180) / (Math.PI * R_EARTH * Math.cos(lat * Math.PI / 180)); 
+		} else {
+			result = lon - (epsilon * 180) / (Math.PI * R_EARTH * Math.cos(lat * Math.PI / 180)); 
+		}
+		return result;
+	}
+	
+	
+	 /**
+	  * calculate the Latitude boundary according to an reference coordinate and epsilon
+	  * @param lon
+	  * @param lat
+	  * @param epsilon
+	  * @param positive true  - return the upper boundary
+	  * 				false - return the lower boundary
+	  * @return
+	  */
+	private static double geoLat(double lon, double lat, double epsilon, boolean positive) {
+		long R_EARTH = 6371000;
+		double result = 0;
+		if(positive) {
+			result = lat + (epsilon * 180) / (Math.PI * R_EARTH);
+		} else {
+			result = lat + (epsilon * 180) / (Math.PI * R_EARTH);
+		}
+		return result;
+	}
+	
+	/**
 	 * Performs an epsilon range query for this dataObject
 	 * @param epsilon Specifies the range for the query
 	 * @param queryDataObject The dataObject that is used as query-object for epsilon range query
@@ -195,8 +236,8 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 			this.epsilon = epsilon;
 			double lon = queryDataObject.getInstance().value(0);
 			double lat = queryDataObject.getInstance().value(1);
-			SortedMap<Double, Set<String>> xResults = xIndex.subMap(GeoDistance.geoLon(lon, lat, epsilon, false), GeoDistance.geoLon(lon, lat, epsilon, true));
-			SortedMap<Double, Set<String>> yResults = yIndex.subMap(GeoDistance.geoLat(lon, lat, epsilon, false), GeoDistance.geoLat(lon, lat, epsilon, true));
+			SortedMap<Double, Set<String>> xResults = xIndex.subMap(geoLon(lon, lat, epsilon, false), geoLon(lon, lat, epsilon, true));
+			SortedMap<Double, Set<String>> yResults = yIndex.subMap(geoLat(lon, lat, epsilon, false), geoLat(lon, lat, epsilon, true));
 			List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
 			
 			Set<String> xResultSet = new TreeSet<String>();
@@ -361,8 +402,8 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 		if (epsilon != 0) {
 			double lon = newDataObject.getInstance().value(0);
 			double lat = newDataObject.getInstance().value(1);
-			SortedMap<Double, Set<String>> xResults = xIndex.subMap(GeoDistance.geoLon(lon, lat, epsilon, false), GeoDistance.geoLon(lon, lat, epsilon, true));
-			SortedMap<Double, Set<String>> yResults = yIndex.subMap(GeoDistance.geoLat(lon, lat, epsilon, false), GeoDistance.geoLat(lon, lat, epsilon, true));
+			SortedMap<Double, Set<String>> xResults = xIndex.subMap(geoLon(lon, lat, epsilon, false), geoLon(lon, lat, epsilon, true));
+			SortedMap<Double, Set<String>> yResults = yIndex.subMap(geoLat(lon, lat, epsilon, false), geoLat(lon, lat, epsilon, true));
 			
 			Set<String> xResultSet = new TreeSet<String>();
 			for (Set<String> keys : xResults.values()) {
