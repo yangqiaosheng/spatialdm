@@ -39,7 +39,7 @@ public class TestGeoDataObjectIDBScan {
 		clusterer.setEpsilon(300);
 
 		// set minimum number of neighbors
-		clusterer.setMinPoints(8);
+		clusterer.setMinPoints(30);
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -48,7 +48,7 @@ public class TestGeoDataObjectIDBScan {
 //		loader.setFile(new File("data/berlin_sample_positions.csv"));
 		
 		ArffLoader loader = new ArffLoader();
-		loader.setFile(new File("data/berlin.arff"));
+		loader.setFile(new File("data/berlin_10000.arff"));
 
 		// get the instances from the file
 		Instances totalInstances = loader.getDataSet();
@@ -60,7 +60,7 @@ public class TestGeoDataObjectIDBScan {
 		Instances subInstances2 = new Instances(totalInstances, 0, 0);
 
 		for (int i = 0; i < totalInstances.numInstances(); i++) {
-			if (i < totalInstances.numInstances() / 2) {
+			if (i < totalInstances.numInstances()/2) {
 				subInstances1.add(totalInstances.instance(i));
 			} else {
 				subInstances2.add(totalInstances.instance(i));

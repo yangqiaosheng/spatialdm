@@ -596,8 +596,8 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		long start = System.currentTimeMillis();
 		DataObject dataObject = dataObjectForName(getDatabase_distanceType(), newInstance, Integer.toString(database.size()), database);
 		database.insert(dataObject);
-		incrementalExpandCluster(dataObject);
-//		paperExpandCluster(dataObject);
+//		incrementalExpandCluster(dataObject);
+		paperExpandCluster(dataObject);
 		System.out.println(database.size());
 		long end = System.currentTimeMillis();
 		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
@@ -777,6 +777,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 		/** merge */
 		if (neighbourhoodClusterLabels.size() > 1) {
+			isMerged = true;
 			if (firstNeighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
 			} else {
@@ -868,6 +869,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 		/** merge */
 		if (neighbourhoodClusterLabels.size() > 1) {
+			isMerged = true;
 			if (firstNeighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
 			} else {
@@ -961,6 +963,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	
 			/** merge */
 			if (neighbourhoodClusterLabels.size() > 1) {
+				isMerged = true;
 				if (firstNeighbourhoodList.size() < getMinPoints()) {
 					System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
 				} else {
