@@ -41,6 +41,7 @@ import weka.core.RevisionUtils;
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeyDuplicateException;
 import edu.wlu.cs.levy.CG.KeySizeException;
+import geo.GeoDataObject;
 
 /**
  * <p>
@@ -54,7 +55,7 @@ import edu.wlu.cs.levy.CG.KeySizeException;
  * @author Peca Iulian (pkiulian@gmail.com)
  * @version $Revision: 1.5 $
  */
-public class InsertCachedGeoKDTreeDatabase implements Database, Serializable, RevisionHandler {
+public class InsertCachedKDTreeDatabase implements Database, Serializable, RevisionHandler {
 
 	/** for serialization */
 	private static final long serialVersionUID = 7117297133674562411L;
@@ -102,7 +103,7 @@ public class InsertCachedGeoKDTreeDatabase implements Database, Serializable, Re
 	 * Constructs a new sequential database and holds the original instances
 	 * @param instances
 	 */
-	public InsertCachedGeoKDTreeDatabase(Instances instances) {
+	public InsertCachedKDTreeDatabase(Instances instances) {
 		this.instances = instances;
 		treeMap = new TreeMap<String, DataObject>();
 		kt = new KDTree<List<String>>(2);
@@ -189,7 +190,13 @@ public class InsertCachedGeoKDTreeDatabase implements Database, Serializable, Re
 			List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
 			List<List<String>> epsilonRangeKeys_List = null;
 			try {
-				epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(0), queryDataObject.getInstance().value(1) }, epsilon);
+				int xIndex = queryDataObject.getInstance().numValues() - 2;
+				int yIndex = queryDataObject.getInstance().numValues() - 1;
+				if (queryDataObject instanceof GeoDataObject){
+					epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(xIndex), queryDataObject.getInstance().value(yIndex) }, epsilon);
+				} else {
+					epsilonRangeKeys_List = kt.nearestEuclidean(new double[] { queryDataObject.getInstance().value(xIndex), queryDataObject.getInstance().value(yIndex) }, epsilon);
+				}
 			} catch (KeySizeException e) {
 				e.printStackTrace();
 			}
@@ -336,10 +343,16 @@ public class InsertCachedGeoKDTreeDatabase implements Database, Serializable, Re
 	 */
 	@Override
 	public void insert(DataObject newDataObject) {
+		int xIndex = newDataObject.getInstance().numValues() - 2;
+		int yIndex = newDataObject.getInstance().numValues() - 1;
 		if (epsilon != 0) {
 			List<List<String>> epsilonRangeKeys_List = null;
 			try {
-				epsilonRangeKeys_List = kt.nearestGeo(new double[] { newDataObject.getInstance().value(0), newDataObject.getInstance().value(1) }, epsilon);
+				if (newDataObject instanceof GeoDataObject){
+					epsilonRangeKeys_List = kt.nearestGeo(new double[] { newDataObject.getInstance().value(xIndex), newDataObject.getInstance().value(yIndex) }, epsilon);
+				} else {
+					epsilonRangeKeys_List = kt.nearestEuclidean(new double[] { newDataObject.getInstance().value(xIndex), newDataObject.getInstance().value(yIndex) }, epsilon);
+				}
 			} catch (KeySizeException e) {
 				e.printStackTrace();
 			}
@@ -359,12 +372,12 @@ public class InsertCachedGeoKDTreeDatabase implements Database, Serializable, Re
 		try {
 			List<String> keys = new ArrayList<String>();
 			keys.add(newDataObject.getKey());
-			kt.insert(new double[] { newDataObject.getInstance().value(0), newDataObject.getInstance().value(1) }, keys);
+			kt.insert(new double[] { newDataObject.getInstance().value(xIndex), newDataObject.getInstance().value(yIndex) }, keys);
 		} catch (KeySizeException e) {
 			e.printStackTrace();
 		} catch (KeyDuplicateException e) {
 			try {
-				List<String> keys = kt.search(new double[] { newDataObject.getInstance().value(0), newDataObject.getInstance().value(1) });
+				List<String> keys = kt.search(new double[] { newDataObject.getInstance().value(xIndex), newDataObject.getInstance().value(yIndex) });
 				keys.add(newDataObject.getKey());
 			} catch (KeySizeException e1) {
 				e1.printStackTrace();

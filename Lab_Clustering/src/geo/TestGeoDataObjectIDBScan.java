@@ -30,9 +30,10 @@ public class TestGeoDataObjectIDBScan {
 //		clusterer.setDatabase_Type("clusterers.database.CachedSpatialIndexDatabase");
 //		clusterer.setDatabase_Type("clusterers.database.InsertCachedSpatialIndexDatabase");
 //		clusterer.setDatabase_Type("clusterers.database.CachedSequentialDatabase");
-//		clusterer.setDatabase_Type("clusterers.database.InsertCachedSequentialDatabase");
-		clusterer.setDatabase_Type("clusterers.database.InsertCachedGeoKDTreeDatabase");
+		clusterer.setDatabase_Type("clusterers.database.InsertCachedSequentialDatabase");
+//		clusterer.setDatabase_Type("clusterers.database.InsertCachedGeoKDTreeDatabase");
 //		clusterer.setDatabase_Type("weka.clusterers.forOPTICSAndDBScan.Databases.SequentialDatabase");
+		
 		// set objects type to be clustered
 		clusterer.setDatabase_distanceType("geo.GeoDataObject");
 
@@ -40,16 +41,16 @@ public class TestGeoDataObjectIDBScan {
 		clusterer.setEpsilon(300);
 
 		// set minimum number of neighbors
-		clusterer.setMinPoints(30);
+		clusterer.setMinPoints(8);
 	}
 
 	public static void main(String[] args) throws Exception {
 		// load the csv file
-//		CSVLoader loader = new CSVLoader();
-//		loader.setFile(new File("data/berlin_sample_positions.csv"));
-		
-		ArffLoader loader = new ArffLoader();
-		loader.setFile(new File("data/berlin_10000.arff"));
+		CSVLoader loader = new CSVLoader();
+		loader.setFile(new File("data/berlin_sample_positions.csv"));
+
+//		ArffLoader loader = new ArffLoader();
+//		loader.setFile(new File("data/berlin_subt.arff"));
 
 		// get the instances from the file
 		Instances totalInstances = loader.getDataSet();
@@ -61,7 +62,7 @@ public class TestGeoDataObjectIDBScan {
 		Instances subInstances2 = new Instances(totalInstances, 0, 0);
 
 		for (int i = 0; i < totalInstances.numInstances(); i++) {
-			if (i < totalInstances.numInstances()/2) {
+			if (i < totalInstances.numInstances() / 2) {
 				subInstances1.add(totalInstances.instance(i));
 			} else {
 				subInstances2.add(totalInstances.instance(i));
@@ -105,11 +106,14 @@ public class TestGeoDataObjectIDBScan {
 		BufferedWriter writer = new BufferedWriter(new FileWriter("output/berlin_sample_clusters.csv"));
 		writer.write("id,Name,Cluster\n");
 		double[] res = eval.getClusterAssignments();
+
 		for (int i = 0; i < res.length; i++) {
+			int xIndex = totalInstances.instance(i).numValues() - 2;
+			int yIndex = totalInstances.instance(i).numValues() - 1;
 			if (res[i] == -1) {
-				writer.write((int) totalInstances.instance(i).value(0) + "," + (int) totalInstances.instance(i).value(1) + ",\n");
+				writer.write((int) totalInstances.instance(i).value(xIndex) + "," + (int) totalInstances.instance(i).value(yIndex) + ",\n");
 			} else {
-				writer.write((int) totalInstances.instance(i).value(0) + "," + (int) totalInstances.instance(i).value(1) + ",class " + (int) (res[i] + 1) + "\n");
+				writer.write((int) totalInstances.instance(i).value(xIndex) + "," + (int) totalInstances.instance(i).value(yIndex) + ",class " + (int) (res[i] + 1) + "\n");
 			}
 		}
 		writer.close();

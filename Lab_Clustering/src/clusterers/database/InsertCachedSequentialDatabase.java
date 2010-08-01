@@ -97,6 +97,7 @@ public class InsertCachedSequentialDatabase implements Database, Serializable, R
 		this.instances = instances;
 		treeMap = new TreeMap<String, DataObject>();
 		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
+		this.setMinMaxValues();
 	}
 
 	// *****************************************************************************************************************
@@ -322,7 +323,7 @@ public class InsertCachedSequentialDatabase implements Database, Serializable, R
 	public void insert(DataObject newDataObject) {
 		treeMap.put(newDataObject.getKey(), newDataObject);
 		for(DataObject dataObject : treeMap.values()){
-			if(dataObject.distance(newDataObject) < epsilon){
+			if(newDataObject.distance(dataObject) < epsilon){
 				if(epsilonRangeQueryResults.containsKey(dataObject)){
 					epsilonRangeQueryResults.get(dataObject).add(newDataObject);
 				}

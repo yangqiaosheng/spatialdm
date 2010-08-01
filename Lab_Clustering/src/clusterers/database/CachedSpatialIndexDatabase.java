@@ -69,9 +69,9 @@ public class CachedSpatialIndexDatabase implements Database, Serializable, Revis
 	/**
 	 * Internal, 2-d spatial index
 	 */
-	private SortedMap<Double, Set<String>> xIndex;
+	private SortedMap<Double, Set<String>> xQueryIdx;
 
-	private TreeMap<Double, Set<String>> yIndex;
+	private TreeMap<Double, Set<String>> yQueryIdx;
 
 	/**
 	 * Holds the original instances delivered from WEKA
@@ -104,8 +104,8 @@ public class CachedSpatialIndexDatabase implements Database, Serializable, Revis
 	public CachedSpatialIndexDatabase(Instances instances) {
 		this.instances = instances;
 		treeMap = new TreeMap<String, DataObject>();
-		xIndex = new TreeMap<Double, Set<String>>();
-		yIndex = new TreeMap<Double, Set<String>>();
+		xQueryIdx = new TreeMap<Double, Set<String>>();
+		yQueryIdx = new TreeMap<Double, Set<String>>();
 	}
 
 	// *****************************************************************************************************************
@@ -182,38 +182,37 @@ public class CachedSpatialIndexDatabase implements Database, Serializable, Revis
 	 * 				    false - return the lower boundary
 	 * @return
 	 */
-	private static double geoLon(double lon, double lat, double epsilon,  boolean positive) {
-	    long R_EARTH = 6371000;
+	private static double geoLon(double lon, double lat, double epsilon, boolean positive) {
+		long R_EARTH = 6371000;
 		double result = 0;
 		if (positive) {
-			result =  lon + (epsilon * 180) / (Math.PI * R_EARTH * Math.cos(lat * Math.PI / 180)); 
+			result = lon + (epsilon * 180) / (Math.PI * R_EARTH * Math.cos(lat * Math.PI / 180));
 		} else {
-			result = lon - (epsilon * 180) / (Math.PI * R_EARTH * Math.cos(lat * Math.PI / 180)); 
+			result = lon - (epsilon * 180) / (Math.PI * R_EARTH * Math.cos(lat * Math.PI / 180));
 		}
 		return result;
 	}
-	
-	
-	 /**
-	  * calculate the Latitude boundary according to an reference coordinate and epsilon
-	  * @param lon
-	  * @param lat
-	  * @param epsilon
-	  * @param positive true  - return the upper boundary
-	  * 				false - return the lower boundary
-	  * @return
-	  */
+
+	/**
+	 * calculate the Latitude boundary according to an reference coordinate and epsilon
+	 * @param lon
+	 * @param lat
+	 * @param epsilon
+	 * @param positive true  - return the upper boundary
+	 * 				false - return the lower boundary
+	 * @return
+	 */
 	private static double geoLat(double lon, double lat, double epsilon, boolean positive) {
 		long R_EARTH = 6371000;
 		double result = 0;
-		if(positive) {
+		if (positive) {
 			result = lat + (epsilon * 180) / (Math.PI * R_EARTH);
 		} else {
 			result = lat - (epsilon * 180) / (Math.PI * R_EARTH);
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Performs an epsilon range query for this dataObject
 	 * @param epsilon Specifies the range for the query
@@ -226,13 +225,14 @@ public class CachedSpatialIndexDatabase implements Database, Serializable, Revis
 		if (epsilonRangeQueryResults.containsKey(queryDataObject))
 			return epsilonRangeQueryResults.get(queryDataObject);
 		else {
-
-			double lon = queryDataObject.getInstance().value(0);
-			double lat = queryDataObject.getInstance().value(1);
-			SortedMap<Double, Set<String>> xResults = xIndex.subMap(geoLon(lon, lat, epsilon, false), geoLon(lon, lat, epsilon, true));
-			SortedMap<Double, Set<String>> yResults = yIndex.subMap(geoLat(lon, lat, epsilon, false), geoLat(lon, lat, epsilon, true));
+			int xIndex = queryDataObject.getInstance().numValues() - 2;
+			int yIndex = queryDataObject.getInstance().numValues() - 1;
+			double x = queryDataObject.getInstance().value(xIndex);
+			double lat = queryDataObject.getInstance().value(yIndex);
+			SortedMap<Double, Set<String>> xResults = xQueryIdx.subMap(geoLon(x, lat, epsilon, false), geoLon(x, lat, epsilon, true));
+			SortedMap<Double, Set<String>> yResults = yQueryIdx.subMap(geoLat(x, lat, epsilon, false), geoLat(x, lat, epsilon, true));
 			List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
-			
+
 			Set<String> xResultSet = new TreeSet<String>();
 			for (Set<String> keys : xResults.values()) {
 				xResultSet.addAll(keys);
@@ -250,13 +250,6 @@ public class CachedSpatialIndexDatabase implements Database, Serializable, Revis
 				}
 			}
 
-//			for (Set<String> keys : yResults.values()) {
-//				for (String key : keys) {
-//					if (queryDataObject.distance(treeMap.get(key)) < epsilon) {
-//						epsilonRange_List.add(treeMap.get(key));
-//					}
-//				}
-//			}
 			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
 			return epsilonRange_List;
 		}
@@ -388,25 +381,26 @@ public class CachedSpatialIndexDatabase implements Database, Serializable, Revis
 
 	/**
 	 * Inserts a new dataObject into the database
-	 * @param dataObject
+	 * @param newDataObject
 	 */
 	@Override
-	public void insert(DataObject dataObject) {
-		treeMap.put(dataObject.getKey(), dataObject);
+	public void insert(DataObject newDataObject) {
+		treeMap.put(newDataObject.getKey(), newDataObject);
 		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
 		Set<String> keys = new TreeSet<String>();
-		keys.add(dataObject.getKey());
-
-		if (xIndex.containsKey(dataObject.getInstance().value(0))) {
-			xIndex.get(dataObject.getInstance().value(0)).add(dataObject.getKey());
+		keys.add(newDataObject.getKey());
+		int xIndex = newDataObject.getInstance().numValues() - 2;
+		int yIndex = newDataObject.getInstance().numValues() - 1;
+		if (xQueryIdx.containsKey(newDataObject.getInstance().value(xIndex))) {
+			xQueryIdx.get(newDataObject.getInstance().value(xIndex)).add(newDataObject.getKey());
 		} else {
-			xIndex.put(dataObject.getInstance().value(0), keys);
+			xQueryIdx.put(newDataObject.getInstance().value(xIndex), keys);
 		}
 
-		if (yIndex.containsKey(dataObject.getInstance().value(1))) {
-			yIndex.get(dataObject.getInstance().value(1)).add(dataObject.getKey());
+		if (yQueryIdx.containsKey(newDataObject.getInstance().value(yIndex))) {
+			yQueryIdx.get(newDataObject.getInstance().value(yIndex)).add(newDataObject.getKey());
 		} else {
-			yIndex.put(dataObject.getInstance().value(1), keys);
+			yQueryIdx.put(newDataObject.getInstance().value(yIndex), keys);
 		}
 	}
 

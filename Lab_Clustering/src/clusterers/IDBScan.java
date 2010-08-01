@@ -111,9 +111,11 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	private ReplaceMissingValues replaceMissingValues_Filter;
 
 	/**
-	 * Replace missing values in training instances
+	 * whether a merge event has occurred
 	 */
-	private boolean isMerged = false;
+	private boolean hasMerged = false;
+	
+	
 
 	/**
 	 * Generate Clustering via DBScan
@@ -122,7 +124,6 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 */
 	@Override
 	public void buildClusterer(Instances instances) throws Exception {
-		int num = 0;
 		// can clusterer handle the data?
 		getCapabilities().testWithFail(instances);
 
@@ -150,7 +151,6 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		while (iterator.hasNext()) {
 			DataObject dataObject = iterator.next();
 			if (dataObject.getClusterLabel() == DataObject.UNCLASSIFIED) {
-				System.out.println(num++);
 				if (expandCluster(dataObject)) {
 					clusterID++;
 					numberOfGeneratedClusters++;
@@ -169,7 +169,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	// *****************************************************************************************************************
 	// methods
 	// *****************************************************************************************************************
-
+	int num = 0;
 	/**
 	 * Assigns this dataObject to a cluster or remains it as NOISE
 	 * @param dataObject The DataObject that needs to be assigned
@@ -180,6 +180,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		List<DataObject> seedList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 		/** dataObject is NO coreObject */
 		if (seedList.size() < getMinPoints()) {
+			System.out.println(num++);
 			dataObject.setClusterLabel(DataObject.NOISE);
 			return false;
 		}
@@ -188,6 +189,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		for (int i = 0; i < seedList.size(); i++) {
 			DataObject seedListDataObject = seedList.get(i);
 			/** label this seedListDataObject with the current clusterID, because it is in epsilon-range */
+			System.out.println(num++);
 			seedListDataObject.setClusterLabel(clusterID);
 			if (seedListDataObject.equals(dataObject)) {
 				seedList.remove(i);
@@ -209,6 +211,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 						if (p.getClusterLabel() == DataObject.UNCLASSIFIED) {
 							seedList.add(p);
 						}
+						System.out.println(num++);
 						p.setClusterLabel(clusterID);
 					}
 				}
@@ -607,9 +610,9 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	public void updateFinished() {
 		long start = System.currentTimeMillis();
 		database.setMinMaxValues();
-		if (isMerged) {
+		if (hasMerged) {
 			sortClusterLabels();
-			isMerged = false;
+			hasMerged = false;
 		}
 		long end = System.currentTimeMillis();
 		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
@@ -661,7 +664,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 				/** neighbourhoodDataObject is coreObject */
 
 				if (neighbourhoodDataObject.getClusterLabel() == DataObject.NOISE) {
-					/** create */
+					/** create or absorb*/
 					for (int i = 0; i < seedListDataObject_NeighbourhoodList.size(); i++) {
 						DataObject seedListDataObject_NeighbourhoodDataObject = seedListDataObject_NeighbourhoodList.get(i);
 						if (seedListDataObject_NeighbourhoodDataObject.getClusterLabel() != DataObject.NOISE) {
@@ -697,7 +700,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 		/** merge */
 		if (neighbourhoodClusterLabels.size() > 1) {
-			isMerged = true;
+			hasMerged = true;
 
 			if (neighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
@@ -782,7 +785,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 		/** merge */
 		if (neighbourhoodClusterLabels.size() > 1) {
-			isMerged = true;
+			hasMerged = true;
 			if (firstNeighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
 			} else {

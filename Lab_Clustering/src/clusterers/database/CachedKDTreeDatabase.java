@@ -24,8 +24,10 @@ package clusterers.database;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
@@ -39,6 +41,7 @@ import weka.core.RevisionUtils;
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeyDuplicateException;
 import edu.wlu.cs.levy.CG.KeySizeException;
+import geo.GeoDataObject;
 
 /**
  * <p>
@@ -52,7 +55,7 @@ import edu.wlu.cs.levy.CG.KeySizeException;
  * @author Peca Iulian (pkiulian@gmail.com)
  * @version $Revision: 1.5 $
  */
-public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandler {
+public class CachedKDTreeDatabase implements Database, Serializable, RevisionHandler {
 
 	/** for serialization */
 	private static final long serialVersionUID = 7117297133674562411L;
@@ -82,6 +85,18 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 */
 	private double[] attributeMaxValues;
 
+	/**
+	 * cache for the epsilonRangeQuery results
+	 */
+	private Map<DataObject, List<DataObject>> epsilonRangeQueryResults;
+
+	/**
+	 * flag to specify whether the cache for epsilonRangeQuery results need to be flushed
+	 * set to true:  after a new DataObject inserted
+	 * set to false: after a query performed
+	 */
+	private boolean needFlush;
+
 	// *****************************************************************************************************************
 	// constructors
 	// *****************************************************************************************************************
@@ -90,7 +105,7 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 * Constructs a new sequential database and holds the original instances
 	 * @param instances
 	 */
-	public GeoKDTreeDatabase(Instances instances) {
+	public CachedKDTreeDatabase(Instances instances) {
 		this.instances = instances;
 		treeMap = new TreeMap<String, DataObject>();
 		kt = new KDTree<List<String>>(2);
@@ -169,23 +184,37 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 */
 	@Override
 	public List<DataObject> epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
-		List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
-		List<List<String>> epsilonRangeKeys_List = null;
-		try {
-			epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(0), queryDataObject.getInstance().value(1) }, epsilon);
-		} catch (KeySizeException e) {
-			e.printStackTrace();
+		if (needFlush == true) {
+			epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
+			needFlush = false;
 		}
+		if (epsilonRangeQueryResults.containsKey(queryDataObject))
+			return epsilonRangeQueryResults.get(queryDataObject);
+		else {
+			List<DataObject> epsilonRange_List = new ArrayList<DataObject>();
+			List<List<String>> epsilonRangeKeys_List = null;
+			try {
+				int xIndex = queryDataObject.getInstance().numValues() - 2;
+				int yIndex = queryDataObject.getInstance().numValues() - 1;
+				if (queryDataObject instanceof GeoDataObject){
+					epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(xIndex), queryDataObject.getInstance().value(yIndex) }, epsilon);
+				} else {
+					epsilonRangeKeys_List = kt.nearestEuclidean(new double[] { queryDataObject.getInstance().value(xIndex), queryDataObject.getInstance().value(yIndex) }, epsilon);
+				}
+			} catch (KeySizeException e) {
+				e.printStackTrace();
+			}
 
-		if (epsilonRangeKeys_List != null && epsilonRangeKeys_List.size() > 0) {
-			for (List<String> keys : epsilonRangeKeys_List) {
-				for (String key : keys) {
-					epsilonRange_List.add(treeMap.get(key));
+			if (epsilonRangeKeys_List != null && epsilonRangeKeys_List.size() > 0) {
+				for (List<String> keys : epsilonRangeKeys_List) {
+					for (String key : keys) {
+						epsilonRange_List.add(treeMap.get(key));
+					}
 				}
 			}
+			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
+			return epsilonRange_List;
 		}
-
-		return epsilonRange_List;
 	}
 
 	/**
@@ -200,10 +229,10 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 *         with candidates from the epsilon-range-query (EpsilonRange_ListElements)
 	 */
 	@Override
-	public List k_nextNeighbourQuery(int k, double epsilon, DataObject dataObject) {
+	public List<Object> k_nextNeighbourQuery(int k, double epsilon, DataObject dataObject) {
 		Iterator<DataObject> iterator = dataObjectIterator();
 
-		List return_List = new ArrayList();
+		List<Object> return_List = new ArrayList<Object>();
 		List<PriorityQueueElement> nextNeighbours_List = new ArrayList<PriorityQueueElement>();
 		List<EpsilonRange_ListElement> epsilonRange_List = new ArrayList<EpsilonRange_ListElement>();
 
@@ -250,8 +279,8 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 	 *         the double-value for the calculated coreDistance
 	 */
 	@Override
-	public List coreDistance(int minPoints, double epsilon, DataObject dataObject) {
-		List list = k_nextNeighbourQuery(minPoints, epsilon, dataObject);
+	public List<Object> coreDistance(int minPoints, double epsilon, DataObject dataObject) {
+		List<Object> list = k_nextNeighbourQuery(minPoints, epsilon, dataObject);
 
 		if (((List) list.get(1)).size() < minPoints) {
 			list.add(new Double(DataObject.UNDEFINED));
@@ -314,25 +343,28 @@ public class GeoKDTreeDatabase implements Database, Serializable, RevisionHandle
 
 	/**
 	 * Inserts a new dataObject into the database
-	 * @param dataObject
+	 * @param newDataObject
 	 */
 	@Override
-	public void insert(DataObject dataObject) {
-		treeMap.put(dataObject.getKey(), dataObject);
+	public void insert(DataObject newDataObject) {
+		treeMap.put(newDataObject.getKey(), newDataObject);
+		int xIndex = newDataObject.getInstance().numValues() - 2;
+		int yIndex = newDataObject.getInstance().numValues() - 1;
 		try {
 			List<String> keys = new ArrayList<String>();
-			keys.add(dataObject.getKey());
-			kt.insert(new double[] { dataObject.getInstance().value(2), dataObject.getInstance().value(3) }, keys);
+			keys.add(newDataObject.getKey());
+			kt.insert(new double[] { newDataObject.getInstance().value(xIndex), newDataObject.getInstance().value(yIndex) }, keys);
 		} catch (KeySizeException e) {
 			e.printStackTrace();
 		} catch (KeyDuplicateException e) {
 			try {
-				List<String> keys = kt.search(new double[] { dataObject.getInstance().value(2), dataObject.getInstance().value(3) });
-				keys.add(dataObject.getKey());
+				List<String> keys = kt.search(new double[] { newDataObject.getInstance().value(xIndex), newDataObject.getInstance().value(yIndex) });
+				keys.add(newDataObject.getKey());
 			} catch (KeySizeException e1) {
 				e1.printStackTrace();
 			}
 		}
+		needFlush = true;
 	}
 
 	/**
