@@ -8,7 +8,6 @@ import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.DBScan;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
-import weka.core.converters.CSVLoader;
 
 /**
  * @author Haolin Zhi
@@ -22,7 +21,6 @@ public class TestGeoDataObjectDBScan {
 //			CSVLoader loader = new CSVLoader();
 //			loader.setFile(new File("data/berlin_sample_positions.csv"));
 
-			
 			ArffLoader loader = new ArffLoader();
 //			loader.setFile(new File("data/berlin_sub_2500.arff"));
 			loader.setFile(new File("data/berlin_sub.arff"));
@@ -32,7 +30,7 @@ public class TestGeoDataObjectDBScan {
 			// new clusterer
 			DBScan clusterer = new DBScan();
 			clusterer.setDatabase_Type("clusterers.database.InsertCachedSpatialIndexDatabase");
-			
+
 			// set database type
 			// clusterer.setDatabase_Type("clusterers.kdtree.GeoKDTreeDatabase");
 			// set objects type to be clustered

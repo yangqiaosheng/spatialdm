@@ -33,8 +33,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import edu.wlu.cs.levy.CG.GeoDistance;
-
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
 import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
 import weka.clusterers.forOPTICSAndDBScan.Utils.EpsilonRange_ListElement;

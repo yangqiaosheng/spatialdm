@@ -175,7 +175,7 @@ public class KDTreeDatabase implements Database, Serializable, RevisionHandler {
 		try {
 			int xIndex = queryDataObject.getInstance().numValues() - 2;
 			int yIndex = queryDataObject.getInstance().numValues() - 1;
-			if (queryDataObject instanceof GeoDataObject){
+			if (queryDataObject instanceof GeoDataObject) {
 				epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(xIndex), queryDataObject.getInstance().value(yIndex) }, epsilon);
 			} else {
 				epsilonRangeKeys_List = kt.nearestEuclidean(new double[] { queryDataObject.getInstance().value(xIndex), queryDataObject.getInstance().value(yIndex) }, epsilon);

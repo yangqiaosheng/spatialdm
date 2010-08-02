@@ -33,9 +33,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import edu.wlu.cs.levy.CG.GeoDistance;
-import edu.wlu.cs.levy.CG.KeySizeException;
-
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
 import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
 import weka.clusterers.forOPTICSAndDBScan.Utils.EpsilonRange_ListElement;
@@ -71,8 +68,7 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 	 * Internal, 2-d spatial index
 	 */
 	private SortedMap<Double, Set<String>> xQueryIdx;
-
-	private TreeMap<Double, Set<String>> yQueryIdx;
+	private SortedMap<Double, Set<String>> yQueryIdx;
 
 	/**
 	 * Holds the original instances delivered from WEKA
@@ -402,30 +398,31 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 	public void insert(DataObject newDataObject) {
 		int xIndex = newDataObject.getInstance().numValues() - 2;
 		int yIndex = newDataObject.getInstance().numValues() - 1;
-		double lon = newDataObject.getInstance().value(xIndex);
-		double lat = newDataObject.getInstance().value(yIndex);
-		SortedMap<Double, Set<String>> xResults = xQueryIdx.subMap(geoLon(lon, lat, epsilon, false), geoLon(lon, lat, epsilon, true));
-		SortedMap<Double, Set<String>> yResults = yQueryIdx.subMap(geoLat(lon, lat, epsilon, false), geoLat(lon, lat, epsilon, true));
+		if (epsilon > 0) {
+			double lon = newDataObject.getInstance().value(xIndex);
+			double lat = newDataObject.getInstance().value(yIndex);
+			SortedMap<Double, Set<String>> xResults = xQueryIdx.subMap(geoLon(lon, lat, epsilon, false), geoLon(lon, lat, epsilon, true));
+			SortedMap<Double, Set<String>> yResults = yQueryIdx.subMap(geoLat(lon, lat, epsilon, false), geoLat(lon, lat, epsilon, true));
 
-		Set<String> xResultSet = new TreeSet<String>();
-		for (Set<String> keys : xResults.values()) {
-			xResultSet.addAll(keys);
-		}
+			Set<String> xResultSet = new TreeSet<String>();
+			for (Set<String> keys : xResults.values()) {
+				xResultSet.addAll(keys);
+			}
 
-		Set<String> yResultSet = new TreeSet<String>();
-		for (Set<String> keys : yResults.values()) {
-			yResultSet.addAll(keys);
-		}
-		xResultSet.retainAll(yResultSet);
+			Set<String> yResultSet = new TreeSet<String>();
+			for (Set<String> keys : yResults.values()) {
+				yResultSet.addAll(keys);
+			}
+			xResultSet.retainAll(yResultSet);
 
-		for (String key : xResultSet) {
-			if (newDataObject.distance(treeMap.get(key)) < epsilon) {
-				if (epsilonRangeQueryResults.containsKey(treeMap.get(key))) {
-					epsilonRangeQueryResults.get(treeMap.get(key)).add(newDataObject);
+			for (String key : xResultSet) {
+				if (newDataObject.distance(treeMap.get(key)) < epsilon) {
+					if (epsilonRangeQueryResults.containsKey(treeMap.get(key))) {
+						epsilonRangeQueryResults.get(treeMap.get(key)).add(newDataObject);
+					}
 				}
 			}
 		}
-
 		treeMap.put(newDataObject.getKey(), newDataObject);
 
 		Set<String> keys = new TreeSet<String>();

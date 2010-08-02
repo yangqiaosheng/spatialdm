@@ -1,5 +1,7 @@
 package geo;
 
+import edu.wlu.cs.levy.CG.GeoDistance;
+
 import java.io.Serializable;
 
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
@@ -7,7 +9,6 @@ import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
 import weka.core.Instance;
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
-import edu.wlu.cs.levy.CG.GeoDistance;
 
 /**
  *  @author Haolin Zhi (zhi@cs.uni-bonn.de)

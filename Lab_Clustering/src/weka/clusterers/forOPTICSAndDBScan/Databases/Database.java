@@ -84,7 +84,7 @@ public interface Database {
 	 * @param dataObject
 	 */
 	void insert(DataObject dataObject);
-	
+
 	/**
 	 * remove a dataObject from the database
 	 * @param key 

@@ -192,7 +192,7 @@ public class InsertCachedKDTreeDatabase implements Database, Serializable, Revis
 			try {
 				int xIndex = queryDataObject.getInstance().numValues() - 2;
 				int yIndex = queryDataObject.getInstance().numValues() - 1;
-				if (queryDataObject instanceof GeoDataObject){
+				if (queryDataObject instanceof GeoDataObject) {
 					epsilonRangeKeys_List = kt.nearestGeo(new double[] { queryDataObject.getInstance().value(xIndex), queryDataObject.getInstance().value(yIndex) }, epsilon);
 				} else {
 					epsilonRangeKeys_List = kt.nearestEuclidean(new double[] { queryDataObject.getInstance().value(xIndex), queryDataObject.getInstance().value(yIndex) }, epsilon);
@@ -345,10 +345,10 @@ public class InsertCachedKDTreeDatabase implements Database, Serializable, Revis
 	public void insert(DataObject newDataObject) {
 		int xIndex = newDataObject.getInstance().numValues() - 2;
 		int yIndex = newDataObject.getInstance().numValues() - 1;
-		if (epsilon != 0) {
+		if (epsilon > 0) {
 			List<List<String>> epsilonRangeKeys_List = null;
 			try {
-				if (newDataObject instanceof GeoDataObject){
+				if (newDataObject instanceof GeoDataObject) {
 					epsilonRangeKeys_List = kt.nearestGeo(new double[] { newDataObject.getInstance().value(xIndex), newDataObject.getInstance().value(yIndex) }, epsilon);
 				} else {
 					epsilonRangeKeys_List = kt.nearestEuclidean(new double[] { newDataObject.getInstance().value(xIndex), newDataObject.getInstance().value(yIndex) }, epsilon);
@@ -367,7 +367,7 @@ public class InsertCachedKDTreeDatabase implements Database, Serializable, Revis
 				}
 			}
 		}
-		
+
 		treeMap.put(newDataObject.getKey(), newDataObject);
 		try {
 			List<String> keys = new ArrayList<String>();

@@ -3,9 +3,7 @@ package clusterers;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -114,8 +112,6 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	 * whether a merge event has occurred
 	 */
 	private boolean hasMerged = false;
-	
-	
 
 	/**
 	 * Generate Clustering via DBScan
@@ -170,6 +166,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	// methods
 	// *****************************************************************************************************************
 	int num = 0;
+
 	/**
 	 * Assigns this dataObject to a cluster or remains it as NOISE
 	 * @param dataObject The DataObject that needs to be assigned
@@ -180,7 +177,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		List<DataObject> seedList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 		/** dataObject is NO coreObject */
 		if (seedList.size() < getMinPoints()) {
-			System.out.println(num++);
+			System.out.println("the " + (++num) + " instance is being clustered by DBScan");
 			dataObject.setClusterLabel(DataObject.NOISE);
 			return false;
 		}
@@ -189,7 +186,9 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		for (int i = 0; i < seedList.size(); i++) {
 			DataObject seedListDataObject = seedList.get(i);
 			/** label this seedListDataObject with the current clusterID, because it is in epsilon-range */
-			System.out.println(num++);
+			if (seedListDataObject.getClusterLabel() == DataObject.UNCLASSIFIED) {
+				System.out.println("the " + (++num) + " instance is being clustered by DBScan");
+			}
 			seedListDataObject.setClusterLabel(clusterID);
 			if (seedListDataObject.equals(dataObject)) {
 				seedList.remove(i);
@@ -209,9 +208,11 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 					DataObject p = seedListDataObject_Neighbourhood.get(i);
 					if (p.getClusterLabel() == DataObject.UNCLASSIFIED || p.getClusterLabel() == DataObject.NOISE) {
 						if (p.getClusterLabel() == DataObject.UNCLASSIFIED) {
+							System.out.println("the " + (++num) + " instance is being clustered by DBScan");
+						}
+						if (p.getClusterLabel() == DataObject.UNCLASSIFIED) {
 							seedList.add(p);
 						}
-						System.out.println(num++);
 						p.setClusterLabel(clusterID);
 					}
 				}
@@ -575,6 +576,13 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	@Override
 	public String toString() {
 		StringBuffer stringBuffer = new StringBuffer();
+
+		for (int i = 0; i < database.size(); i++) {
+			DataObject dataObject = database.getDataObject(Integer.toString(i));
+			stringBuffer.append("(" + Utils.doubleToString(Double.parseDouble(dataObject.getKey()), (Integer.toString(database.size()).length()), 0) + ".) " + Utils.padRight(dataObject.toString(), 69) + "  -->  "
+					+ ((dataObject.getClusterLabel() == DataObject.NOISE) ? "NOISE\n" : dataObject.getClusterLabel() + "\n"));
+		}
+
 		stringBuffer.append("IDBScan clustering results\n" + "========================================================================================\n\n");
 		stringBuffer.append("Clustered DataObjects: " + database.size() + "\n");
 		stringBuffer.append("Number of attributes: " + database.getInstances().numAttributes() + "\n");
@@ -586,11 +594,6 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		stringBuffer.append("Elapsed time for DBScan: " + decimalFormat.format(elapsedTimeForDBSCAN) + "\n");
 		stringBuffer.append("Elapsed time for IDBScan: " + decimalFormat.format(elapsedTimeForIDBSCAN) + "\n\n");
 
-		//		for (int i = 0; i < database.size(); i++) {
-		//			DataObject dataObject = database.getDataObject(Integer.toString(i));
-		//			stringBuffer.append("(" + Utils.doubleToString(Double.parseDouble(dataObject.getKey()), (Integer.toString(database.size()).length()), 0) + ".) " + Utils.padRight(dataObject.toString(), 69) + "  -->  "
-		//					+ ((dataObject.getClusterLabel() == DataObject.NOISE) ? "NOISE\n" : dataObject.getClusterLabel() + "\n"));
-		//		}
 		return stringBuffer.toString() + "\n";
 	}
 
@@ -599,9 +602,17 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		long start = System.currentTimeMillis();
 		DataObject dataObject = dataObjectForName(getDatabase_distanceType(), newInstance, Integer.toString(database.size()), database);
 		database.insert(dataObject);
+
+		/*	Incremental DBSCAN method I
+		 *  implement the algorithm from the paper:
+		 *  Incremental Clustering for Mining in a Warehousing Environment	*/
+//		insert(dataObject);       
+
+		/* 	Incremental DBSCAN method II
+		 *  much faster than insert(dataObject)	*/
 		fastInsert(dataObject);
-//		paperInsert(dataObject);
-		System.out.println(database.size());
+
+		System.out.println("the " + database.size() + " instance is being clustered by IDBScan");
 		long end = System.currentTimeMillis();
 		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
 	}
@@ -726,7 +737,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	* @param dataObject
 	*/
 	@SuppressWarnings( { "unchecked" })
-	private void paperInsert(DataObject dataObject) {
+	private void insert(DataObject dataObject) {
 		Set<DataObject> updSeeds = new HashSet<DataObject>();
 		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 

@@ -85,6 +85,7 @@ public class InsertCachedSequentialDatabase implements Database, Serializable, R
 	 * Specifies the radius for a range-query
 	 */
 	private double epsilon;
+
 	// *****************************************************************************************************************
 	// constructors
 	// *****************************************************************************************************************
@@ -179,7 +180,7 @@ public class InsertCachedSequentialDatabase implements Database, Serializable, R
 		else {
 			this.epsilon = epsilon;
 			ArrayList<DataObject> epsilonRange_List = new ArrayList<DataObject>();
-			for(DataObject dataObject : treeMap.values()){
+			for (DataObject dataObject : treeMap.values()) {
 				double distance = queryDataObject.distance(dataObject);
 				if (distance < epsilon) {
 					epsilonRange_List.add(dataObject);
@@ -321,14 +322,16 @@ public class InsertCachedSequentialDatabase implements Database, Serializable, R
 	 */
 	@Override
 	public void insert(DataObject newDataObject) {
-		treeMap.put(newDataObject.getKey(), newDataObject);
-		for(DataObject dataObject : treeMap.values()){
-			if(newDataObject.distance(dataObject) < epsilon){
-				if(epsilonRangeQueryResults.containsKey(dataObject)){
-					epsilonRangeQueryResults.get(dataObject).add(newDataObject);
+		if (epsilon > 0) {
+			for (DataObject dataObject : treeMap.values()) {
+				if (newDataObject.distance(dataObject) < epsilon) {
+					if (epsilonRangeQueryResults.containsKey(dataObject)) {
+						epsilonRangeQueryResults.get(dataObject).add(newDataObject);
+					}
 				}
 			}
 		}
+		treeMap.put(newDataObject.getKey(), newDataObject);
 	}
 
 	/**

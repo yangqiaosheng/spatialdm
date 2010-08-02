@@ -20,7 +20,7 @@
  *    & Peca Iulian (pkiulian@gmail.com)
  */
 
-package clusterers.database;
+package weka.clusterers.forOPTICSAndDBScan.Databases;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.TreeMap;
 
 import weka.clusterers.forOPTICSAndDBScan.DataObjects.DataObject;
-import weka.clusterers.forOPTICSAndDBScan.Databases.Database;
 import weka.clusterers.forOPTICSAndDBScan.Utils.EpsilonRange_ListElement;
 import weka.clusterers.forOPTICSAndDBScan.Utils.PriorityQueue;
 import weka.clusterers.forOPTICSAndDBScan.Utils.PriorityQueueElement;
