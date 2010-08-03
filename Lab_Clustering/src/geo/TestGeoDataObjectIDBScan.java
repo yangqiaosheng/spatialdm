@@ -50,7 +50,7 @@ public class TestGeoDataObjectIDBScan {
 
 		// load the arff file
 		ArffLoader loader = new ArffLoader();
-		loader.setFile(new File("data/berlin_sub.arff"));
+		loader.setFile(new File("data/berlin.arff"));
 
 		// get the instances from the file
 		Instances totalInstances = loader.getDataSet();
@@ -60,7 +60,7 @@ public class TestGeoDataObjectIDBScan {
 		Instances subInstances2 = new Instances(totalInstances, 0, 0);
 
 		for (int i = 0; i < totalInstances.numInstances(); i++) {
-			if (i < totalInstances.numInstances() / 2) {
+			if (i < totalInstances.numInstances() / 200) {
 				subInstances1.add(totalInstances.instance(i));
 			} else {
 				subInstances2.add(totalInstances.instance(i));

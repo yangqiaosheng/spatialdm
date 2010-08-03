@@ -606,11 +606,11 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		/*	Incremental DBSCAN method I
 		 *  implement the algorithm from the paper:
 		 *  Incremental Clustering for Mining in a Warehousing Environment	*/
-		insert(dataObject);       
+//		insert(dataObject);       
 
 		/* 	Incremental DBSCAN method II
 		 *  much faster than insert(dataObject)	*/
-//		fastInsert(dataObject);
+		fastInsert(dataObject);
 
 		System.out.println("the " + database.size() + " instance is being clustered by IDBScan");
 		long end = System.currentTimeMillis();
@@ -655,36 +655,36 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 	/**
 	 * optimized implementation of Incremental DBScan
-	 * double the efficiency of the paperInsert(DataObject dataObject)
+	 * combine the benefits of insert() and insert2()
 	 * @param dataObject
 	 */
 	@SuppressWarnings("unchecked")
 	private void fastInsert(DataObject dataObject) {
-		List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
+		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 
 		dataObject.setClusterLabel(DataObject.NOISE);
 
 		Set<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
 
 		/** Iterate the neighbourhoodList of the startDataObject */
-		for (int j = 0; j < neighbourhoodList.size(); j++) {
-			DataObject neighbourhoodDataObject = neighbourhoodList.get(j);
-			List<DataObject> seedListDataObject_NeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
+		for (int j = 0; j < firstNeighbourhoodList.size(); j++) {
+			DataObject firstNeighbourhood = firstNeighbourhoodList.get(j);
+			List<DataObject> secondNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), firstNeighbourhood);
 
-			if (seedListDataObject_NeighbourhoodList.size() >= getMinPoints()) {
+			if (secondNeighbourhoodList.size() >= getMinPoints()) {
 				/** neighbourhoodDataObject is coreObject */
 
-				if (neighbourhoodDataObject.getClusterLabel() == DataObject.NOISE) {
-					/** create or absorb*/
-					for (int i = 0; i < seedListDataObject_NeighbourhoodList.size(); i++) {
-						DataObject seedListDataObject_NeighbourhoodDataObject = seedListDataObject_NeighbourhoodList.get(i);
-						if (seedListDataObject_NeighbourhoodDataObject.getClusterLabel() != DataObject.NOISE) {
-							if (neighbourhoodDataObject == dataObject) {
-								if (database.epsilonRangeQuery(getEpsilon(), seedListDataObject_NeighbourhoodDataObject).size() >= getMinPoints()) {
-									neighbourhoodClusterLabels.add(seedListDataObject_NeighbourhoodDataObject.getClusterLabel());
-								}
-							}
-						}
+				if (firstNeighbourhood.getClusterLabel() == DataObject.NOISE) {
+					/** create */
+					for (int i = 0; i < secondNeighbourhoodList.size(); i++) {
+						DataObject seedListDataObject_NeighbourhoodDataObject = secondNeighbourhoodList.get(i);
+//						if (seedListDataObject_NeighbourhoodDataObject.getClusterLabel() != DataObject.NOISE) {
+//							if (firstNeighbourhood == dataObject) {
+//								if (database.epsilonRangeQuery(getEpsilon(), seedListDataObject_NeighbourhoodDataObject).size() >= getMinPoints()) {
+//									neighbourhoodClusterLabels.add(seedListDataObject_NeighbourhoodDataObject.getClusterLabel());
+//								}
+//							}
+//						}
 						seedListDataObject_NeighbourhoodDataObject.setClusterLabel(clusterID);
 						neighbourhoodClusterLabels.add(clusterID);
 					}
@@ -692,17 +692,17 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 					numberOfGeneratedClusters++;
 				} else {
 					/** absorb or merge */
-					neighbourhoodClusterLabels.add(neighbourhoodDataObject.getClusterLabel());
-					for (int i = 0; i < seedListDataObject_NeighbourhoodList.size(); i++) {
-						DataObject seedListDataObject_NeighbourhoodDataObject = seedListDataObject_NeighbourhoodList.get(i);
+					neighbourhoodClusterLabels.add(firstNeighbourhood.getClusterLabel());
+					for (int i = 0; i < secondNeighbourhoodList.size(); i++) {
+						DataObject seedListDataObject_NeighbourhoodDataObject = secondNeighbourhoodList.get(i);
 						if (seedListDataObject_NeighbourhoodDataObject.getClusterLabel() != DataObject.NOISE) {
-							if (seedListDataObject_NeighbourhoodList.size() == getMinPoints()) {
-								if (database.epsilonRangeQuery(getEpsilon(), seedListDataObject_NeighbourhoodDataObject).size() >= getMinPoints()) {
-									neighbourhoodClusterLabels.add(seedListDataObject_NeighbourhoodDataObject.getClusterLabel());
-								}
-							}
+//							if (secondNeighbourhoodList.size() == getMinPoints()) {
+//								if (database.epsilonRangeQuery(getEpsilon(), seedListDataObject_NeighbourhoodDataObject).size() >= getMinPoints()) {
+//									neighbourhoodClusterLabels.add(seedListDataObject_NeighbourhoodDataObject.getClusterLabel());
+//								}
+//							}
 						} else {
-							seedListDataObject_NeighbourhoodDataObject.setClusterLabel(neighbourhoodDataObject.getClusterLabel());
+							seedListDataObject_NeighbourhoodDataObject.setClusterLabel(firstNeighbourhood.getClusterLabel());
 						}
 					}
 				}
@@ -713,7 +713,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		if (neighbourhoodClusterLabels.size() > 1) {
 			hasMerged = true;
 
-			if (neighbourhoodList.size() < getMinPoints()) {
+			if (firstNeighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
 				//				return;
 			} else {
@@ -731,16 +731,105 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			}
 		}
 	}
+	
+	/**
+	* implement the incremental method according to the paper
+	* faster without using query cache
+	* but slower when using query cache
+	* @param dataObject
+	*/
+	@SuppressWarnings({ "unchecked" })
+	private void insert2(DataObject dataObject) {
+		Set<DataObject> updSeeds = new HashSet<DataObject>();
+		Set<DataObject> updSeedsNeighbours = new HashSet<DataObject>();
+		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
+		if(firstNeighbourhoodList.size() >= getMinPoints()){
+			updSeeds.add(dataObject);
+			firstNeighbourhoodList.remove(dataObject);
+		}
+		
+		dataObject.setClusterLabel(DataObject.NOISE);
+
+		/** Iterate the neighbourhoodList of the startDataObject */
+		for (int j = 0; j < firstNeighbourhoodList.size(); j++) {
+			/** neighbourhoodDataObject is new coreObject p' */
+			DataObject firstNeighbourhood = firstNeighbourhoodList.get(j);
+			List<DataObject> secondNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), firstNeighbourhood);
+			if (secondNeighbourhoodList.size() >= getMinPoints()) {
+				updSeeds.add(firstNeighbourhood);
+				updSeedsNeighbours.addAll(secondNeighbourhoodList);
+			}
+		}
+
+		// count cluster label
+		TreeSet<Integer> neighbourhoodClusterLabels = new TreeSet<Integer>();
+		for (DataObject updSeed : updSeeds) {
+			if (updSeed.getClusterLabel() != DataObject.NOISE) {
+				neighbourhoodClusterLabels.add(updSeed.getClusterLabel());
+			}
+		}
+
+		/** noise */
+		if (updSeeds.size() == 0)
+			return;
+
+		/** creation */
+		if (neighbourhoodClusterLabels.size() == 0) {
+			for (DataObject updSeedsNeighbour : updSeedsNeighbours) {
+				updSeedsNeighbour.setClusterLabel(clusterID);
+			}
+			clusterID++;
+			numberOfGeneratedClusters++;
+		}
+
+		/** absorption */
+		if (neighbourhoodClusterLabels.size() == 1) {
+			int absorptClusterID = neighbourhoodClusterLabels.iterator().next();
+			for (DataObject updSeedsNeighbour : updSeedsNeighbours) {
+				updSeedsNeighbour.setClusterLabel(absorptClusterID);
+			}
+		}
+
+		/** merge */
+		if (neighbourhoodClusterLabels.size() > 1) {
+			hasMerged = true;
+			if (firstNeighbourhoodList.size() < getMinPoints()) {
+				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
+			} else {
+				System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
+			}
+
+			int mergeClusterID = neighbourhoodClusterLabels.iterator().next();
+			neighbourhoodClusterLabels.remove(mergeClusterID);
+
+			for (DataObject updSeedsNeighbour : updSeedsNeighbours) {
+				updSeedsNeighbour.setClusterLabel(mergeClusterID);
+			}
+
+			for (int i = 0; i < database.size(); i++) {
+				DataObject mergedataObject = database.getDataObject(Integer.toString(i));
+				if (neighbourhoodClusterLabels.contains(mergedataObject.getClusterLabel())) {
+					mergedataObject.setClusterLabel(mergeClusterID);
+				}
+			}
+		}
+	}
+	
 
 	/**
 	* implement the incremental method according to the paper
+	* faster when using query cache
 	* @param dataObject
 	*/
 	@SuppressWarnings({ "unchecked" })
 	private void insert(DataObject dataObject) {
 		Set<DataObject> updSeeds = new HashSet<DataObject>();
 		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
-
+		if(firstNeighbourhoodList.size() >= getMinPoints()){
+			updSeeds.add(dataObject);
+			firstNeighbourhoodList.remove(dataObject);
+		}
+		
 		dataObject.setClusterLabel(DataObject.NOISE);
 
 		/** Iterate the neighbourhoodList of the startDataObject */
@@ -760,6 +849,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			}
 		}
 
+		/** noise */
 		if (updSeeds.size() == 0)
 			return;
 
