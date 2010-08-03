@@ -139,7 +139,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			DataObject dataObject = dataObjectForName(getDatabase_distanceType(), database.getInstances().instance(i), Integer.toString(i), database);
 			database.insert(dataObject);
 		}
-//		System.out.println("Clustered Instances by DBScan:" + database.size());
+		//		System.out.println("Clustered Instances by DBScan:" + database.size());
 		database.setMinMaxValues();
 
 		@SuppressWarnings("unchecked")
@@ -606,11 +606,11 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		/*	Incremental DBSCAN method I
 		 *  implement the algorithm from the paper:
 		 *  Incremental Clustering for Mining in a Warehousing Environment	*/
-//		insert(dataObject);       
+		insert(dataObject);       
 
 		/* 	Incremental DBSCAN method II
 		 *  much faster than insert(dataObject)	*/
-		fastInsert(dataObject);
+//		fastInsert(dataObject);
 
 		System.out.println("the " + database.size() + " instance is being clustered by IDBScan");
 		long end = System.currentTimeMillis();
@@ -715,7 +715,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 			if (neighbourhoodList.size() < getMinPoints()) {
 				System.out.println("transitive merge:" + neighbourhoodClusterLabels.size());
-//				return;
+				//				return;
 			} else {
 				System.out.println("normal merge:" + neighbourhoodClusterLabels.size());
 			}
@@ -736,7 +736,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	* implement the incremental method according to the paper
 	* @param dataObject
 	*/
-	@SuppressWarnings( { "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	private void insert(DataObject dataObject) {
 		Set<DataObject> updSeeds = new HashSet<DataObject>();
 		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
@@ -745,16 +745,10 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 
 		/** Iterate the neighbourhoodList of the startDataObject */
 		for (int j = 0; j < firstNeighbourhoodList.size(); j++) {
+			/** neighbourhoodDataObject is new coreObject p' */
 			DataObject firstNeighbourhood = firstNeighbourhoodList.get(j);
-			List<DataObject> secondNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), firstNeighbourhood);
-			if (secondNeighbourhoodList.size() >= getMinPoints()) {
-				/** neighbourhoodDataObject is new coreObject p' */
-				for (int i = 0; i < secondNeighbourhoodList.size(); i++) {
-					DataObject secondNeighbourhood = secondNeighbourhoodList.get(i);
-					if (database.epsilonRangeQuery(getEpsilon(), secondNeighbourhood).size() >= getMinPoints()) {
-						updSeeds.add(secondNeighbourhood);
-					}
-				}
+			if (database.epsilonRangeQuery(getEpsilon(), firstNeighbourhood).size() >= getMinPoints()) {
+				updSeeds.add(firstNeighbourhood);
 			}
 		}
 
@@ -825,26 +819,26 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	}
 
 	public void deleteInstance(String key) {
-//		DataObject deleteDataObject = database.getDataObject(key);
-//		if(deleteDataObject.getClusterLabel() == DataObject.NOISE){
-//			database.remove(key);
-//		}else{
-//			List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), deleteDataObject);
-//			for (int i = 0; i < neighbourhoodList.size(); i++) {
-//				DataObject neighbourhoodDataObject = neighbourhoodList.get(i);
-//				if(neighbourhoodDataObject.getClusterLabel() == deleteDataObject.getClusterLabel()){
-//					List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
-//					if(seedListDataObject_Neighbourhood.size() >= getMinPoints()){
-//						database.remove(key);
-//						break;
-//					}
-//				}
-//				
-//				
-//			}
-//		}
-//		
-//		
+		//		DataObject deleteDataObject = database.getDataObject(key);
+		//		if(deleteDataObject.getClusterLabel() == DataObject.NOISE){
+		//			database.remove(key);
+		//		}else{
+		//			List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), deleteDataObject);
+		//			for (int i = 0; i < neighbourhoodList.size(); i++) {
+		//				DataObject neighbourhoodDataObject = neighbourhoodList.get(i);
+		//				if(neighbourhoodDataObject.getClusterLabel() == deleteDataObject.getClusterLabel()){
+		//					List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
+		//					if(seedListDataObject_Neighbourhood.size() >= getMinPoints()){
+		//						database.remove(key);
+		//						break;
+		//					}
+		//				}
+		//				
+		//				
+		//			}
+		//		}
+		//		
+		//		
 	}
 
 }
