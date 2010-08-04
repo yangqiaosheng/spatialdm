@@ -1,4 +1,7 @@
+import java.util.Enumeration;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -58,6 +61,10 @@ public class TestMap {
 		System.out.println(yTreemap.size());
 		System.out.println(xResults.size());
 		System.out.println(yResults.size());
+		
+		for(Entry<Object, Object> e : System.getProperties().entrySet()){
+			System.out.println(e.getKey() + "===>" + e.getValue());
+		}
 	}
 
 }

@@ -25,7 +25,9 @@ package clusterers.database;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,7 +90,7 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 	/**
 	 * cache for the epsilonRangeQuery results
 	 */
-	private Map<DataObject, List<DataObject>> epsilonRangeQueryResults;
+	private LinkedHashMap<DataObject, List<DataObject>> epsilonRangeQueryResults;
 
 	/**
 	 * Specifies the radius for a range-query
@@ -108,7 +110,7 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 		treeMap = new TreeMap<String, DataObject>();
 		xQueryIdx = new TreeMap<Double, Set<String>>();
 		yQueryIdx = new TreeMap<Double, Set<String>>();
-		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
+		epsilonRangeQueryResults = new LinkedHashMap<DataObject, List<DataObject>>();
 	}
 
 	// *****************************************************************************************************************
@@ -261,6 +263,7 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 //					}
 //				}
 //			}
+			limitCache();
 			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
 			return epsilonRange_List;
 		}
@@ -441,6 +444,24 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 		}
 	}
 
+	private void limitCache() {
+		int maxSize = 100000;
+		int removeSize = maxSize/4;
+		if(epsilonRangeQueryResults.size() >= maxSize){
+			Set<DataObject> removeDataObjects = new HashSet<DataObject>(removeSize);
+			for(Map.Entry<DataObject, List<DataObject>> e : epsilonRangeQueryResults.entrySet()){
+				removeDataObjects.add(e.getKey());
+				if(removeDataObjects.size()>=removeSize){
+					break;
+				}
+			}
+			for(DataObject removeDataObject : removeDataObjects){
+				epsilonRangeQueryResults.remove(removeDataObject);
+			}
+			System.out.println("s:"+epsilonRangeQueryResults.size());
+		}
+	}
+
 	/**
 	 * Returns the original instances delivered from WEKA
 	 * @return instances
@@ -463,6 +484,6 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 	@Override
 	public void remove(String key) {
 		treeMap.remove(key);
-		epsilonRangeQueryResults = new HashMap<DataObject, List<DataObject>>();
+		epsilonRangeQueryResults = new LinkedHashMap<DataObject, List<DataObject>>();
 	}
 }

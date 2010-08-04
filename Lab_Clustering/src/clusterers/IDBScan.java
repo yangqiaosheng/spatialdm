@@ -122,7 +122,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	public void buildClusterer(Instances instances) throws Exception {
 		// can clusterer handle the data?
 		getCapabilities().testWithFail(instances);
-
+		begin = System.currentTimeMillis();
 		long time_1 = System.currentTimeMillis();
 
 		processed_InstanceID = 0;
@@ -166,6 +166,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	// methods
 	// *****************************************************************************************************************
 	int num = 0;
+	long begin = 0;
 
 	/**
 	 * Assigns this dataObject to a cluster or remains it as NOISE
@@ -177,7 +178,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		List<DataObject> seedList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 		/** dataObject is NO coreObject */
 		if (seedList.size() < getMinPoints()) {
-			System.out.println("the " + (++num) + " instance is being clustered by DBScan");
+			System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis()-begin)/1000.0 + "s,\tused memory: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())*1.024*1.024/1000000.0 + "MB");
 			dataObject.setClusterLabel(DataObject.NOISE);
 			return false;
 		}
@@ -187,7 +188,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			DataObject seedListDataObject = seedList.get(i);
 			/** label this seedListDataObject with the current clusterID, because it is in epsilon-range */
 			if (seedListDataObject.getClusterLabel() == DataObject.UNCLASSIFIED) {
-				System.out.println("the " + (++num) + " instance is being clustered by DBScan");
+				System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis()-begin)/1000.0 + "s,\tused memory: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())*1.024*1.024/1000000.0 + "MB");
 			}
 			seedListDataObject.setClusterLabel(clusterID);
 			if (seedListDataObject.equals(dataObject)) {
@@ -208,7 +209,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 					DataObject p = seedListDataObject_Neighbourhood.get(i);
 					if (p.getClusterLabel() == DataObject.UNCLASSIFIED || p.getClusterLabel() == DataObject.NOISE) {
 						if (p.getClusterLabel() == DataObject.UNCLASSIFIED) {
-							System.out.println("the " + (++num) + " instance is being clustered by DBScan");
+							System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis()-begin)/1000.0 + "s,\tused memory: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())*1.024*1.024/1000000.0 + "MB");
 						}
 						if (p.getClusterLabel() == DataObject.UNCLASSIFIED) {
 							seedList.add(p);
@@ -577,11 +578,11 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	public String toString() {
 		StringBuffer stringBuffer = new StringBuffer();
 
-		for (int i = 0; i < database.size(); i++) {
-			DataObject dataObject = database.getDataObject(Integer.toString(i));
-			stringBuffer.append("(" + Utils.doubleToString(Double.parseDouble(dataObject.getKey()), (Integer.toString(database.size()).length()), 0) + ".) " + Utils.padRight(dataObject.toString(), 69) + "  -->  "
-					+ ((dataObject.getClusterLabel() == DataObject.NOISE) ? "NOISE\n" : dataObject.getClusterLabel() + "\n"));
-		}
+//		for (int i = 0; i < database.size(); i++) {
+//			DataObject dataObject = database.getDataObject(Integer.toString(i));
+//			stringBuffer.append("(" + Utils.doubleToString(Double.parseDouble(dataObject.getKey()), (Integer.toString(database.size()).length()), 0) + ".) " + Utils.padRight(dataObject.toString(), 69) + "  -->  "
+//					+ ((dataObject.getClusterLabel() == DataObject.NOISE) ? "NOISE\n" : dataObject.getClusterLabel() + "\n"));
+//		}
 
 		stringBuffer.append("IDBScan clustering results\n" + "========================================================================================\n\n");
 		stringBuffer.append("Clustered DataObjects: " + database.size() + "\n");
@@ -612,7 +613,7 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		 *  much faster than insert(dataObject)	*/
 		fastInsert(dataObject);
 
-		System.out.println("the " + database.size() + " instance is being clustered by IDBScan");
+		System.out.println("the " + database.size() + " instance is being clustered by IDBScan, escaped time: " + (System.currentTimeMillis()-begin)/1000.0 + "s,\tused memory: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())*1.024*1.024/1000000.0 + "MB");
 		long end = System.currentTimeMillis();
 		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
 	}

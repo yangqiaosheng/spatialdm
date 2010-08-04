@@ -4,8 +4,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import weka.clusterers.ClusterEvaluation;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
 import clusterers.IDBScan;
@@ -30,7 +35,7 @@ public class TestGeoDataObjectIDBScan {
 		clusterer.setDatabase_Type("clusterers.database.InsertCachedSpatialIndexDatabase");
 //		clusterer.setDatabase_Type("clusterers.database.CachedSequentialDatabase");
 //		clusterer.setDatabase_Type("clusterers.database.InsertCachedSequentialDatabase");
-//		clusterer.setDatabase_Type("clusterers.database.InsertCachedGeoKDTreeDatabase");
+//		clusterer.setDatabase_Type("clusterers.database.InsertCachedKDTreeDatabase");
 //		clusterer.setDatabase_Type("weka.clusterers.forOPTICSAndDBScan.Databases.SequentialDatabase");
 
 		// set objects type to be clustered
@@ -54,13 +59,13 @@ public class TestGeoDataObjectIDBScan {
 
 		// get the instances from the file
 		Instances totalInstances = loader.getDataSet();
-
+		
 		// split the total instances into 2 subsets
 		Instances subInstances1 = new Instances(totalInstances, 0, 0);
 		Instances subInstances2 = new Instances(totalInstances, 0, 0);
 
 		for (int i = 0; i < totalInstances.numInstances(); i++) {
-			if (i < totalInstances.numInstances() / 200) {
+			if (i < totalInstances.numInstances() / totalInstances.numInstances()) {
 				subInstances1.add(totalInstances.instance(i));
 			} else {
 				subInstances2.add(totalInstances.instance(i));
@@ -92,7 +97,7 @@ public class TestGeoDataObjectIDBScan {
 		System.out.println(eval.clusterResultsToString());
 
 		// store the result to a file
-		BufferedWriter writer = new BufferedWriter(new FileWriter("output/berlin_sample_clusters.csv"));
+		BufferedWriter writer = new BufferedWriter(new FileWriter("output/berlin_clusters_idbscan.csv"));
 		writer.write("id,Name,Cluster\n");
 		double[] res = eval.getClusterAssignments();
 
@@ -107,7 +112,7 @@ public class TestGeoDataObjectIDBScan {
 		}
 		writer.close();
 
-		writer = new BufferedWriter(new FileWriter("output/berlin_sample_clusters.arff"));
+		writer = new BufferedWriter(new FileWriter("output/berlin_clusters_idbscan.arff"));
 		writer.write("@relation results \n \n");
 		writer.write("@attribute x numeric \n");
 		writer.write("@attribute y numeric \n");
@@ -118,6 +123,10 @@ public class TestGeoDataObjectIDBScan {
 			int yIndex = totalInstances.instance(i).numValues() - 1;
 			writer.write(totalInstances.instance(i).value(xIndex) + "," + totalInstances.instance(i).value(yIndex) + "," + res[i] + " \n");
 		}
+		writer.close();
+		
+		writer = new BufferedWriter(new FileWriter("output/berlin_info_idbscan.txt"));
+		writer.write(eval.clusterResultsToString());
 		writer.close();
 	}
 
@@ -136,9 +145,28 @@ public class TestGeoDataObjectIDBScan {
 	 * @throws Exception
 	 */
 	private static void bulidClustererByIDBScan(Instances instances) throws Exception {
+		TreeMap<Double, List<Instance>> totalInstancesMap = new TreeMap<Double, List<Instance>>();
 		for (int i = 0; i < instances.numInstances(); i++) {
-			clusterer.updateClusterer(instances.instance(i));
+			int xIndex = instances.instance(i).numValues() - 2;
+			int yIndex = instances.instance(i).numValues() - 1;
+			double key = instances.instance(i).value(xIndex)*instances.instance(i).value(yIndex);
+			if(totalInstancesMap.containsKey(key)){
+				totalInstancesMap.get(key).add(instances.instance(i));
+			} else{
+				List<Instance> instanceSet = new ArrayList<Instance>();
+				instanceSet.add(instances.instance(i));
+				totalInstancesMap.put(key, instanceSet);
+			}
 		}
+		
+		for(Map.Entry<Double, List<Instance>> e : totalInstancesMap.entrySet()){
+			for (Instance instance : e.getValue()) {
+				clusterer.updateClusterer(instance);
+			}
+		}
+//		for (int i = 0; i < instances.numInstances(); i++) {
+//			clusterer.updateClusterer(instances.instance(i));
+//		}
 		clusterer.updateFinished();
 	}
 }
