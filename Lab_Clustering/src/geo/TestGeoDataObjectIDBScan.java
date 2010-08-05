@@ -102,12 +102,10 @@ public class TestGeoDataObjectIDBScan {
 		double[] res = eval.getClusterAssignments();
 
 		for (int i = 0; i < res.length; i++) {
-			int xIndex = totalInstances.instance(i).numValues() - 2;
-			int yIndex = totalInstances.instance(i).numValues() - 1;
 			if (res[i] == -1) {
-				writer.write((int) totalInstances.instance(i).value(xIndex) + "," + (int) totalInstances.instance(i).value(yIndex) + ",\n");
+				writer.write(i + "," + i + ",\n");
 			} else {
-				writer.write((int) totalInstances.instance(i).value(xIndex) + "," + (int) totalInstances.instance(i).value(yIndex) + ",class " + (int) (res[i] + 1) + "\n");
+				writer.write(i + "," + i + ",class " + (int) (res[i] + 1) + "\n");
 			}
 		}
 		writer.close();

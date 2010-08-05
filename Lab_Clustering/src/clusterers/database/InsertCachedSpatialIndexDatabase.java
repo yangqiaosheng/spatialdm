@@ -90,8 +90,13 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 	/**
 	 * cache for the epsilonRangeQuery results
 	 */
-	private LinkedHashMap<DataObject, List<DataObject>> epsilonRangeQueryResults;
+	private LinkedHashMap<DataObject, List<DataObject>> epsilonRangeQueryResultsCache;
 
+	/**
+	 * Maximum cache size
+	 */
+	private int maxCacheSize = 100000;
+	
 	/**
 	 * Specifies the radius for a range-query
 	 */
@@ -110,7 +115,7 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 		treeMap = new TreeMap<String, DataObject>();
 		xQueryIdx = new TreeMap<Double, Set<String>>();
 		yQueryIdx = new TreeMap<Double, Set<String>>();
-		epsilonRangeQueryResults = new LinkedHashMap<DataObject, List<DataObject>>();
+		epsilonRangeQueryResultsCache = new LinkedHashMap<DataObject, List<DataObject>>();
 	}
 
 	// *****************************************************************************************************************
@@ -227,8 +232,8 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 	@Override
 	public List<DataObject> epsilonRangeQuery(double epsilon, DataObject queryDataObject) {
 
-		if (epsilonRangeQueryResults.containsKey(queryDataObject))
-			return epsilonRangeQueryResults.get(queryDataObject);
+		if (epsilonRangeQueryResultsCache.containsKey(queryDataObject))
+			return epsilonRangeQueryResultsCache.get(queryDataObject);
 		else {
 			this.epsilon = epsilon;
 			int xIndex = queryDataObject.getInstance().numValues() - 2;
@@ -263,8 +268,8 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 //					}
 //				}
 //			}
-			limitCache();
-			epsilonRangeQueryResults.put(queryDataObject, epsilonRange_List);
+			limitCacheSize();
+			epsilonRangeQueryResultsCache.put(queryDataObject, epsilonRange_List);
 			return epsilonRange_List;
 		}
 	}
@@ -420,8 +425,8 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 
 			for (String key : xResultSet) {
 				if (newDataObject.distance(treeMap.get(key)) < epsilon) {
-					if (epsilonRangeQueryResults.containsKey(treeMap.get(key))) {
-						epsilonRangeQueryResults.get(treeMap.get(key)).add(newDataObject);
+					if (epsilonRangeQueryResultsCache.containsKey(treeMap.get(key))) {
+						epsilonRangeQueryResultsCache.get(treeMap.get(key)).add(newDataObject);
 					}
 				}
 			}
@@ -444,21 +449,23 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 		}
 	}
 
-	private void limitCache() {
-		int maxSize = 100000;
-		int removeSize = maxSize/4;
-		if(epsilonRangeQueryResults.size() >= maxSize){
+	/**
+	 * limit the size of the Cache using FIFO algorithm
+	 */
+	private void limitCacheSize() {
+		int removeSize = maxCacheSize/4;
+		if(epsilonRangeQueryResultsCache.size() >= maxCacheSize){
 			Set<DataObject> removeDataObjects = new HashSet<DataObject>(removeSize);
-			for(Map.Entry<DataObject, List<DataObject>> e : epsilonRangeQueryResults.entrySet()){
+			for(Map.Entry<DataObject, List<DataObject>> e : epsilonRangeQueryResultsCache.entrySet()){
 				removeDataObjects.add(e.getKey());
 				if(removeDataObjects.size()>=removeSize){
 					break;
 				}
 			}
 			for(DataObject removeDataObject : removeDataObjects){
-				epsilonRangeQueryResults.remove(removeDataObject);
+				epsilonRangeQueryResultsCache.remove(removeDataObject);
 			}
-			System.out.println("s:"+epsilonRangeQueryResults.size());
+			System.out.println("s:"+epsilonRangeQueryResultsCache.size());
 		}
 	}
 
@@ -484,6 +491,6 @@ public class InsertCachedSpatialIndexDatabase implements Database, Serializable,
 	@Override
 	public void remove(String key) {
 		treeMap.remove(key);
-		epsilonRangeQueryResults = new LinkedHashMap<DataObject, List<DataObject>>();
+		epsilonRangeQueryResultsCache = new LinkedHashMap<DataObject, List<DataObject>>();
 	}
 }
