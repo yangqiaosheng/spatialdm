@@ -28,6 +28,7 @@ public class DB {
 
 	private static Properties pros = null;
 	private static BoneCPDataSource ds = null;
+//	private static ComboPooledDataSource ds = null;
 
 	private DB() {
 
@@ -61,6 +62,7 @@ public class DB {
 		ds = cpds;
 	} catch (PropertyVetoException e) {
 		logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$
+		e.printStackTrace();
 	}
 	
 	logger.debug("static() - finish to setup Connection Pool");
@@ -89,17 +91,18 @@ public class DB {
 			config.setJdbcUrl(pros.getProperty("url")); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
 			config.setUsername(pros.getProperty("username"));
 			config.setPassword(pros.getProperty("password"));
-			config.setMinConnectionsPerPartition(5);
-			config.setMaxConnectionsPerPartition(10);
+			config.setMinConnectionsPerPartition(1);
+			config.setMaxConnectionsPerPartition(5);
 			config.setPartitionCount(1);
 
 			ds = new BoneCPDataSource(config);
 		} catch (ClassNotFoundException e) {
 			logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$
+			e.printStackTrace();
 		}
 		
 		logger.debug("static() - finish to setup Connection Pool");
-	}
+	} 
 
 	@Override
 	protected void finalize() throws Throwable {

@@ -12,10 +12,10 @@ import java.util.regex.Pattern;
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 
-public class JoinAreasCount {
+public class JoinAreaCount {
 
 	public static void main(String[] args) throws Exception {
-		JoinAreasCount t = new JoinAreasCount();
+		JoinAreaCount t = new JoinAreaCount();
 		//		 t.select();
 		//		t.countPerson();
 		//		t.listCalendar();
