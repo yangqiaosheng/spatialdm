@@ -135,10 +135,6 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 			num_person += areaDao.getPersonCount(a.getId(), person);
 		}
 		System.out.println("person:" + num_person);
-		System.out.println("hour:" + areaDao.getHourCount("40 ", "2008-08-14@17"));
-		System.out.println("day:" + areaDao.getDayCount("40 ", "2007-10-19"));
-		System.out.println("month:" + areaDao.getMonthCount("40 ", "2007-10"));
-		System.out.println("year:" + areaDao.getYearCount("40 ", "2007"));
 	}
 
 	@Test

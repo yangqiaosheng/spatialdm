@@ -1,5 +1,8 @@
 package de.fraunhofer.iais.spatial.servlet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileReader;
@@ -25,16 +28,20 @@ import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
 
 public class TimeSeriesChart extends HttpServlet {
+	/**
+	* Logger for this class
+	*/
+	private static final Logger logger = LoggerFactory.getLogger(TimeSeriesChart.class);
 
 	private static final long serialVersionUID = -4033923021316859791L;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		logger.debug("requestUrl:" + request.getRequestURL()); //$NON-NLS-1$
 		response.setContentType("image/jpeg");
 		response.setHeader("Cache-Control", "no-cache");
 		ServletOutputStream sos = response.getOutputStream();
-
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 
 		String areaid = request.getParameter("id");
@@ -71,7 +78,7 @@ public class TimeSeriesChart extends HttpServlet {
 				}
 			}
 		} catch (JDOMException e1) {
-			e1.printStackTrace();
+			logger.error("doGet(HttpServletRequest, HttpServletResponse)", e1); //$NON-NLS-1$
 		}
 
 		if (years.size() == 0) {
@@ -87,7 +94,7 @@ public class TimeSeriesChart extends HttpServlet {
 		try {
 			areaMgr.createTimeSeriesChart(a, years, sos);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 		}
 	}
 

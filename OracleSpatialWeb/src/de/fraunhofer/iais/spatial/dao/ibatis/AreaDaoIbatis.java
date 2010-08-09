@@ -51,11 +51,11 @@ public class AreaDaoIbatis implements AreaDao {
 	}
 
 	@Override
-	public Area getAreaById(String id) {
+	public Area getAreaById(String areaid) {
 		SqlSession session = sqlSessionFactory.openSession();
 		Area a = null;
 		try {
-			a = (Area) session.selectOne(Area.class.getName() + ".selectById", id);
+			a = (Area) session.selectOne(Area.class.getName() + ".selectById", areaid);
 			initArea(a);
 		} finally {
 			session.close();
@@ -117,40 +117,14 @@ public class AreaDaoIbatis implements AreaDao {
 	}
 
 	@Override
-	public int getHourCount(String areaid, String hour) {
+	public int getTotalCount(String areaid) {
 		int num = 0;
-
+	
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".hourCount", areaid);
-			if (count != null) {
-				Pattern p = Pattern.compile(hour + ":(\\d{1,});");
-				Matcher m = p.matcher(count);
-				if (m.find()) {
-					num += Integer.parseInt(m.group(1));
-				}
-			}
-		} finally {
-			session.close();
-		}
-		return num;
-	}
-
-	@Override
-	public int getHourCount(String areaid, Set<String> hours) {
-		int num = 0;
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".hourCount", areaid);
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					if (hours.contains(m.group(1))) {
-						num += Integer.parseInt(m.group(2));
-					}
-				}
-			}
+			num = (Integer) session.selectOne(Area.class.getName() + ".totalCount", areaid);
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			session.close();
 		}
@@ -179,47 +153,6 @@ public class AreaDaoIbatis implements AreaDao {
 		}
 	}
 
-	@Override
-	public int getDayCount(String areaid, String day) {
-		int num = 0;
-
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".dayCount", areaid);
-			if (count != null) {
-				Pattern p = Pattern.compile(day + ":(\\d{1,});");
-				Matcher m = p.matcher(count);
-				if (m.find()) {
-					num += Integer.parseInt(m.group(1));
-				}
-			}
-		} finally {
-			session.close();
-		}
-		return num;
-	}
-
-	@Override
-	public int getDayCount(String areaid, Set<String> days) {
-		int num = 0;
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".dayCount", areaid);
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					if (days.contains(m.group(1))) {
-						num += Integer.parseInt(m.group(2));
-					}
-				}
-			}
-		} finally {
-			session.close();
-		}
-		return num;
-	}
-
 	private void loadDaysCount(Area a) {
 		if (a.getDaysCount() != null)
 			return; // cached
@@ -240,46 +173,6 @@ public class AreaDaoIbatis implements AreaDao {
 		} finally {
 			session.close();
 		}
-	}
-
-	@Override
-	public int getMonthCount(String areaid, String month) {
-		int num = 0;
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".monthCount", areaid);
-			if (count != null) {
-				Pattern p = Pattern.compile(month + ":(\\d{1,});");
-				Matcher m = p.matcher(count);
-				if (m.find()) {
-					num += Integer.parseInt(m.group(1));
-				}
-			}
-		} finally {
-			session.close();
-		}
-		return num;
-	}
-
-	@Override
-	public int getMonthCount(String areaid, Set<String> months) {
-		int num = 0;
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".monthCount", areaid);
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					if (months.contains(m.group(1))) {
-						num += Integer.parseInt(m.group(2));
-					}
-				}
-			}
-		} finally {
-			session.close();
-		}
-		return num;
 	}
 
 	private void loadMonthsCount(Area a) {
@@ -304,47 +197,6 @@ public class AreaDaoIbatis implements AreaDao {
 		}
 	}
 
-	@Override
-	public int getYearCount(String areaid, String year) {
-		int num = 0;
-
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".yearCount", areaid);
-			if (count != null) {
-				Pattern p = Pattern.compile(year + ":(\\d{1,});");
-				Matcher m = p.matcher(count);
-				if (m.find()) {
-					num += Integer.parseInt(m.group(1));
-				}
-			}
-		} finally {
-			session.close();
-		}
-		return num;
-	}
-
-	@Override
-	public int getYearCount(String areaid, Set<String> years) {
-		int num = 0;
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".yearCount", areaid);
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					if (years.contains(m.group(1))) {
-						num += Integer.parseInt(m.group(2));
-					}
-				}
-			}
-		} finally {
-			session.close();
-		}
-		return num;
-	}
-
 	private void loadYearsCount(Area a) {
 		if (a.getYearsCount() != null)
 			return; // cached
@@ -367,21 +219,6 @@ public class AreaDaoIbatis implements AreaDao {
 		}
 	}
 
-	@Override
-	public int getTotalCount(String areaid) {
-		int num = 0;
-
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			num = (Integer) session.selectOne(Area.class.getName() + ".totalCount", areaid);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			session.close();
-		}
-		return num;
-	}
-
 	private void initAreas(List<Area> as) {
 		for (Area a : as) {
 			initArea(a);
@@ -391,7 +228,7 @@ public class AreaDaoIbatis implements AreaDao {
 	private void initArea(Area a) {
 		if (a != null) {
 			a.setSelectCount(0);
-			a.setTotalCount(0);
+			a.setTotalCount(getTotalCount(a.getId()));
 			loadYearsCount(a);
 			loadMonthsCount(a);
 			loadDaysCount(a);
