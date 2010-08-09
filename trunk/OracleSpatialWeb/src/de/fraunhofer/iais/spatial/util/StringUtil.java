@@ -8,6 +8,9 @@ import java.util.UUID;
 
 import org.springframework.web.util.HtmlUtils;
 
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
+
 public class StringUtil {
 
 	/**
@@ -194,5 +197,23 @@ public class StringUtil {
 		}
 		sb.append(Integer.toHexString(v));
 		return sb.toString().toUpperCase();
+	}
+	
+	/**
+	 * get the 6 bit format Radius Value for query
+	 * @param a - FlickrDeWestArea Object
+	 * @return Radius Value of width 6
+	 */
+	public static String radiusValue(FlickrDeWestArea a) {
+		return String.format("%-6s", a.getRadius().toString());
+	}
+	
+	/**
+	 * get the 6 bit format Radius Value for query
+	 * @param radius - FlickrDeWestArea.Radius
+	 * @return Radius Value of width 6
+	 */
+	public static String radiusValue(Radius radius) {
+		return String.format("%-6s", radius.toString());
 	}
 }

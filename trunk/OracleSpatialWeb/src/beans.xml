@@ -15,5 +15,4 @@
 	<bean id="milanpolyDaoIbatisImpl" class="de.fraunhofer.iais.spatial.dao.ibatis.MilanpolyDaoIbatis" />
 	<bean id="milanpolyMgr" class="de.fraunhofer.iais.spatial.service.MilanpolyMgr">	
 	</bean>
-
 </beans>

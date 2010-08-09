@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -24,7 +25,6 @@ import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
 
-
 public class TestFlickrDeWestArea {
 
 	// private static AreaMgr areaMgr = null;
@@ -40,25 +40,48 @@ public class TestFlickrDeWestArea {
 		System.setProperty("oraclespatialweb.root", "C:/java_file/eclipse/MyEclipse/OracleSpatialWeb/");
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 	}
-	
+
 	@Test
 	public void testKml() throws UnsupportedEncodingException {
 		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
 		FlickrDeWestArea.Radius radius = FlickrDeWestArea.Radius._10000;
-		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea"+ radius));
+		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea" + radius));
 		radius = FlickrDeWestArea.Radius._20000;
-		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea"+ radius));
+		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea" + radius));
 		radius = FlickrDeWestArea.Radius._40000;
-		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea"+ radius));
+		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea" + radius));
 		radius = FlickrDeWestArea.Radius._80000;
-		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea"+ radius));
+		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea" + radius));
 		radius = FlickrDeWestArea.Radius._5000;
-		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea"+ radius));
-	
+		System.out.println(createKml(areaDao.getAllAreas(radius), "temp/FlickrDeWestArea" + radius));
+
 	}
-	
+
 	@Test
-	public void testJdbcDao() {
+	public void testJdbcDao1() {
+		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
+		FlickrDeWestArea a = areaDao.getAreaById("1   ", FlickrDeWestArea.Radius._5000);
+		String coordinates = "\t";
+		if (a.getGeom().getOrdinatesArray() != null) {
+			for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
+				coordinates += a.getGeom().getOrdinatesArray()[i] + ", ";
+				if (i % 2 == 1) {
+					coordinates += "0\t";
+				}
+			}
+
+			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
+			System.out.println("hours:" + a.getHoursCount().size());
+			System.out.println("days:" + a.getDaysCount().size());
+			System.out.println("months:" + a.getMonthsCount().size());
+			System.out.println("years:" + a.getYearsCount().size());
+			// System.out.println(person+":"+dao.getPersonCount(a.getId(),
+			// person));
+		}
+	}
+
+	@Test
+	public void testJdbcDao2() {
 		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
 		List<FlickrDeWestArea> as = areaDao.getAllAreas(FlickrDeWestArea.Radius._10000);
 		for (FlickrDeWestArea a : as) {
@@ -72,13 +95,14 @@ public class TestFlickrDeWestArea {
 				}
 			}
 
-			System.out.println(a.getName() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
+			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
+			System.out.println(a.getHoursCount());
 			System.out.println(coordinates + "\n");
 			// System.out.println(person+":"+dao.getPersonCount(a.getId(),
 			// person));
-		}	
+		}
 	}
-	
+
 	private String createKml(List<FlickrDeWestArea> as, String file) throws UnsupportedEncodingException {
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
@@ -119,16 +143,16 @@ public class TestFlickrDeWestArea {
 				String icon = "";
 
 				if (a.getTotalCount() < 100) {
-					r = (double) Math.log10(a.getTotalCount()) / 85.0 /2;
+					r = (double) Math.log10(a.getTotalCount()) / 85.0 / 2;
 					icon = remoteBasePath + "images/circle_bl.ico";
 				} else if (a.getTotalCount() < 1000) {
-					r = (double) Math.log10(a.getTotalCount()) / 80.0 /2;
+					r = (double) Math.log10(a.getTotalCount()) / 80.0 / 2;
 					icon = remoteBasePath + "images/circle_gr.ico";
 				} else if (a.getTotalCount() < 10000) {
-					r = (double) Math.log10(a.getTotalCount()) / 70.0 /2;
+					r = (double) Math.log10(a.getTotalCount()) / 70.0 / 2;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
-					r = (double) Math.log10(a.getTotalCount()) / 60.0 /2;
+					r = (double) Math.log10(a.getTotalCount()) / 60.0 / 2;
 					icon = remoteBasePath + "images/circle_or.ico";
 					if (r > 0.1) {
 						r = 0.1;
@@ -159,7 +183,7 @@ public class TestFlickrDeWestArea {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "id:" + a.getId();
 			String description = "count: " + String.valueOf(a.getTotalCount());
-			String polyStyleColor = "440000";	   	//not transparent
+			String polyStyleColor = "440000"; //not transparent
 //			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
@@ -232,7 +256,7 @@ public class TestFlickrDeWestArea {
 		return xml2String(document);
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
-	
+
 	private static String xml2String(Document document) {
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		xmlOutputter.setFormat(Format.getPrettyFormat());
@@ -261,12 +285,3 @@ public class TestFlickrDeWestArea {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-

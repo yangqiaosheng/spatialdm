@@ -51,378 +51,6 @@ public class AreaDaoJdbc implements AreaDao {
 	}
 
 	@Override
-	public int getHourCount(String areaid, String hour) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		int num = 0;
-		try {
-			selectStmt = DB.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, areaid);
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("hour");
-				if (count != null) {
-					Pattern p = Pattern.compile(hour + ":(\\d{1,});");
-					Matcher m = p.matcher(count);
-					if (m.find()) {
-						num += Integer.parseInt(m.group(1));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		return num;
-	}
-
-	@Override
-	public int getHourCount(String areaid, Set<String> hours) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		int num = 0;
-		try {
-			selectStmt = DB.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, areaid);
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("hour");
-				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
-					while (m.find()) {
-						if (hours.contains(m.group(1))) {
-							num += Integer.parseInt(m.group(2));
-						}
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		return num;
-	}
-
-	private void loadHoursCount(Area a) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
-		a.setHoursCount(hoursCount);
-
-		try {
-			selectStmt = DB.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, a.getId());
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("hour");
-				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
-					while (m.find()) {
-						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-	}
-
-	@Override
-	public int getDayCount(String areaid, String day) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		int num = 0;
-		try {
-			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, areaid);
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("day");
-				if (count != null) {
-					Pattern p = Pattern.compile(day + ":(\\d{1,});");
-					Matcher m = p.matcher(count);
-					if (m.find()) {
-						num += Integer.parseInt(m.group(1));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		return num;
-	}
-
-	@Override
-	public int getDayCount(String areaid, Set<String> days) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		int num = 0;
-		try {
-			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, areaid);
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("day");
-				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
-					while (m.find()) {
-						if (days.contains(m.group(1))) {
-							num += Integer.parseInt(m.group(2));
-						}
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		return num;
-	}
-
-	private void loadDaysCount(Area a) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-
-		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();
-		a.setDaysCount(daysCount);
-
-		try {
-			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, a.getId());
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("day");
-				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
-					while (m.find()) {
-						daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-	}
-
-	@Override
-	public int getMonthCount(String areaid, String month) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		int num = 0;
-		try {
-			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, areaid);
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("month");
-				if (count != null) {
-					Pattern p = Pattern.compile(month + ":(\\d{1,});");
-					Matcher m = p.matcher(count);
-					if (m.find()) {
-						num += Integer.parseInt(m.group(1));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		return num;
-	}
-
-	@Override
-	public int getMonthCount(String areaid, Set<String> months) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		int num = 0;
-		try {
-			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, areaid);
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("month");
-				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
-					while (m.find()) {
-						if (months.contains(m.group(1))) {
-							num += Integer.parseInt(m.group(2));
-						}
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		return num;
-	}
-
-	private void loadMonthsCount(Area a) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-
-		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();
-		a.setMonthsCount(monthsCount);
-
-		try {
-			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, a.getId());
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("month");
-				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
-					while (m.find()) {
-						monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-	}
-
-	@Override
-	public int getYearCount(String areaid, String year) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		int num = 0;
-		try {
-			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, areaid);
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("year");
-				if (count != null) {
-					Pattern p = Pattern.compile(year + ":(\\d{1,});");
-					Matcher m = p.matcher(count);
-					if (m.find()) {
-						num += Integer.parseInt(m.group(1));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		return num;
-	}
-
-	@Override
-	public int getYearCount(String areaid, Set<String> years) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		int num = 0;
-		try {
-			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, areaid);
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("year");
-				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
-					Matcher m = p.matcher(count);
-					while (m.find()) {
-						if (years.contains(m.group(1))) {
-							num += Integer.parseInt(m.group(2));
-						}
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		return num;
-	}
-
-	private void loadYearsCount(Area a) {
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-
-		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();
-		a.setYearsCount(yearsCount);
-
-		try {
-			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
-			selectStmt.setString(1, a.getId());
-			rs = DB.getRs(selectStmt);
-			if (rs.next()) {
-				String count = rs.getString("year");
-				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
-					Matcher m = p.matcher(count);
-					while (m.find()) {
-						yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-	}
-
-	@Override
 	public int getTotalCount(String areaid) {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
@@ -471,14 +99,14 @@ public class AreaDaoJdbc implements AreaDao {
 	}
 
 	@Override
-	public Area getAreaById(String id) {
+	public Area getAreaById(String areaid) {
 		Area a = new Area();
 		Connection conn = DB.getConn();
 		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m" + " WHERE c.ID = ?");
 
 		ResultSet rs = null;
 		try {
-			pstmt.setString(1, id);
+			pstmt.setString(1, areaid);
 			rs = DB.getRs(pstmt);
 			while (rs.next()) {
 				initFromRs(a, rs);
@@ -555,6 +183,130 @@ public class AreaDaoJdbc implements AreaDao {
 		return as;
 	}
 
+	private void loadHoursCount(Area a) {
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+	
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
+		a.setHoursCount(hoursCount);
+	
+		try {
+			selectStmt = DB.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt.setString(1, a.getId());
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				String count = rs.getString("hour");
+				if (count != null) {
+					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
+					Matcher m = p.matcher(count);
+					while (m.find()) {
+						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+	}
+
+	private void loadDaysCount(Area a) {
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+	
+		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();
+		a.setDaysCount(daysCount);
+	
+		try {
+			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt.setString(1, a.getId());
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				String count = rs.getString("day");
+				if (count != null) {
+					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
+					Matcher m = p.matcher(count);
+					while (m.find()) {
+						daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+	}
+
+	private void loadMonthsCount(Area a) {
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+	
+		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();
+		a.setMonthsCount(monthsCount);
+	
+		try {
+			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt.setString(1, a.getId());
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				String count = rs.getString("month");
+				if (count != null) {
+					Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
+					Matcher m = p.matcher(count);
+					while (m.find()) {
+						monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+	}
+
+	private void loadYearsCount(Area a) {
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+	
+		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();
+		a.setYearsCount(yearsCount);
+	
+		try {
+			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt.setString(1, a.getId());
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				String count = rs.getString("year");
+				if (count != null) {
+					Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
+					Matcher m = p.matcher(count);
+					while (m.find()) {
+						yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+	}
+
 	/**
 	 * initiate the instance of Area using the values from the ResultSet
 	 * @param a - Area
@@ -586,7 +338,7 @@ public class AreaDaoJdbc implements AreaDao {
 	private void initArea(Area a) {
 		if (a != null) {
 			a.setSelectCount(0);
-			a.setTotalCount(0);
+			a.setTotalCount(getTotalCount(a.getId()));
 			loadYearsCount(a);
 			loadMonthsCount(a);
 			loadDaysCount(a);

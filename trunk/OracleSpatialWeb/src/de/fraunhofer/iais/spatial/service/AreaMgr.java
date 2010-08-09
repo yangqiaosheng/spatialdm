@@ -118,12 +118,6 @@ public class AreaMgr {
 		}
 	}
 
-	public void countTotal(List<Area> as) {
-		for (Area a : as) {
-			a.setTotalCount(areaDao.getTotalCount(a.getId()));
-		}
-	}
-
 	private void allYears(List<String> years) {
 		for (int i = 2005; i <= 2009; i++) {
 			years.add(String.format("%04d", i));
@@ -189,7 +183,6 @@ public class AreaMgr {
 
 	public void count(List<Area> as, Set<String> strs, char level) throws Exception {
 		System.out.println("#query:" + strs.size() * 139);
-		this.countTotal(as);
 
 		if (strs.size() > 5 * 12 * 31 * 24)
 			throw new Exception("excceed the maximun #queries!");
@@ -380,7 +373,7 @@ public class AreaMgr {
 		for (Area a : as) {
 			if (a.getSelectCount() != 0) {
 				String name = "total:" + a.getTotalCount();
-				//				String description = "select:" + String.valueOf(a.getSelectCount());
+//				String description = "select:" + String.valueOf(a.getSelectCount());
 				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='TimeSeriesChart?id=" + URLEncoder.encode(a.getId(), "UTF-8") + "&xml="
 						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 				String groundOverlayColor = "aaffffff"; //transparency
@@ -432,8 +425,8 @@ public class AreaMgr {
 				latLonBoxElement.addContent(eastElement);
 				latLonBoxElement.addContent(westElement);
 
-				northElement.addContent(Double.toString(a.getCenter().getY() + r * 0.55));
-				southElement.addContent(Double.toString(a.getCenter().getY() - r * 0.55));
+				northElement.addContent(Double.toString(a.getCenter().getY() + r * 0.65));
+				southElement.addContent(Double.toString(a.getCenter().getY() - r * 0.65));
 				eastElement.addContent(Double.toString(a.getCenter().getX() + r));
 				westElement.addContent(Double.toString(a.getCenter().getX() - r));
 			}
@@ -443,7 +436,9 @@ public class AreaMgr {
 		for (Area a : as) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
-			String description = "select:" + String.valueOf(a.getSelectCount());
+//			String description = "select:" + String.valueOf(a.getSelectCount());
+			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='TimeSeriesChart?id=" + URLEncoder.encode(a.getId(), "UTF-8") + "&xml="
+					+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 			//			String polyStyleColor = "440000";	   	//not transparent
 			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";

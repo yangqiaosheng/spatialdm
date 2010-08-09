@@ -1,6 +1,7 @@
 package de.fraunhofer.iais.spatial.util;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +21,7 @@ import oracle.sql.STRUCT;
 
 public class JoinFlickrDeWestAreaCount {
 	static long start = System.currentTimeMillis();
+	static int count = 0;
 
 	public static void main(String[] args) throws Exception {
 		JoinFlickrDeWestAreaCount t = new JoinFlickrDeWestAreaCount();
@@ -39,7 +41,9 @@ public class JoinFlickrDeWestAreaCount {
 //		t.countPerson("10000");
 //		t.countPerson("5000");
 
-		t.groupPhotos();
+//		t.groupPhotos();
+
+		t.copyTable();
 
 		System.out.println("escaped time:" + (System.currentTimeMillis() - start) / 1000.0);
 //		
@@ -431,7 +435,7 @@ public class JoinFlickrDeWestAreaCount {
 				pstmt2.setDouble(2, y);
 				ResultSet rs2 = DB.getRs(pstmt2);
 				if (rs2.next()) {
-					System.out.println("i:"+ (i++) +" escaped time:" + (System.currentTimeMillis() - start) / 1000.0);
+					System.out.println("i:" + (i++) + " escaped time:" + (System.currentTimeMillis() - start) / 1000.0);
 					PreparedStatement pstmt3 = DB.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_GEOM set CLUSTER_R" + radius + "_ID = ? where PHOTO_ID = ?");
 					pstmt3.setString(1, rs2.getString("ID"));
 					pstmt3.setString(2, rs1.getString("PHOTO_ID"));
@@ -445,5 +449,42 @@ public class JoinFlickrDeWestAreaCount {
 		DB.close(rs1);
 		DB.close(pstmt1);
 		DB.close(conn);
+	}
+
+	private void copyTable() throws ClassNotFoundException, SQLException {
+		Connection connFrom = null;
+		Connection connTo = null;
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		try {
+			connFrom = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "Gennady_flickr", "gennady");
+			connTo = DriverManager.getConnection("jdbc:oracle:thin:@plan-b.iais.fraunhofer.de:1521:PLANB", "Gennady_flickr", "gennady");
+			connTo.setAutoCommit(false);
+
+			PreparedStatement pstmtSelect = connFrom.prepareStatement("select * from flickr_de_west_table_geom");
+			ResultSet rsSelect = pstmtSelect.executeQuery();
+			while (rsSelect.next()) {
+				System.out.println("count:" + (count++) + " escaped time:" + (System.currentTimeMillis() - start) / 1000.0 + "s");
+				PreparedStatement pstmtInsert = connTo.prepareStatement("insert into flickr_de_west_table_geom (photo_id, cluster_r5000_id, cluster_r10000_id, cluster_r20000_id, cluster_r40000_id, cluster_r80000_id) values (?, ?, ?, ?, ?, ?)");
+				pstmtInsert.setString(1, rsSelect.getString("photo_id"));
+				pstmtInsert.setString(2, rsSelect.getString("cluster_r5000_id"));
+				pstmtInsert.setString(3, rsSelect.getString("cluster_r10000_id"));
+				pstmtInsert.setString(4, rsSelect.getString("cluster_r20000_id"));
+				pstmtInsert.setString(5, rsSelect.getString("cluster_r40000_id"));
+				pstmtInsert.setString(6, rsSelect.getString("cluster_r80000_id"));
+				pstmtInsert.executeUpdate();
+				pstmtInsert.close();
+			}
+
+			connTo.commit();
+			rsSelect.close();
+			pstmtSelect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			connTo.rollback();
+		} finally {
+			connTo.close();
+			connFrom.close();
+		}
+
 	}
 }
