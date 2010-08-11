@@ -111,9 +111,9 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	public void testQuery() {
 		AreaDao areaDao = areaMgr.getAreaDao();
 		// AreaDao dao = new AreaDaoJdbc();
-		List<Area> as = areaDao.getAllAreas();
-		// List<Area> as = dao.getAreasByPoint(9.17, 45.46);
-		// // List<Area> ms = dao.getAreasByRect(1, 1, 96.5, 95.4);
+//		List<Area> as = areaDao.getAllAreas();
+//		List<Area> as = areaDao.getAreasByPoint(8.83, 50.58);
+		List<Area> as = areaDao.getAreasByRect(1, 1, 96.5, 95.4);
 		int num_person = 0;
 		String person = "12533858@N04";
 		for (Area a : as) {
@@ -317,7 +317,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 
 		List<Area> as = areaMgr.getAllAreas();
 		areaMgr.parseXmlRequest(as, StringUtil.FullMonth2Num(xml.toString()), years, months, days, hours, weekdays);
-		areaMgr.createKml(as, "temp/areas1");
+		areaMgr.createKml(as, "temp/areas1", null);
 		System.out.println();
 
 		br.close();
@@ -335,7 +335,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		areaMgr.parseXmlRequest2(as, StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml.toString())));
 		// for(Area a : as)
 		// System.out.println(a.getTotalCount()+":"+a.getCount());
-		System.out.println(areaMgr.createKml(as, "temp/areas2"));
+		System.out.println(areaMgr.createKml(as, "temp/areas2", null));
 		br.close();
 
 	}
