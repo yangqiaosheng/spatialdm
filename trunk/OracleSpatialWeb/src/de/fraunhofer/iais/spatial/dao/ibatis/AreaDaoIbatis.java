@@ -36,6 +36,9 @@ public class AreaDaoIbatis implements AreaDao {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.AreaDao#getAllAreas()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Area> getAllAreas() {
@@ -50,8 +53,11 @@ public class AreaDaoIbatis implements AreaDao {
 		return as;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.AreaDao#getAreaById(String)
+	 */
 	@Override
-	public Area getAreaById(String areaid) {
+	public Area getAreaById(int areaid) {
 		SqlSession session = sqlSessionFactory.openSession();
 		Area a = null;
 		try {
@@ -63,6 +69,9 @@ public class AreaDaoIbatis implements AreaDao {
 		return a;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.AreaDao#getAreasByPoint(double, double)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Area> getAreasByPoint(double x, double y) {
@@ -79,6 +88,9 @@ public class AreaDaoIbatis implements AreaDao {
 		return as;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.AreaDao#getAreasByRect(double, double， double, double)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Area> getAreasByRect(double x1, double y1, double x2, double y2) {
@@ -96,8 +108,11 @@ public class AreaDaoIbatis implements AreaDao {
 		return as;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.AreaDao#getPersonCount(String, String)
+	 */
 	@Override
-	public int getPersonCount(String areaid, String person) {
+	public int getPersonCount(int areaid, String person) {
 		int num = 0;
 
 		SqlSession session = sqlSessionFactory.openSession();
@@ -116,8 +131,11 @@ public class AreaDaoIbatis implements AreaDao {
 		return num;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.AreaDao#getTotalCount(String)
+	 */
 	@Override
-	public int getTotalCount(String areaid) {
+	public int getTotalCount(int areaid) {
 		int num = 0;
 	
 		SqlSession session = sqlSessionFactory.openSession();
@@ -131,25 +149,20 @@ public class AreaDaoIbatis implements AreaDao {
 		return num;
 	}
 
-	private void loadHoursCount(Area a) {
-		if (a.getHoursCount() != null)
-			return; // cached
+	private void initArea(Area a) {
+		if (a != null) {
+			a.setSelectCount(0);
+			a.setTotalCount(getTotalCount(a.getId()));
+			loadYearsCount(a);
+			loadMonthsCount(a);
+			loadDaysCount(a);
+			loadHoursCount(a);
+		}
+	}
 
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
-		a.setHoursCount(hoursCount);
-
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(Area.class.getName() + ".hourCount", a.getId());
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-				}
-			}
-		} finally {
-			session.close();
+	private void initAreas(List<Area> as) {
+		for (Area a : as) {
+			initArea(a);
 		}
 	}
 
@@ -168,6 +181,28 @@ public class AreaDaoIbatis implements AreaDao {
 				Matcher m = p.matcher(count);
 				while (m.find()) {
 					daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
+				}
+			}
+		} finally {
+			session.close();
+		}
+	}
+
+	private void loadHoursCount(Area a) {
+		if (a.getHoursCount() != null)
+			return; // cached
+
+		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
+		a.setHoursCount(hoursCount);
+
+		SqlSession session = sqlSessionFactory.openSession();
+		try {
+			String count = (String) session.selectOne(Area.class.getName() + ".hourCount", a.getId());
+			if (count != null) {
+				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
+				Matcher m = p.matcher(count);
+				while (m.find()) {
+					hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
 				}
 			}
 		} finally {
@@ -216,23 +251,6 @@ public class AreaDaoIbatis implements AreaDao {
 			}
 		} finally {
 			session.close();
-		}
-	}
-
-	private void initAreas(List<Area> as) {
-		for (Area a : as) {
-			initArea(a);
-		}
-	}
-
-	private void initArea(Area a) {
-		if (a != null) {
-			a.setSelectCount(0);
-			a.setTotalCount(getTotalCount(a.getId()));
-			loadYearsCount(a);
-			loadMonthsCount(a);
-			loadDaysCount(a);
-			loadHoursCount(a);
 		}
 	}
 

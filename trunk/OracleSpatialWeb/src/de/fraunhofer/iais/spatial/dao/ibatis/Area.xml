@@ -39,37 +39,37 @@
 		where d.table_name = 'AREAS20KMRADIUS' and sdo_relate(m.geom, #{j_geom},'mask=anyinteract') = 'TRUE'
 	</select>
 	
-	<select id="personCount" resultType="String" parameterType="String">
+	<select id="personCount" resultType="String" parameterType="int">
 		select person 
 		from AREAS20KMRADIUS_COUNT 
 		where ID = #{id}
 	</select>
 	
-	<select id="hourCount" resultType="String" parameterType="String">
+	<select id="hourCount" resultType="String" parameterType="int">
 		select hour 
 		from AREAS20KMRADIUS_COUNT 
 		where ID = #{id}
 	</select>
 	
-	<select id="dayCount" resultType="String" parameterType="String">
+	<select id="dayCount" resultType="String" parameterType="int">
 		select day 
 		from AREAS20KMRADIUS_COUNT 
 		where ID = #{id}
 	</select>
 	
-	<select id="monthCount" resultType="String" parameterType="String">
+	<select id="monthCount" resultType="String" parameterType="int">
 		select month 
 		from AREAS20KMRADIUS_COUNT 
 		where ID = #{id}
 	</select>
 	
-	<select id="yearCount" resultType="String" parameterType="String">
+	<select id="yearCount" resultType="String" parameterType="int">
 		select year 
 		from AREAS20KMRADIUS_COUNT 
 		where ID = #{id}
 	</select>
 	
-	<select id="totalCount" resultType="int" parameterType="String">
+	<select id="totalCount" resultType="int" parameterType="int">
 		select total 
 		from AREAS20KMRADIUS_COUNT 
 		where ID = #{id}
