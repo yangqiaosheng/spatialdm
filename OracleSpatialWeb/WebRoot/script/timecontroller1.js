@@ -411,24 +411,30 @@ function ask() {
 	hour=xmlDoc.getElementsByTagName("hour");//50 - 73
 	
 	weekday=xmlDoc.getElementsByTagName("weekday"); //74-80
-	
+	//alert("step1");
 	if (window.XMLHttpRequest){
 		xmlhttp=new XMLHttpRequest();
 
 	}
 	//I don't need to wait some seconds because of this function
+	//alert("step2");
 	xmlhttp.onreadystatechange = function() {			
+//		alert("step4");
 		if(xmlhttp.readyState==4){
+//			alert("step5");
 			// from the response get the element with url and the kml which now is generated for each user.
 			url = xmlhttp.responseXML.getElementsByTagName("url")[0].firstChild.nodeValue;
 			document.getElementById("content1").innerHTML = "kml:" + url; 
 			loadkml_1(url);
+//			alert("ready");
 		}			
 	};
-//	 xmlhttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
-	 xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
+	 xmlhttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
+//	 xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
 	 xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 	 xmlhttp.send("xml="+encodeURIComponent(text));
+	//alert("step3");
+
 }
 //var t_count=0;
 var l=0;
@@ -451,6 +457,22 @@ function loadkml_1(url) {
                 		}
 	g_kml_counter++;
 	l=1;
+}
+
+function Add5000(){
+	loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_5000.kml");	
+}
+function Add10000(){
+	loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_10000.kml");
+}
+function Add20000(){
+        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_20000.kml");
+}
+function Add40000(){
+        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_40000.kml");
+}
+function Add80000(){
+        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_80000.kml");
 }
 
 function refreshButtons() { // ok number[i] reverse to 0

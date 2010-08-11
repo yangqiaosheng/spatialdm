@@ -9,8 +9,8 @@ var geocoder = null;
 function initialize1()
 {
 	if (GBrowserIsCompatible()) {
-			    var myLatlng = new google.maps.LatLng(50.80, 7.12);
-			    myOptions = {
+			var myLatlng = new google.maps.LatLng(50.80, 7.12);
+			myOptions = {
 			      zoom: 8, 
 			      center: myLatlng,
 			      mapTypeControl: true,			    
@@ -18,13 +18,30 @@ function initialize1()
 			      navigationControlOptions: {position: google.maps.ControlPosition.RIGHT},
 
 			      mapTypeId: google.maps.MapTypeId.ROADMAP
-			    }
-			   map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-//			     map = new OpenLayers.Map("map_canvas"); 
-//			    var gmapLayer = new OpenLayers.Layer.Google("GMaps");
-//			    map.addLayer(gmapLayer);
+			  }
+			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+			google.maps.event.addListener(map, 'zoom_changed', function() {
+	//		    alert("map.getBounds(): "+map.getBounds()+"\n map.getCenter():"+map.getCenter()+"\n map.getZoom(): "+map.getZoom());
+				//I deleted the cercles because they have to have different size for the polygons that are generated
+				if (map.getZoom()<8){
+					// this function is in anothe .js file but I used here as if it is in this .js file
+					 loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_80000.kml");
 
-			    
+				}
+				if ((map.getZoom()<10)&&(map.getZoom()>=9)){
+					loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_40000.kml");					
+				}
+				if ((map.getZoom()<11)&&(map.getZoom()>=10)){
+                                        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_20000.kml");
+                                }
+				 if ((map.getZoom()<12)&&(map.getZoom()>=11)){
+                                        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_10000.kml");
+                                }
+				 if ((map.getZoom()>=12)){
+                                        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_5000.kml");
+                                }				
+  			});	
+					    
 		activateZoom(true);		
 	}
 }

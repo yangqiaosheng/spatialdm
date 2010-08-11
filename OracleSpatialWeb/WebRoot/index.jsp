@@ -29,7 +29,7 @@
 			<link rel="stylesheet" type="text/css" href="css/fonts.css"> <!--for carousel -->
 			<link type="text/css" rel="stylesheet" href="css/carousel.css">	<!-- for carousel -->
 						
-			<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAXpO0zI9yNeA_EFs7s1MwGRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxTzB5NzdXPflGWQvmnBnP55gTTSgQ"text/javascript"></script>          		    
+			<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>  
 			<!-- API 3 -->
 			<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
 			<!-- ****************************************************************************  -->				  	
@@ -72,7 +72,14 @@
 			<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
 						 
 			<!-- ******************************** -->
-			<script type="text/javascript" src="script/drag&dropYahoo.js"></script> <!-- for drag and drop table -->										
+			<script type="text/javascript" src="script/drag&dropYahoo.js"></script> <!-- for drag and drop table -->	
+			<!-- ************************for timeline******************************* -->									
+		<script type="text/javascript" src="script/jquery-1.4.2.js"></script> 
+		<script type="text/javascript" src="script/development-bundle/ui/jquery-ui-1.8.2.custom.js"></script> 
+		<script type="text/javascript" src="script/scriptbutton.js"></script> 
+		<link type="text/css" href="script/css/ui-lightness/jquery-ui-1.8.2.custom.css" rel="stylesheet" />		
+		<link type="text/css" href="css/style1.css" rel="stylesheet"/>
+	
   </head>           
   <body onload = "start(); loadStart();"; onunload="GUnload()";>
    <div id="map_canvas"></div>   
@@ -128,6 +135,12 @@
 
 		<button name="button4" onclick="refresh()">Refresh page!</button>
 		<!-- 	<button name="button8" onclick="colorPolygon()">Load something from DB</button>  -->
+		<button onclick="Add5000()">5000</button>
+		<button onclick="Add10000()">10000</button>
+		<button onclick="Add20000()">20000</button>
+		<button onclick="Add40000()">40000</button>
+		<button onclick="Add80000()">80000</button>
+		
 		</div>
 		<div id="content3" class="tabcontent" style="display:none;">
 				<p>
@@ -378,7 +391,22 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan=1>time bar</td>
+				 <p>
+					<label for="amount">Time range:</label>
+					<input type="text" id="amount"/>
+				  </p>
+			 	 <select name="minbeds" id="minbeds">
+				<option>0</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+				</select>
+				<br></br>
+				<br></br>
+			     	<div id="slider"></div>	
 			
 			</tr>						
 			<!-- try to use slide bar froma another api, here I can not use proper move of the tables and move of the bar time -->		
