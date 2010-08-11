@@ -288,12 +288,13 @@ public class FlickrDeWestAreaMgr {
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
 		Element rootElement = document.getRootElement();
-		// <years>
+
 		List<Element> yearElements = rootElement.getChildren("year");
 		List<Element> monthElements = rootElement.getChildren("month");
 		List<Element> dayElements = rootElement.getChildren("day");
 		List<Element> hourElements = rootElement.getChildren("hour");
 		List<Element> radiusElements = rootElement.getChildren("radius");
+		
 		if (radiusElements != null && radiusElements.size() == 1) {
 			radius = Radius.valueOf("_" + radiusElements.get(0).getText());
 		}
