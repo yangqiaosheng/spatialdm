@@ -28,51 +28,43 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import de.fraunhofer.iais.spatial.dao.AreaDao;
-import de.fraunhofer.iais.spatial.entity.Area;
+import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
+import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
-public class AreaMgr {
+public class FlickrDeWestAreaMgr {
 
-	private AreaDao areaDao = null;
+	private FlickrDeWestAreaDao areaDao = new FlickrDeWestAreaDaoJdbc();
 
-	public AreaDao getAreaDao() {
+	public FlickrDeWestAreaDao getAreaDao() {
 		return areaDao;
 	}
 
-	public void setAreaDao(AreaDao areaDao) {
+	public void setAreaDao(FlickrDeWestAreaDao areaDao) {
 		this.areaDao = areaDao;
 	}
 
-	public List<Area> getAllAreas() {
-		return areaDao.getAllAreas();
+	public List<FlickrDeWestArea> getAllAreas(Radius radius) {
+		return areaDao.getAllAreas(radius);
 	}
 
-	public Area getAreaById(int areaid) {
-		return areaDao.getAreaById(areaid);
+	public FlickrDeWestArea getAreaById(int areaid, Radius radius) {
+		return areaDao.getAreaById(areaid, radius);
 	}
 
-	public List<Area> getAreasByPoint(double x, double y) {
-		return areaDao.getAreasByPoint(x, y);
+	public List<FlickrDeWestArea> getAreasByPoint(double x, double y, Radius radius) {
+		return areaDao.getAreasByPoint(x, y, radius);
 	}
 
-	public List<Area> getAreasByRect(double x1, double y1, double x2, double y2) {
-		return areaDao.getAreasByRect(x1, y1, x2, y2);
+	public List<FlickrDeWestArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
+		return areaDao.getAreasByRect(x1, y1, x2, y2, radius);
 	}
 
-	public void countPersons(List<Area> as, List<String> persons) {
-		for (Area a : as) {
-			int count = 0;
-			for (String p : persons) {
-				count += areaDao.getPersonCount(a.getId(), p);
-			}
-			a.setSelectCount(count);
-		}
-	}
-
-	public void countHours(List<Area> as, Set<String> hours) {
-		for (Area a : as) {
+	public void countHours(List<FlickrDeWestArea> as, Set<String> hours) {
+		for (FlickrDeWestArea a : as) {
 			int num = 0;
 			for (Map.Entry<String, Integer> e : a.getHoursCount().entrySet()) {
 				if (hours.contains(e.getKey())) {
@@ -83,8 +75,8 @@ public class AreaMgr {
 		}
 	}
 
-	public void countDays(List<Area> as, Set<String> days) {
-		for (Area a : as) {
+	public void countDays(List<FlickrDeWestArea> as, Set<String> days) {
+		for (FlickrDeWestArea a : as) {
 			int num = 0;
 			for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
 				if (days.contains(e.getKey())) {
@@ -95,8 +87,8 @@ public class AreaMgr {
 		}
 	}
 
-	public void countMonths(List<Area> as, Set<String> months) {
-		for (Area a : as) {
+	public void countMonths(List<FlickrDeWestArea> as, Set<String> months) {
+		for (FlickrDeWestArea a : as) {
 			int num = 0;
 			for (Map.Entry<String, Integer> e : a.getMonthsCount().entrySet()) {
 				if (months.contains(e.getKey())) {
@@ -107,8 +99,8 @@ public class AreaMgr {
 		}
 	}
 
-	public void countYears(List<Area> as, Set<String> years) {
-		for (Area a : as) {
+	public void countYears(List<FlickrDeWestArea> as, Set<String> years) {
+		for (FlickrDeWestArea a : as) {
 			int num = 0;
 			for (Map.Entry<String, Integer> e : a.getYearsCount().entrySet()) {
 				if (years.contains(e.getKey())) {
@@ -143,7 +135,7 @@ public class AreaMgr {
 		}
 	}
 
-	public void count(List<Area> as, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
+	public void count(List<FlickrDeWestArea> as, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
 		Set<String> strs = new HashSet<String>();
 
 		// complete the options when they are not selected
@@ -182,7 +174,7 @@ public class AreaMgr {
 		count(as, strs, 'h');
 	}
 
-	public void count(List<Area> as, Set<String> strs, char level) throws Exception {
+	public void count(List<FlickrDeWestArea> as, Set<String> strs, char level) throws Exception {
 		System.out.println("#query:" + strs.size() * 139);
 
 		if (strs.size() > 5 * 12 * 31 * 24)
@@ -207,12 +199,19 @@ public class AreaMgr {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void parseXmlRequest(List<Area> as, String xml, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
+	public Radius parseXmlRequest1(String xml, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
 		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
-
+		Radius radius = null;
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
 		Element rootElement = document.getRootElement();
+		
+		// <radius>
+		List<Element> radiusElements = rootElement.getChildren("radius");
+		if (radiusElements != null && radiusElements.size() == 1) {
+			radius = Radius.valueOf("_" + radiusElements.get(0).getText());
+		}
+		
 		// <years>
 		List<Element> yearsElements = rootElement.getChildren("years");
 		if (yearsElements != null && yearsElements.size() == 1) {
@@ -225,6 +224,7 @@ public class AreaMgr {
 				}
 			}
 		}
+		
 		// <month>
 		List<Element> monthsElements = rootElement.getChildren("months");
 		if (monthsElements != null && monthsElements.size() == 1) {
@@ -237,6 +237,7 @@ public class AreaMgr {
 				}
 			}
 		}
+		
 		// <days>
 		List<Element> daysElements = rootElement.getChildren("days");
 		if (daysElements != null && daysElements.size() == 1) {
@@ -263,7 +264,7 @@ public class AreaMgr {
 			}
 		}
 
-		// <weekday>
+		// <weekdays>
 		List<Element> weekdaysElements = rootElement.getChildren("weekdays");
 		if (weekdaysElements != null && weekdaysElements.size() == 1) {
 			List<Element> weekdayElements = weekdaysElements.get(0).getChildren("weekday");
@@ -275,13 +276,13 @@ public class AreaMgr {
 				}
 			}
 		}
-
-		count(as, years, months, days, hours, weekdays);
+		return radius;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void parseXmlRequest2(List<Area> as, String xml) throws Exception {
+	public Radius parseXmlRequest2(List<FlickrDeWestArea> as, String xml) throws Exception {
 		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
+		Radius radius = null;
 		char level = '0';
 		Set<String> strs = new HashSet<String>();
 		SAXBuilder builder = new SAXBuilder();
@@ -292,7 +293,11 @@ public class AreaMgr {
 		List<Element> monthElements = rootElement.getChildren("month");
 		List<Element> dayElements = rootElement.getChildren("day");
 		List<Element> hourElements = rootElement.getChildren("hour");
-
+		List<Element> radiusElements = rootElement.getChildren("radius");
+		if (radiusElements != null && radiusElements.size() == 1) {
+			radius = Radius.valueOf("_" + radiusElements.get(0).getText());
+		}
+		
 		if (hourElements != null && hourElements.size() > 0) {
 			level = 'h';
 			for (int i = 0; i < hourElements.size(); i++) {
@@ -317,18 +322,19 @@ public class AreaMgr {
 
 		System.out.println("level:" + level);
 		System.out.println(strs.size());
-		count(as, strs, level);
+		
+		return radius;
 	}
 
 	public void createTimeChart(String id) {
 
 	}
 
-	public String createMarkersXml(List<Area> as, String file) {
+	public String createMarkersXml(List<FlickrDeWestArea> as, String file) {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
-		for (Area a : as) {
+		for (FlickrDeWestArea a : as) {
 			String polyColor = "#0000";
 			int color = a.getTotalCount() / 30;
 			if (color > 255) {
@@ -358,7 +364,23 @@ public class AreaMgr {
 		return xml2String(document);
 	}
 
-	public String createKml(List<Area> as, String file, String remoteBasePath) throws UnsupportedEncodingException {
+	public void createBarChart(Map<String, Integer> cs) {
+		ChartUtil.createBarChart(cs, "temp/bar.jpg");
+	}
+
+	public void createTimeSeriesChart(FlickrDeWestArea a, Set<String> years, OutputStream os) throws ParseException, IOException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Map<Date, Integer> countsMap = new LinkedHashMap<Date, Integer>();
+		for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
+			if (years.contains(e.getKey().substring(0, 4))) {
+				countsMap.put(sdf.parse(e.getKey()), e.getValue());
+			}
+		}
+
+		ChartUtil.createTimeSeriesChart(countsMap, os);
+	}
+
+	public String createKml(List<FlickrDeWestArea> as, String file, Radius radius, String remoteBasePath) throws UnsupportedEncodingException {
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 		if (remoteBasePath == null || "".equals(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
@@ -368,16 +390,17 @@ public class AreaMgr {
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
 		Element rootElement = new Element("kml", namespace);
 
+		float scale = (float) (Integer.parseInt(radius.toString()) / 30000.0);
 		document.setRootElement(rootElement);
-
+		
 		Element documentElement = new Element("Document", namespace);
 		rootElement.addContent(documentElement);
 
 		// GroundOverlay
-		for (Area a : as) {
-			if (a.getSelectCount() != 0) {
+		for (FlickrDeWestArea a : as) {
+			if (a.getTotalCount() != 0) {
 				String name = "total:" + a.getTotalCount();
-//				String description = "select:" + String.valueOf(a.getSelectCount());
+				//				String description = "select:" + String.valueOf(a.getSelectCount());
 				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?id=" + a.getId() + "&xml="
 						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 				String groundOverlayColor = "aaffffff"; //transparency
@@ -401,16 +424,16 @@ public class AreaMgr {
 				String icon = "";
 
 				if (a.getSelectCount() < 100) {
-					r = (double) Math.log10(a.getSelectCount()) / 85.0;
+					r = (double) Math.log10(a.getSelectCount()) / 85.0 * scale;
 					icon = remoteBasePath + "images/circle_bl.ico";
 				} else if (a.getSelectCount() < 1000) {
-					r = (double) Math.log10(a.getSelectCount()) / 80.0;
+					r = (double) Math.log10(a.getSelectCount()) / 80.0 * scale;
 					icon = remoteBasePath + "images/circle_gr.ico";
 				} else if (a.getSelectCount() < 10000) {
-					r = (double) Math.log10(a.getSelectCount()) / 70.0;
+					r = (double) Math.log10(a.getSelectCount()) / 70.0 * scale;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
-					r = (double) Math.log10(a.getSelectCount()) / 60.0;
+					r = (double) Math.log10(a.getSelectCount()) / 60.0 * scale;
 					icon = remoteBasePath + "images/circle_or.ico";
 					if (r > 0.1) {
 						r = 0.1;
@@ -429,22 +452,22 @@ public class AreaMgr {
 				latLonBoxElement.addContent(eastElement);
 				latLonBoxElement.addContent(westElement);
 
-				northElement.addContent(Double.toString(a.getCenter().getY() + r * 0.65));
-				southElement.addContent(Double.toString(a.getCenter().getY() - r * 0.65));
+				northElement.addContent(Double.toString(a.getCenter().getY() + r * 0.55));
+				southElement.addContent(Double.toString(a.getCenter().getY() - r * 0.55));
 				eastElement.addContent(Double.toString(a.getCenter().getX() + r));
 				westElement.addContent(Double.toString(a.getCenter().getX() - r));
 			}
 		}
 
 		// Polygon
-		for (Area a : as) {
+		for (FlickrDeWestArea a : as) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
-//			String description = "select:" + String.valueOf(a.getSelectCount());
+//			String description = "count: " + String.valueOf(a.getTotalCount());
 			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?id=" + a.getId() + "&xml="
 					+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
-//			String polyStyleColor = "440000";	   	//not transparent
-			String polyStyleColor = "000000"; 		//transparent
+			String polyStyleColor = "440000"; //not transparent
+//			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
 			String lineStyleWidth = "1";
@@ -517,29 +540,13 @@ public class AreaMgr {
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
 
-	public void createBarChart(Map<String, Integer> cs) {
-		ChartUtil.createBarChart(cs, "temp/bar.jpg");
-	}
-
-	public void createTimeSeriesChart(Area a, Set<String> years, OutputStream os) throws ParseException, IOException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Map<Date, Integer> countsMap = new LinkedHashMap<Date, Integer>();
-		for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
-			if (years.contains(e.getKey().substring(0, 4))) {
-				countsMap.put(sdf.parse(e.getKey()), e.getValue());
-			}
-		}
-
-		ChartUtil.createTimeSeriesChart(countsMap, os);
-	}
-
-	private static String xml2String(Document document) {
+	private String xml2String(Document document) {
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		xmlOutputter.setFormat(Format.getPrettyFormat());
 		return xmlOutputter.outputString(document);
 	}
 
-	private static void xml2File(Document document, String url) {
+	private void xml2File(Document document, String url) {
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		xmlOutputter.setFormat(Format.getPrettyFormat());
 		FileOutputStream o = null;

@@ -48,37 +48,38 @@ public class TimeSeriesChart extends HttpServlet {
 		if (areaid == null || "".equals(areaid))
 			return;
 
-		String xmlfile = request.getParameter("xml");
-		if (xmlfile == null || "".equals(xmlfile))
-			return;
-
-		BufferedReader br = new BufferedReader(new FileReader(localBasePath + xmlfile));
-		StringBuffer xml = new StringBuffer();
-		String thisLine;
-		while ((thisLine = br.readLine()) != null) {
-			xml.append(thisLine);
-		}
-
 		Set<String> years = new HashSet<String>();
 
-		SAXBuilder builder = new SAXBuilder();
-		Document document;
-		try {
-			document = builder.build(new ByteArrayInputStream(xml.toString().getBytes()));
-			Element rootElement = document.getRootElement();
-			// <years>
-			List<Element> yearsElements = rootElement.getChildren("years");
-			if (yearsElements != null && yearsElements.size() == 1) {
-				List<Element> yearElements = yearsElements.get(0).getChildren("year");
-				for (Element yearElement : yearElements) {
-					String year = yearElement.getText();
-					if (year != null && !year.trim().equals("")) {
-						years.add(year.trim());
+		String xmlfile = request.getParameter("xml");
+		
+		if (xmlfile != null && !"".equals(xmlfile)) {
+
+			BufferedReader br = new BufferedReader(new FileReader(localBasePath + xmlfile));
+			StringBuffer xml = new StringBuffer();
+			String thisLine;
+			while ((thisLine = br.readLine()) != null) {
+				xml.append(thisLine);
+			}
+
+			SAXBuilder builder = new SAXBuilder();
+			Document document;
+			try {
+				document = builder.build(new ByteArrayInputStream(xml.toString().getBytes()));
+				Element rootElement = document.getRootElement();
+				// <years>
+				List<Element> yearsElements = rootElement.getChildren("years");
+				if (yearsElements != null && yearsElements.size() == 1) {
+					List<Element> yearElements = yearsElements.get(0).getChildren("year");
+					for (Element yearElement : yearElements) {
+						String year = yearElement.getText();
+						if (year != null && !year.trim().equals("")) {
+							years.add(year.trim());
+						}
 					}
 				}
+			} catch (JDOMException e1) {
+				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e1); //$NON-NLS-1$
 			}
-		} catch (JDOMException e1) {
-			logger.error("doGet(HttpServletRequest, HttpServletResponse)", e1); //$NON-NLS-1$
 		}
 
 		if (years.size() == 0) {
@@ -87,7 +88,7 @@ public class TimeSeriesChart extends HttpServlet {
 
 		AreaMgr areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("areaMgr", AreaMgr.class);
 
-		Area a = areaMgr.getAreaById(areaid);
+		Area a = areaMgr.getAreaById(Integer.parseInt(areaid));
 		if (a == null)
 			return;
 

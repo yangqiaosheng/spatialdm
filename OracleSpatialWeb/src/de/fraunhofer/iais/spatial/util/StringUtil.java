@@ -199,21 +199,4 @@ public class StringUtil {
 		return sb.toString().toUpperCase();
 	}
 	
-	/**
-	 * get the 6 bit format Radius Value for query
-	 * @param a - FlickrDeWestArea Object
-	 * @return Radius Value of width 6
-	 */
-	public static String radiusValue(FlickrDeWestArea a) {
-		return String.format("%-6s", a.getRadius().toString());
-	}
-	
-	/**
-	 * get the 6 bit format Radius Value for query
-	 * @param radius - FlickrDeWestArea.Radius
-	 * @return Radius Value of width 6
-	 */
-	public static String radiusValue(Radius radius) {
-		return String.format("%-6s", radius.toString());
-	}
 }

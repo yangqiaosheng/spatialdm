@@ -6,7 +6,7 @@ import java.util.Map;
 import oracle.spatial.geometry.JGeometry;
 
 public class FlickrDeWestArea {
-	private String id;
+	private int id;
 	private Radius radius; 
 	private String name;
 	private JGeometry geom;
@@ -30,11 +30,11 @@ public class FlickrDeWestArea {
 	    
 	}
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
