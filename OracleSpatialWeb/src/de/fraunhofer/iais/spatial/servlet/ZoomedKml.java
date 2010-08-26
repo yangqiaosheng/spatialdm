@@ -21,22 +21,25 @@ import javax.servlet.http.HttpServletResponse;
 import org.jdom.JDOMException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.entity.Area;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
-public class RequestKml extends HttpServlet {
+public class ZoomedKml extends HttpServlet {
 	/**
 	* Logger for this class
 	*/
-	private static final Logger logger = LoggerFactory.getLogger(RequestKml.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZoomedKml.class);
 
 	private static final long serialVersionUID = -6814809670117597713L;
 
 	// "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
 	public static final String kmlPath = "kml/";
 
-	private static AreaMgr areaMgr = null;
+	private static FlickrDeWestAreaMgr areaMgr = null;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -67,20 +70,16 @@ public class RequestKml extends HttpServlet {
 
 		String filenamePrefix = StringUtil.genFilename(new Date());
 
-		List<Area> as = areaMgr.getAllAreas();
-
 		BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
 
 		if (xml1 != null && !xml1.equals("")) {
-			List<String> years = new ArrayList<String>();
-			List<String> months = new ArrayList<String>();
-			List<String> days = new ArrayList<String>();
-			List<String> hours = new ArrayList<String>();
-			Set<String> weekdays = new HashSet<String>();
+			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 			try {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml1:" + xml1); //$NON-NLS-1$
-				areaMgr.parseXmlRequest(as, xml1, years, months, days, hours, weekdays);
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + years.size() + " |months:" + months.size() + "|days:" + days.size() + "|hours:" + hours.size() + "|weekdays:" + weekdays.size()); //$NON-NLS-1$
+				areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml1.toString()), areaDto);
+				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears().size() + " |months:" + areaDto.getMonths().size() + "|days:" + areaDto.getDays().size() + "|hours:" + areaDto.getHours().size() + "|weekdays:" + areaDto.getWeekdays().size()); //$NON-NLS-1$
+				List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
+				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath);
 				bw.write(xml1);
 			} catch (JDOMException e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
@@ -89,21 +88,19 @@ public class RequestKml extends HttpServlet {
 			}
 		}
 
-		if (xml2 != null && !xml2.equals("")) {
-			try {
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml2:" + xml2); //$NON-NLS-1$
-				areaMgr.parseXmlRequest2(as, xml2);
-				bw.write(xml2);
-			} catch (JDOMException e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-			} catch (Exception e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-			}
-		}
+//		if (xml2 != null && !xml2.equals("")) {
+//			try {
+//				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml2:" + xml2); //$NON-NLS-1$
+//				areaMgr.parseXmlRequest2(as, xml2);
+//				bw.write(xml2);
+//			} catch (JDOMException e) {
+//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+//			} catch (Exception e) {
+//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+//			}
+//		}
 
 		bw.close();
-
-		areaMgr.createKml(as, kmlPath + filenamePrefix, remoteBasePath);
 
 		out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
 		out.print("<response><url>" + remoteBasePath + kmlPath + filenamePrefix + ".kml" + "</url></response>");
@@ -124,14 +121,7 @@ public class RequestKml extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		// areaMgr = new AreaMgr();
-		// areaMgr.setAreaDao(new AreaDaoJdbc());
-
-		// ApplicationContext context = new ClassPathXmlApplicationContext(
-		// new String[] { "beans.xml", "schedulingContext-timer.xml" });
-		// areaMgr = context.getBean("areaMgr", AreaMgr.class);
-
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("areaMgr", AreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
 	}
 
 }

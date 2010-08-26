@@ -1,5 +1,7 @@
 package de.fraunhofer.iais.spatial.service;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,6 +25,7 @@ import oracle.spatial.geometry.JGeometry;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
@@ -30,6 +33,8 @@ import org.jdom.output.XMLOutputter;
 
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
@@ -37,30 +42,30 @@ import de.fraunhofer.iais.spatial.util.StringUtil;
 
 public class FlickrDeWestAreaMgr {
 
-	private FlickrDeWestAreaDao areaDao = new FlickrDeWestAreaDaoJdbc();
+	private FlickrDeWestAreaDao flickrDeWestAreaDao = new FlickrDeWestAreaDaoJdbc();
 
 	public FlickrDeWestAreaDao getAreaDao() {
-		return areaDao;
+		return flickrDeWestAreaDao;
 	}
 
 	public void setAreaDao(FlickrDeWestAreaDao areaDao) {
-		this.areaDao = areaDao;
+		this.flickrDeWestAreaDao = areaDao;
 	}
 
 	public List<FlickrDeWestArea> getAllAreas(Radius radius) {
-		return areaDao.getAllAreas(radius);
+		return flickrDeWestAreaDao.getAllAreas(radius);
 	}
 
 	public FlickrDeWestArea getAreaById(int areaid, Radius radius) {
-		return areaDao.getAreaById(areaid, radius);
+		return flickrDeWestAreaDao.getAreaById(areaid, radius);
 	}
 
 	public List<FlickrDeWestArea> getAreasByPoint(double x, double y, Radius radius) {
-		return areaDao.getAreasByPoint(x, y, radius);
+		return flickrDeWestAreaDao.getAreasByPoint(x, y, radius);
 	}
 
 	public List<FlickrDeWestArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
-		return areaDao.getAreasByRect(x1, y1, x2, y2, radius);
+		return flickrDeWestAreaDao.getAreasByRect(x1, y1, x2, y2, radius);
 	}
 
 	public void countHours(List<FlickrDeWestArea> as, Set<String> hours) {
@@ -135,148 +140,176 @@ public class FlickrDeWestAreaMgr {
 		}
 	}
 
-	public void count(List<FlickrDeWestArea> as, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
-		Set<String> strs = new HashSet<String>();
+
+	public void count(List<FlickrDeWestArea> as, FlickrDeWestAreaDto areaDto) throws Exception {
+		System.out.println("#query:" + areaDto.getQueryStrs().size() * 139);
+
+//		if (strs.size() > 5 * 12 * 31 * 24)
+//			throw new Exception("excceed the maximun #queries!");
+
+		if (areaDto.getQueryStrs().size() > 0 && areaDto.getQueryLevel() != null) {
+			switch (areaDto.getQueryLevel()) {
+			case HOUR:
+				this.countHours(as, areaDto.getQueryStrs());
+				break;
+			case DAY:
+				this.countDays(as, areaDto.getQueryStrs());
+				break;
+			case MONTH:
+				this.countMonths(as, areaDto.getQueryStrs());
+				break;
+			case YEAR:
+				this.countYears(as, areaDto.getQueryStrs());
+				break;
+			}
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	public void parseXmlRequest1(String xml, FlickrDeWestAreaDto areaDto) throws JDOMException, IOException {
+		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
+		SAXBuilder builder = new SAXBuilder();
+		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
+		Element rootElement = document.getRootElement();
+
+		// <zoom>
+		int zoom = Integer.parseInt(rootElement.getChildText("zoom"));
+		areaDto.setZoom(zoom);
+		if(zoom < 8){
+			areaDto.setRadius(Radius._80000);
+		}else if(zoom < 10){
+			areaDto.setRadius(Radius._40000);
+		}else if(zoom < 11){
+			areaDto.setRadius(Radius._20000);
+		}else if(zoom < 12){
+			areaDto.setRadius(Radius._10000);
+		}else if(zoom >= 12){
+			areaDto.setRadius(Radius._5000);
+		}
+
+		// <center>
+		Element centerElement = rootElement.getChild("center");
+		if (centerElement != null) {
+			Point2D center =  new Point2D.Double();
+			areaDto.setCenter(center);
+			center.setLocation(Double.parseDouble(centerElement.getChildText("x")), Double.parseDouble(centerElement.getChildText("y")));
+		}
+
+		// <boundaryRect>
+		Element boundaryRectElement = rootElement.getChild("boundaryRect");
+		if (boundaryRectElement != null) {
+			Rectangle2D boundaryRect =  new Rectangle2D.Double();
+			areaDto.setBoundaryRect(boundaryRect);
+			double minX = Double.parseDouble(boundaryRectElement.getChildText("minX"));
+			double minY = Double.parseDouble(boundaryRectElement.getChildText("minY"));
+			double maxX = Double.parseDouble(boundaryRectElement.getChildText("maxX"));
+			double maxY = Double.parseDouble(boundaryRectElement.getChildText("maxY"));
+			boundaryRect.setRect(minX, minY, maxX - minX, maxY - minY);
+		}
+		
+		// <years>
+		Element yearsElement = rootElement.getChild("years");
+		if (yearsElement != null) {
+			List<Element> yearElements = yearsElement.getChildren("year");
+			for (Element yearElement : yearElements) {
+				String year = yearElement.getText();
+				if (year != null && !year.trim().equals("")) {
+					System.out.println("year:" + year.trim());
+					areaDto.getYears().add(year.trim());
+				}
+			}
+		}
+
+		// <month>
+		Element monthsElement = rootElement.getChild("months");
+		if (monthsElement != null) {
+			List<Element> monthElements = monthsElement.getChildren("month");
+			for (Element monthElement : monthElements) {
+				String month = monthElement.getText();
+				if (month != null && !month.trim().equals("")) {
+					System.out.println("month:" + month.trim());
+					areaDto.getMonths().add(month.trim());
+				}
+			}
+		}
+
+		// <days>
+		Element daysElement = rootElement.getChild("days");
+		if (daysElement != null) {
+			List<Element> dayElements = daysElement.getChildren("day");
+			for (Element dayElement : dayElements) {
+				String day = dayElement.getText();
+				if (day != null && !day.trim().equals("")) {
+					System.out.println("day:" + day.trim());
+					areaDto.getDays().add(day.trim());
+				}
+			}
+		}
+
+		// <hours>
+		Element hoursElement = rootElement.getChild("hours");
+		if (hoursElement != null) {
+			List<Element> hourElements = hoursElement.getChildren("hour");
+			for (Element hourElement : hourElements) {
+				String hour = hourElement.getText();
+				if (hour != null && !hour.trim().equals("")) {
+					System.out.println("hour:" + hour.trim());
+					areaDto.getHours().add(hour.trim());
+				}
+			}
+		}
+
+		// <weekdays>
+		Element weekdaysElement = rootElement.getChild("weekdays");
+		if (weekdaysElement != null) {
+			List<Element> weekdayElements = weekdaysElement.getChildren("weekday");
+			for (Element weekdayElement : weekdayElements) {
+				String weekday = weekdayElement.getText();
+				if (weekday != null && !weekday.trim().equals("")) {
+					System.out.println("weekday:" + weekday.trim());
+					areaDto.getWeekdays().add(weekday.trim());
+				}
+			}
+		}
+		
+		
+		Set<String> queryStrs = new HashSet<String>();
+		areaDto.setQueryStrs(queryStrs);
+		areaDto.setQueryLevel(QueryLevel.HOUR);
 
 		// complete the options when they are not selected
-		if (years.size() == 0) {
-			this.allYears(years);
+		if (areaDto.getYears().size() == 0) {
+			this.allYears(areaDto.getYears());
 		}
-		if (months.size() == 0) {
-			this.allMonths(months);
+		if (areaDto.getMonths().size() == 0) {
+			this.allMonths(areaDto.getMonths());
 		}
-		if (days.size() == 0) {
-			this.allDays(days);
+		if (areaDto.getDays().size() == 0) {
+			this.allDays(areaDto.getDays());
 		}
-		if (hours.size() == 0) {
-			this.allHours(hours);
+		if (areaDto.getHours().size() == 0) {
+			this.allHours(areaDto.getHours());
 		}
 
 		Calendar calendar = Calendar.getInstance();
 		// day of week in English format
 		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
 
-		for (String y : years) {
-			for (String m : months) {
-				for (String d : days) {
-					for (String h : hours) {
+		for (String y : areaDto.getYears()) {
+			for (String m : areaDto.getMonths()) {
+				for (String d : areaDto.getDays()) {
+					for (String h : areaDto.getHours()) {
 						calendar.set(Integer.parseInt(y), Integer.parseInt(m) - 1, Integer.parseInt(d));
 						// filter out the selected weekdays
-						if (weekdays.size() == 0 || weekdays.contains(sdf.format(calendar.getTime()))) {
-							strs.add(y + "-" + m + "-" + d + "@" + h);
+						if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
+							queryStrs.add(y + "-" + m + "-" + d + "@" + h);
 							//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
 						}
 					}
 				}
 			}
 		}
-
-		count(as, strs, 'h');
-	}
-
-	public void count(List<FlickrDeWestArea> as, Set<String> strs, char level) throws Exception {
-		System.out.println("#query:" + strs.size() * 139);
-
-		if (strs.size() > 5 * 12 * 31 * 24)
-			throw new Exception("excceed the maximun #queries!");
-
-		if (strs.size() > 0 && level != '0') {
-			switch (level) {
-			case 'h':
-				this.countHours(as, strs);
-				break;
-			case 'd':
-				this.countDays(as, strs);
-				break;
-			case 'm':
-				this.countMonths(as, strs);
-				break;
-			case 'y':
-				this.countYears(as, strs);
-				break;
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public Radius parseXmlRequest1(String xml, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
-		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
-		SAXBuilder builder = new SAXBuilder();
-		Radius radius = null;
-		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
-		Element rootElement = document.getRootElement();
-		
-		// <radius>
-		List<Element> radiusElements = rootElement.getChildren("radius");
-		if (radiusElements != null && radiusElements.size() == 1) {
-			radius = Radius.valueOf("_" + radiusElements.get(0).getText());
-		}
-		
-		// <years>
-		List<Element> yearsElements = rootElement.getChildren("years");
-		if (yearsElements != null && yearsElements.size() == 1) {
-			List<Element> yearElements = yearsElements.get(0).getChildren("year");
-			for (Element yearElement : yearElements) {
-				String year = yearElement.getText();
-				if (year != null && !year.trim().equals("")) {
-					System.out.println("year:" + year.trim());
-					years.add(year.trim());
-				}
-			}
-		}
-		
-		// <month>
-		List<Element> monthsElements = rootElement.getChildren("months");
-		if (monthsElements != null && monthsElements.size() == 1) {
-			List<Element> monthElements = monthsElements.get(0).getChildren("month");
-			for (Element monthElement : monthElements) {
-				String month = monthElement.getText();
-				if (month != null && !month.trim().equals("")) {
-					System.out.println("month:" + month.trim());
-					months.add(month.trim());
-				}
-			}
-		}
-		
-		// <days>
-		List<Element> daysElements = rootElement.getChildren("days");
-		if (daysElements != null && daysElements.size() == 1) {
-			List<Element> dayElements = daysElements.get(0).getChildren("day");
-			for (Element dayElement : dayElements) {
-				String day = dayElement.getText();
-				if (day != null && !day.trim().equals("")) {
-					System.out.println("day:" + day.trim());
-					days.add(day.trim());
-				}
-			}
-		}
-
-		// <hours>
-		List<Element> hoursElements = rootElement.getChildren("hours");
-		if (hoursElements != null && hoursElements.size() == 1) {
-			List<Element> hourElements = hoursElements.get(0).getChildren("hour");
-			for (Element hourElement : hourElements) {
-				String hour = hourElement.getText();
-				if (hour != null && !hour.trim().equals("")) {
-					System.out.println("hour:" + hour.trim());
-					hours.add(hour.trim());
-				}
-			}
-		}
-
-		// <weekdays>
-		List<Element> weekdaysElements = rootElement.getChildren("weekdays");
-		if (weekdaysElements != null && weekdaysElements.size() == 1) {
-			List<Element> weekdayElements = weekdaysElements.get(0).getChildren("weekday");
-			for (Element weekdayElement : weekdayElements) {
-				String weekday = weekdayElement.getText();
-				if (weekday != null && !weekday.trim().equals("")) {
-					System.out.println("weekday:" + weekday.trim());
-					weekdays.add(weekday.trim());
-				}
-			}
-		}
-		return radius;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -425,16 +458,16 @@ public class FlickrDeWestAreaMgr {
 				String icon = "";
 
 				if (a.getSelectCount() < 100) {
-					r = (double) Math.log10(a.getSelectCount()) / 85.0 * scale;
+					r = (double) Math.log10(a.getSelectCount() + 1) / 85.0 * scale;
 					icon = remoteBasePath + "images/circle_bl.ico";
 				} else if (a.getSelectCount() < 1000) {
-					r = (double) Math.log10(a.getSelectCount()) / 80.0 * scale;
+					r = (double) Math.log10(a.getSelectCount() + 1) / 80.0 * scale;
 					icon = remoteBasePath + "images/circle_gr.ico";
 				} else if (a.getSelectCount() < 10000) {
-					r = (double) Math.log10(a.getSelectCount()) / 70.0 * scale;
+					r = (double) Math.log10(a.getSelectCount() + 1) / 70.0 * scale;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
-					r = (double) Math.log10(a.getSelectCount()) / 60.0 * scale;
+					r = (double) Math.log10(a.getSelectCount() + 1) / 60.0 * scale;
 					icon = remoteBasePath + "images/circle_or.ico";
 					if (r > 0.1) {
 						r = 0.1;
@@ -457,6 +490,8 @@ public class FlickrDeWestAreaMgr {
 				southElement.addContent(Double.toString(a.getCenter().getY() - r * 0.55));
 				eastElement.addContent(Double.toString(a.getCenter().getX() + r));
 				westElement.addContent(Double.toString(a.getCenter().getX() - r));
+				if(Double.isInfinite(a.getCenter().getY() + r * 0.55))
+					System.exit(0);
 			}
 		}
 
