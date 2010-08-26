@@ -22,9 +22,13 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.testng.internal.thread.CountDownAdapter;
 
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
@@ -32,21 +36,17 @@ import de.fraunhofer.iais.spatial.util.StringUtil;
 
 public class TestFlickrDeWestArea {
 
-	// private static AreaMgr areaMgr = null;
+	private static FlickrDeWestAreaMgr areaMgr = null;
+
 	@BeforeClass
 	public static void initClass() {
 		// Spring IOC
-		// ApplicationContext context =
-		// new ClassPathXmlApplicationContext(new String[] {"beans.xml"});
-		// areaMgr = context.getBean("areaMgr", AreaMgr.class);
-		// init
-		// areaMgr = new AreaMgr();
-		// areaMgr.setAreaDao(new AreaDaoIbatis());
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "beans.xml" });
+		areaMgr = context.getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
 		System.setProperty("oraclespatialweb.root", "C:/java_file/eclipse/MyEclipse/OracleSpatialWeb/");
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 	}
 
-	
 	@Test
 	public void testJdbcDao1() {
 		FlickrDeWestAreaDao areaDao = new FlickrDeWestAreaDaoJdbc();
@@ -76,7 +76,7 @@ public class TestFlickrDeWestArea {
 		FlickrDeWestAreaDao areaDao = new FlickrDeWestAreaDaoJdbc();
 //		List<FlickrDeWestArea> as = areaDao.getAllAreas(Radius._10000);
 // 		List<FlickrDeWestArea> as = areaDao.getAreasByPoint(8.83, 50.58, Radius._5000);
- 		List<FlickrDeWestArea> as = areaDao.getAreasByRect(1, 1, 96.5, 95.4, Radius._80000);
+		List<FlickrDeWestArea> as = areaDao.getAreasByRect(1, 1, 96.5, 95.4, Radius._80000);
 		for (FlickrDeWestArea a : as) {
 			String coordinates = "\t";
 			if (a.getGeom().getOrdinatesArray() != null) {
@@ -97,31 +97,24 @@ public class TestFlickrDeWestArea {
 	}
 
 	@Test
-	public void testKml() throws Exception {
-		FlickrDeWestAreaDao areaDao = new FlickrDeWestAreaDaoJdbc();
-		
-		List<String> years = new ArrayList<String>();
-		List<String> months = new ArrayList<String>();
-		List<String> days = new ArrayList<String>();
-		List<String> hours = new ArrayList<String>();
-		Set<String> weekdays = new HashSet<String>();
-		Radius radius = Radius._80000;
-		FlickrDeWestAreaMgr areaMgr = new FlickrDeWestAreaMgr();
+	public void testKml1() throws Exception {
+		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
 		while ((thisLine = br.readLine()) != null) {
 			xml.append(thisLine);
 		}
-//		radius = areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), years, months, days, hours, weekdays);
-		System.out.println("radius:" + radius);
-		List<FlickrDeWestArea> as = areaDao.getAllAreas(radius);
-		areaMgr.count(as, years, months, days, hours, weekdays);
-	
+		areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+		System.out.println("radius:" + areaDto.getRadius());
+		System.out.println("zoom:" + areaDto.getZoom());
+		System.out.println("center:" + areaDto.getCenter().getX() + "," + areaDto.getCenter().getY());
+		System.out.println("boundaryRect:" + areaDto.getBoundaryRect().getMinX() + "," + areaDto.getBoundaryRect().getMinY() + "," + areaDto.getBoundaryRect().getMaxX() + "," + areaDto.getBoundaryRect().getMaxY());
+//		List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
+		List<FlickrDeWestArea> as = areaMgr.getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		areaMgr.count(as, areaDto);
+		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null));
 
-		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + radius, radius, null));
-		System.out.println("radius:" + radius);
-		
 //		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
 //		radius = FlickrDeWestArea.Radius._40000;
 //		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
@@ -129,8 +122,7 @@ public class TestFlickrDeWestArea {
 //		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
 //		radius = FlickrDeWestArea.Radius._5000;
 //		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
-	
+
 	}
 
-	
 }

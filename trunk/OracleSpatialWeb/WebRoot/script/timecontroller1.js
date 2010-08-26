@@ -353,7 +353,7 @@ var t=1;
 function ask() {
 //	g_kml_counter = 0;
 	text=""; // text is the data that I send. This must also to be refreshed.
-	document.getElementById("content1").innerHTML = text;
+//	document.getElementById("content1").innerHTML = text;
 	
 	text=text+"<calendar>";
 	//*********************************************************
@@ -424,7 +424,7 @@ function ask() {
 //			alert("step5");
 			// from the response get the element with url and the kml which now is generated for each user.
 			url = xmlhttp.responseXML.getElementsByTagName("url")[0].firstChild.nodeValue;
-			document.getElementById("content1").innerHTML = "kml:" + url; 
+//			document.getElementById("content1").innerHTML = "kml:" + url; 
 			loadkml_1(url);
 //			alert("ready");
 		}			

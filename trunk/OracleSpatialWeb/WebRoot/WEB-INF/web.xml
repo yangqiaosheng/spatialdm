@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
 	<display-name>OracleSpatialWeb</display-name>
 
 	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
 	<mime-mapping>
@@ -14,8 +15,8 @@
 	</mime-mapping>
 
 	<!--
-		- Key of the system property that should specify the root directory of this
-		- web app. Applied by WebAppRootListener or Log4jConfigListener.
+		- Key of the system property that should specify the root directory of
+		this - web app. Applied by WebAppRootListener or Log4jConfigListener.
 	-->
 	<context-param>
 		<param-name>webAppRootKey</param-name>
@@ -23,8 +24,8 @@
 	</context-param>
 
 	<!--
-		- Location of the Log4J config file, for initialization and refresh	checks.
-		- Applied by Log4jConfigListener.
+		- Location of the Log4J config file, for initialization and refresh
+		checks. - Applied by Log4jConfigListener.
 	-->
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
@@ -34,14 +35,13 @@
 	<!--
 		- Location of the XML file that defines the root application context.
 		/WEB-INF/classes/beans.xml for JavaBeans initialization,
-		/WEB-INF/classes/schedulingContext-timer.xml for Timer
-		scheduling.
+		/WEB-INF/classes/schedulingContext-timer.xml for Timer scheduling.
 	-->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/classes/beans.xml, /WEB-INF/classes/schedulingContext-timer.xml</param-value>
 	</context-param>
-	
+
 	<!--
 		- Load the Log4J configuration
 	-->
@@ -49,7 +49,7 @@
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
 	</listener>
 
-	
+
 	<!--
 		- Loads the root application context of this web app at startup,
 	-->
@@ -67,7 +67,9 @@
 			<param-name>encoding</param-name>
 			<param-value>UTF-8</param-value>
 		</init-param>
-		<!-- enforce this filter's encoding in any case ("forceEncoding"="true") -->
+		<!--
+			enforce this filter's encoding in any case ("forceEncoding"="true")
+		-->
 		<init-param>
 			<param-name>forceEncoding</param-name>
 			<param-value>true</param-value>
@@ -92,12 +94,19 @@
 		<servlet-class>de.fraunhofer.iais.spatial.servlet.RequestKml</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-  <servlet>
-    <description>Create the TimeSeriesChart</description>
-    <display-name>TimeSeriesChart</display-name>
-    <servlet-name>TimeSeriesChart</servlet-name>
-    <servlet-class>de.fraunhofer.iais.spatial.servlet.TimeSeriesChart</servlet-class>
-  </servlet>
+	<servlet>
+		<description>Retrieve the data to create a kml with different zoom levels</description>
+		<display-name>ZoomedKml</display-name>
+		<servlet-name>ZoomedKml</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.servlet.ZoomedKml</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<description>Create the TimeSeriesChart</description>
+		<display-name>TimeSeriesChart</display-name>
+		<servlet-name>TimeSeriesChart</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.servlet.TimeSeriesChart</servlet-class>
+	</servlet>
 
 
 	<servlet-mapping>
@@ -108,8 +117,12 @@
 		<servlet-name>RequestKml</servlet-name>
 		<url-pattern>/RequestKml</url-pattern>
 	</servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>TimeSeriesChart</servlet-name>
-    <url-pattern>/TimeSeriesChart</url-pattern>
-  </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ZoomedKml</servlet-name>
+		<url-pattern>/ZoomedKml</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TimeSeriesChart</servlet-name>
+		<url-pattern>/TimeSeriesChart</url-pattern>
+	</servlet-mapping>
 </web-app>
