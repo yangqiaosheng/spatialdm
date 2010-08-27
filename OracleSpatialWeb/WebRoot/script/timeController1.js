@@ -279,14 +279,14 @@ function selectbutton()
 	}
 	else
 	{	
-		field[argv[0]].style.background='#009933';
+		field[argv[0]].style.background='#06A8FA';
 	}	
 }
 
 function selectbuttonHeader() {	 
         var argv = selectbuttonHeader.arguments;
         numberHeader[argv[0]]++; // even, odd for selection deselection
-        fieldHeader[argv[0]].style.background = '#E9FF25';
+        fieldHeader[argv[0]].style.background = '#8AA8F3';
         if (argv[0] == 1) { // years
                 for ( var i = 1; i <= 6; i++) { // in the beginning I have the years
                         if (number[i] % 2 != 0) { // I take the selections
@@ -411,34 +411,29 @@ function ask() {
 	hour=xmlDoc.getElementsByTagName("hour");//50 - 73
 	
 	weekday=xmlDoc.getElementsByTagName("weekday"); //74-80
-	//alert("step1");
+	
 	if (window.XMLHttpRequest){
 		xmlhttp=new XMLHttpRequest();
 
 	}
 	//I don't need to wait some seconds because of this function
-	//alert("step2");
 	xmlhttp.onreadystatechange = function() {			
-//		alert("step4");
 		if(xmlhttp.readyState==4){
-//			alert("step5");
 			// from the response get the element with url and the kml which now is generated for each user.
 			url = xmlhttp.responseXML.getElementsByTagName("url")[0].firstChild.nodeValue;
 //			document.getElementById("content1").innerHTML = "kml:" + url; 
-			loadkml_1(url);
-//			alert("ready");
+		loadkml_1(url);
 		}			
 	};
 	 xmlhttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml"); // no cache
 //	 xmlhttp.open("POST","http://localhost:8080/OracleSpatialWeb/RequestKml"); // no cache
 	 xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 	 xmlhttp.send("xml="+encodeURIComponent(text));
-	//alert("step3");
-
 }
 //var t_count=0;
 var l=0;
 function loadkml_1(url) {
+		alert("url:" + url);
 		for (var i=g_kml_counter-l; i<g_kml_counter;i++)
  	      	{
                 	g_kml_layer[i].setMap(); // this is deleting from the map the polygons 
@@ -459,32 +454,16 @@ function loadkml_1(url) {
 	l=1;
 }
 
-function Add5000(){
-	loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_5000.kml");	
-}
-function Add10000(){
-	loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_10000.kml");
-}
-function Add20000(){
-        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_20000.kml");
-}
-function Add40000(){
-        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_40000.kml");
-}
-function Add80000(){
-        loadkml_1("http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/kml/FlickrDeWestArea_Total_80000.kml");
-}
-
 function refreshButtons() { // ok number[i] reverse to 0
         for ( var i = 1; i < 100; i++) {
                 if (number[i] != 0) {
-                        field[i].style.background = '#009933';
+                        field[i].style.background = '#06A8FA';
                         number[i] = 0;
                 }
         }
 
         text="refresh"; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
-        document.getElementById("content1").innerHTML = text;	
+        jQuery("#content1_1").html(text);	
         g_kml_layer[g_kml_counter-1].setMap(); // this is deleting from the map the polygons that are on the map just one step before.
 	
 }
