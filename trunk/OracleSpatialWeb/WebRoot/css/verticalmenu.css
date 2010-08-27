@@ -4,7 +4,7 @@
 	margin:0;
 	padding:0;
 	width:185px; /*WIDTH OF MAIN MENU ITEMS*/
-	border:1px solid black;
+	border-color: #8AA8F3; /*blue border*/
 }
 
 .glossymenu li{
@@ -12,9 +12,9 @@
 }
 
 .glossymenu li a{
-	background:white url(../images/glossyback.gif) repeat-x bottom left;
+	background-color: #A7BDF7;
 	font:bold 12px Verdana, Helvetica, sans-serif;
-	color:white;
+	color:#000000;
 	display:block;
 	width:auto;
 	padding:5px 0;
@@ -45,9 +45,9 @@
 }
 
 .glossymenu li a:visited, .glossymenu li a:active{
-color:white;
+color:#000000;
 }
 
 .glossymenu li a:hover{
-background-image:url(../images/glossyback2.gif);
+background-color: #8AA8F3; /*blue border*/
 }
