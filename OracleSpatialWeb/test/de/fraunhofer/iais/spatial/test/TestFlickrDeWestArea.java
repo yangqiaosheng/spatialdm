@@ -110,7 +110,7 @@ public class TestFlickrDeWestArea {
 		System.out.println("zoom:" + areaDto.getZoom());
 		System.out.println("center:" + areaDto.getCenter().getX() + "," + areaDto.getCenter().getY());
 		System.out.println("boundaryRect:" + areaDto.getBoundaryRect().getMinX() + "," + areaDto.getBoundaryRect().getMinY() + "," + areaDto.getBoundaryRect().getMaxX() + "," + areaDto.getBoundaryRect().getMaxY());
-//		List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
+//	 	List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
 		List<FlickrDeWestArea> as = areaMgr.getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		areaMgr.count(as, areaDto);
 		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null));

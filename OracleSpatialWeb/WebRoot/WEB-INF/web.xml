@@ -9,7 +9,7 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
-	<mime-mapping>
+	<mime-mapping> 
 		<extension>kml</extension>
 		<mime-type>application/vnd.google-earth.kml+xml</mime-type>
 	</mime-mapping>
