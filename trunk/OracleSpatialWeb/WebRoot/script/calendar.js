@@ -225,8 +225,8 @@ function selectedCalendar(){
 	xmlHttp.onreadystatechange = function() {			
 		if(xmlHttp.readyState==4){
 			url = xmlHttp.responseXML.getElementsByTagName("url")[0].firstChild.nodeValue;
-			document.getElementById("content1").innerHTML = "kml:" + url; 
-			loadkml_2(url);
+//			document.getElementById("content1").innerHTML = "kml:" + url; 
+			loadkml_1(url);
 		}			
 	};
 //	alert("step1");
@@ -267,7 +267,7 @@ function loadkml_2(url) {
 // for now it just refresh the map
 function refreshCalendar(){
 	text="refresh"; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
-        document.getElementById("content1").innerHTML = text;
+        document.getElementById("content1_1").innerHTML = text;
         kml_2[g_kml_counter-1].setMap(); // this is deleting from the map the polygons that are on the map just one step before.
 
 }
