@@ -34,7 +34,7 @@ public class RequestKml extends HttpServlet {
 	private static final long serialVersionUID = -6814809670117597713L;
 
 	// "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
-	public static final String kmlPath = "kml/";
+	public static final String kmlPath = "kml/"; 
 
 	private static AreaMgr areaMgr = null;
 
