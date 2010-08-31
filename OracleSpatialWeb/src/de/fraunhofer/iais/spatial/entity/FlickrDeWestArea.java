@@ -5,6 +5,11 @@ import java.util.Map;
 
 import oracle.spatial.geometry.JGeometry;
 
+/**
+ * Entity mapped to the table FLICKR_DE_WEST_TABLE_RADIUS and FLICKR_DE_WEST_TABLE_COUNT
+ * @author zhi
+ */
+
 public class FlickrDeWestArea {
 	private int id;
 	private Radius radius; 

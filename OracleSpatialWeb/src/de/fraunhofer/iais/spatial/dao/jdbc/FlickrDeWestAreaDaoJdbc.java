@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.util.DB;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.StringUtil;
@@ -174,6 +176,48 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		return num;
 	}
 
+	public List<FlickrDeWestPhoto> getPhoto(int areaid, Radius radius, String hour, int num) {
+		FlickrDeWestArea area = getAreaById(areaid, radius);
+		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+		
+		
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+		try {
+			selectStmt = DB.getPstmt(conn, "select * from (select t.* from FLICKR_DE_WEST_TABLE t, FLICKR_DE_WEST_TABLE_GEOM g" +
+													" where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius + "_ID = ? and TRUNC(t.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t.dt desc)" +
+													" where rownum < ?");
+			selectStmt.setInt(1, areaid);
+			selectStmt.setString(2, hour);
+			selectStmt.setInt(3, num);
+			rs = DB.getRs(selectStmt);
+			while (rs.next()) {
+				FlickrDeWestPhoto photo =  new FlickrDeWestPhoto();
+				photos.add(photo);
+				
+				photo.setArea(area);
+				photo.setId(rs.getLong("PHOTO_ID"));
+				photo.setDate(rs.getTimestamp("DT"));
+				photo.setLatitude(rs.getDouble("LATITUDE"));
+				photo.setLongitude(rs.getDouble("LONGITUDE"));
+				photo.setPerson(rs.getString("PERSON"));
+				photo.setRawTags(rs.getString("RAWTAGS"));
+				photo.setSmallUrl(rs.getString("SMALLURL"));
+				photo.setTitle(rs.getString("TITLE"));
+				photo.setViewed(rs.getInt("VIEWED"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+		
+		return photos;
+	}
+	
 	private void loadHoursCount(FlickrDeWestArea a) {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
