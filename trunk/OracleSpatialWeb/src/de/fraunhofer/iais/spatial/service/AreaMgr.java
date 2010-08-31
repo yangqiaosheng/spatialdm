@@ -378,7 +378,7 @@ public class AreaMgr {
 			if (a.getSelectCount() != 0) {
 				String name = "total:" + a.getTotalCount();
 //				String description = "select:" + String.valueOf(a.getSelectCount());
-				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?id=" + a.getId() + "&xml="
+				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 				String groundOverlayColor = "aaffffff"; //transparency
 
@@ -441,7 +441,7 @@ public class AreaMgr {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
 //			String description = "select:" + String.valueOf(a.getSelectCount());
-			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?id=" + a.getId() + "&xml="
+			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 					+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 //			String polyStyleColor = "440000";	   	//not transparent
 			String polyStyleColor = "000000"; 		//transparent

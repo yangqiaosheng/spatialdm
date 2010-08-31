@@ -44,7 +44,7 @@ public class TimeSeriesChart extends HttpServlet {
 		ServletOutputStream sos = response.getOutputStream();
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 
-		String areaid = request.getParameter("id");
+		String areaid = request.getParameter("areaid");
 		if (areaid == null || "".equals(areaid))
 			return;
 
