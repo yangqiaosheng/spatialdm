@@ -176,7 +176,8 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		return num;
 	}
 
-	public List<FlickrDeWestPhoto> getPhoto(int areaid, Radius radius, String hour, int num) {
+	@Deprecated
+	private List<FlickrDeWestPhoto> getPhoto(int areaid, Radius radius, String hour, int num, int x) {
 		FlickrDeWestArea area = getAreaById(areaid, radius);
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
 		
@@ -216,6 +217,48 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		}
 		
 		return photos;
+	}
+	
+	@Override
+	public FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx) {
+		FlickrDeWestArea area = getAreaById(areaid, radius);
+		
+		
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+		FlickrDeWestPhoto photo = null;
+		try {
+			selectStmt = DB.getPstmt(conn, "select * from (select rownum rn, t2.* from (select t1.* from FLICKR_DE_WEST_TABLE t1, FLICKR_DE_WEST_TABLE_GEOM g" +
+													" where t1.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius + "_ID = ? and TRUNC(t1.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t1.dt desc) t2 )" +
+													" where rn = ?");
+			selectStmt.setInt(1, areaid);
+			selectStmt.setString(2, hour);
+			selectStmt.setInt(3, idx);
+			rs = DB.getRs(selectStmt);
+			if (rs.next()) {
+				photo =  new FlickrDeWestPhoto();
+				
+				photo.setArea(area);
+				photo.setId(rs.getLong("PHOTO_ID"));
+				photo.setDate(rs.getTimestamp("DT"));
+				photo.setLatitude(rs.getDouble("LATITUDE"));
+				photo.setLongitude(rs.getDouble("LONGITUDE"));
+				photo.setPerson(rs.getString("PERSON"));
+				photo.setRawTags(rs.getString("RAWTAGS"));
+				photo.setSmallUrl(rs.getString("SMALLURL"));
+				photo.setTitle(rs.getString("TITLE"));
+				photo.setViewed(rs.getInt("VIEWED"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+		
+		return photo;
 	}
 	
 	private void loadHoursCount(FlickrDeWestArea a) {

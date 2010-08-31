@@ -107,6 +107,13 @@
 		<servlet-name>TimeSeriesChart</servlet-name>
 		<servlet-class>de.fraunhofer.iais.spatial.servlet.TimeSeriesChart</servlet-class>
 	</servlet>
+  <servlet>
+    <description>return the url for SmallPhoto</description>
+    <display-name>SmallPhotoUrl</display-name>
+    <servlet-name>SmallPhotoUrl</servlet-name>
+    <servlet-class>de.fraunhofer.iais.spatial.servlet.SmallPhotoUrl</servlet-class>
+  </servlet>
+
 
 
 	<servlet-mapping>
@@ -125,4 +132,8 @@
 		<servlet-name>TimeSeriesChart</servlet-name>
 		<url-pattern>/TimeSeriesChart</url-pattern>
 	</servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SmallPhotoUrl</servlet-name>
+    <url-pattern>/SmallPhotoUrl</url-pattern>
+  </servlet-mapping>
 </web-app>

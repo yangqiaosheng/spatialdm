@@ -102,20 +102,22 @@ public class TestFlickrDeWestArea {
 		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
 //		List<FlickrDeWestArea> as = areaDao.getAllAreas(Radius._10000);
 // 		List<FlickrDeWestArea> as = areaDao.getAreasByPoint(8.83, 50.58, Radius._5000);
-		List<FlickrDeWestPhoto> photos = areaDao.getPhoto(1, Radius._80000, "2007-08-11@13", 20);
-		for (FlickrDeWestPhoto p : photos) {
-			System.out.print("PHOTO_ID:" + p.getId());
-			System.out.print("\tAreaid:" + p.getArea().getId());
-			System.out.print("\tRadius:" + p.getArea().getRadius());
-			System.out.print("\tarea:" + p.getArea().getArea());
-			System.out.print("\tDT:" + p.getDate());
-			System.out.print("\tLATITUDE:" + p.getLatitude());
-			System.out.print("\tLONGITUDE:" + p.getLongitude());
-			System.out.print("\tPERSON:" + p.getPerson());
-			System.out.print("\tRAWTAGS:" + p.getRawTags());
-			System.out.print("\tTITLE:" + p.getTitle());
-			System.out.print("\tSMALLURL:" + p.getSmallUrl());
-			System.out.println("\tVIEWED:" + p.getViewed());
+		for (int i = 1; i <= 20; i++) {
+			FlickrDeWestPhoto p = areaDao.getPhoto(1, Radius._80000, "2007-08-11@13", i);
+			if (p != null) {
+				System.out.print("PHOTO_ID:" + p.getId());
+				System.out.print("\tAreaid:" + p.getArea().getId());
+				System.out.print("\tRadius:" + p.getArea().getRadius());
+				System.out.print("\tarea:" + p.getArea().getArea());
+				System.out.print("\tDT:" + p.getDate());
+				System.out.print("\tLATITUDE:" + p.getLatitude());
+				System.out.print("\tLONGITUDE:" + p.getLongitude());
+				System.out.print("\tPERSON:" + p.getPerson());
+				System.out.print("\tRAWTAGS:" + p.getRawTags());
+				System.out.print("\tTITLE:" + p.getTitle());
+				System.out.print("\tSMALLURL:" + p.getSmallUrl());
+				System.out.println("\tVIEWED:" + p.getViewed());
+			}
 		}
 	}
 

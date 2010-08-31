@@ -31,11 +31,13 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
@@ -435,7 +437,7 @@ public class FlickrDeWestAreaMgr {
 			if (a.getTotalCount() != 0) {
 				String name = "total:" + a.getTotalCount();
 				//				String description = "select:" + String.valueOf(a.getSelectCount());
-				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?id=" + a.getId() + "&xml="
+				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 				String groundOverlayColor = "aaffffff"; //transparency
 
@@ -500,7 +502,7 @@ public class FlickrDeWestAreaMgr {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
 //			String description = "count: " + String.valueOf(a.getTotalCount());
-			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?id=" + a.getId() + "&xml="
+			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 					+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 			String polyStyleColor = "440000"; //not transparent
 //			String polyStyleColor = "000000"; //transparent
@@ -576,6 +578,11 @@ public class FlickrDeWestAreaMgr {
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
 
+	public FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx){
+		return flickrDeWestAreaDao.getPhoto(areaid, radius, hour, idx);
+	}
+	
+	
 	private String xml2String(Document document) {
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		xmlOutputter.setFormat(Format.getPrettyFormat());

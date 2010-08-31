@@ -3,6 +3,7 @@ package de.fraunhofer.iais.spatial.dao;
 import java.util.List;
 
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public interface FlickrDeWestAreaDao {
@@ -44,5 +45,7 @@ public interface FlickrDeWestAreaDao {
 	 * @return int - number of photos
 	 */
 	public abstract int getTotalCount(int areaid, Radius radius);
+
+	public abstract FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx);
 
 }
