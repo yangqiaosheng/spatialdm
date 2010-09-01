@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -175,12 +176,20 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		}
 		return num;
 	}
+	
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> hours, int num) {
+		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+		while (photos.size() < num && hours.size() > 0){
+			photos.addAll(this.getPhotos(areaid, radius, hours.last(), num - photos.size()));
+			System.out.println("hour:"+hours.last());
+			hours.remove(hours.last());
+		}
+		return photos;
+	}
 
-	@Deprecated
-	private List<FlickrDeWestPhoto> getPhoto(int areaid, Radius radius, String hour, int num, int x) {
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String hour, int num) {
 		FlickrDeWestArea area = getAreaById(areaid, radius);
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		
 		
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;

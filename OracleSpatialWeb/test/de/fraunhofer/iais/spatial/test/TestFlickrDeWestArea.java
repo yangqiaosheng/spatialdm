@@ -1,30 +1,15 @@
 package de.fraunhofer.iais.spatial.test;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import oracle.spatial.geometry.JGeometry;
-
-import org.jdom.CDATA;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.testng.internal.thread.CountDownAdapter;
 
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
@@ -120,7 +105,56 @@ public class TestFlickrDeWestArea {
 			}
 		}
 	}
+	
+	@Test
+	public void testPhoto2() {
+		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
+//		List<FlickrDeWestArea> as = areaDao.getAllAreas(Radius._10000);
+// 		List<FlickrDeWestArea> as = areaDao.getAreasByPoint(8.83, 50.58, Radius._5000);
+		SortedSet<String> hours = new TreeSet<String>(); 
+		hours.add("2007-08-11@13");
+//		hours.add("2007-08-11@11");
+//		hours.add("2007-05-09@13");
+//		hours.add("2007-05-18@13");
+//		hours.add("2009-01-08@13");
+//		hours.add("2008-01-08@13");
+//		hours.add("1995-01-08@13");
+		
+		List<FlickrDeWestPhoto> photos = areaDao.getPhotos(1, Radius._80000, hours, 20);
+		for (FlickrDeWestPhoto p : photos){
+			if (p != null) {
+				System.out.print("PHOTO_ID:" + p.getId());
+				System.out.print("\tAreaid:" + p.getArea().getId());
+				System.out.print("\tRadius:" + p.getArea().getRadius());
+				System.out.print("\tarea:" + p.getArea().getArea());
+				System.out.print("\tDT:" + p.getDate());
+				System.out.print("\tLATITUDE:" + p.getLatitude());
+				System.out.print("\tLONGITUDE:" + p.getLongitude());
+				System.out.print("\tPERSON:" + p.getPerson());
+				System.out.print("\tRAWTAGS:" + p.getRawTags());
+				System.out.print("\tTITLE:" + p.getTitle());
+				System.out.print("\tSMALLURL:" + p.getSmallUrl());
+				System.out.println("\tVIEWED:" + p.getViewed());
+			}
+		}
+	}
 
+	@Test
+	public void testTree(){
+		SortedSet<String> s = new TreeSet<String>(); 
+		s.add("2007-05-08");
+		s.add("2007-06-08");
+		s.add("2007-05-09");
+		s.add("2007-05-18");
+		s.add("2009-01-08");
+		s.add("2008-01-08");
+		s.add("1995-01-08");
+		while (s.size() > 0){
+			System.out.println(s.last());
+			s.remove(s.last());
+		}
+	}
+	
 	@Test
 	public void testKml1() throws Exception {
 		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
