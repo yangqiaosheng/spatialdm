@@ -178,7 +178,8 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		List<DataObject> seedList = database.epsilonRangeQuery(getEpsilon(), dataObject);
 		/** dataObject is NO coreObject */
 		if (seedList.size() < getMinPoints()) {
-			System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis()-begin)/1000.0 + "s,\tused memory: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())*1.024*1.024/1000000.0 + "MB");
+//			System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis() - begin) / 1000.0 + "s,\tused memory: "
+//					+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) * 1.024 * 1.024 / 1000000.0 + "MB");
 			dataObject.setClusterLabel(DataObject.NOISE);
 			return false;
 		}
@@ -188,7 +189,8 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			DataObject seedListDataObject = seedList.get(i);
 			/** label this seedListDataObject with the current clusterID, because it is in epsilon-range */
 			if (seedListDataObject.getClusterLabel() == DataObject.UNCLASSIFIED) {
-				System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis()-begin)/1000.0 + "s,\tused memory: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())*1.024*1.024/1000000.0 + "MB");
+//				System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis() - begin) / 1000.0 + "s,\tused memory: "
+//						+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) * 1.024 * 1.024 / 1000000.0 + "MB");
 			}
 			seedListDataObject.setClusterLabel(clusterID);
 			if (seedListDataObject.equals(dataObject)) {
@@ -209,7 +211,8 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 					DataObject p = seedListDataObject_Neighbourhood.get(i);
 					if (p.getClusterLabel() == DataObject.UNCLASSIFIED || p.getClusterLabel() == DataObject.NOISE) {
 						if (p.getClusterLabel() == DataObject.UNCLASSIFIED) {
-							System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis()-begin)/1000.0 + "s,\tused memory: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())*1.024*1.024/1000000.0 + "MB");
+//							System.out.println("the " + (++num) + " instance is being clustered by DBScan, escaped time: " + (System.currentTimeMillis() - begin) / 1000.0 + "s,\tused memory: "
+//									+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) * 1.024 * 1.024 / 1000000.0 + "MB");
 						}
 						if (p.getClusterLabel() == DataObject.UNCLASSIFIED) {
 							seedList.add(p);
@@ -608,13 +611,14 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 		 *  implement the algorithm from the paper:
 		 *  Incremental Clustering for Mining in a Warehousing Environment	*/
 //		insert2(dataObject);  
-		insert(dataObject);     
+		insert(dataObject);
 
 		/* 	Incremental DBSCAN method II
 		 *  faster than insert(dataObject)	*/
 //		fastInsert(dataObject);
 
-		System.out.println("the " + database.size() + " instance is being clustered by IDBScan, escaped time: " + (System.currentTimeMillis()-begin)/1000.0 + "s,\tused memory: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())*1.024*1.024/1000000.0 + "MB");
+		System.out.println("the " + database.size() + " instance is being clustered by IDBScan, escaped time: " + (System.currentTimeMillis() - begin) / 1000.0 + "s,\tused memory: "
+				+ (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) * 1.024 * 1.024 / 1000000.0 + "MB");
 		long end = System.currentTimeMillis();
 		elapsedTimeForIDBSCAN += (end - start) / 1000.0;
 	}
@@ -733,19 +737,19 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			}
 		}
 	}
-	
+
 	/**
 	* implement the incremental method according to the paper
 	* faster without using query cache
 	* but slower when using query cache
 	* @param dataObject
 	*/
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings( { "unchecked" })
 	private void insert2(DataObject dataObject) {
 		Set<DataObject> updSeeds = new HashSet<DataObject>();
 		Set<DataObject> updSeedsNeighbours = new HashSet<DataObject>();
 		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
-		
+
 		dataObject.setClusterLabel(DataObject.NOISE);
 
 		/** Iterate the neighbourhoodList of the startDataObject */
@@ -816,18 +820,17 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 			}
 		}
 	}
-	
 
 	/**
 	* implement the incremental method according to the paper
 	* faster when using query cache
 	* @param dataObject
 	*/
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings( { "unchecked" })
 	private void insert(DataObject dataObject) {
 		Set<DataObject> updSeeds = new HashSet<DataObject>();
 		List<DataObject> firstNeighbourhoodList = database.epsilonRangeQuery(getEpsilon(), dataObject);
-		
+
 		dataObject.setClusterLabel(DataObject.NOISE);
 
 		/** Iterate the neighbourhoodList of the startDataObject */
@@ -907,26 +910,30 @@ public class IDBScan extends AbstractClusterer implements OptionHandler, Technic
 	}
 
 	public void deleteInstance(String key) {
-		//		DataObject deleteDataObject = database.getDataObject(key);
-		//		if(deleteDataObject.getClusterLabel() == DataObject.NOISE){
-		//			database.remove(key);
-		//		}else{
-		//			List<DataObject> neighbourhoodList = database.epsilonRangeQuery(getEpsilon(), deleteDataObject);
-		//			for (int i = 0; i < neighbourhoodList.size(); i++) {
-		//				DataObject neighbourhoodDataObject = neighbourhoodList.get(i);
-		//				if(neighbourhoodDataObject.getClusterLabel() == deleteDataObject.getClusterLabel()){
-		//					List<DataObject> seedListDataObject_Neighbourhood = database.epsilonRangeQuery(getEpsilon(), neighbourhoodDataObject);
-		//					if(seedListDataObject_Neighbourhood.size() >= getMinPoints()){
-		//						database.remove(key);
-		//						break;
-		//					}
-		//				}
-		//				
-		//				
-		//			}
-		//		}
-		//		
-		//		
+		DataObject deleteDataObject = database.getDataObject(key);
+		if (deleteDataObject.getClusterLabel() == DataObject.NOISE) {
+			database.remove(key);
+		} else {
+			database.remove(key);
+			Database tempDatabase;
+			for (int i = 0; i < database.size(); i++) {
+				DataObject tochange = database.getDataObject(Integer.toString(i));
+				if (tochange.getClusterLabel() == deleteDataObject.getClusterLabel()) {
+					tochange.setClusterLabel(DataObject.UNCLASSIFIED);
+				}
+			}
+
+			for (int i = 0; i < database.size(); i++) {
+				DataObject dataObject = database.getDataObject(Integer.toString(i));
+				if (dataObject.getClusterLabel() == DataObject.UNCLASSIFIED) {
+					if (expandCluster(dataObject)) {
+						clusterID++;
+						numberOfGeneratedClusters++;
+					}
+				}
+			}
+		}
+		System.out.println(database.size());
 	}
 
 }
