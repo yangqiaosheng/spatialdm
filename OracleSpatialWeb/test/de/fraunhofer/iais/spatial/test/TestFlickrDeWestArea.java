@@ -85,8 +85,6 @@ public class TestFlickrDeWestArea {
 	@Test
 	public void testPhoto() {
 		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
-//		List<FlickrDeWestArea> as = areaDao.getAllAreas(Radius._10000);
-// 		List<FlickrDeWestArea> as = areaDao.getAreasByPoint(8.83, 50.58, Radius._5000);
 		for (int i = 1; i <= 20; i++) {
 			FlickrDeWestPhoto p = areaDao.getPhoto(1, Radius._80000, "2007-08-11@13", i);
 			if (p != null) {
@@ -109,16 +107,10 @@ public class TestFlickrDeWestArea {
 	@Test
 	public void testPhoto2() {
 		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
-//		List<FlickrDeWestArea> as = areaDao.getAllAreas(Radius._10000);
-// 		List<FlickrDeWestArea> as = areaDao.getAreasByPoint(8.83, 50.58, Radius._5000);
 		SortedSet<String> hours = new TreeSet<String>(); 
 		hours.add("2007-08-11@13");
-//		hours.add("2007-08-11@11");
-//		hours.add("2007-05-09@13");
-//		hours.add("2007-05-18@13");
-//		hours.add("2009-01-08@13");
-//		hours.add("2008-01-08@13");
-//		hours.add("1995-01-08@13");
+		hours.add("2007-08-11@11");
+		hours.add("2007-05-09@13");
 		
 		List<FlickrDeWestPhoto> photos = areaDao.getPhotos(1, Radius._80000, hours, 20);
 		for (FlickrDeWestPhoto p : photos){
