@@ -1,6 +1,7 @@
 package de.fraunhofer.iais.spatial.dao;
 
 import java.util.List;
+import java.util.SortedSet;
 
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
@@ -9,20 +10,20 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 public interface FlickrDeWestAreaDao {
 	
 	/**
-	 * Returns a List of all the Area instances
+	 * Returns a List of all the FlickrDeWestArea instances
 	 * @return List<FlickrDeWestArea>
 	 */
 	public abstract List<FlickrDeWestArea> getAllAreas(Radius radius);
 
 	/**
-	 * Returns the instance of Area related to that areaid 
+	 * Returns the instance of FlickrDeWestArea related to that areaid 
 	 * @param areaid
 	 * @return FlickrDeWestArea
 	 */
 	public abstract FlickrDeWestArea getAreaById(int areaid, Radius radius);
 
 	/**
-	 * Returns a List of Area instances which interact to this point
+	 * Returns a List of FlickrDeWestArea instances which interact to this point
 	 * @param x
 	 * @param y
 	 * @return List<FlickrDeWestArea>
@@ -30,7 +31,7 @@ public interface FlickrDeWestAreaDao {
 	public abstract List<FlickrDeWestArea> getAreasByPoint(double x, double y, Radius radius);
 
 	/**
-	 * Returns a List of Area instances which interact to this rectangle
+	 * Returns a List of FlickrDeWestArea instances which interact to this rectangle
 	 * @param x1
 	 * @param y1
 	 * @param x2
@@ -46,6 +47,34 @@ public interface FlickrDeWestAreaDao {
 	 */
 	public abstract int getTotalCount(int areaid, Radius radius);
 
+	/**
+	 * Returns a FlickrDeWestPhoto instance within the area
+	 * @param areaid
+	 * @param radius
+	 * @param hour
+	 * @param idx - index number of the result
+	 * @return
+	 */
 	public abstract FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx);
+
+	/** 
+	 * Returns a List of FlickrDeWestPhoto instances within the area
+	 * @param areaid
+	 * @param radius
+	 * @param hours
+	 * @param num - numbers of result
+	 * @return
+	 */
+	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> hours, int num);
+
+	/**
+	 * Returns a List of FlickrDeWestPhoto instances within the area
+	 * @param areaid
+	 * @param radius
+	 * @param hour
+	 * @param num - numbers of result
+	 * @return
+	 */
+	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String hour, int num);
 
 }
