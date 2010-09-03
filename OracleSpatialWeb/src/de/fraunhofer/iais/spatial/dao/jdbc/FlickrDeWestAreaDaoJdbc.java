@@ -39,7 +39,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			while (rs.next()) {
 				FlickrDeWestArea a = new FlickrDeWestArea();
 				a.setRadius(radius);
-				initFromRs(a, rs);
+				initAreaFromRs(a, rs);
 				as.add(a);
 			}
 			initAreas(as);
@@ -68,7 +68,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			rs = DB.getRs(pstmt);
 			if (rs.next()) {
 				a.setRadius(radius);
-				initFromRs(a, rs);
+				initAreaFromRs(a, rs);
 			}
 			initArea(a);
 		} catch (SQLException e) {
@@ -100,7 +100,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			while (rs.next()) {
 				FlickrDeWestArea a = new FlickrDeWestArea();
 				a.setRadius(radius);
-				initFromRs(a, rs);
+				initAreaFromRs(a, rs);
 				as.add(a);
 			}
 			initAreas(as);
@@ -136,7 +136,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			while (rs.next()) {
 				FlickrDeWestArea a = new FlickrDeWestArea();
 				a.setRadius(radius);
-				initFromRs(a, rs);
+				initAreaFromRs(a, rs);
 				as.add(a);
 			}
 			initAreas(as);
@@ -177,57 +177,9 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		return num;
 	}
 	
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> hours, int num) {
-		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		while (photos.size() < num && hours.size() > 0){
-			photos.addAll(this.getPhotos(areaid, radius, hours.last(), num - photos.size()));
-			System.out.println("hour:"+hours.last());
-			hours.remove(hours.last());
-		}
-		return photos;
-	}
-
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String hour, int num) {
-		FlickrDeWestArea area = getAreaById(areaid, radius);
-		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		try {
-			selectStmt = DB.getPstmt(conn, "select * from (select t.* from FLICKR_DE_WEST_TABLE t, FLICKR_DE_WEST_TABLE_GEOM g" +
-													" where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius + "_ID = ? and TRUNC(t.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t.dt desc)" +
-													" where rownum < ?");
-			selectStmt.setInt(1, areaid);
-			selectStmt.setString(2, hour);
-			selectStmt.setInt(3, num);
-			rs = DB.getRs(selectStmt);
-			while (rs.next()) {
-				FlickrDeWestPhoto photo =  new FlickrDeWestPhoto();
-				photos.add(photo);
-				
-				photo.setArea(area);
-				photo.setId(rs.getLong("PHOTO_ID"));
-				photo.setDate(rs.getTimestamp("DT"));
-				photo.setLatitude(rs.getDouble("LATITUDE"));
-				photo.setLongitude(rs.getDouble("LONGITUDE"));
-				photo.setPerson(rs.getString("PERSON"));
-				photo.setRawTags(rs.getString("RAWTAGS"));
-				photo.setSmallUrl(rs.getString("SMALLURL"));
-				photo.setTitle(rs.getString("TITLE"));
-				photo.setViewed(rs.getInt("VIEWED"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
-		}
-		
-		return photos;
-	}
-	
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhoto(int, Radius, String, int)
+	 */
 	@Override
 	public FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx) {
 		FlickrDeWestArea area = getAreaById(areaid, radius);
@@ -268,6 +220,64 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		}
 		
 		return photo;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(int, Radius, SortedSet<String>, int)
+	 */
+	@Override
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> hours, int num) {
+		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+		while (photos.size() < num && hours.size() > 0){
+			photos.addAll(this.getPhotos(areaid, radius, hours.last(), num - photos.size()));
+			hours.remove(hours.last());
+		}
+		return photos;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(int, Radius, String, int)
+	 */
+	@Override
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String hour, int num) {
+		FlickrDeWestArea area = getAreaById(areaid, radius);
+		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+		
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+		try {
+			selectStmt = DB.getPstmt(conn, "select * from (select t.* from FLICKR_DE_WEST_TABLE t, FLICKR_DE_WEST_TABLE_GEOM g" +
+													" where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius + "_ID = ? and TRUNC(t.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t.dt desc)" +
+													" where rownum < ?");
+			selectStmt.setInt(1, areaid);
+			selectStmt.setString(2, hour);
+			selectStmt.setInt(3, num);
+			rs = DB.getRs(selectStmt);
+			while (rs.next()) {
+				FlickrDeWestPhoto photo =  new FlickrDeWestPhoto();
+				photos.add(photo);
+				
+				photo.setArea(area);
+				photo.setId(rs.getLong("PHOTO_ID"));
+				photo.setDate(rs.getTimestamp("DT"));
+				photo.setLatitude(rs.getDouble("LATITUDE"));
+				photo.setLongitude(rs.getDouble("LONGITUDE"));
+				photo.setPerson(rs.getString("PERSON"));
+				photo.setRawTags(rs.getString("RAWTAGS"));
+				photo.setSmallUrl(rs.getString("SMALLURL"));
+				photo.setTitle(rs.getString("TITLE"));
+				photo.setViewed(rs.getInt("VIEWED"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+		
+		return photos;
 	}
 	
 	private void loadHoursCount(FlickrDeWestArea a) {
@@ -420,7 +430,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	 * @param a - Area
 	 * @param rs - ResultSet
 	 */
-	private void initFromRs(FlickrDeWestArea a, ResultSet rs) {
+	private void initAreaFromRs(FlickrDeWestArea a, ResultSet rs) {
 		try {
 			a.setId(rs.getInt("ID"));
 			a.setName(rs.getString("NAME"));
@@ -437,4 +447,6 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			e.printStackTrace();
 		}
 	}
+	
+	
 }
