@@ -26,8 +26,8 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
-import de.fraunhofer.iais.spatial.servlet.RequestKml;
 import de.fraunhofer.iais.spatial.util.StringUtil;
+import de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet;
 
 @ContextConfiguration("classpath:beans.xml")
 public class TestArea extends AbstractJUnit4SpringContextTests {
@@ -68,7 +68,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	public void testDeleteKmls() {
 		// period of existing, format yyMMddHHmmss
 		long period = 000000010000; // 1 hour
-		File kmlPath = new File("WebRoot/" + RequestKml.kmlPath);
+		File kmlPath = new File("WebRoot/" + RequestKmlServlet.kmlPath);
 		File files[] = kmlPath.listFiles();
 		System.out.println(files.length);
 		long currentDate = Long.parseLong(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
