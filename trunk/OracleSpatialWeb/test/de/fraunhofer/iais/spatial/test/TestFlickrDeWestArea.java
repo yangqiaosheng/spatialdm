@@ -35,8 +35,7 @@ public class TestFlickrDeWestArea {
 
 	@Test
 	public void testJdbcDao1() {
-		FlickrDeWestAreaDao areaDao = new FlickrDeWestAreaDaoJdbc();
-		FlickrDeWestArea a = areaDao.getAreaById(1, FlickrDeWestArea.Radius._80000);
+		FlickrDeWestArea a = areaMgr.getAreaDao().getAreaById(1, FlickrDeWestArea.Radius._80000);
 
 		String coordinates = "\t";
 		if (a.getGeom().getOrdinatesArray() != null) {
@@ -59,10 +58,9 @@ public class TestFlickrDeWestArea {
 
 	@Test
 	public void testJdbcDao2() {
-		FlickrDeWestAreaDao areaDao = new FlickrDeWestAreaDaoJdbc();
-//		List<FlickrDeWestArea> as = areaDao.getAllAreas(Radius._10000);
-// 		List<FlickrDeWestArea> as = areaDao.getAreasByPoint(8.83, 50.58, Radius._5000);
-		List<FlickrDeWestArea> as = areaDao.getAreasByRect(1, 1, 96.5, 95.4, Radius._80000);
+//		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(Radius._10000);
+// 		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByPoint(8.83, 50.58, Radius._5000);
+		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByRect(1, 1, 96.5, 95.4, Radius._80000);
 		for (FlickrDeWestArea a : as) {
 			String coordinates = "\t";
 			if (a.getGeom().getOrdinatesArray() != null) {
@@ -84,9 +82,8 @@ public class TestFlickrDeWestArea {
 	
 	@Test
 	public void testPhoto() {
-		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
 		for (int i = 1; i <= 20; i++) {
-			FlickrDeWestPhoto p = areaDao.getPhoto(1, Radius._80000, "2007-08-11@13", i);
+			FlickrDeWestPhoto p = areaMgr.getAreaDao().getPhoto(1, Radius._80000, "2007-08-11@13", i);
 			if (p != null) {
 				System.out.print("PHOTO_ID:" + p.getId());
 				System.out.print("\tAreaid:" + p.getArea().getId());
@@ -106,13 +103,12 @@ public class TestFlickrDeWestArea {
 	
 	@Test
 	public void testPhoto2() {
-		FlickrDeWestAreaDaoJdbc areaDao = new FlickrDeWestAreaDaoJdbc();
 		SortedSet<String> hours = new TreeSet<String>(); 
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
 		
-		List<FlickrDeWestPhoto> photos = areaDao.getPhotos(1, Radius._80000, hours, 20);
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius._80000, hours, 20);
 		for (FlickrDeWestPhoto p : photos){
 			if (p != null) {
 				System.out.print("PHOTO_ID:" + p.getId());
@@ -162,7 +158,7 @@ public class TestFlickrDeWestArea {
 		System.out.println("center:" + areaDto.getCenter().getX() + "," + areaDto.getCenter().getY());
 		System.out.println("boundaryRect:" + areaDto.getBoundaryRect().getMinX() + "," + areaDto.getBoundaryRect().getMinY() + "," + areaDto.getBoundaryRect().getMaxX() + "," + areaDto.getBoundaryRect().getMaxY());
 //	 	List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
-		List<FlickrDeWestArea> as = areaMgr.getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		areaMgr.count(as, areaDto);
 		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null));
 
