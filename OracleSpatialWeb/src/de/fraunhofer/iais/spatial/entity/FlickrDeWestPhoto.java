@@ -14,7 +14,7 @@ public class FlickrDeWestPhoto {
 	private double longitude;
 	private double latitude;
 	private Date date;
-	private String person;
+	private String personId;
 	private int viewed;
 	private String title;
 	private String rawTags;
@@ -50,11 +50,11 @@ public class FlickrDeWestPhoto {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public String getPerson() {
-		return person;
+	public String getPersonId() {
+		return personId;
 	}
-	public void setPerson(String person) {
-		this.person = person;
+	public void setPersonId(String person) {
+		this.personId = person;
 	}
 	public int getViewed() {
 		return viewed;

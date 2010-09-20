@@ -2,7 +2,9 @@ package de.fraunhofer.iais.spatial.test;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -11,8 +13,6 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
-import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
@@ -79,7 +79,7 @@ public class TestFlickrDeWestArea {
 			// person));
 		}
 	}
-	
+
 	@Test
 	public void testPhoto() {
 		for (int i = 1; i <= 20; i++) {
@@ -92,33 +92,7 @@ public class TestFlickrDeWestArea {
 				System.out.print("\tDT:" + p.getDate());
 				System.out.print("\tLATITUDE:" + p.getLatitude());
 				System.out.print("\tLONGITUDE:" + p.getLongitude());
-				System.out.print("\tPERSON:" + p.getPerson());
-				System.out.print("\tRAWTAGS:" + p.getRawTags());
-				System.out.print("\tTITLE:" + p.getTitle());
-				System.out.print("\tSMALLURL:" + p.getSmallUrl());
-				System.out.println("\tVIEWED:" + p.getViewed());
-			}
-		}
-	}
-	
-	@Test
-	public void testPhoto2() {
-		SortedSet<String> hours = new TreeSet<String>(); 
-		hours.add("2007-08-11@13");
-		hours.add("2007-08-11@11");
-		hours.add("2007-05-09@13");
-		
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius._80000, hours, 20);
-		for (FlickrDeWestPhoto p : photos){
-			if (p != null) {
-				System.out.print("PHOTO_ID:" + p.getId());
-				System.out.print("\tAreaid:" + p.getArea().getId());
-				System.out.print("\tRadius:" + p.getArea().getRadius());
-				System.out.print("\tarea:" + p.getArea().getArea());
-				System.out.print("\tDT:" + p.getDate());
-				System.out.print("\tLATITUDE:" + p.getLatitude());
-				System.out.print("\tLONGITUDE:" + p.getLongitude());
-				System.out.print("\tPERSON:" + p.getPerson());
+				System.out.print("\tPERSON:" + p.getPersonId());
 				System.out.print("\tRAWTAGS:" + p.getRawTags());
 				System.out.print("\tTITLE:" + p.getTitle());
 				System.out.print("\tSMALLURL:" + p.getSmallUrl());
@@ -128,8 +102,34 @@ public class TestFlickrDeWestArea {
 	}
 
 	@Test
-	public void testTree(){
-		SortedSet<String> s = new TreeSet<String>(); 
+	public void testPhoto2() {
+		Set<String> hours = new HashSet<String>();
+		hours.add("2007-08-11@13");
+		hours.add("2007-08-11@11");
+		hours.add("2007-05-09@13");
+
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius._80000, hours, 20);
+		for (FlickrDeWestPhoto p : photos) {
+			System.out.print("PHOTO_ID:" + p.getId());
+			System.out.print("\tAreaid:" + p.getArea().getId());
+			System.out.print("\tRadius:" + p.getArea().getRadius());
+			System.out.print("\tarea:" + p.getArea().getArea());
+			System.out.print("\tDT:" + p.getDate());
+			System.out.print("\tLATITUDE:" + p.getLatitude());
+			System.out.print("\tLONGITUDE:" + p.getLongitude());
+			System.out.print("\tPERSON:" + p.getPersonId());
+			System.out.print("\tRAWTAGS:" + p.getRawTags());
+			System.out.print("\tTITLE:" + p.getTitle());
+			System.out.print("\tSMALLURL:" + p.getSmallUrl());
+			System.out.println("\tVIEWED:" + p.getViewed());
+		}
+
+		System.out.println(areaMgr.photosResponseXml(1, Radius._80000, hours, 20));
+	}
+
+	@Test
+	public void testTree() {
+		SortedSet<String> s = new TreeSet<String>();
 		s.add("2007-05-08");
 		s.add("2007-06-08");
 		s.add("2007-05-09");
@@ -137,12 +137,12 @@ public class TestFlickrDeWestArea {
 		s.add("2009-01-08");
 		s.add("2008-01-08");
 		s.add("1995-01-08");
-		while (s.size() > 0){
+		while (s.size() > 0) {
 			System.out.println(s.last());
 			s.remove(s.last());
 		}
 	}
-	
+
 	@Test
 	public void testKml1() throws Exception {
 		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();

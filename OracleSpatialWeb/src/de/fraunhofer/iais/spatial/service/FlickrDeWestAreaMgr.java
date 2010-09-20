@@ -14,11 +14,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -560,6 +562,47 @@ public class FlickrDeWestAreaMgr {
 		xml2File(document, localBasePath + file + ".kml");
 		return xml2String(document);
 		// return xml2String(document).replaceAll("\r\n", " ");
+	}
+	
+	public String kmlResponseXml(int areaid, Radius radius, Set<String> hours, int num){
+		Document document = new Document();
+		Element rootElement = new Element("response");
+		document.setRootElement(rootElement);
+		
+		return xml2String(document);
+	}
+	
+	public String photosResponseXml(int areaid, Radius radius, Set<String> hours, int num){
+		List<FlickrDeWestPhoto> photos = this.getAreaDao().getPhotos(1, Radius._80000, hours, 20);
+		
+		Document document = new Document();
+		Element rootElement = new Element("response");
+		document.setRootElement(rootElement);
+		
+		Element photosElement = new Element("photos");
+		rootElement.addContent(photosElement);
+		
+		int i = 1;
+		for (FlickrDeWestPhoto p : photos){
+			Element photoElement = new Element("photo");
+			photosElement.addContent(photoElement);
+			photoElement.setAttribute("index", String.valueOf(i++));
+			
+			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
+			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
+			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
+			photoElement.addContent(new Element("polygonArea").setText(String.valueOf(p.getArea().getArea())));
+			photoElement.addContent(new Element("date").setText(String.valueOf(p.getDate())));
+			photoElement.addContent(new Element("latitude").setText(String.valueOf(p.getLatitude())));
+			photoElement.addContent(new Element("longitude").setText(String.valueOf(p.getLongitude())));
+			photoElement.addContent(new Element("personId").setText(String.valueOf(p.getPersonId())));
+			photoElement.addContent(new Element("title").setText(String.valueOf(p.getTitle())));
+			photoElement.addContent(new Element("smallUrl").setText(String.valueOf(p.getSmallUrl())));
+			photoElement.addContent(new Element("viewed").setText(String.valueOf(p.getViewed())));
+			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
+		}
+		
+		return xml2String(document);
 	}
 	
 	

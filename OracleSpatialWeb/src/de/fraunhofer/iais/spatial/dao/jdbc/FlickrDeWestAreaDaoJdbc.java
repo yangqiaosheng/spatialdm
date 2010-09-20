@@ -5,11 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,9 +19,8 @@ import oracle.sql.STRUCT;
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
-import de.fraunhofer.iais.spatial.util.DB;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
-import de.fraunhofer.iais.spatial.util.StringUtil;
+import de.fraunhofer.iais.spatial.util.DB;
 
 public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	
@@ -205,7 +205,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 				photo.setDate(rs.getTimestamp("DT"));
 				photo.setLatitude(rs.getDouble("LATITUDE"));
 				photo.setLongitude(rs.getDouble("LONGITUDE"));
-				photo.setPerson(rs.getString("PERSON"));
+				photo.setPersonId(rs.getString("PERSON"));
 				photo.setRawTags(rs.getString("RAWTAGS"));
 				photo.setSmallUrl(rs.getString("SMALLURL"));
 				photo.setTitle(rs.getString("TITLE"));
@@ -226,11 +226,12 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(int, Radius, SortedSet<String>, int)
 	 */
 	@Override
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> hours, int num) {
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, Set<String> hours, int num) {
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		while (photos.size() < num && hours.size() > 0){
-			photos.addAll(this.getPhotos(areaid, radius, hours.last(), num - photos.size()));
-			hours.remove(hours.last());
+		TreeSet<String> hoursTemp = new TreeSet<String>(hours);
+		while (photos.size() < num && hoursTemp.size() > 0){
+			photos.addAll(this.getPhotos(areaid, radius, hoursTemp.last(), num - photos.size()));
+			hoursTemp.remove(hoursTemp.last());
 		}
 		return photos;
 	}
@@ -263,7 +264,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 				photo.setDate(rs.getTimestamp("DT"));
 				photo.setLatitude(rs.getDouble("LATITUDE"));
 				photo.setLongitude(rs.getDouble("LONGITUDE"));
-				photo.setPerson(rs.getString("PERSON"));
+				photo.setPersonId(rs.getString("PERSON"));
 				photo.setRawTags(rs.getString("RAWTAGS"));
 				photo.setSmallUrl(rs.getString("SMALLURL"));
 				photo.setTitle(rs.getString("TITLE"));

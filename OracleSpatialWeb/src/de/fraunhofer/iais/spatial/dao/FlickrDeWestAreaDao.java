@@ -1,7 +1,7 @@
 package de.fraunhofer.iais.spatial.dao;
 
 import java.util.List;
-import java.util.SortedSet;
+import java.util.Set;
 
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
@@ -65,7 +65,7 @@ public interface FlickrDeWestAreaDao {
 	 * @param num - numbers of result
 	 * @return
 	 */
-	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> hours, int num);
+	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, Set<String> hours, int num);
 
 	/**
 	 * Returns a List of FlickrDeWestPhoto instances within the area
