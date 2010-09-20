@@ -64,6 +64,7 @@ public class ZoomKmlServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		if ((xml1 == null || xml1.equals("")) && (xml2 == null || xml2.equals(""))) {
+			out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
 			out.print("<response><msg>no parameters!</msg></response>");
 			return;
 		}

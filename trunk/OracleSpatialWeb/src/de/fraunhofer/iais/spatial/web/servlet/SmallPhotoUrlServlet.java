@@ -36,6 +36,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		String radius = request.getParameter("radius");
 		PrintWriter out = response.getWriter();
 		if ((areaid == null || areaid.equals("")) && (radius == null || radius.equals(""))) {
+			out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
 			out.print("<response><msg>no parameters!</msg></response>");
 			return;
 		}
