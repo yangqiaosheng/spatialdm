@@ -54,22 +54,6 @@ public class FlickrDeWestAreaMgr {
 		this.flickrDeWestAreaDao = areaDao;
 	}
 
-	public List<FlickrDeWestArea> getAllAreas(Radius radius) {
-		return flickrDeWestAreaDao.getAllAreas(radius);
-	}
-
-	public FlickrDeWestArea getAreaById(int areaid, Radius radius) {
-		return flickrDeWestAreaDao.getAreaById(areaid, radius);
-	}
-
-	public List<FlickrDeWestArea> getAreasByPoint(double x, double y, Radius radius) {
-		return flickrDeWestAreaDao.getAreasByPoint(x, y, radius);
-	}
-
-	public List<FlickrDeWestArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
-		return flickrDeWestAreaDao.getAreasByRect(x1, y1, x2, y2, radius);
-	}
-
 	public void countHours(List<FlickrDeWestArea> as, Set<String> hours) {
 		for (FlickrDeWestArea a : as) {
 			int num = 0;
@@ -576,10 +560,6 @@ public class FlickrDeWestAreaMgr {
 		xml2File(document, localBasePath + file + ".kml");
 		return xml2String(document);
 		// return xml2String(document).replaceAll("\r\n", " ");
-	}
-
-	public FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx){
-		return flickrDeWestAreaDao.getPhoto(areaid, radius, hour, idx);
 	}
 	
 	
