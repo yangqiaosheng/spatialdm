@@ -78,7 +78,7 @@ public class ZoomKmlServlet extends HttpServlet {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml1:" + xml1); //$NON-NLS-1$
 				areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml1.toString()), areaDto);
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears().size() + " |months:" + areaDto.getMonths().size() + "|days:" + areaDto.getDays().size() + "|hours:" + areaDto.getHours().size() + "|weekdays:" + areaDto.getWeekdays().size()); //$NON-NLS-1$
-				List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
+				List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath);
 				bw.write(xml1);
 			} catch (JDOMException e) {
