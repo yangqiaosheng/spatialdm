@@ -41,7 +41,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		}
 		
 		FlickrDeWestAreaMgr areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
-		FlickrDeWestPhoto photo = areaMgr.getPhoto(Integer.parseInt(areaid), Radius.valueOf("_" + radius), "2007-08-11@13", 20);
+		FlickrDeWestPhoto photo = areaMgr.getAreaDao().getPhoto(Integer.parseInt(areaid), Radius.valueOf("_" + radius), "2007-08-11@13", 20);
 		
 		if(photo !=null){
 			out.print(photo.getSmallUrl());
