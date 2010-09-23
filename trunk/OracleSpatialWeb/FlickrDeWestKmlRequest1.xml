@@ -1,44 +1,42 @@
-<calendar>
-	<zoom>12</zoom>
-	<center>
-		<x>6.065312500000002</x>
-		<y>49.96991565991644</y>
-	</center>
-	<boundaryRect>
-		<minX>5.549687500000002</minX>
-		<minY>48.46851630271934</minY>
-		<maxX>8.580937500000001</maxX>
-		<maxY>51.42589694531850</maxY>
-	</boundaryRect>
-	
-	<years>
-		<year>2007</year>
-		<year>2008</year>
-		<year>2009</year>
-	</years>
-	<months>
-		<month>January</month>
-		<month>March</month>
-		<month>April</month>
-		<month>May</month>
-		<month>September</month>
-		<month>October</month>
-		<month>November</month>
-		<month>December</month>
-	</months>
-	<days>
-		<day>3</day>
-		<day>09</day>
-		<day>12</day>
-		<day>17</day>
-	</days>
-	
-<!--	<hours>-->
-<!--		<hour>15</hour>-->
-<!--	</hours>-->
-	
-	<weekdays>
-<!--		<weekday>Saturday</weekday>-->
-<!--		<weekday>Sunday</weekday>-->
-	</weekdays>
-</calendar>
+<request>
+	<screen>
+		<bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
+		<center>(51.58830123054393, 6.971684570312502)</center>
+		<zoom>9</zoom>
+	</screen>
+	<polygon>(51.58830123054393, 6.971684570312502)(51.67184146523792, 7.647343750000002)(51.44644311790073, 7.298527832031252)</polygon>
+	<calendar>
+		<years>
+			<year>2007</year>
+			<year>2008</year>
+			<year>2009</year>
+		</years>
+		<months>
+			<month>January</month>
+			<month>March</month>
+			<month>April</month>
+			<month>May</month>
+			<month>September</month>
+			<month>October</month>
+			<month>November</month>
+			<month>December</month>
+		</months>
+		<days>
+			<day>3</day>
+			<day>09</day>
+			<day>12</day>
+			<day>17</day>
+		</days>
+
+		<!--	<hours>-->
+		<!--		<hour>15</hour>-->
+		<!--	</hours>-->
+
+		<weekdays>
+			<!--		<weekday>Saturday</weekday>-->
+			<!--		<weekday>Sunday</weekday>-->
+		</weekdays>
+	</calendar>
+	<interval>15/09/2010 - 19/10/2010</interval>
+	<selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
+</request>

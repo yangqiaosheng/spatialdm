@@ -3,6 +3,7 @@ package de.fraunhofer.iais.spatial.dto;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,10 @@ public class FlickrDeWestAreaDto {
 	private int zoom;
 	private Point2D center;
 	private Rectangle2D boundaryRect;
+	private List<Point2D> polygon;
+	private Date beginDate;
+	private Date endDate;
+	private Set<Date> selectedDays;
 	
 	public enum QueryLevel {
 	    HOUR, DAY, MONTH, YEAR;
@@ -91,5 +96,29 @@ public class FlickrDeWestAreaDto {
 	}
 	public void setQueryLevel(QueryLevel queryLevel) {
 		this.queryLevel = queryLevel;
+	}
+	public List<Point2D> getPolygon() {
+		return polygon;
+	}
+	public void setPolygon(List<Point2D> polygon) {
+		this.polygon = polygon;
+	}
+	public Date getBeginDate() {
+		return beginDate;
+	}
+	public void setBeginDate(Date beginDate) {
+		this.beginDate = beginDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	public Set<Date> getSelectedDays() {
+		return selectedDays;
+	}
+	public void setSelectedDays(Set<Date> selectedDays) {
+		this.selectedDays = selectedDays;
 	}
 }

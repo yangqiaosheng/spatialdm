@@ -16,11 +16,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -155,112 +159,165 @@ public class FlickrDeWestAreaMgr {
 
 
 	@SuppressWarnings("unchecked")
-	public void parseXmlRequest1(String xml, FlickrDeWestAreaDto areaDto) throws JDOMException, IOException {
+	public void parseXmlRequest1(String xml, FlickrDeWestAreaDto areaDto) throws JDOMException, IOException, ParseException {
 		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
 		Element rootElement = document.getRootElement();
+		
+		// <screen>
+		Element screenElement = rootElement.getChild("screen");
+		if (screenElement != null) {
+			// <screen><bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
+			String boundsStr = screenElement.getChildText("bounds");
+			if (boundsStr != null) {
+				Pattern boundsPattern = Pattern.compile("\\(\\(([-0-9.]*), ([-0-9.]*)\\), \\(([-0-9.]*), ([-0-9.]*)\\)\\)");
+				Matcher boundsMatcher = boundsPattern.matcher(boundsStr);
+				if (boundsMatcher.find()) {
+					Rectangle2D boundaryRect = new Rectangle2D.Double();
+					areaDto.setBoundaryRect(boundaryRect);
+					double minX = Double.parseDouble(boundsMatcher.group(1));
+					double minY = Double.parseDouble(boundsMatcher.group(2));
+					double maxX = Double.parseDouble(boundsMatcher.group(3));
+					double maxY = Double.parseDouble(boundsMatcher.group(4));
+					boundaryRect.setRect(minX, minY, maxX - minX, maxY - minY);
+				}
+			}
 
-		// <zoom>
-		int zoom = Integer.parseInt(rootElement.getChildText("zoom"));
-		areaDto.setZoom(zoom);
-		if(zoom < 8){
-			areaDto.setRadius(Radius._80000);
-		}else if(zoom < 10){
-			areaDto.setRadius(Radius._40000);
-		}else if(zoom < 11){
-			areaDto.setRadius(Radius._20000);
-		}else if(zoom < 12){
-			areaDto.setRadius(Radius._10000);
-		}else if(zoom >= 12){
-			areaDto.setRadius(Radius._5000);
-		}
+			// <screen><center>(51.58830123054393, 6.971684570312502)</center>
+			String centerStr = screenElement.getChildText("center");
+			if (centerStr != null) {
+				Pattern centerPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
+				Matcher centerMachter = centerPattern.matcher(boundsStr);
+				if (centerMachter.find()) {
+					Point2D center = new Point2D.Double();
+					areaDto.setCenter(center);
+					center.setLocation(Double.parseDouble(centerMachter.group(1)), Double.parseDouble(centerMachter.group(2)));
+				}
+			}
 
-		// <center>
-		Element centerElement = rootElement.getChild("center");
-		if (centerElement != null) {
-			Point2D center =  new Point2D.Double();
-			areaDto.setCenter(center);
-			center.setLocation(Double.parseDouble(centerElement.getChildText("x")), Double.parseDouble(centerElement.getChildText("y")));
-		}
-
-		// <boundaryRect>
-		Element boundaryRectElement = rootElement.getChild("boundaryRect");
-		if (boundaryRectElement != null) {
-			Rectangle2D boundaryRect =  new Rectangle2D.Double();
-			areaDto.setBoundaryRect(boundaryRect);
-			double minX = Double.parseDouble(boundaryRectElement.getChildText("minX"));
-			double minY = Double.parseDouble(boundaryRectElement.getChildText("minY"));
-			double maxX = Double.parseDouble(boundaryRectElement.getChildText("maxX"));
-			double maxY = Double.parseDouble(boundaryRectElement.getChildText("maxY"));
-			boundaryRect.setRect(minX, minY, maxX - minX, maxY - minY);
+			// <screen><zoom>9</zoom>
+			int zoom = Integer.parseInt(screenElement.getChildText("zoom"));
+			if (zoom == 0) {
+				zoom = 11;
+			} else if (zoom < 8) {
+				areaDto.setRadius(Radius._80000);
+			} else if (zoom < 10) {
+				areaDto.setRadius(Radius._40000);
+			} else if (zoom < 11) {
+				areaDto.setRadius(Radius._20000);
+			} else if (zoom < 12) {
+				areaDto.setRadius(Radius._10000);
+			} else if (zoom >= 12) {
+				areaDto.setRadius(Radius._5000);
+			}
+			areaDto.setZoom(zoom);
 		}
 		
-		// <years>
-		Element yearsElement = rootElement.getChild("years");
-		if (yearsElement != null) {
-			List<Element> yearElements = yearsElement.getChildren("year");
-			for (Element yearElement : yearElements) {
-				String year = yearElement.getText();
-				if (year != null && !year.trim().equals("")) {
-					System.out.println("year:" + year.trim());
-					areaDto.getYears().add(year.trim());
-				}
-			}
-		}
-
-		// <month>
-		Element monthsElement = rootElement.getChild("months");
-		if (monthsElement != null) {
-			List<Element> monthElements = monthsElement.getChildren("month");
-			for (Element monthElement : monthElements) {
-				String month = monthElement.getText();
-				if (month != null && !month.trim().equals("")) {
-					System.out.println("month:" + month.trim());
-					areaDto.getMonths().add(month.trim());
-				}
-			}
-		}
-
-		// <days>
-		Element daysElement = rootElement.getChild("days");
-		if (daysElement != null) {
-			List<Element> dayElements = daysElement.getChildren("day");
-			for (Element dayElement : dayElements) {
-				String day = dayElement.getText();
-				if (day != null && !day.trim().equals("")) {
-					System.out.println("day:" + day.trim());
-					areaDto.getDays().add(day.trim());
-				}
-			}
-		}
-
-		// <hours>
-		Element hoursElement = rootElement.getChild("hours");
-		if (hoursElement != null) {
-			List<Element> hourElements = hoursElement.getChildren("hour");
-			for (Element hourElement : hourElements) {
-				String hour = hourElement.getText();
-				if (hour != null && !hour.trim().equals("")) {
-					System.out.println("hour:" + hour.trim());
-					areaDto.getHours().add(hour.trim());
-				}
-			}
-		}
-
-		// <weekdays>
-		Element weekdaysElement = rootElement.getChild("weekdays");
-		if (weekdaysElement != null) {
-			List<Element> weekdayElements = weekdaysElement.getChildren("weekday");
-			for (Element weekdayElement : weekdayElements) {
-				String weekday = weekdayElement.getText();
-				if (weekday != null && !weekday.trim().equals("")) {
-					System.out.println("weekday:" + weekday.trim());
-					areaDto.getWeekdays().add(weekday.trim());
-				}
+		// <polygon>(51.58830123054393, 6.971684570312502)(51.67184146523792, 7.647343750000002)(51.44644311790073, 7.298527832031252)</polygon>
+		String polygonStr = rootElement.getChildText("polygon");
+		if (polygonStr != null) {
+			Pattern polygonPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
+			Matcher polygonMachter = polygonPattern.matcher(polygonStr);
+			List<Point2D> polygon = new LinkedList<Point2D>(); 
+			areaDto.setPolygon(polygon);
+			while(polygonMachter.find()){
+				Point2D point = new Point2D.Double();
+				point.setLocation(Double.parseDouble(polygonMachter.group(1)), Double.parseDouble(polygonMachter.group(2)));
+				polygon.add(point);
 			}
 		}
 		
+		// <interval>15/09/2010 - 19/10/2010</interval>
+		String intervalStr = rootElement.getChildText("interval");
+		if (intervalStr != null) {
+			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
+			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
+		
+			if(intervalMachter.find()){
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				areaDto.setBeginDate(sdf.parse(intervalMachter.group(1)));
+				areaDto.setEndDate(sdf.parse(intervalMachter.group(2)));
+			}
+		}
+		
+		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
+		String selectedDaysStr = rootElement.getChildText("selected_days");
+		if (selectedDaysStr != null) {
+			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
+			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
+			Set<Date> selectedDays = new LinkedHashSet<Date>();
+			areaDto.setSelectedDays(selectedDays);
+			while(selectedDaysMachter.find()){
+				SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+				selectedDays.add(sdf.parse(selectedDaysMachter.group()));
+			}
+		}
+		
+		
+		// <calendar>
+		Element calendarElement = rootElement.getChild("calendar");
+		if (calendarElement != null) {
+			// <calendar><years>
+			Element yearsElement = calendarElement.getChild("years");
+			if (yearsElement != null) {
+				List<Element> yearElements = yearsElement.getChildren("year");
+				for (Element yearElement : yearElements) {
+					String year = yearElement.getText();
+					if (year != null && !year.trim().equals("")) {
+						areaDto.getYears().add(year.trim());
+					}
+				}
+			}
+
+			// <calendar><month>
+			Element monthsElement = calendarElement.getChild("months");
+			if (monthsElement != null) {
+				List<Element> monthElements = monthsElement.getChildren("month");
+				for (Element monthElement : monthElements) {
+					String month = monthElement.getText();
+					if (month != null && !month.trim().equals("")) {
+						areaDto.getMonths().add(month.trim());
+					}
+				}
+			}
+
+			// <calendar><days>
+			Element daysElement = calendarElement.getChild("days");
+			if (daysElement != null) {
+				List<Element> dayElements = daysElement.getChildren("day");
+				for (Element dayElement : dayElements) {
+					String day = dayElement.getText();
+					if (day != null && !day.trim().equals("")) {
+						areaDto.getDays().add(day.trim());
+					}
+				}
+			}
+
+			// <calendar><hours>
+			Element hoursElement = calendarElement.getChild("hours");
+			if (hoursElement != null) {
+				List<Element> hourElements = hoursElement.getChildren("hour");
+				for (Element hourElement : hourElements) {
+					String hour = hourElement.getText();
+					if (hour != null && !hour.trim().equals("")) {
+						areaDto.getHours().add(hour.trim());
+					}
+				}
+			}
+
+			// <calendar><weekdays>
+			Element weekdaysElement = calendarElement.getChild("weekdays");
+			if (weekdaysElement != null) {
+				List<Element> weekdayElements = weekdaysElement.getChildren("weekday");
+				for (Element weekdayElement : weekdayElements) {
+					String weekday = weekdayElement.getText();
+					if (weekday != null && !weekday.trim().equals("")) {
+						areaDto.getWeekdays().add(weekday.trim());
+					}
+				}
+			}
+		}
 		
 		Set<String> queryStrs = new HashSet<String>();
 		areaDto.setQueryStrs(queryStrs);

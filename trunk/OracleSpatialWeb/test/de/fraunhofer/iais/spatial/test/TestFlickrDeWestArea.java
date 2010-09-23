@@ -1,12 +1,21 @@
 package de.fraunhofer.iais.spatial.test;
 
+import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,6 +43,32 @@ public class TestFlickrDeWestArea {
 	}
 
 	@Test
+	public void testRegEx() throws ParseException {
+		Pattern polygonPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
+		Matcher polygonMachter = polygonPattern.matcher("<polygon>(51.58830123054393, 6.971684570312502)(51.67184146523792, 7.647343750000002)(51.44644311790073, 7.298527832031252)</polygon>");
+		while (polygonMachter.find()) {
+			Point2D point = new Point2D.Double();
+			point.setLocation(Double.parseDouble(polygonMachter.group(1)), Double.parseDouble(polygonMachter.group(2)));
+			System.out.println(point);
+		}
+
+		Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
+		Matcher intervalMachter = intervalPattern.matcher("<interval>15/09/2010 - 19/10/2010</interval>");
+		if (intervalMachter.find()) {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			System.out.println("beginDate:" + sdf.parse(intervalMachter.group(1)));
+			System.out.println("endDate:" + sdf.parse(intervalMachter.group(2)));
+		}
+
+		Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
+		Matcher selectedDaysMachter = selectedDaysPattern.matcher("<selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>");
+		while (selectedDaysMachter.find()) {
+			SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+			System.out.println(sdf.parse(selectedDaysMachter.group()));
+		}
+	}
+
+	@Test
 	public void testJdbcDao1() {
 		FlickrDeWestArea a = areaMgr.getAreaDao().getAreaById(1, FlickrDeWestArea.Radius._80000);
 
@@ -58,8 +93,8 @@ public class TestFlickrDeWestArea {
 
 	@Test
 	public void testJdbcDao2() {
-//		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(Radius._10000);
-// 		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByPoint(8.83, 50.58, Radius._5000);
+		//		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(Radius._10000);
+		// 		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByPoint(8.83, 50.58, Radius._5000);
 		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByRect(1, 1, 96.5, 95.4, Radius._80000);
 		for (FlickrDeWestArea a : as) {
 			String coordinates = "\t";
@@ -73,8 +108,8 @@ public class TestFlickrDeWestArea {
 			}
 
 			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
-//			System.out.println(a.getHoursCount());
-//			System.out.println(coordinates + "\n");
+			//			System.out.println(a.getHoursCount());
+			//			System.out.println(coordinates + "\n");
 			// System.out.println(person+":"+dao.getPersonCount(a.getId(),
 			// person));
 		}
@@ -144,9 +179,9 @@ public class TestFlickrDeWestArea {
 	}
 
 	@Test
-	public void testKml1() throws Exception {
+	public void testRequestXml() throws Exception {
 		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
-		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestRequest1.xml"));
+		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
 		while ((thisLine = br.readLine()) != null) {
@@ -155,20 +190,52 @@ public class TestFlickrDeWestArea {
 		areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 		System.out.println("radius:" + areaDto.getRadius());
 		System.out.println("zoom:" + areaDto.getZoom());
-		System.out.println("center:" + areaDto.getCenter().getX() + "," + areaDto.getCenter().getY());
+		System.out.println("center:" + areaDto.getCenter());
 		System.out.println("boundaryRect:" + areaDto.getBoundaryRect().getMinX() + "," + areaDto.getBoundaryRect().getMinY() + "," + areaDto.getBoundaryRect().getMaxX() + "," + areaDto.getBoundaryRect().getMaxY());
-//	 	List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
+		if(areaDto.getPolygon()!=null){
+			System.out.print("polygon:" + areaDto.getPolygon());
+			for(Point2D p : areaDto.getPolygon()){
+				System.out.print(p + "|");
+			}
+			System.out.println("");
+		}
+		System.out.println("beginDate:" + areaDto.getBeginDate() + ", endDate" + areaDto.getEndDate());
+		if(areaDto.getSelectedDays()!=null){
+			System.out.print("Select_days:" + areaDto.getSelectedDays());
+			for(Date d : areaDto.getSelectedDays()){
+				System.out.print(d + "|");
+			}
+			System.out.println("");
+		}
+		System.out.println("years:" + areaDto.getYears());
+		System.out.println("months:" + areaDto.getMonths());
+		System.out.println("days:" + areaDto.getDays());
+		System.out.println("hours:" + areaDto.getHours());
+		System.out.println("weekdays:" + areaDto.getWeekdays());
+	}
+
+	@Test
+	public void testKml1() throws Exception {
+		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
+		StringBuffer xml = new StringBuffer();
+		String thisLine;
+		while ((thisLine = br.readLine()) != null) {
+			xml.append(thisLine);
+		}
+		areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+		//	 	List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
 		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		areaMgr.count(as, areaDto);
 		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null));
 
-//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
-//		radius = FlickrDeWestArea.Radius._40000;
-//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
-//		radius = FlickrDeWestArea.Radius._80000;
-//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
-//		radius = FlickrDeWestArea.Radius._5000;
-//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
+		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
+		//		radius = FlickrDeWestArea.Radius._40000;
+		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
+		//		radius = FlickrDeWestArea.Radius._80000;
+		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
+		//		radius = FlickrDeWestArea.Radius._5000;
+		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
 
 	}
 
