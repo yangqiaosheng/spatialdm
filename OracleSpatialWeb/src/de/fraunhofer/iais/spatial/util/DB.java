@@ -27,8 +27,8 @@ public class DB {
 	private static final Logger logger = LoggerFactory.getLogger(DB.class);
 
 	private static Properties pros = null;
-	private static BoneCPDataSource ds = null;
-//	private static ComboPooledDataSource ds = null;
+//	private static BoneCPDataSource ds = null;
+	private static ComboPooledDataSource ds = null;
 
 	private DB() {
 
@@ -36,7 +36,7 @@ public class DB {
 
 	/**
 	 * initialize the c3p0 Connection Pool
-	*//*
+	*/
 	static {
 	// initialize the JDBC Configuration
 	logger.debug("static() - begin to setup Connection Pool");
@@ -66,11 +66,11 @@ public class DB {
 	}
 	
 	logger.debug("static() - finish to setup Connection Pool");
-	}*/
+	}
 
 	/**
 	 * initialize the BoneCP Connection Pool
-	 */
+	 *//*
 	static {
 		// initialize the JDBC Configuration
 		logger.debug("static() - begin to setup Connection Pool");
@@ -102,7 +102,7 @@ public class DB {
 		}
 		
 		logger.debug("static() - finish to setup Connection Pool");
-	} 
+	} */
 
 	@Override
 	protected void finalize() throws Throwable {
