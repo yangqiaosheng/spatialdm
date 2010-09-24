@@ -2,7 +2,9 @@ package de.fraunhofer.iais.spatial.test;
 
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileReader;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +19,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -28,6 +32,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
+import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class TestFlickrDeWestArea {
 
@@ -38,7 +43,7 @@ public class TestFlickrDeWestArea {
 		// Spring IOC
 		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "beans.xml" });
 		areaMgr = context.getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
-		System.setProperty("oraclespatialweb.root", "C:/java_file/eclipse/MyEclipse/OracleSpatialWeb/");
+		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir") + "\\");
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 	}
 
@@ -188,21 +193,22 @@ public class TestFlickrDeWestArea {
 			xml.append(thisLine);
 		}
 		areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+
 		System.out.println("radius:" + areaDto.getRadius());
 		System.out.println("zoom:" + areaDto.getZoom());
 		System.out.println("center:" + areaDto.getCenter());
-		System.out.println("boundaryRect:" + areaDto.getBoundaryRect().getMinX() + "," + areaDto.getBoundaryRect().getMinY() + "," + areaDto.getBoundaryRect().getMaxX() + "," + areaDto.getBoundaryRect().getMaxY());
-		if(areaDto.getPolygon()!=null){
+		System.out.println("boundaryRect:" + areaDto.getBoundaryRect());
+		if (areaDto.getPolygon() != null) {
 			System.out.print("polygon:" + areaDto.getPolygon());
-			for(Point2D p : areaDto.getPolygon()){
+			for (Point2D p : areaDto.getPolygon()) {
 				System.out.print(p + "|");
 			}
 			System.out.println("");
 		}
 		System.out.println("beginDate:" + areaDto.getBeginDate() + ", endDate" + areaDto.getEndDate());
-		if(areaDto.getSelectedDays()!=null){
+		if (areaDto.getSelectedDays() != null) {
 			System.out.print("Select_days:" + areaDto.getSelectedDays());
-			for(Date d : areaDto.getSelectedDays()){
+			for (Date d : areaDto.getSelectedDays()) {
 				System.out.print(d + "|");
 			}
 			System.out.println("");
@@ -212,11 +218,20 @@ public class TestFlickrDeWestArea {
 		System.out.println("days:" + areaDto.getDays());
 		System.out.println("hours:" + areaDto.getHours());
 		System.out.println("weekdays:" + areaDto.getWeekdays());
+//		List<FlickrDeWestArea> as = null;
+//		if (areaDto.getBoundaryRect() == null) {
+//			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+//		} else {
+//			as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+//		}
+//		areaMgr.count(as, areaDto);
+//		System.out.println(as.size());
 	}
 
 	@Test
 	public void testKml1() throws Exception {
 		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
@@ -224,9 +239,14 @@ public class TestFlickrDeWestArea {
 			xml.append(thisLine);
 		}
 		areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
-		//	 	List<FlickrDeWestArea> as = areaMgr.getAllAreas(areaDto.getRadius());
-		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		List<FlickrDeWestArea> as = null;
+		if (areaDto.getBoundaryRect() == null) {
+			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+		} else {
+			as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		}
 		areaMgr.count(as, areaDto);
+
 		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null));
 
 		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
@@ -236,7 +256,23 @@ public class TestFlickrDeWestArea {
 		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
 		//		radius = FlickrDeWestArea.Radius._5000;
 		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
-
 	}
 
+	@Test
+	public void testXml() throws Exception {
+		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
+		StringBuffer xml = new StringBuffer();
+		String thisLine;
+		while ((thisLine = br.readLine()) != null) {
+			xml.append(thisLine);
+		}
+		String xmlStr = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml.toString()));
+		SAXBuilder builder = new SAXBuilder();
+		Document document = builder.build(new ByteArrayInputStream(xmlStr.getBytes()));
+		System.out.println(XmlUtil.xml2String(document, false));
+		System.out.println(URLEncoder.encode((XmlUtil.xml2String(document, true)), "UTF-8"));
+		
+		
+	}
 }

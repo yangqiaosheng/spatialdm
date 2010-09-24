@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -27,6 +29,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
+import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class ZoomKmlServlet extends HttpServlet {
 	/**
@@ -49,7 +52,7 @@ public class ZoomKmlServlet extends HttpServlet {
 		// web base path for remote access
 		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 //		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
-		
+		System.out.println(remoteBasePath);
 		response.setContentType("text/xml");
 		// response.setContentType("application/vnd.google-earth.kml+xml");
 
@@ -63,29 +66,46 @@ public class ZoomKmlServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 
+		Document document = new Document();
+		Element rootElement = new Element("response");
+		document.setRootElement(rootElement);
+		Element messageElement = new Element("message");
+		rootElement.addContent(messageElement);
+
 		if ((xml1 == null || xml1.equals("")) && (xml2 == null || xml2.equals(""))) {
-			out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
-			out.print("<response><msg>no parameters!</msg></response>");
-			return;
-		}
+			messageElement.setText("wrong input parameter!");
+		} else if (xml1 != null && !xml1.equals("")) {
+			String filenamePrefix = StringUtil.genFilename(new Date());
 
-		String filenamePrefix = StringUtil.genFilename(new Date());
+			BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
+			bw.write(xml1);
+			bw.close();
 
-		BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
-
-		if (xml1 != null && !xml1.equals("")) {
 			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 			try {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml1:" + xml1); //$NON-NLS-1$
+
 				areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml1.toString()), areaDto);
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears().size() + " |months:" + areaDto.getMonths().size() + "|days:" + areaDto.getDays().size() + "|hours:" + areaDto.getHours().size() + "|weekdays:" + areaDto.getWeekdays().size()); //$NON-NLS-1$
-				List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
+
+				List<FlickrDeWestArea> as = null;
+				if (areaDto.getBoundaryRect() == null) {
+					as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+				} else {
+					as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+				}
+				areaMgr.count(as, areaDto);
+
 				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath);
-				bw.write(xml1);
-			} catch (JDOMException e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+
+				Element urlElement = new Element("url");
+				rootElement.addContent(urlElement);
+				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
+				messageElement.setText("success");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+				messageElement.setText("wrong input parameter!");
+				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 			}
 		}
 
@@ -101,10 +121,7 @@ public class ZoomKmlServlet extends HttpServlet {
 //			}
 //		}
 
-		bw.close();
-
-		out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
-		out.print("<response><url>" + remoteBasePath + kmlPath + filenamePrefix + ".kml" + "</url></response>");
+		out.print(XmlUtil.xml2String(document, true));
 		out.flush();
 		out.close();
 	}

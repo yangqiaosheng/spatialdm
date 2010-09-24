@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jdom.Document;
+import org.jdom.Element;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.entity.Area;
@@ -16,6 +18,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class SmallPhotoUrlServlet extends HttpServlet {
 
@@ -35,19 +38,28 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		String areaid = request.getParameter("areaid");
 		String radius = request.getParameter("radius");
 		PrintWriter out = response.getWriter();
+
+		Document document = new Document();
+		Element rootElement = new Element("response");
+		document.setRootElement(rootElement);
+		Element messageElement = new Element("message");
+		rootElement.addContent(messageElement);
+
 		if ((areaid == null || areaid.equals("")) && (radius == null || radius.equals(""))) {
-			out.print("<?xml version='1.0' encoding='ISO-8859-1' ?>");
-			out.print("<response><msg>no parameters!</msg></response>");
-			return;
+			messageElement.setText("wrong input parameter!");
+		} else {
+			FlickrDeWestAreaMgr areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
+			FlickrDeWestPhoto photo = areaMgr.getAreaDao().getPhoto(Integer.parseInt(areaid), Radius.valueOf("_" + radius), "2007-08-11@13", 20);
+
+			Element photosElement = new Element("photos");
+			rootElement.addContent(photosElement);
+			if (photo != null) {
+//				photosElement.addContent(new Element("))
+				System.out.println(photo.getSmallUrl());
+			}
 		}
-		
-		FlickrDeWestAreaMgr areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
-		FlickrDeWestPhoto photo = areaMgr.getAreaDao().getPhoto(Integer.parseInt(areaid), Radius.valueOf("_" + radius), "2007-08-11@13", 20);
-		
-		if(photo !=null){
-			out.print(photo.getSmallUrl());
-			System.out.println(photo.getSmallUrl());
-		}
+
+		out.print(XmlUtil.xml2String(document, true));
 		out.flush();
 		out.close();
 	}
