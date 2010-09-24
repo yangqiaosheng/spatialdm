@@ -101,7 +101,7 @@ public class ZoomKmlServlet extends HttpServlet {
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);
 				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
-				messageElement.setText("success");
+				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("wrong input parameter!");
