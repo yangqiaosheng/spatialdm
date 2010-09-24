@@ -1,5 +1,7 @@
 package de.fraunhofer.iais.spatial.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -7,9 +9,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.web.util.HtmlUtils;
-
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public class StringUtil {
 
@@ -43,7 +42,7 @@ public class StringUtil {
 	 * @param s - String
 	 * @return String
 	 */
-	public static String ShortNum2Long(String s) {
+	public static String shortNum2Long(String s) {
 		s = s.replaceAll("<day>1</day>", "<day>01</day>").replaceAll("<day>2</day>", "<day>02</day>").replaceAll("<day>3</day>", "<day>03</day>").replaceAll("<day>4</day>", "<day>04</day>").replaceAll("<day>5</day>", "<day>05</day>").replaceAll(
 				"<day>6</day>", "<day>06</day>").replaceAll("<day>7</day>", "<day>07</day>").replaceAll("<day>8</day>", "<day>08</day>").replaceAll("<day>9</day>", "<day>09</day>").replaceAll("<hour>0</hour>", "<hour>00</hour>").replaceAll(
 				"<hour>1</hour>", "<hour>01</hour>").replaceAll("<hour>2</hour>", "<hour>02</hour>").replaceAll("<hour>3</hour>", "<hour>03</hour>").replaceAll("<hour>4</hour>", "<hour>04</hour>").replaceAll("<hour>5</hour>", "<hour>05</hour>")
@@ -57,7 +56,7 @@ public class StringUtil {
 	 * @param s - String
 	 * @return String
 	 */
-	public static String LongWeekday2Short(String s) {
+	public static String longWeekday2Short(String s) {
 		s = s.replaceAll("<weekday>Monday</weekday>", "<weekday>Mon</weekday>").replaceAll("<weekday>Tuesday</weekday>", "<weekday>Tue</weekday>").replaceAll("<weekday>Wednesday</weekday>", "<weekday>Wed</weekday>").replaceAll(
 				"<weekday>Thursday</weekday>", "<weekday>Thu</weekday>").replaceAll("<weekday>Friday</weekday>", "<weekday>Fri</weekday>").replaceAll("<weekday>Saturday</weekday>", "<weekday>Sat</weekday>").replaceAll("<weekday>Sunday</weekday>",
 				"<weekday>Sun</weekday>");
@@ -198,5 +197,14 @@ public class StringUtil {
 		sb.append(Integer.toHexString(v));
 		return sb.toString().toUpperCase();
 	}
-	
+
+	public static String printStackTrace2String(Throwable t) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw, true);
+		t.printStackTrace(pw);
+		pw.flush();
+		sw.flush();
+		return sw.toString();
+	}
+
 }

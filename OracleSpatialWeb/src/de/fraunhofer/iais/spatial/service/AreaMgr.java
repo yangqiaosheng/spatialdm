@@ -208,7 +208,7 @@ public class AreaMgr {
 
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest(List<Area> as, String xml, List<String> years, List<String> months, List<String> days, List<String> hours, Set<String> weekdays) throws Exception {
-		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
+		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
@@ -281,7 +281,7 @@ public class AreaMgr {
 
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest2(List<Area> as, String xml) throws Exception {
-		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
+		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
 		char level = '0';
 		Set<String> strs = new HashSet<String>();
 		SAXBuilder builder = new SAXBuilder();

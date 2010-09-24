@@ -14,10 +14,10 @@ public class PropertiesUtil {
 	}
 
 	public void showSystemProperties() {
-		Properties p = System.getProperties();
-		for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
+		Properties properties = System.getProperties();
+		for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
 			String key = (String) e.nextElement();
-			System.out.println(key + "===>" + p.getProperty(key));
+			System.out.println(key + "===>" + properties.getProperty(key));
 		}
 	}
 

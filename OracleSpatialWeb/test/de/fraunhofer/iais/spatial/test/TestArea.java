@@ -332,7 +332,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 			xml.append(thisLine);
 		}
 		List<Area> as = areaMgr.getAllAreas();
-		areaMgr.parseXmlRequest2(as, StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml.toString())));
+		areaMgr.parseXmlRequest2(as, StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml.toString())));
 		// for(Area a : as)
 		// System.out.println(a.getTotalCount()+":"+a.getCount());
 		System.out.println(areaMgr.createKml(as, "temp/areas2", null));

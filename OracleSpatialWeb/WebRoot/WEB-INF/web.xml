@@ -82,10 +82,10 @@
 
 
 	<servlet>
-		<description>test the sevlet</description>
+		<description>Servlet for testing</description>
 		<display-name>TestServlet</display-name>
 		<servlet-name>TestServlet</servlet-name>
-		<servlet-class>de.fraunhofer.iais.spatial.servlet.TestServlet</servlet-class>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.TestServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<description>Retrieve the data to create a kml</description>

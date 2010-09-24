@@ -47,6 +47,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
+import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class FlickrDeWestAreaMgr {
 
@@ -160,77 +161,79 @@ public class FlickrDeWestAreaMgr {
 
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest1(String xml, FlickrDeWestAreaDto areaDto) throws JDOMException, IOException, ParseException {
-		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
+		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
 		Element rootElement = document.getRootElement();
 		
 		// <screen>
+		areaDto.setRadius(Radius._20000); 	//default Radius
 		Element screenElement = rootElement.getChild("screen");
 		if (screenElement != null) {
 			// <screen><bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
 			String boundsStr = screenElement.getChildText("bounds");
-			if (boundsStr != null) {
+			if (boundsStr != null && !"".equals(boundsStr)) {
 				Pattern boundsPattern = Pattern.compile("\\(\\(([-0-9.]*), ([-0-9.]*)\\), \\(([-0-9.]*), ([-0-9.]*)\\)\\)");
 				Matcher boundsMatcher = boundsPattern.matcher(boundsStr);
 				if (boundsMatcher.find()) {
 					Rectangle2D boundaryRect = new Rectangle2D.Double();
 					areaDto.setBoundaryRect(boundaryRect);
-					double minX = Double.parseDouble(boundsMatcher.group(1));
-					double minY = Double.parseDouble(boundsMatcher.group(2));
-					double maxX = Double.parseDouble(boundsMatcher.group(3));
-					double maxY = Double.parseDouble(boundsMatcher.group(4));
+					double minY = Double.parseDouble(boundsMatcher.group(1));
+					double minX = Double.parseDouble(boundsMatcher.group(2));
+					double maxY = Double.parseDouble(boundsMatcher.group(3));
+					double maxX = Double.parseDouble(boundsMatcher.group(4));
 					boundaryRect.setRect(minX, minY, maxX - minX, maxY - minY);
 				}
 			}
 
 			// <screen><center>(51.58830123054393, 6.971684570312502)</center>
 			String centerStr = screenElement.getChildText("center");
-			if (centerStr != null) {
+			if (centerStr != null && !"".equals(centerStr)) {
 				Pattern centerPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
-				Matcher centerMachter = centerPattern.matcher(boundsStr);
+				Matcher centerMachter = centerPattern.matcher(centerStr);
 				if (centerMachter.find()) {
 					Point2D center = new Point2D.Double();
 					areaDto.setCenter(center);
-					center.setLocation(Double.parseDouble(centerMachter.group(1)), Double.parseDouble(centerMachter.group(2)));
+					center.setLocation(Double.parseDouble(centerMachter.group(2)), Double.parseDouble(centerMachter.group(1)));
 				}
 			}
 
 			// <screen><zoom>9</zoom>
-			int zoom = Integer.parseInt(screenElement.getChildText("zoom"));
-			if (zoom == 0) {
-				zoom = 11;
-			} else if (zoom < 8) {
-				areaDto.setRadius(Radius._80000);
-			} else if (zoom < 10) {
-				areaDto.setRadius(Radius._40000);
-			} else if (zoom < 11) {
-				areaDto.setRadius(Radius._20000);
-			} else if (zoom < 12) {
-				areaDto.setRadius(Radius._10000);
-			} else if (zoom >= 12) {
-				areaDto.setRadius(Radius._5000);
+			String zoomStr = screenElement.getChildText("zoom");
+			if (zoomStr != null && !"".equals(zoomStr)){
+				int zoom = Integer.parseInt(zoomStr);
+				if (zoom <= 8) {
+					areaDto.setRadius(Radius._80000);
+				} else if (zoom <= 9) {
+					areaDto.setRadius(Radius._40000);
+				} else if (zoom <= 10) {
+					areaDto.setRadius(Radius._20000);
+				} else if (zoom <= 11) {
+					areaDto.setRadius(Radius._10000);
+				} else if (zoom > 11) {
+					areaDto.setRadius(Radius._5000);
+				}
+				areaDto.setZoom(zoom);
 			}
-			areaDto.setZoom(zoom);
 		}
 		
 		// <polygon>(51.58830123054393, 6.971684570312502)(51.67184146523792, 7.647343750000002)(51.44644311790073, 7.298527832031252)</polygon>
 		String polygonStr = rootElement.getChildText("polygon");
-		if (polygonStr != null) {
+		if (polygonStr != null && !"".equals(polygonStr)) {
 			Pattern polygonPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
 			Matcher polygonMachter = polygonPattern.matcher(polygonStr);
 			List<Point2D> polygon = new LinkedList<Point2D>(); 
 			areaDto.setPolygon(polygon);
 			while(polygonMachter.find()){
 				Point2D point = new Point2D.Double();
-				point.setLocation(Double.parseDouble(polygonMachter.group(1)), Double.parseDouble(polygonMachter.group(2)));
+				point.setLocation(Double.parseDouble(polygonMachter.group(2)), Double.parseDouble(polygonMachter.group(1)));
 				polygon.add(point);
 			}
 		}
 		
 		// <interval>15/09/2010 - 19/10/2010</interval>
 		String intervalStr = rootElement.getChildText("interval");
-		if (intervalStr != null) {
+		if (intervalStr != null && !"".equals(intervalStr)) {
 			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
 			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
 		
@@ -243,7 +246,7 @@ public class FlickrDeWestAreaMgr {
 		
 		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 		String selectedDaysStr = rootElement.getChildText("selected_days");
-		if (selectedDaysStr != null) {
+		if (selectedDaysStr != null && !"".equals(selectedDaysStr)) {
 			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
 			Set<Date> selectedDays = new LinkedHashSet<Date>();
@@ -254,13 +257,12 @@ public class FlickrDeWestAreaMgr {
 			}
 		}
 		
-		
 		// <calendar>
 		Element calendarElement = rootElement.getChild("calendar");
 		if (calendarElement != null) {
 			// <calendar><years>
 			Element yearsElement = calendarElement.getChild("years");
-			if (yearsElement != null) {
+			if (yearsElement != null ) {
 				List<Element> yearElements = yearsElement.getChildren("year");
 				for (Element yearElement : yearElements) {
 					String year = yearElement.getText();
@@ -349,7 +351,7 @@ public class FlickrDeWestAreaMgr {
 						// filter out the selected weekdays
 						if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
 							queryStrs.add(y + "-" + m + "-" + d + "@" + h);
-							//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
+//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
 						}
 					}
 				}
@@ -359,7 +361,7 @@ public class FlickrDeWestAreaMgr {
 
 	@SuppressWarnings("unchecked")
 	public Radius parseXmlRequest2(List<FlickrDeWestArea> as, String xml) throws Exception {
-		xml = StringUtil.ShortNum2Long(StringUtil.FullMonth2Num(xml));
+		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
 		Radius radius = null;
 		char level = '0';
 		Set<String> strs = new HashSet<String>();
@@ -439,8 +441,8 @@ public class FlickrDeWestAreaMgr {
 				pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i]));
 			}
 		}
-		xml2File(document, file);
-		return xml2String(document);
+		XmlUtil.xml2File(document, file, false);
+		return XmlUtil.xml2String(document, false);
 	}
 
 	public void createBarChart(Map<String, Integer> cs) {
@@ -616,17 +618,9 @@ public class FlickrDeWestAreaMgr {
 			linearRingElement.addContent(coordinatesElement);
 			coordinatesElement.addContent(coordinates);
 		}
-		xml2File(document, localBasePath + file + ".kml");
-		return xml2String(document);
+		XmlUtil.xml2File(document, localBasePath + file + ".kml", false);
+		return XmlUtil.xml2String(document, false);
 		// return xml2String(document).replaceAll("\r\n", " ");
-	}
-	
-	public String kmlResponseXml(int areaid, Radius radius, Set<String> hours, int num){
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
-		
-		return xml2String(document);
 	}
 	
 	public String photosResponseXml(int areaid, Radius radius, Set<String> hours, int num){
@@ -659,35 +653,9 @@ public class FlickrDeWestAreaMgr {
 			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
 		}
 		
-		return xml2String(document);
+		return XmlUtil.xml2String(document, true);
 	}
 	
 	
-	private String xml2String(Document document) {
-		XMLOutputter xmlOutputter = new XMLOutputter();
-		xmlOutputter.setFormat(Format.getPrettyFormat());
-		return xmlOutputter.outputString(document);
-	}
-
-	private void xml2File(Document document, String url) {
-		XMLOutputter xmlOutputter = new XMLOutputter();
-		xmlOutputter.setFormat(Format.getPrettyFormat());
-		FileOutputStream o = null;
-		try {
-			o = new FileOutputStream(url);
-			xmlOutputter.output(document, o);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (o != null) {
-					o.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	
 }

@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,8 +25,13 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import de.fraunhofer.iais.spatial.dao.AreaDao;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.entity.Area;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.service.AreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.util.StringUtil;
 
 public class TimeSeriesChartServlet extends HttpServlet {
 	/**
@@ -34,6 +40,8 @@ public class TimeSeriesChartServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(TimeSeriesChartServlet.class);
 
 	private static final long serialVersionUID = -4033923021316859791L;
+
+	private static FlickrDeWestAreaMgr areaMgr = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -48,10 +56,8 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		if (areaid == null || "".equals(areaid))
 			return;
 
-		Set<String> years = new HashSet<String>();
-
 		String xmlfile = request.getParameter("xml");
-		
+
 		if (xmlfile != null && !"".equals(xmlfile)) {
 
 			BufferedReader br = new BufferedReader(new FileReader(localBasePath + xmlfile));
@@ -61,42 +67,29 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				xml.append(thisLine);
 			}
 
-			SAXBuilder builder = new SAXBuilder();
-			Document document;
+			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 			try {
-				document = builder.build(new ByteArrayInputStream(xml.toString().getBytes()));
-				Element rootElement = document.getRootElement();
-				// <years>
-				List<Element> yearsElements = rootElement.getChildren("years");
-				if (yearsElements != null && yearsElements.size() == 1) {
-					List<Element> yearElements = yearsElements.get(0).getChildren("year");
-					for (Element yearElement : yearElements) {
-						String year = yearElement.getText();
-						if (year != null && !year.trim().equals("")) {
-							years.add(year.trim());
-						}
-					}
+				areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+
+				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
+				if (area != null){
+					areaMgr.createTimeSeriesChart(area, new LinkedHashSet<String>(areaDto.getYears()), sos);
 				}
-			} catch (JDOMException e1) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e1); //$NON-NLS-1$
+			} catch (Exception e) {
+				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 			}
 		}
 
-		if (years.size() == 0) {
-			years.add("2009"); //for xml2
-		}
-
-		AreaMgr areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("areaMgr", AreaMgr.class);
-
-		Area a = areaMgr.getAreaById(Integer.parseInt(areaid));
-		if (a == null)
-			return;
-
-		try {
-			areaMgr.createTimeSeriesChart(a, years, sos);
-		} catch (ParseException e) {
-			logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-		}
 	}
 
+	/**
+	 * Initialization of the servlet. <br>
+	 * 
+	 * @throws ServletException
+	 *             - if an error occurs
+	 */
+	@Override
+	public void init() throws ServletException {
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
+	}
 }
