@@ -294,8 +294,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("HOUR");
 				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
+					Matcher m = hourRegExPattern.matcher(count);
 					while (m.find()) {
 						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
 					}
@@ -326,8 +325,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("DAY");
 				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
+					Matcher m = dayRegExPattern.matcher(count);
 					while (m.find()) {
 						daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
 					}
@@ -358,8 +356,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("MONTH");
 				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
-					Matcher m = p.matcher(count);
+					Matcher m = monthRegExPattern.matcher(count);
 					while (m.find()) {
 						monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
 					}
@@ -390,8 +387,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("YEAR");
 				if (count != null) {
-					Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
-					Matcher m = p.matcher(count);
+					Matcher m = yearRegExPattern.matcher(count);
 					while (m.find()) {
 						yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
 					}

@@ -10,7 +10,8 @@ pageEncoding="ISO-8859-1"%>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Spatial Data Visualization</title>
         <link rel="stylesheet" type="text/css" href="css/fonts.css" />
-        <script src="ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript">
+        <script src="ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRTineTA_WpDCl_xZTC54eFNJ2zWYhQpprXO47ENYqev1vfXQM6o17w3Pg" type="text/javascript">
+<%--    <script src="ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript">--%>
         </script>	
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true">
         </script>
@@ -81,13 +82,13 @@ pageEncoding="ISO-8859-1"%>
         <br/>
         <!--*****************************************table_tab_panel************************************************************--->
         <div id="move">
-	  <jsp:include page="table1.jsp"/>            
-	  <jsp:include page="table2.jsp"/>   
-	  <jsp:include page="table3.jsp"/>   
-	  <jsp:include page="table4.jsp"/>   	   
+<%--	  <jsp:include page="table1.jsp"/>            --%>
+<%--	  <jsp:include page="table2.jsp"/>   --%>
+<%--	  <jsp:include page="table3.jsp"/>   --%>
+<%--	  <jsp:include page="table4.jsp"/>   	   --%>
 	 </div>
-	 <jsp:include page="carousel.jsp"/>  
-	 <jsp:include page="legend.jsp"/>
+<%--	 <jsp:include page="carousel.jsp"/>  --%>
+<%--	 <jsp:include page="legend.jsp"/>--%>
 
       <script type="text/javascript" src="script/TimeController.js"> </script>              
       <script type="text/javascript" src="script/sendToServer.js"> </script>   

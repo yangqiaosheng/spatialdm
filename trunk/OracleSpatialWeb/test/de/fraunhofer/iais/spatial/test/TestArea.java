@@ -58,7 +58,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		end.set(2007, 00, 01);
 		System.out.println(calendar.getTime());
 		while (calendar.getTime().before(end.getTime())) {
-			System.out.println(sdf.format(calendar.getTime()) + ":" + (int) (Math.random() * 400));
+			System.out.println(sdf.format(calendar.getTime()));
 			calendar.add(Calendar.DATE, 1);
 		}
 

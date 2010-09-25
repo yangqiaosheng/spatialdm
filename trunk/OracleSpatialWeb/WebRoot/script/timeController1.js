@@ -1,4 +1,3 @@
-var boolean = false;
 var number= new Array(200);
 var field= new Array(200);
 var nameString = new Array(200); // in this string I map months, years, days hours.

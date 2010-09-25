@@ -9,8 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -192,7 +190,7 @@ public class TestFlickrDeWestArea {
 		while ((thisLine = br.readLine()) != null) {
 			xml.append(thisLine);
 		}
-		areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 
 		System.out.println("radius:" + areaDto.getRadius());
 		System.out.println("zoom:" + areaDto.getZoom());
@@ -205,6 +203,7 @@ public class TestFlickrDeWestArea {
 			}
 			System.out.println("");
 		}
+		System.out.println("queryLevel:" + areaDto.getQueryLevel());
 		System.out.println("beginDate:" + areaDto.getBeginDate() + ", endDate" + areaDto.getEndDate());
 		if (areaDto.getSelectedDays() != null) {
 			System.out.print("Select_days:" + areaDto.getSelectedDays());
@@ -218,6 +217,7 @@ public class TestFlickrDeWestArea {
 		System.out.println("days:" + areaDto.getDays());
 		System.out.println("hours:" + areaDto.getHours());
 		System.out.println("weekdays:" + areaDto.getWeekdays());
+		System.out.println("queryStringsSize:" + areaDto.getQueryStrs().size() + " |queryStrings:" + areaDto.getQueryStrs());
 //		List<FlickrDeWestArea> as = null;
 //		if (areaDto.getBoundaryRect() == null) {
 //			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
@@ -238,7 +238,7 @@ public class TestFlickrDeWestArea {
 		while ((thisLine = br.readLine()) != null) {
 			xml.append(thisLine);
 		}
-		areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 		List<FlickrDeWestArea> as = null;
 		if (areaDto.getBoundaryRect() == null) {
 			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
@@ -260,7 +260,6 @@ public class TestFlickrDeWestArea {
 
 	@Test
 	public void testXml() throws Exception {
-		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
