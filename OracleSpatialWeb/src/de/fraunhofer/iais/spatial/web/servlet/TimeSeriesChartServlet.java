@@ -3,7 +3,6 @@ package de.fraunhofer.iais.spatial.web.servlet;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedHashSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -30,7 +29,6 @@ public class TimeSeriesChartServlet extends HttpServlet {
 
 	private static FlickrDeWestAreaMgr areaMgr = null;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("requestUrl:" + request.getRequestURL()); //$NON-NLS-1$
@@ -56,11 +54,11 @@ public class TimeSeriesChartServlet extends HttpServlet {
 
 			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 			try {
-				areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 
 				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
 				if (area != null) {
-					areaMgr.createTimeSeriesChart(area, new LinkedHashSet<String>(areaDto.getYears()), sos);
+					areaMgr.createTimeSeriesChart(area, areaDto.getYears(), sos);
 				}
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$

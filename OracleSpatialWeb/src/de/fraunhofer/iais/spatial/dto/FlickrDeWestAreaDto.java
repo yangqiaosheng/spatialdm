@@ -2,21 +2,20 @@ package de.fraunhofer.iais.spatial.dto;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public class FlickrDeWestAreaDto {
-	private List<String> years = new ArrayList<String>();
-	private List<String> months = new ArrayList<String>();
-	private List<String> days = new ArrayList<String>();
-	private List<String> hours = new ArrayList<String>();
-	private Set<String> weekdays = new HashSet<String>();
-	private Set<String> queryStrs = new HashSet<String>();
+	private Set<String> years = new TreeSet<String>();
+	private Set<String> months = new TreeSet<String>();
+	private Set<String> days = new TreeSet<String>();
+	private Set<String> hours = new TreeSet<String>();
+	private Set<String> weekdays = new TreeSet<String>();
+	private Set<String> queryStrs;
 	private QueryLevel queryLevel;
 	private Radius radius;
 	private int zoom;
@@ -31,35 +30,35 @@ public class FlickrDeWestAreaDto {
 		HOUR, DAY, MONTH, YEAR;
 	}
 
-	public List<String> getYears() {
+	public Set<String> getYears() {
 		return years;
 	}
 
-	public void setYears(List<String> years) {
+	public void setYears(Set<String> years) {
 		this.years = years;
 	}
 
-	public List<String> getMonths() {
+	public Set<String> getMonths() {
 		return months;
 	}
 
-	public void setMonths(List<String> months) {
+	public void setMonths(Set<String> months) {
 		this.months = months;
 	}
 
-	public List<String> getDays() {
+	public Set<String> getDays() {
 		return days;
 	}
 
-	public void setDays(List<String> days) {
+	public void setDays(Set<String> days) {
 		this.days = days;
 	}
 
-	public List<String> getHours() {
+	public Set<String> getHours() {
 		return hours;
 	}
 
-	public void setHours(List<String> hours) {
+	public void setHours(Set<String> hours) {
 		this.hours = hours;
 	}
 

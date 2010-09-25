@@ -78,7 +78,7 @@ public class ZoomKmlServlet extends HttpServlet {
 			try {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml1:" + xml1); //$NON-NLS-1$
 
-				areaMgr.parseXmlRequest1(StringUtil.FullMonth2Num(xml1.toString()), areaDto);
+				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml1.toString()), areaDto);
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				List<FlickrDeWestArea> as = null;

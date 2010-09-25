@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,25 +103,25 @@ public class FlickrDeWestAreaMgr {
 		}
 	}
 
-	private void allYears(List<String> years) {
+	private void allYears(Set<String> years) {
 		for (int i = 2005; i <= 2009; i++) {
 			years.add(String.format("%04d", i));
 		}
 	}
 
-	private void allMonths(List<String> months) {
+	private void allMonths(Set<String> months) {
 		for (int i = 1; i <= 12; i++) {
 			months.add(String.format("%02d", i));
 		}
 	}
 
-	private void allDays(List<String> days) {
+	private void allDays(Set<String> days) {
 		for (int i = 1; i <= 31; i++) {
 			days.add(String.format("%02d", i));
 		}
 	}
 
-	private void allHours(List<String> hours) {
+	private void allHours(Set<String> hours) {
 		for (int i = 0; i <= 23; i++) {
 			hours.add(String.format("%02d", i));
 		}
@@ -151,19 +152,19 @@ public class FlickrDeWestAreaMgr {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void parseXmlRequest1(String xml, FlickrDeWestAreaDto areaDto) throws JDOMException, IOException, ParseException {
+	public void parseXmlRequest(String xml, FlickrDeWestAreaDto areaDto) throws JDOMException, IOException, ParseException {
 		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
 		Element rootElement = document.getRootElement();
 
 		// <screen>
-		areaDto.setRadius(Radius._20000); //default Radius
+		areaDto.setRadius(Radius._80000); //default Radius
 		Element screenElement = rootElement.getChild("screen");
 		if (screenElement != null) {
 			// <screen><bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
 			String boundsStr = screenElement.getChildText("bounds");
-			if (boundsStr != null && !"".equals(boundsStr)) {
+			if (boundsStr != null && !"".equals(boundsStr.trim())) {
 				Pattern boundsPattern = Pattern.compile("\\(\\(([-0-9.]*), ([-0-9.]*)\\), \\(([-0-9.]*), ([-0-9.]*)\\)\\)");
 				Matcher boundsMatcher = boundsPattern.matcher(boundsStr);
 				if (boundsMatcher.find()) {
@@ -179,7 +180,7 @@ public class FlickrDeWestAreaMgr {
 
 			// <screen><center>(51.58830123054393, 6.971684570312502)</center>
 			String centerStr = screenElement.getChildText("center");
-			if (centerStr != null && !"".equals(centerStr)) {
+			if (centerStr != null && !"".equals(centerStr.trim())) {
 				Pattern centerPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
 				Matcher centerMachter = centerPattern.matcher(centerStr);
 				if (centerMachter.find()) {
@@ -191,17 +192,17 @@ public class FlickrDeWestAreaMgr {
 
 			// <screen><zoom>9</zoom>
 			String zoomStr = screenElement.getChildText("zoom");
-			if (zoomStr != null && !"".equals(zoomStr)) {
+			if (zoomStr != null && !"".equals(zoomStr.trim())) {
 				int zoom = Integer.parseInt(zoomStr);
-				if (zoom <= 8) {
+				if (zoom <= 6) {
 					areaDto.setRadius(Radius._80000);
-				} else if (zoom <= 9) {
+				} else if (zoom <= 7) {
 					areaDto.setRadius(Radius._40000);
-				} else if (zoom <= 10) {
+				} else if (zoom <= 8) {
 					areaDto.setRadius(Radius._20000);
-				} else if (zoom <= 11) {
+				} else if (zoom <= 9) {
 					areaDto.setRadius(Radius._10000);
-				} else if (zoom > 11) {
+				} else if (zoom > 10) {
 					areaDto.setRadius(Radius._5000);
 				}
 				areaDto.setZoom(zoom);
@@ -210,7 +211,7 @@ public class FlickrDeWestAreaMgr {
 
 		// <polygon>(51.58830123054393, 6.971684570312502)(51.67184146523792, 7.647343750000002)(51.44644311790073, 7.298527832031252)</polygon>
 		String polygonStr = rootElement.getChildText("polygon");
-		if (polygonStr != null && !"".equals(polygonStr)) {
+		if (polygonStr != null && !"".equals(polygonStr.trim())) {
 			Pattern polygonPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
 			Matcher polygonMachter = polygonPattern.matcher(polygonStr);
 			List<Point2D> polygon = new LinkedList<Point2D>();
@@ -224,30 +225,59 @@ public class FlickrDeWestAreaMgr {
 
 		// <interval>15/09/2010 - 19/10/2010</interval>
 		String intervalStr = rootElement.getChildText("interval");
-		if (intervalStr != null && !"".equals(intervalStr)) {
+		if (intervalStr != null && !"".equals(intervalStr.trim())) {
 			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
 			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
-
+			
+			// construct the Query Stirngs
+			Set<String> queryStrs = new TreeSet<String>();
+			areaDto.setQueryStrs(queryStrs);
+			
+			SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			areaDto.setQueryLevel(QueryLevel.DAY);
+			
 			if (intervalMachter.find()) {
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				areaDto.setBeginDate(sdf.parse(intervalMachter.group(1)));
-				areaDto.setEndDate(sdf.parse(intervalMachter.group(2)));
+				Date beginDate = inputDateFormat.parse(intervalMachter.group(1));
+				Date endDate = inputDateFormat.parse(intervalMachter.group(2));
+				areaDto.setBeginDate(beginDate);
+				areaDto.setEndDate(endDate);
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(beginDate);
+				Calendar end = Calendar.getInstance();
+				end.setTime(endDate);
+				while (calendar.getTime().before(end.getTime())) {
+					queryStrs.add(FlickrDeWestAreaDao.dayDateFormat.format(calendar.getTime()));
+					calendar.add(Calendar.DATE, 1);
+				}
 			}
 		}
 
 		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 		String selectedDaysStr = rootElement.getChildText("selected_days");
-		if (selectedDaysStr != null && !"".equals(selectedDaysStr)) {
+		if (selectedDaysStr != null && !"".equals(selectedDaysStr.trim())) {
 			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
 			Set<Date> selectedDays = new LinkedHashSet<Date>();
 			areaDto.setSelectedDays(selectedDays);
+			
+			// construct the Query Stirngs
+			Set<String> queryStrs = new TreeSet<String>();
+			areaDto.setQueryStrs(queryStrs);
+			
+			// day of week in English format
+			SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+			areaDto.setQueryLevel(QueryLevel.DAY);
+			
 			while (selectedDaysMachter.find()) {
-				SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
-				selectedDays.add(sdf.parse(selectedDaysMachter.group()));
+				Date selectedDay = inputDateFormat.parse(selectedDaysMachter.group());
+				selectedDays.add(selectedDay);
+				
+				queryStrs.add(FlickrDeWestAreaDao.dayDateFormat.format(selectedDay));
 			}
 		}
-
+		
+		
 		// <calendar>
 		Element calendarElement = rootElement.getChild("calendar");
 		if (calendarElement != null) {
@@ -310,92 +340,50 @@ public class FlickrDeWestAreaMgr {
 					}
 				}
 			}
-		}
 
-		Set<String> queryStrs = new HashSet<String>();
-		areaDto.setQueryStrs(queryStrs);
-		areaDto.setQueryLevel(QueryLevel.HOUR);
+			// construct the Query Stirngs
+			Set<String> queryStrs = new TreeSet<String>();
+			areaDto.setQueryStrs(queryStrs);
 
-		// complete the options when they are not selected
-		if (areaDto.getYears().size() == 0) {
-			this.allYears(areaDto.getYears());
-		}
-		if (areaDto.getMonths().size() == 0) {
-			this.allMonths(areaDto.getMonths());
-		}
-		if (areaDto.getDays().size() == 0) {
-			this.allDays(areaDto.getDays());
-		}
-		if (areaDto.getHours().size() == 0) {
-			this.allHours(areaDto.getHours());
-		}
+			// complete the options when they are not selected
+			if (areaDto.getYears().size() == 0) {
+				this.allYears(areaDto.getYears());
+			}
+			if (areaDto.getMonths().size() == 0) {
+				this.allMonths(areaDto.getMonths());
+			}
+			if (areaDto.getDays().size() == 0) {
+				this.allDays(areaDto.getDays());
+			}
+			if (areaDto.getHours().size() == 0) {
+				this.allHours(areaDto.getHours());
+			}
 
-		Calendar calendar = Calendar.getInstance();
-		// day of week in English format
-		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
-
-		for (String y : areaDto.getYears()) {
-			for (String m : areaDto.getMonths()) {
-				for (String d : areaDto.getDays()) {
-					for (String h : areaDto.getHours()) {
-						calendar.set(Integer.parseInt(y), Integer.parseInt(m) - 1, Integer.parseInt(d));
-						// filter out the selected weekdays
-						if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
-							queryStrs.add(y + "-" + m + "-" + d + "@" + h);
-							//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
+			// day of week in English format
+			SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
+			Calendar calendar = Calendar.getInstance();
+			
+			for (String y : areaDto.getYears()) {
+				for (String m : areaDto.getMonths()) {
+					for (String d : areaDto.getDays()) {
+						for (String h : areaDto.getHours()) {
+//							calendar.set(Integer.parseInt(y), Integer.parseInt(m) - 1, Integer.parseInt(d));
+							calendar.set(Calendar.YEAR, Integer.parseInt(y));
+							calendar.set(Calendar.MONTH, Integer.parseInt(m) - 1);
+							calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(d));
+							calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(h));
+							// filter out the selected weekdays
+							if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
+//								queryStrs.add(y + "-" + m + "-" + d + "@" + h);
+								queryStrs.add(FlickrDeWestAreaDao.hourDateFormat.format(calendar.getTime()));
+							}
 						}
 					}
 				}
 			}
+			
+			areaDto.setQueryLevel(QueryLevel.HOUR);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public Radius parseXmlRequest2(List<FlickrDeWestArea> as, String xml) throws Exception {
-		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
-		Radius radius = null;
-		char level = '0';
-		Set<String> strs = new HashSet<String>();
-		SAXBuilder builder = new SAXBuilder();
-		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
-		Element rootElement = document.getRootElement();
-
-		List<Element> yearElements = rootElement.getChildren("year");
-		List<Element> monthElements = rootElement.getChildren("month");
-		List<Element> dayElements = rootElement.getChildren("day");
-		List<Element> hourElements = rootElement.getChildren("hour");
-		List<Element> radiusElements = rootElement.getChildren("radius");
-
-		if (radiusElements != null && radiusElements.size() == 1) {
-			radius = Radius.valueOf("_" + radiusElements.get(0).getText());
-		}
-
-		if (hourElements != null && hourElements.size() > 0) {
-			level = 'h';
-			for (int i = 0; i < hourElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-" + monthElements.get(i).getValue() + "-" + dayElements.get(i).getValue() + "@" + hourElements.get(i).getValue());
-			}
-		} else if (dayElements != null && dayElements.size() > 0) {
-			level = 'd';
-			for (int i = 0; i < dayElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-" + monthElements.get(i).getValue() + "-" + dayElements.get(i).getValue());
-			}
-		} else if (monthElements != null && monthElements.size() > 0) {
-			level = 'm';
-			for (int i = 0; i < monthElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue() + "-" + monthElements.get(i).getValue());
-			}
-		} else if (yearElements != null && yearElements.size() > 0) {
-			level = 'y';
-			for (int i = 0; i < yearElements.size(); i++) {
-				strs.add(yearElements.get(i).getValue());
-			}
-		}
-
-		System.out.println("level:" + level);
-		System.out.println(strs.size());
-
-		return radius;
 	}
 
 	public void createTimeChart(String id) {
@@ -496,21 +484,24 @@ public class FlickrDeWestAreaMgr {
 				String icon = "";
 
 				if (a.getSelectCount() < 100) {
-					r = (double) Math.log10(a.getSelectCount() + 1) / 85.0 * scale;
+//					r = (double) Math.log10(a.getSelectCount() + 1) / 85.0 * scale;
 					icon = remoteBasePath + "images/circle_bl.ico";
 				} else if (a.getSelectCount() < 1000) {
-					r = (double) Math.log10(a.getSelectCount() + 1) / 80.0 * scale;
+//					r = (double) Math.log10(a.getSelectCount() + 1) / 80.0 * scale;
 					icon = remoteBasePath + "images/circle_gr.ico";
 				} else if (a.getSelectCount() < 10000) {
-					r = (double) Math.log10(a.getSelectCount() + 1) / 70.0 * scale;
+//					r = (double) Math.log10(a.getSelectCount() + 1) / 70.0 * scale;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
-					r = (double) Math.log10(a.getSelectCount() + 1) / 60.0 * scale;
+//					r = (double) Math.log10(a.getSelectCount() + 1) / 60.0 * scale;
 					icon = remoteBasePath + "images/circle_or.ico";
-					if (r > 0.1) {
-						r = 0.1;
-					}
 				}
+				
+				r = (double) Math.log10(a.getSelectCount() + 1) / 80.0 * scale;
+				if (r > 0.1) {
+					r = 0.1;
+				}
+				
 				hrefElement.addContent(icon);
 
 				Element latLonBoxElement = new Element("LatLonBox", namespace);
