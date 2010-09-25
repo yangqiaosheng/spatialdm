@@ -1,4 +1,4 @@
-package de.fraunhofer.iais.spatial.dao.ibatis.type;
+package de.fraunhofer.iais.spatial.dao.mybatis.type;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;

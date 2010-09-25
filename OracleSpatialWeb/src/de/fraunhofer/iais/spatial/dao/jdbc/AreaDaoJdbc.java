@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -114,8 +113,7 @@ public class AreaDaoJdbc implements AreaDao {
 	public List<Area> getAreasByRect(double x1, double y1, double x2, double y2) {
 		List<Area> as = new ArrayList<Area>();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "" + "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center"
-				+ " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
+		PreparedStatement pstmt = DB.getPstmt(conn, "" + "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
 				+ " WHERE m.table_name = 'AREAS20KMRADIUS' and sdo_relate(c.geom, SDO_geometry(2003,8307,NULL,SDO_elem_info_array(1,1003,3), SDO_ordinate_array(?,?, ?,?)),'mask=anyinteract') = 'TRUE'");
 
 		ResultSet rs = null;
@@ -244,10 +242,10 @@ public class AreaDaoJdbc implements AreaDao {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-	
+
 		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();
 		a.setDaysCount(daysCount);
-	
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, a.getId());
@@ -275,10 +273,10 @@ public class AreaDaoJdbc implements AreaDao {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-	
+
 		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
 		a.setHoursCount(hoursCount);
-	
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, a.getId());
@@ -306,10 +304,10 @@ public class AreaDaoJdbc implements AreaDao {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-	
+
 		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();
 		a.setMonthsCount(monthsCount);
-	
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, a.getId());
@@ -337,10 +335,10 @@ public class AreaDaoJdbc implements AreaDao {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-	
+
 		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();
 		a.setYearsCount(yearsCount);
-	
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, a.getId());

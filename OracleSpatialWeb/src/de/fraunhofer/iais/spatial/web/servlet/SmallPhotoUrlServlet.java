@@ -2,7 +2,6 @@ package de.fraunhofer.iais.spatial.web.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,10 +12,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
-import de.fraunhofer.iais.spatial.service.AreaMgr;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -32,6 +29,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		 * @throws ServletException if an error occurred
 		 * @throws IOException if an error occurred
 		 */
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
@@ -54,7 +52,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			Element photosElement = new Element("photos");
 			rootElement.addContent(photosElement);
 			if (photo != null) {
-//				photosElement.addContent(new Element("))
+				//				photosElement.addContent(new Element("))
 				System.out.println(photo.getSmallUrl());
 			}
 		}

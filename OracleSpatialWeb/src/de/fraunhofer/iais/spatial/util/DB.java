@@ -10,13 +10,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jolbox.bonecp.BoneCPConfig;
-import com.jolbox.bonecp.BoneCPDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class DB {
@@ -27,7 +23,7 @@ public class DB {
 	private static final Logger logger = LoggerFactory.getLogger(DB.class);
 
 	private static Properties pros = null;
-//	private static BoneCPDataSource ds = null;
+	//	private static BoneCPDataSource ds = null;
 	private static ComboPooledDataSource ds = null;
 
 	private DB() {
@@ -37,6 +33,41 @@ public class DB {
 	/**
 	 * initialize the c3p0 Connection Pool
 	*/
+	static {
+		// initialize the JDBC Configuration
+		logger.debug("static() - begin to setup Connection Pool");
+
+		pros = new Properties();
+		try {
+			pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			// setup the connection pool
+			ComboPooledDataSource cpds = new ComboPooledDataSource();
+			cpds.setDriverClass(pros.getProperty("driver"));
+
+			//loads the jdbc driver            
+			cpds.setJdbcUrl(pros.getProperty("url"));
+			cpds.setUser(pros.getProperty("username"));
+			cpds.setPassword(pros.getProperty("password"));
+			cpds.setMaxPoolSize(10);
+			cpds.setMinPoolSize(5);
+			ds = cpds;
+		} catch (PropertyVetoException e) {
+			logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$
+			e.printStackTrace();
+		}
+
+		logger.debug("static() - finish to setup Connection Pool");
+	}
+
+	/**
+	 * initialize the BoneCP Connection Pool
+	 */
+	/*
 	static {
 	// initialize the JDBC Configuration
 	logger.debug("static() - begin to setup Connection Pool");
@@ -49,59 +80,25 @@ public class DB {
 	}
 
 	try {
+		// load the database driver (make sure this is in your classpath!)
+		Class.forName(pros.getProperty("driver"));
+
 		// setup the connection pool
-		ComboPooledDataSource cpds = new ComboPooledDataSource();
-			cpds.setDriverClass(pros.getProperty("driver"));
-		
-		 //loads the jdbc driver            
-		cpds.setJdbcUrl(pros.getProperty("url"));
-		cpds.setUser(pros.getProperty("username"));                                  
-		cpds.setPassword(pros.getProperty("password"));
-		cpds.setMaxPoolSize(10);
-		cpds.setMinPoolSize(5);
-		ds = cpds;
-	} catch (PropertyVetoException e) {
+		BoneCPConfig config = new BoneCPConfig();
+		config.setJdbcUrl(pros.getProperty("url")); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
+		config.setUsername(pros.getProperty("username"));
+		config.setPassword(pros.getProperty("password"));
+		config.setMinConnectionsPerPartition(1);
+		config.setMaxConnectionsPerPartition(5);
+		config.setPartitionCount(1);
+
+		ds = new BoneCPDataSource(config);
+	} catch (ClassNotFoundException e) {
 		logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$
 		e.printStackTrace();
 	}
 	
 	logger.debug("static() - finish to setup Connection Pool");
-	}
-
-	/**
-	 * initialize the BoneCP Connection Pool
-	 *//*
-	static {
-		// initialize the JDBC Configuration
-		logger.debug("static() - begin to setup Connection Pool");
-		
-		pros = new Properties();
-		try {
-			pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			// load the database driver (make sure this is in your classpath!)
-			Class.forName(pros.getProperty("driver"));
-
-			// setup the connection pool
-			BoneCPConfig config = new BoneCPConfig();
-			config.setJdbcUrl(pros.getProperty("url")); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
-			config.setUsername(pros.getProperty("username"));
-			config.setPassword(pros.getProperty("password"));
-			config.setMinConnectionsPerPartition(1);
-			config.setMaxConnectionsPerPartition(5);
-			config.setPartitionCount(1);
-
-			ds = new BoneCPDataSource(config);
-		} catch (ClassNotFoundException e) {
-			logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$
-			e.printStackTrace();
-		}
-		
-		logger.debug("static() - finish to setup Connection Pool");
 	} */
 
 	@Override

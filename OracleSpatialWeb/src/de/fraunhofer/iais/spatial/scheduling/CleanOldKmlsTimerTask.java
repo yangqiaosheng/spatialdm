@@ -16,7 +16,7 @@ import de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet;
  *
  */
 public class CleanOldKmlsTimerTask extends TimerTask {
-	
+
 	/**
 	 * Logger for this class
 	 */

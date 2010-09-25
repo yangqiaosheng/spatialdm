@@ -26,98 +26,127 @@ public class FlickrDeWestAreaDto {
 	private Date beginDate;
 	private Date endDate;
 	private Set<Date> selectedDays;
-	
+
 	public enum QueryLevel {
-	    HOUR, DAY, MONTH, YEAR;
+		HOUR, DAY, MONTH, YEAR;
 	}
-	
+
 	public List<String> getYears() {
 		return years;
 	}
+
 	public void setYears(List<String> years) {
 		this.years = years;
 	}
+
 	public List<String> getMonths() {
 		return months;
 	}
+
 	public void setMonths(List<String> months) {
 		this.months = months;
 	}
+
 	public List<String> getDays() {
 		return days;
 	}
+
 	public void setDays(List<String> days) {
 		this.days = days;
 	}
+
 	public List<String> getHours() {
 		return hours;
 	}
+
 	public void setHours(List<String> hours) {
 		this.hours = hours;
 	}
+
 	public Set<String> getWeekdays() {
 		return weekdays;
 	}
+
 	public void setWeekdays(Set<String> weekdays) {
 		this.weekdays = weekdays;
 	}
+
 	public Radius getRadius() {
 		return radius;
 	}
+
 	public void setRadius(Radius radius) {
 		this.radius = radius;
 	}
+
 	public int getZoom() {
 		return zoom;
 	}
+
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
 	}
+
 	public Point2D getCenter() {
 		return center;
 	}
+
 	public void setCenter(Point2D center) {
 		this.center = center;
 	}
+
 	public Rectangle2D getBoundaryRect() {
 		return boundaryRect;
 	}
+
 	public void setBoundaryRect(Rectangle2D boundaryRect) {
 		this.boundaryRect = boundaryRect;
 	}
+
 	public Set<String> getQueryStrs() {
 		return queryStrs;
 	}
+
 	public void setQueryStrs(Set<String> queryStrs) {
 		this.queryStrs = queryStrs;
 	}
+
 	public QueryLevel getQueryLevel() {
 		return queryLevel;
 	}
+
 	public void setQueryLevel(QueryLevel queryLevel) {
 		this.queryLevel = queryLevel;
 	}
+
 	public List<Point2D> getPolygon() {
 		return polygon;
 	}
+
 	public void setPolygon(List<Point2D> polygon) {
 		this.polygon = polygon;
 	}
+
 	public Date getBeginDate() {
 		return beginDate;
 	}
+
 	public void setBeginDate(Date beginDate) {
 		this.beginDate = beginDate;
 	}
+
 	public Date getEndDate() {
 		return endDate;
 	}
+
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
+
 	public Set<Date> getSelectedDays() {
 		return selectedDays;
 	}
+
 	public void setSelectedDays(Set<Date> selectedDays) {
 		this.selectedDays = selectedDays;
 	}

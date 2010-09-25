@@ -1,11 +1,10 @@
-package de.fraunhofer.iais.spatial.dao.ibatis;
+package de.fraunhofer.iais.spatial.dao.mybatis;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,12 +18,12 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.entity.Area;
 
-public class AreaDaoIbatis implements AreaDao {
+public class AreaDaoMybatis implements AreaDao {
 
 	private final static String resource = "ibatis-config.xml";
 	private static SqlSessionFactory sqlSessionFactory = null;
 
-	public AreaDaoIbatis() {
+	public AreaDaoMybatis() {
 		if (sqlSessionFactory == null) {
 			try {
 				Reader reader = Resources.getResourceAsReader(resource);
@@ -137,7 +136,7 @@ public class AreaDaoIbatis implements AreaDao {
 	@Override
 	public int getTotalCount(int areaid) {
 		int num = 0;
-	
+
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			num = (Integer) session.selectOne(Area.class.getName() + ".totalCount", areaid);

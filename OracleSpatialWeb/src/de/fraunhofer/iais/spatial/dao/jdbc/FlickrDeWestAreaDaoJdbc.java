@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,8 +21,8 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.DB;
 
-public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
-	
+public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
+
 	/* (non-Javadoc)
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getAllAreas(Radius)
 	 */
@@ -31,8 +30,8 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	public List<FlickrDeWestArea> getAllAreas(Radius radius) {
 		List<FlickrDeWestArea> as = new ArrayList<FlickrDeWestArea>();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius + " c, user_sdo_geom_metadata m"
-				+ " where m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius + "'");
+		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius
+				+ " c, user_sdo_geom_metadata m" + " where m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius + "'");
 		ResultSet rs = DB.getRs(pstmt);
 
 		try {
@@ -60,7 +59,8 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	public FlickrDeWestArea getAreaById(int areaid, Radius radius) {
 		FlickrDeWestArea a = new FlickrDeWestArea();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius + " c, user_sdo_geom_metadata m" + " WHERE c.ID = ?");
+		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius
+				+ " c, user_sdo_geom_metadata m" + " WHERE c.ID = ?");
 
 		ResultSet rs = null;
 		try {
@@ -88,8 +88,8 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	public List<FlickrDeWestArea> getAreasByPoint(double x, double y, Radius radius) {
 		List<FlickrDeWestArea> as = new ArrayList<FlickrDeWestArea>();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius + " c, user_sdo_geom_metadata m"
-				+ " WHERE m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
+		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius
+				+ " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
 
 		ResultSet rs = null;
 
@@ -121,9 +121,9 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	public List<FlickrDeWestArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
 		List<FlickrDeWestArea> as = new ArrayList<FlickrDeWestArea>();
 		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "" + "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center"
-				+ " from FLICKR_DE_WEST_TABLE_" + radius + " c, user_sdo_geom_metadata m"
-				+ " WHERE m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius + "' and sdo_relate(c.geom, SDO_geometry(2003,8307,NULL,SDO_elem_info_array(1,1003,3), SDO_ordinate_array(?,?, ?,?)),'mask=anyinteract') = 'TRUE'");
+		PreparedStatement pstmt = DB.getPstmt(conn, "" + "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius
+				+ " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius
+				+ "' and sdo_relate(c.geom, SDO_geometry(2003,8307,NULL,SDO_elem_info_array(1,1003,3), SDO_ordinate_array(?,?, ?,?)),'mask=anyinteract') = 'TRUE'");
 
 		ResultSet rs = null;
 
@@ -176,30 +176,28 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		}
 		return num;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhoto(int, Radius, String, int)
 	 */
 	@Override
 	public FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx) {
 		FlickrDeWestArea area = getAreaById(areaid, radius);
-		
-		
+
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 		FlickrDeWestPhoto photo = null;
 		try {
-			selectStmt = DB.getPstmt(conn, "select * from (select rownum rn, t2.* from (select t1.* from FLICKR_DE_WEST_TABLE t1, FLICKR_DE_WEST_TABLE_GEOM g" +
-													" where t1.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius + "_ID = ? and TRUNC(t1.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t1.dt desc) t2 )" +
-													" where rn = ?");
+			selectStmt = DB.getPstmt(conn, "select * from (select rownum rn, t2.* from (select t1.* from FLICKR_DE_WEST_TABLE t1, FLICKR_DE_WEST_TABLE_GEOM g" + " where t1.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius
+					+ "_ID = ? and TRUNC(t1.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t1.dt desc) t2 )" + " where rn = ?");
 			selectStmt.setInt(1, areaid);
 			selectStmt.setString(2, hour);
 			selectStmt.setInt(3, idx);
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
-				photo =  new FlickrDeWestPhoto();
-				
+				photo = new FlickrDeWestPhoto();
+
 				photo.setArea(area);
 				photo.setId(rs.getLong("PHOTO_ID"));
 				photo.setDate(rs.getTimestamp("DT"));
@@ -218,7 +216,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		
+
 		return photo;
 	}
 
@@ -229,7 +227,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, Set<String> hours, int num) {
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
 		TreeSet<String> hoursTemp = new TreeSet<String>(hours);
-		while (photos.size() < num && hoursTemp.size() > 0){
+		while (photos.size() < num && hoursTemp.size() > 0) {
 			photos.addAll(this.getPhotos(areaid, radius, hoursTemp.last(), num - photos.size()));
 			hoursTemp.remove(hoursTemp.last());
 		}
@@ -243,22 +241,21 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String hour, int num) {
 		FlickrDeWestArea area = getAreaById(areaid, radius);
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		
+
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 		try {
-			selectStmt = DB.getPstmt(conn, "select * from (select t.* from FLICKR_DE_WEST_TABLE t, FLICKR_DE_WEST_TABLE_GEOM g" +
-													" where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius + "_ID = ? and TRUNC(t.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t.dt desc)" +
-													" where rownum < ?");
+			selectStmt = DB.getPstmt(conn, "select * from (select t.* from FLICKR_DE_WEST_TABLE t, FLICKR_DE_WEST_TABLE_GEOM g" + " where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius
+					+ "_ID = ? and TRUNC(t.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t.dt desc)" + " where rownum < ?");
 			selectStmt.setInt(1, areaid);
 			selectStmt.setString(2, hour);
 			selectStmt.setInt(3, num);
 			rs = DB.getRs(selectStmt);
 			while (rs.next()) {
-				FlickrDeWestPhoto photo =  new FlickrDeWestPhoto();
+				FlickrDeWestPhoto photo = new FlickrDeWestPhoto();
 				photos.add(photo);
-				
+
 				photo.setArea(area);
 				photo.setId(rs.getLong("PHOTO_ID"));
 				photo.setDate(rs.getTimestamp("DT"));
@@ -277,18 +274,18 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-		
+
 		return photos;
 	}
-	
+
 	private void loadHoursCount(FlickrDeWestArea a) {
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-	
+
 		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
 		a.setHoursCount(hoursCount);
-	
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select HOUR from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
 			selectStmt.setInt(1, a.getId());
@@ -317,10 +314,10 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-	
+
 		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();
 		a.setDaysCount(daysCount);
-	
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select DAY from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
 			selectStmt.setInt(1, a.getId());
@@ -349,10 +346,10 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-	
+
 		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();
 		a.setMonthsCount(monthsCount);
-	
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select MONTH from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
 			selectStmt.setInt(1, a.getId());
@@ -381,10 +378,10 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-	
+
 		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();
 		a.setYearsCount(yearsCount);
-	
+
 		try {
 			selectStmt = DB.getPstmt(conn, "select YEAR from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
 			selectStmt.setInt(1, a.getId());
@@ -408,7 +405,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			DB.close(conn);
 		}
 	}
-	
+
 	private void initAreas(List<FlickrDeWestArea> as) {
 		for (FlickrDeWestArea a : as) {
 			initArea(a);
@@ -425,7 +422,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			loadHoursCount(a);
 		}
 	}
-	
+
 	/**
 	 * initiate the instance of Area using the values from the ResultSet
 	 * @param a - Area
@@ -448,6 +445,5 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao{
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 }

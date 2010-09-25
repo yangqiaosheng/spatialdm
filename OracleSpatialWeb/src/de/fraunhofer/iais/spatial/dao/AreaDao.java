@@ -1,7 +1,6 @@
 package de.fraunhofer.iais.spatial.dao;
 
 import java.util.List;
-import java.util.Set;
 
 import de.fraunhofer.iais.spatial.entity.Area;
 

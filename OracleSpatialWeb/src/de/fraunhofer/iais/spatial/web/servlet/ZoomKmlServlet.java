@@ -1,17 +1,11 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,13 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-import de.fraunhofer.iais.spatial.service.AreaMgr;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -51,7 +44,7 @@ public class ZoomKmlServlet extends HttpServlet {
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 		// web base path for remote access
 		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
+		//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
 		System.out.println(remoteBasePath);
 		response.setContentType("text/xml");
 		// response.setContentType("application/vnd.google-earth.kml+xml");
@@ -109,17 +102,17 @@ public class ZoomKmlServlet extends HttpServlet {
 			}
 		}
 
-//		if (xml2 != null && !xml2.equals("")) {
-//			try {
-//				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml2:" + xml2); //$NON-NLS-1$
-//				areaMgr.parseXmlRequest2(as, xml2);
-//				bw.write(xml2);
-//			} catch (JDOMException e) {
-//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-//			} catch (Exception e) {
-//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-//			}
-//		}
+		//		if (xml2 != null && !xml2.equals("")) {
+		//			try {
+		//				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml2:" + xml2); //$NON-NLS-1$
+		//				areaMgr.parseXmlRequest2(as, xml2);
+		//				bw.write(xml2);
+		//			} catch (JDOMException e) {
+		//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+		//			} catch (Exception e) {
+		//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+		//			}
+		//		}
 
 		out.print(XmlUtil.xml2String(document, true));
 		out.flush();

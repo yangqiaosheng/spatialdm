@@ -13,10 +13,10 @@
 	</typeAliases>
 	<typeHandlers>
 		<typeHandler
-			handler="de.fraunhofer.iais.spatial.dao.ibatis.type.SdoGeometryTypeHandler"
+			handler="de.fraunhofer.iais.spatial.dao.mybatis.type.SdoGeometryTypeHandler"
 			javaType="oracle.spatial.geometry.JGeometry" />
 			<typeHandler
-			handler="de.fraunhofer.iais.spatial.dao.ibatis.type.Point2DTypeHandler"
+			handler="de.fraunhofer.iais.spatial.dao.mybatis.type.Point2DTypeHandler"
 			javaType="java.awt.geom.Point2D" />
 	</typeHandlers>
 	<environments default="development">
@@ -31,7 +31,7 @@
 		</environment>
 	</environments>
 	<mappers>
-<!--		<mapper resource="de/fraunhofer/iais/spatial/dao/ibatis/Milanpoly.xml" />-->
-		<mapper resource="de/fraunhofer/iais/spatial/dao/ibatis/Area.xml" />
+<!--		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Milanpoly.xml" />-->
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Area.xml" />
 	</mappers>
 </configuration>

@@ -3,8 +3,6 @@ package de.fraunhofer.iais.spatial.service;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -14,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -22,7 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,10 +30,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 
-import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
@@ -133,12 +126,11 @@ public class FlickrDeWestAreaMgr {
 		}
 	}
 
-
 	public void count(List<FlickrDeWestArea> as, FlickrDeWestAreaDto areaDto) throws Exception {
 		System.out.println("#query:" + areaDto.getQueryStrs().size() * 139);
 
-//		if (strs.size() > 5 * 12 * 31 * 24)
-//			throw new Exception("excceed the maximun #queries!");
+		//		if (strs.size() > 5 * 12 * 31 * 24)
+		//			throw new Exception("excceed the maximun #queries!");
 
 		if (areaDto.getQueryStrs().size() > 0 && areaDto.getQueryLevel() != null) {
 			switch (areaDto.getQueryLevel()) {
@@ -158,16 +150,15 @@ public class FlickrDeWestAreaMgr {
 		}
 	}
 
-
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest1(String xml, FlickrDeWestAreaDto areaDto) throws JDOMException, IOException, ParseException {
 		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
 		Element rootElement = document.getRootElement();
-		
+
 		// <screen>
-		areaDto.setRadius(Radius._20000); 	//default Radius
+		areaDto.setRadius(Radius._20000); //default Radius
 		Element screenElement = rootElement.getChild("screen");
 		if (screenElement != null) {
 			// <screen><bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
@@ -200,7 +191,7 @@ public class FlickrDeWestAreaMgr {
 
 			// <screen><zoom>9</zoom>
 			String zoomStr = screenElement.getChildText("zoom");
-			if (zoomStr != null && !"".equals(zoomStr)){
+			if (zoomStr != null && !"".equals(zoomStr)) {
 				int zoom = Integer.parseInt(zoomStr);
 				if (zoom <= 8) {
 					areaDto.setRadius(Radius._80000);
@@ -216,34 +207,34 @@ public class FlickrDeWestAreaMgr {
 				areaDto.setZoom(zoom);
 			}
 		}
-		
+
 		// <polygon>(51.58830123054393, 6.971684570312502)(51.67184146523792, 7.647343750000002)(51.44644311790073, 7.298527832031252)</polygon>
 		String polygonStr = rootElement.getChildText("polygon");
 		if (polygonStr != null && !"".equals(polygonStr)) {
 			Pattern polygonPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
 			Matcher polygonMachter = polygonPattern.matcher(polygonStr);
-			List<Point2D> polygon = new LinkedList<Point2D>(); 
+			List<Point2D> polygon = new LinkedList<Point2D>();
 			areaDto.setPolygon(polygon);
-			while(polygonMachter.find()){
+			while (polygonMachter.find()) {
 				Point2D point = new Point2D.Double();
 				point.setLocation(Double.parseDouble(polygonMachter.group(2)), Double.parseDouble(polygonMachter.group(1)));
 				polygon.add(point);
 			}
 		}
-		
+
 		// <interval>15/09/2010 - 19/10/2010</interval>
 		String intervalStr = rootElement.getChildText("interval");
 		if (intervalStr != null && !"".equals(intervalStr)) {
 			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
 			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
-		
-			if(intervalMachter.find()){
+
+			if (intervalMachter.find()) {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				areaDto.setBeginDate(sdf.parse(intervalMachter.group(1)));
 				areaDto.setEndDate(sdf.parse(intervalMachter.group(2)));
 			}
 		}
-		
+
 		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 		String selectedDaysStr = rootElement.getChildText("selected_days");
 		if (selectedDaysStr != null && !"".equals(selectedDaysStr)) {
@@ -251,18 +242,18 @@ public class FlickrDeWestAreaMgr {
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
 			Set<Date> selectedDays = new LinkedHashSet<Date>();
 			areaDto.setSelectedDays(selectedDays);
-			while(selectedDaysMachter.find()){
+			while (selectedDaysMachter.find()) {
 				SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
 				selectedDays.add(sdf.parse(selectedDaysMachter.group()));
 			}
 		}
-		
+
 		// <calendar>
 		Element calendarElement = rootElement.getChild("calendar");
 		if (calendarElement != null) {
 			// <calendar><years>
 			Element yearsElement = calendarElement.getChild("years");
-			if (yearsElement != null ) {
+			if (yearsElement != null) {
 				List<Element> yearElements = yearsElement.getChildren("year");
 				for (Element yearElement : yearElements) {
 					String year = yearElement.getText();
@@ -320,7 +311,7 @@ public class FlickrDeWestAreaMgr {
 				}
 			}
 		}
-		
+
 		Set<String> queryStrs = new HashSet<String>();
 		areaDto.setQueryStrs(queryStrs);
 		areaDto.setQueryLevel(QueryLevel.HOUR);
@@ -351,7 +342,7 @@ public class FlickrDeWestAreaMgr {
 						// filter out the selected weekdays
 						if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
 							queryStrs.add(y + "-" + m + "-" + d + "@" + h);
-//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
+							//							System.out.println(calendar.getTime() + ":" + sdf.format(calendar.getTime()));
 						}
 					}
 				}
@@ -374,11 +365,11 @@ public class FlickrDeWestAreaMgr {
 		List<Element> dayElements = rootElement.getChildren("day");
 		List<Element> hourElements = rootElement.getChildren("hour");
 		List<Element> radiusElements = rootElement.getChildren("radius");
-		
+
 		if (radiusElements != null && radiusElements.size() == 1) {
 			radius = Radius.valueOf("_" + radiusElements.get(0).getText());
 		}
-		
+
 		if (hourElements != null && hourElements.size() > 0) {
 			level = 'h';
 			for (int i = 0; i < hourElements.size(); i++) {
@@ -403,7 +394,7 @@ public class FlickrDeWestAreaMgr {
 
 		System.out.println("level:" + level);
 		System.out.println(strs.size());
-		
+
 		return radius;
 	}
 
@@ -466,14 +457,14 @@ public class FlickrDeWestAreaMgr {
 		if (remoteBasePath == null || "".equals(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
-		
+
 		Document document = new Document();
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
 		Element rootElement = new Element("kml", namespace);
 
 		float scale = (float) (Integer.parseInt(radius.toString()) / 30000.0);
 		document.setRootElement(rootElement);
-		
+
 		Element documentElement = new Element("Document", namespace);
 		rootElement.addContent(documentElement);
 
@@ -537,8 +528,9 @@ public class FlickrDeWestAreaMgr {
 				southElement.addContent(Double.toString(a.getCenter().getY() - r * 0.55));
 				eastElement.addContent(Double.toString(a.getCenter().getX() + r));
 				westElement.addContent(Double.toString(a.getCenter().getX() - r));
-				if(Double.isInfinite(a.getCenter().getY() + r * 0.55))
+				if (Double.isInfinite(a.getCenter().getY() + r * 0.55)) {
 					System.exit(0);
+				}
 			}
 		}
 
@@ -546,11 +538,11 @@ public class FlickrDeWestAreaMgr {
 		for (FlickrDeWestArea a : as) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
-//			String description = "count: " + String.valueOf(a.getTotalCount());
+			//			String description = "count: " + String.valueOf(a.getTotalCount());
 			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 					+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 			String polyStyleColor = "440000"; //not transparent
-//			String polyStyleColor = "000000"; //transparent
+			//			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
 			String lineStyleWidth = "1";
@@ -622,23 +614,23 @@ public class FlickrDeWestAreaMgr {
 		return XmlUtil.xml2String(document, false);
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
-	
-	public String photosResponseXml(int areaid, Radius radius, Set<String> hours, int num){
+
+	public String photosResponseXml(int areaid, Radius radius, Set<String> hours, int num) {
 		List<FlickrDeWestPhoto> photos = this.getAreaDao().getPhotos(1, Radius._80000, hours, 20);
-		
+
 		Document document = new Document();
 		Element rootElement = new Element("response");
 		document.setRootElement(rootElement);
-		
+
 		Element photosElement = new Element("photos");
 		rootElement.addContent(photosElement);
-		
+
 		int i = 1;
-		for (FlickrDeWestPhoto p : photos){
+		for (FlickrDeWestPhoto p : photos) {
 			Element photoElement = new Element("photo");
 			photosElement.addContent(photoElement);
 			photoElement.setAttribute("index", String.valueOf(i++));
-			
+
 			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
 			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
 			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
@@ -652,10 +644,8 @@ public class FlickrDeWestAreaMgr {
 			photoElement.addContent(new Element("viewed").setText(String.valueOf(p.getViewed())));
 			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
 		}
-		
+
 		return XmlUtil.xml2String(document, true);
 	}
-	
-	
-	
+
 }
