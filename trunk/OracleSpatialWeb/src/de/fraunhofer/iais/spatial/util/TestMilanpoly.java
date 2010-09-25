@@ -3,14 +3,14 @@ package de.fraunhofer.iais.spatial.util;
 import java.util.List;
 
 import de.fraunhofer.iais.spatial.dao.MilanpolyDao;
-import de.fraunhofer.iais.spatial.dao.ibatis.MilanpolyDaoIbatis;
+import de.fraunhofer.iais.spatial.dao.mybatis.MilanpolyDaoMybatis;
 import de.fraunhofer.iais.spatial.entity.Milanpoly;
 
 public class TestMilanpoly {
 	public static void main(String[] args) throws Exception {
 		//		MilanpolyDao dao = new MilanpolyDaoJdbc();
-		MilanpolyDao dao = new MilanpolyDaoIbatis();
-		MilanpolyDao dao2 = new MilanpolyDaoIbatis();
+		MilanpolyDao dao = new MilanpolyDaoMybatis();
+		MilanpolyDao dao2 = new MilanpolyDaoMybatis();
 
 		List<Milanpoly> ms = dao.getAllMilanpolys();
 		List<Milanpoly> ms2 = dao2.getMilanpolysByRect(1, 1, 96.5, 95.4);

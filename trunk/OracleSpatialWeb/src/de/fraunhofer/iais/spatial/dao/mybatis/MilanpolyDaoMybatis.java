@@ -1,4 +1,4 @@
-package de.fraunhofer.iais.spatial.dao.ibatis;
+package de.fraunhofer.iais.spatial.dao.mybatis;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -14,11 +14,11 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import de.fraunhofer.iais.spatial.dao.MilanpolyDao;
 import de.fraunhofer.iais.spatial.entity.Milanpoly;
 
-public class MilanpolyDaoIbatis implements MilanpolyDao {
+public class MilanpolyDaoMybatis implements MilanpolyDao {
 	public final static String resource = "ibatis-config.xml";
 	public static SqlSessionFactory sqlSessionFactory = null;
 
-	public MilanpolyDaoIbatis() {
+	public MilanpolyDaoMybatis() {
 		if (sqlSessionFactory == null) {
 			try {
 				Reader reader = Resources.getResourceAsReader(resource);

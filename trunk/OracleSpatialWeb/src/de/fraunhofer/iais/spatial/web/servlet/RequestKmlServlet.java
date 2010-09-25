@@ -1,8 +1,5 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jdom.JDOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.entity.Area;
@@ -34,7 +33,7 @@ public class RequestKmlServlet extends HttpServlet {
 	private static final long serialVersionUID = -6814809670117597713L;
 
 	// "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
-	public static final String kmlPath = "kml/"; 
+	public static final String kmlPath = "kml/";
 
 	private static AreaMgr areaMgr = null;
 
@@ -45,8 +44,8 @@ public class RequestKmlServlet extends HttpServlet {
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 		// web base path for remote access
 		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
-		
+		//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
+
 		response.setContentType("text/xml");
 		// response.setContentType("application/vnd.google-earth.kml+xml");
 

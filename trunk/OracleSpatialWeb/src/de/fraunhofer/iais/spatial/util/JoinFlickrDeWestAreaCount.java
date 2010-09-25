@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 
@@ -26,32 +23,32 @@ public class JoinFlickrDeWestAreaCount {
 	public static void main(String[] args) throws Exception {
 		JoinFlickrDeWestAreaCount t = new JoinFlickrDeWestAreaCount();
 
-//		t.countHour("40000");
-//		t.countHour("20000");
-//		t.countHour("10000");
-//		t.countHour("5000");
-//		t.countDay();
-//		t.countMonth();
-//		t.countYear();
-//		t.countTotal();
-//
-//		t.countPerson("80000");
-//		t.countPerson("40000");
-//		t.countPerson("20000");
-//		t.countPerson("10000");
-//		t.countPerson("5000");
+		//		t.countHour("40000");
+		//		t.countHour("20000");
+		//		t.countHour("10000");
+		//		t.countHour("5000");
+		//		t.countDay();
+		//		t.countMonth();
+		//		t.countYear();
+		//		t.countTotal();
+		//
+		//		t.countPerson("80000");
+		//		t.countPerson("40000");
+		//		t.countPerson("20000");
+		//		t.countPerson("10000");
+		//		t.countPerson("5000");
 
-//		t.groupPhotos();
+		//		t.groupPhotos();
 
 		t.copyTable();
 
 		System.out.println("escaped time:" + (System.currentTimeMillis() - start) / 1000.0);
-//		
-//		t.update("Haolin",  "FLICKR_DE_WEST_TABLE_COUNT", "PERSON", "1   ", "5000");
-//		t.select();
+		//		
+		//		t.update("Haolin",  "FLICKR_DE_WEST_TABLE_COUNT", "PERSON", "1   ", "5000");
+		//		t.select();
 		//		t.listCalendar();
 		//		t.countTotal();
-//				t.insert("Haolin",  "FLICKR_DE_WEST_TABLE_COUNT", "PERSON", "115", radiusString);
+		//				t.insert("Haolin",  "FLICKR_DE_WEST_TABLE_COUNT", "PERSON", "115", radiusString);
 	}
 
 	private void countHour(String radiusString) throws Exception {

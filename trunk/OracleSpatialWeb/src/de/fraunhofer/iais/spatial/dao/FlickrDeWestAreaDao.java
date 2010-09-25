@@ -8,7 +8,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public interface FlickrDeWestAreaDao {
-	
+
 	/**
 	 * Returns a List of all the FlickrDeWestArea instances
 	 * @return List<FlickrDeWestArea>

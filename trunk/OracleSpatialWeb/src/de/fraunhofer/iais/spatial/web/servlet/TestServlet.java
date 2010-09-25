@@ -1,8 +1,5 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
@@ -11,6 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Servlet implementation class TestServlet
@@ -37,7 +37,7 @@ public class TestServlet extends HttpServlet {
 
 		Enumeration<String> parameterNames = request.getParameterNames();
 		while (parameterNames.hasMoreElements()) {
-			String parameterName = (String) parameterNames.nextElement();
+			String parameterName = parameterNames.nextElement();
 			String parameterValue = request.getParameter(parameterName);
 			logger.info("parameterName:" + parameterName + " |parameterValue:" + parameterValue); //$NON-NLS-1$
 		}

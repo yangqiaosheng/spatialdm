@@ -363,7 +363,7 @@ public class AreaMgr {
 		if (remoteBasePath == null || "".equals(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
-		
+
 		Document document = new Document();
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
 		Element rootElement = new Element("kml", namespace);
@@ -377,7 +377,7 @@ public class AreaMgr {
 		for (Area a : as) {
 			if (a.getSelectCount() != 0) {
 				String name = "total:" + a.getTotalCount();
-//				String description = "select:" + String.valueOf(a.getSelectCount());
+				//				String description = "select:" + String.valueOf(a.getSelectCount());
 				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 				String groundOverlayColor = "aaffffff"; //transparency
@@ -440,11 +440,11 @@ public class AreaMgr {
 		for (Area a : as) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
-//			String description = "select:" + String.valueOf(a.getSelectCount());
+			//			String description = "select:" + String.valueOf(a.getSelectCount());
 			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 					+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
-//			String polyStyleColor = "440000";	   	//not transparent
-			String polyStyleColor = "000000"; 		//transparent
+			//			String polyStyleColor = "440000";	   	//not transparent
+			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
 			String lineStyleWidth = "1";

@@ -5,8 +5,8 @@ import java.util.List;
 import org.junit.Test;
 
 import de.fraunhofer.iais.spatial.dao.MilanpolyDao;
-import de.fraunhofer.iais.spatial.dao.ibatis.MilanpolyDaoIbatis;
 import de.fraunhofer.iais.spatial.dao.jdbc.MilanpolyDaoJdbc;
+import de.fraunhofer.iais.spatial.dao.mybatis.MilanpolyDaoMybatis;
 import de.fraunhofer.iais.spatial.entity.Milanpoly;
 import de.fraunhofer.iais.spatial.service.MilanpolyMgr;
 
@@ -14,7 +14,7 @@ public class TestMilanpoly {
 
 	@Test
 	public void testQuery() {
-		MilanpolyDao dao = new MilanpolyDaoIbatis();
+		MilanpolyDao dao = new MilanpolyDaoMybatis();
 		List<Milanpoly> ms = dao.getAllMilanpolys();
 		//List<Milanpoly> ms = dao.getMilanpolysByPoint(9.17, 45.46);
 		// List<Milanpoly> ms = dao.getMilanpolysByRect(1, 1, 96.5, 95.4);

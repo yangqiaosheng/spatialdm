@@ -12,7 +12,7 @@ import oracle.spatial.geometry.JGeometry;
 
 public class FlickrDeWestArea {
 	private int id;
-	private Radius radius; 
+	private Radius radius;
 	private String name;
 	private JGeometry geom;
 	private float area;
@@ -24,17 +24,17 @@ public class FlickrDeWestArea {
 	private Map<String, Integer> hoursCount;
 	private int totalCount;
 	private int selectCount;
-	
+
 	public enum Radius {
-	    _5000, _10000, _20000, _40000, _80000;
+		_5000, _10000, _20000, _40000, _80000;
 
 		@Override
 		public String toString() {
 			return this.name().substring(1);
 		}
-	    
+
 	}
-	
+
 	public int getId() {
 		return id;
 	}
