@@ -1,6 +1,6 @@
 <request>
 	<screen>
-<!--		<bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>-->
+		<bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
 		<center>(51.58830123054393, 6.971684570312502)</center>
 		<zoom>11</zoom>
 	</screen>
@@ -9,7 +9,7 @@
 	
 	<interval>15/09/2007 - 19/10/2010</interval>
 	
-<!--	<selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>-->
+	<selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 	
 <!--	<calendar>-->
 <!--		<years>-->
