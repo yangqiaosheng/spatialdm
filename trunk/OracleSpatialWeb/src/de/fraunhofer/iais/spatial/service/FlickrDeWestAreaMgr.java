@@ -249,6 +249,9 @@ public class FlickrDeWestAreaMgr {
 				while (calendar.getTime().before(end.getTime())) {
 					queryStrs.add(FlickrDeWestAreaDao.dayDateFormat.format(calendar.getTime()));
 					calendar.add(Calendar.DATE, 1);
+					
+					// for TimeSeriesChart
+					areaDto.getYears().add(FlickrDeWestAreaDao.yearDateFormat.format(calendar.getTime()));
 				}
 			}
 		}
@@ -274,6 +277,9 @@ public class FlickrDeWestAreaMgr {
 				selectedDays.add(selectedDay);
 				
 				queryStrs.add(FlickrDeWestAreaDao.dayDateFormat.format(selectedDay));
+				
+				// for TimeSeriesChart
+				areaDto.getYears().add(FlickrDeWestAreaDao.yearDateFormat.format(selectedDay));
 			}
 		}
 		
