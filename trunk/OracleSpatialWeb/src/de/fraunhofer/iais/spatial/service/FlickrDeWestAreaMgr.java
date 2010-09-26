@@ -159,7 +159,7 @@ public class FlickrDeWestAreaMgr {
 		Element rootElement = document.getRootElement();
 
 		// <screen>
-		areaDto.setRadius(Radius._80000); //default Radius
+		areaDto.setRadius(Radius.R80000); //default Radius
 		Element screenElement = rootElement.getChild("screen");
 		if (screenElement != null) {
 			// <screen><bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
@@ -195,15 +195,15 @@ public class FlickrDeWestAreaMgr {
 			if (zoomStr != null && !"".equals(zoomStr.trim())) {
 				int zoom = Integer.parseInt(zoomStr);
 				if (zoom <= 6) {
-					areaDto.setRadius(Radius._80000);
+					areaDto.setRadius(Radius.R80000);
 				} else if (zoom <= 7) {
-					areaDto.setRadius(Radius._40000);
+					areaDto.setRadius(Radius.R40000);
 				} else if (zoom <= 8) {
-					areaDto.setRadius(Radius._20000);
+					areaDto.setRadius(Radius.R20000);
 				} else if (zoom <= 9) {
-					areaDto.setRadius(Radius._10000);
+					areaDto.setRadius(Radius.R10000);
 				} else if (zoom > 10) {
-					areaDto.setRadius(Radius._5000);
+					areaDto.setRadius(Radius.R5000);
 				}
 				areaDto.setZoom(zoom);
 			}
@@ -612,37 +612,6 @@ public class FlickrDeWestAreaMgr {
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
 
-	public String photosResponseXml(int areaid, Radius radius, Set<String> hours, int num) {
-		List<FlickrDeWestPhoto> photos = this.getAreaDao().getPhotos(1, Radius._80000, hours, 20);
-
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
-
-		Element photosElement = new Element("photos");
-		rootElement.addContent(photosElement);
-
-		int i = 1;
-		for (FlickrDeWestPhoto p : photos) {
-			Element photoElement = new Element("photo");
-			photosElement.addContent(photoElement);
-			photoElement.setAttribute("index", String.valueOf(i++));
-
-			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
-			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
-			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
-			photoElement.addContent(new Element("polygonArea").setText(String.valueOf(p.getArea().getArea())));
-			photoElement.addContent(new Element("date").setText(String.valueOf(p.getDate())));
-			photoElement.addContent(new Element("latitude").setText(String.valueOf(p.getLatitude())));
-			photoElement.addContent(new Element("longitude").setText(String.valueOf(p.getLongitude())));
-			photoElement.addContent(new Element("personId").setText(String.valueOf(p.getPersonId())));
-			photoElement.addContent(new Element("title").setText(String.valueOf(p.getTitle())));
-			photoElement.addContent(new Element("smallUrl").setText(String.valueOf(p.getSmallUrl())));
-			photoElement.addContent(new Element("viewed").setText(String.valueOf(p.getViewed())));
-			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
-		}
-
-		return XmlUtil.xml2String(document, true);
-	}
+	
 
 }

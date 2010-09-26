@@ -26,7 +26,7 @@ public class FlickrDeWestArea {
 	private int selectCount;
 
 	public enum Radius {
-		_5000, _10000, _20000, _40000, _80000;
+		R5000, R10000, R20000, R40000, R80000;
 
 		@Override
 		public String toString() {
