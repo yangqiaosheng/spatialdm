@@ -31,6 +31,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.servlet.SmallPhotoUrlServlet;
 
 public class TestFlickrDeWestArea {
 
@@ -73,7 +74,7 @@ public class TestFlickrDeWestArea {
 
 	@Test
 	public void testJdbcDao1() {
-		FlickrDeWestArea a = areaMgr.getAreaDao().getAreaById(1, FlickrDeWestArea.Radius._80000);
+		FlickrDeWestArea a = areaMgr.getAreaDao().getAreaById(1, FlickrDeWestArea.Radius.R80000);
 
 		String coordinates = "\t";
 		if (a.getGeom().getOrdinatesArray() != null) {
@@ -98,7 +99,7 @@ public class TestFlickrDeWestArea {
 	public void testJdbcDao2() {
 		//		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(Radius._10000);
 		// 		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByPoint(8.83, 50.58, Radius._5000);
-		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByRect(1, 1, 96.5, 95.4, Radius._80000);
+		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByRect(1, 1, 96.5, 95.4, Radius.R80000);
 		for (FlickrDeWestArea a : as) {
 			String coordinates = "\t";
 			if (a.getGeom().getOrdinatesArray() != null) {
@@ -121,7 +122,7 @@ public class TestFlickrDeWestArea {
 	@Test
 	public void testPhoto() {
 		for (int i = 1; i <= 20; i++) {
-			FlickrDeWestPhoto p = areaMgr.getAreaDao().getPhoto(1, Radius._80000, "2007-08-11@13", i);
+			FlickrDeWestPhoto p = areaMgr.getAreaDao().getPhoto(1, Radius.R80000, "2007-08-11@13", i);
 			if (p != null) {
 				System.out.print("PHOTO_ID:" + p.getId());
 				System.out.print("\tAreaid:" + p.getArea().getId());
@@ -146,7 +147,7 @@ public class TestFlickrDeWestArea {
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
 
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius._80000, hours, 20);
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
 		for (FlickrDeWestPhoto p : photos) {
 			System.out.print("PHOTO_ID:" + p.getId());
 			System.out.print("\tAreaid:" + p.getArea().getId());
@@ -162,7 +163,7 @@ public class TestFlickrDeWestArea {
 			System.out.println("\tVIEWED:" + p.getViewed());
 		}
 
-		System.out.println(areaMgr.photosResponseXml(1, Radius._80000, hours, 20));
+		System.out.println(new SmallPhotoUrlServlet().photosResponseXml(1, Radius.R80000, hours, 20));
 	}
 
 	@Test
