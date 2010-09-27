@@ -469,7 +469,7 @@ public class FlickrDeWestAreaMgr {
 				//				String description = "select:" + String.valueOf(a.getSelectCount());
 				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
-				String groundOverlayColor = "aaffffff"; //transparency
+				String groundOverlayColor = "bbffffff"; //transparency
 
 				Element groundOverlayElement = new Element("GroundOverlay", namespace);
 				documentElement.addContent(groundOverlayElement);
@@ -477,7 +477,7 @@ public class FlickrDeWestAreaMgr {
 				nameElement.addContent(name);
 				Element descriptionElement = new Element("description", namespace);
 				descriptionElement.addContent(new CDATA(description));
-				Element colorElement = new Element("name", namespace);
+				Element colorElement = new Element("color", namespace);
 				colorElement.addContent(groundOverlayColor);
 				groundOverlayElement.addContent(nameElement);
 				groundOverlayElement.addContent(descriptionElement);
@@ -538,7 +538,7 @@ public class FlickrDeWestAreaMgr {
 			//			String description = "count: " + String.valueOf(a.getTotalCount());
 			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 					+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
-			String polyStyleColor = "440000"; //not transparent
+			String polyStyleColor = "330000"; //not transparent
 			//			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";

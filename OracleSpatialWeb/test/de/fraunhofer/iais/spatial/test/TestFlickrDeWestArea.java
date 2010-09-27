@@ -260,7 +260,7 @@ public class TestFlickrDeWestArea {
 	}
 
 	@Test
-	public void testXml() throws Exception {
+	public void testXmlGeneration() throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
