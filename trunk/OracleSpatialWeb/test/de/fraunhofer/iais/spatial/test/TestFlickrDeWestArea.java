@@ -185,6 +185,7 @@ public class TestFlickrDeWestArea {
 	@Test
 	public void testRequestXml() throws Exception {
 		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+//		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest2.xml"));
 		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;

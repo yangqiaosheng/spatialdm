@@ -347,48 +347,57 @@ public class FlickrDeWestAreaMgr {
 				}
 			}
 
-			// construct the Query Stirngs
-			Set<String> queryStrs = new TreeSet<String>();
-			areaDto.setQueryStrs(queryStrs);
-
-			// complete the options when they are not selected
-			if (areaDto.getYears().size() == 0) {
-				this.allYears(areaDto.getYears());
-			}
-			if (areaDto.getMonths().size() == 0) {
-				this.allMonths(areaDto.getMonths());
-			}
-			if (areaDto.getDays().size() == 0) {
-				this.allDays(areaDto.getDays());
-			}
-			if (areaDto.getHours().size() == 0) {
-				this.allHours(areaDto.getHours());
-			}
-
-			// day of week in English format
-			SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
-			Calendar calendar = Calendar.getInstance();
+			setCalendarQueryStrs(areaDto);
+			areaDto.setQueryLevel(QueryLevel.HOUR);
 			
-			for (String y : areaDto.getYears()) {
-				for (String m : areaDto.getMonths()) {
-					for (String d : areaDto.getDays()) {
-						for (String h : areaDto.getHours()) {
+		}
+		
+		if (areaDto.getQueryStrs() == null) {
+			setCalendarQueryStrs(areaDto);
+			areaDto.setQueryLevel(QueryLevel.HOUR);
+		}
+	}
+
+	private void setCalendarQueryStrs(FlickrDeWestAreaDto areaDto) {
+		// construct the Query Stirngs
+		Set<String> queryStrs = new TreeSet<String>();
+		areaDto.setQueryStrs(queryStrs);
+
+		// complete the options when they are not selected
+		if (areaDto.getYears().size() == 0) {
+			this.allYears(areaDto.getYears());
+		}
+		if (areaDto.getMonths().size() == 0) {
+			this.allMonths(areaDto.getMonths());
+		}
+		if (areaDto.getDays().size() == 0) {
+			this.allDays(areaDto.getDays());
+		}
+		if (areaDto.getHours().size() == 0) {
+			this.allHours(areaDto.getHours());
+		}
+
+		// day of week in English format
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
+		Calendar calendar = Calendar.getInstance();
+		
+		for (String y : areaDto.getYears()) {
+			for (String m : areaDto.getMonths()) {
+				for (String d : areaDto.getDays()) {
+					for (String h : areaDto.getHours()) {
 //							calendar.set(Integer.parseInt(y), Integer.parseInt(m) - 1, Integer.parseInt(d));
-							calendar.set(Calendar.YEAR, Integer.parseInt(y));
-							calendar.set(Calendar.MONTH, Integer.parseInt(m) - 1);
-							calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(d));
-							calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(h));
-							// filter out the selected weekdays
-							if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
+						calendar.set(Calendar.YEAR, Integer.parseInt(y));
+						calendar.set(Calendar.MONTH, Integer.parseInt(m) - 1);
+						calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(d));
+						calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(h));
+						// filter out the selected weekdays
+						if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
 //								queryStrs.add(y + "-" + m + "-" + d + "@" + h);
-								queryStrs.add(FlickrDeWestAreaDao.hourDateFormat.format(calendar.getTime()));
-							}
+							queryStrs.add(FlickrDeWestAreaDao.hourDateFormat.format(calendar.getTime()));
 						}
 					}
 				}
 			}
-			
-			areaDto.setQueryLevel(QueryLevel.HOUR);
 		}
 	}
 
