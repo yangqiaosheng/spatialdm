@@ -10,8 +10,7 @@ pageEncoding="ISO-8859-1"%>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Spatial Data Visualization</title>
         <link rel="stylesheet" type="text/css" href="css/fonts.css" />
-        <script src="ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRTineTA_WpDCl_xZTC54eFNJ2zWYhQpprXO47ENYqev1vfXQM6o17w3Pg" type="text/javascript">
-<%--    <script src="ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript">--%>
+        <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAXpO0zI9yNeA_EFs7s1MwGRTTMp1AMdarjn7eaZ2eBJYjc9PhCRR3amHAAPmxas4EmiEg12cBftKILg"text/javascript">
         </script>	
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true">
         </script>
@@ -68,32 +67,31 @@ pageEncoding="ISO-8859-1"%>
         <link type="text/css" rel="stylesheet" href="css/carousel.css" />
         <link type="text/css" rel="stylesheet" href="css/calendar.css" />
         <link type="text/css" rel="stylesheet" href="css/legend.css" />
-
-
+	<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
+	
+	
     </head>
     <!--if one of the functions gtom onload is not executing, then the chain is broken and the next ones will not execute as well-->
     <body onload="onLoad(); start(); loadStart();";  onunload="GUnload()"; onresize="onResize();">
-        <!--element that I need later--><!--this element is shown just where I need it-->
         <div style="display: none;">
             <img id="calImg" src="images/calendar.gif" class="trigger" />
-        </div><!--this element is the background map canvas, it is also show just where I need it-->
+        </div>
         <div id="map_canvas">
         </div>
         <br/>
-        <!--*****************************************table_tab_panel************************************************************--->
         <div id="move">
-<%--	  <jsp:include page="table1.jsp"/>            --%>
-<%--	  <jsp:include page="table2.jsp"/>   --%>
-<%--	  <jsp:include page="table3.jsp"/>   --%>
-<%--	  <jsp:include page="table4.jsp"/>   	   --%>
+	  <jsp:include page="table1.jsp"/>            
+	  <jsp:include page="table2.jsp"/>   
+	  <jsp:include page="table3.jsp"/>   
+	  <jsp:include page="table4.jsp"/>   	   
 	 </div>
-<%--	 <jsp:include page="carousel.jsp"/>  --%>
-<%--	 <jsp:include page="legend.jsp"/>--%>
+	 <jsp:include page="carousel.jsp"/>  
+	 <jsp:include page="legend.jsp"/>
 
       <script type="text/javascript" src="script/TimeController.js"> </script>              
       <script type="text/javascript" src="script/sendToServer.js"> </script>   
       <script type="text/javascript" src="script/prepareXMLforServer.js"> </script>   
       <script type="text/javascript" src="script/VerticalMenu.js"></script>	    
-	
+
      </body>
 </html>
