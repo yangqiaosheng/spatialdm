@@ -36,8 +36,8 @@
 }
 
 #content {
-	width: 100%;
-	height: 100%;
+	width: auto;
+	height: auto;
 }
 
 .tabcontent {
@@ -67,34 +67,35 @@ html,body,#map_canvas {
 }
 
 #move{
-	border-width: .02em;
+	border-width:0.31em;
 	border-style:solid; 
-	border-color:#8AA8F3;
+	border-color:#8AA8F3; 
 	position:absolute;		
 	margin-left: 1%;
 	margin-top: 1%;
-	width:500px;
-	/*height:700px;*/	
+	width:auto; /*500px*/
+	height:auto; /*it wasn't*/
 	top:0;
 }
-
+#table_header{
+	width:auto;
+	height:auto;
+}
 #table1{
-	position: absolute; 		
-	width:100%;
-	height:10%;	
+	/*position: absolute; */
+	width:auto;
+	/*height:10%;	*/
+	height:auto;
 	
 }
-#table2{
-	
-	margin-top:45%;	
-	width:100%;
-	height:30%;		
+#table2{			
+	width:auto;
+	height:auto;		
 }
 #table3{
 	
-
-	width:100%;
-	height:30%;		
+	width:auto;
+	height:auto;		
 }
 #address{
 	position:absolute;
