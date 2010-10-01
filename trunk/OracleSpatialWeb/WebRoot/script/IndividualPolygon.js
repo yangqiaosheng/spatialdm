@@ -11,7 +11,7 @@ $(document).ready(function(){
         
             creator = new PolygonCreator(map);
             $("#reset").attr('value', 'Reset');	    
-            $("#legendInfo").html("<p>The last point of the new created polygon must be the same with the first point. (Close the polygon)</p>");
+            $("#legendInfo").html("<p> The last point of the new created polygon must be the same with the first point. (Close the polygon) </p>");
         }
     });
     jQuery('#askServer').click(function(){
@@ -21,8 +21,7 @@ $(document).ready(function(){
         }
         else {
             alert("message sent to server!");
-            $("#legendInfo").html("<p>You will be informed when the result will be computed. It may take few minutes </p>");
-	    
+            $("#legendInfo").html("<p> You will be informed when the result will be computed. It may take few minutes </p>");	    
 	    var bounds = map.getBounds();
 	    var center = map.getCenter();
 	    var zoomLevel = map.getZoom();

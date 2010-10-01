@@ -1,3 +1,4 @@
+var boolean = false;
 var number= new Array(200);
 var field= new Array(200);
 var nameString = new Array(200); // in this string I map months, years, days hours.
@@ -388,12 +389,10 @@ function refreshButtons() { // ok number[i] reverse to 0
                         number[i] = 0;
                 }
         }
-
         text="refresh"; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
-        jQuery("#content1_1").html(text);	
+        jQuery("#content1_1").html(text);
 	g_kml_layer[g_kml_counter-1].setMap();
-        g_kml_layer[g_kml_counter-1].setMap(null); // this is deleting from the map the polygons that are on the map just one step before.
-	//refreshing even the global variables that compose the kml overlay
+        g_kml_layer[g_kml_counter-1].setMap(null); 
 	g_kml_layer = new Array(1000);
 	g_kml_counter=0;
 	l=0;
