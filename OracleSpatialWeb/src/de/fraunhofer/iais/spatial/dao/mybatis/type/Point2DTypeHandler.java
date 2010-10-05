@@ -28,7 +28,7 @@ public class Point2DTypeHandler implements TypeHandler {
 		JGeometry j_geom = JGeometry.load(st);
 		Point2D point = j_geom.getJavaPoint();
 		return point;
-	}
+	} 
 
 	@Override
 	public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
