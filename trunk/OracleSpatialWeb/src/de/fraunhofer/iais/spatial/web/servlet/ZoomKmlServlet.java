@@ -73,9 +73,9 @@ public class ZoomKmlServlet extends HttpServlet {
 			
 			String filenamePrefix = StringUtil.genFilename(new Date());
 
-			BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
-			bw.write(xml);
-			bw.close();
+//			BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
+//			bw.write(xml);
+//			bw.close();
 			
 			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 			if("true".equals(persist)){
