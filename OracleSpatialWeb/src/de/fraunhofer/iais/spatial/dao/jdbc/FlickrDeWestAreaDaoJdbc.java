@@ -160,7 +160,7 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
 		ResultSet rs = null;
 		int num = 0;
 		try {
-			selectStmt = DB.getPstmt(conn, "select total from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
+			selectStmt = DB.getPstmt(conn, "select TOTAL from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
 			selectStmt.setInt(1, areaid);
 			selectStmt.setInt(2, Integer.parseInt(radius.toString()));
 			rs = DB.getRs(selectStmt);

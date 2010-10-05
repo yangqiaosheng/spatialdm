@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -121,7 +122,7 @@ public class TestFlickrDeWestArea {
 
 	@Test
 	public void testPhoto() {
-		for (int i = 1; i <= 20; i++) {
+		for (int i = 1; i <= 2; i++) {
 			FlickrDeWestPhoto p = areaMgr.getAreaDao().getPhoto(1, Radius.R80000, "2007-08-11@13", i);
 			if (p != null) {
 				System.out.print("PHOTO_ID:" + p.getId());
@@ -163,7 +164,6 @@ public class TestFlickrDeWestArea {
 			System.out.println("\tVIEWED:" + p.getViewed());
 		}
 
-		System.out.println(new SmallPhotoUrlServlet().photosResponseXml(1, Radius.R80000, hours, 20));
 	}
 
 	@Test

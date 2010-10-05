@@ -35,7 +35,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		response.setContentType("image/jpeg");
 		response.setHeader("Cache-Control", "no-cache");
 		ServletOutputStream sos = response.getOutputStream();
-		String localBasePath = System.getProperty("oraclespatialweb.root");
+//		String localBasePath = System.getProperty("oraclespatialweb.root");
 
 		String areaid = request.getParameter("areaid");
 		if (areaid == null || "".equals(areaid))

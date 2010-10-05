@@ -14,6 +14,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
@@ -38,9 +39,10 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		response.setContentType("text/html");
+		response.setContentType("text/xml");
 		String areaid = request.getParameter("areaid");
 		String radius = request.getParameter("radius");
+		System.out.println("areaid:" + areaid +"|radius:" + radius);
 		PrintWriter out = response.getWriter();
 
 		Document document = new Document();
@@ -52,28 +54,22 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		if ((areaid == null || areaid.equals("")) && (radius == null || radius.equals(""))) {
 			messageElement.setText("wrong input parameter!");
 		} else {
-			FlickrDeWestAreaMgr areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
-			FlickrDeWestPhoto photo = areaMgr.getAreaDao().getPhoto(Integer.parseInt(areaid), Radius.valueOf("R" + radius), "2007-08-11@13", 20);
-
-			Element photosElement = new Element("photos");
-			rootElement.addContent(photosElement);
-			if (photo != null) {
-				//				photosElement.addContent(new Element("))
-				System.out.println(photo.getSmallUrl());
-			}
+			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+			System.out.println("areaid:" + areaid +"|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs());
+			photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + radius), areaDto.getQueryStrs(), 20);
+			
 		}
 
 		out.print(XmlUtil.xml2String(document, true));
+		System.out.println(XmlUtil.xml2String(document, false));
 		out.flush();
 		out.close();
 	}
 	
-	public String photosResponseXml(int areaid, Radius radius, Set<String> hours, int num) {
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, Radius.R80000, hours, 20);
+	public String photosResponseXml(Document document, int areaid, Radius radius, Set<String> hours, int num) {
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, hours, 20);
 
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
+		Element rootElement = document.getRootElement();
 
 		Element photosElement = new Element("photos");
 		rootElement.addContent(photosElement);
