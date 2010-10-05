@@ -14,7 +14,9 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 			loadkml(url);
 		}
 	};
-	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml");
+//	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml");
+	xmlHttp.open("POST", "http://localhost:8080/OracleSpatialWeb/RequestKml");
+	
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	xmlHttp.send("xml=" + encodeURIComponent(textToSend));
 }

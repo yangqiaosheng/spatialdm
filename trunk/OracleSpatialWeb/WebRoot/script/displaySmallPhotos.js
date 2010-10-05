@@ -3,7 +3,7 @@ function getSmallPhotos() {
 	var JQueryObj = $("#username");
 	var username = JQueryObj.val();
 	alert(username);
-	$.post('TestServlet', "areaid=" + username, callback);
+	$.get('SmallPhotoUrl', { areaid: username, radius: '20000'}, callback);
 }
 
 function callback(data) {
