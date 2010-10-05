@@ -4,14 +4,18 @@ pageEncoding="ISO-8859-1"%>
 <html>
     <head>
         <script type="text/javascript">           
-	   var g_kml_layer = [];
+	       var g_kml_layer = [];
            var g_kml_counter = 0;
         </script>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Spatial Data Visualization</title>
+        
         <link rel="stylesheet" type="text/css" href="css/fonts.css" />
-        <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAXpO0zI9yNeA_EFs7s1MwGRTTMp1AMdarjn7eaZ2eBJYjc9PhCRR3amHAAPmxas4EmiEg12cBftKILg"text/javascript">
-        </script>	
+        <!-- key for localhost:8080 -->
+        <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRTwM0brOpm-All5BF6PoaKBxRWWERQz8kv3AfRcmeXeips11HUqEo81xQ" type="text/javascript"></script>	
+        <!-- key for http://kd-photomap.iais.fraunhofer.de -->
+<!--    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>	-->
+       
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true">
         </script>
 	

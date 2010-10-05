@@ -25,6 +25,7 @@ public class FlickrDeWestAreaDto {
 	private Date beginDate;
 	private Date endDate;
 	private Set<Date> selectedDays;
+	private Set<String> years4Chart;
 
 	public enum QueryLevel {
 		HOUR, DAY, MONTH, YEAR;
@@ -148,5 +149,13 @@ public class FlickrDeWestAreaDto {
 
 	public void setSelectedDays(Set<Date> selectedDays) {
 		this.selectedDays = selectedDays;
+	}
+
+	public Set<String> getYears4Chart() {
+		return years4Chart;
+	}
+
+	public void setYears4Chart(Set<String> years4Chart) {
+		this.years4Chart = years4Chart;
 	}
 }

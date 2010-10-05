@@ -54,8 +54,8 @@ public class ZoomKmlServlet extends HttpServlet {
 		response.setHeader("Pragma", "no-cache"); // HTTP1.0
 		response.setDateHeader("Expires", 0); // proxy server
 
-		String xml1 = request.getParameter("xml");
-		String xml2 = request.getParameter("xml2");
+		String xml = request.getParameter("xml");
+		String persist = request.getParameter("persist");
 
 		PrintWriter out = response.getWriter();
 
@@ -65,20 +65,29 @@ public class ZoomKmlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		if ((xml1 == null || xml1.equals("")) && (xml2 == null || xml2.equals(""))) {
+		if (xml == null || xml.equals("")) {
 			messageElement.setText("wrong input parameter!");
-		} else if (xml1 != null && !xml1.equals("")) {
+		} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
+			messageElement.setText("please do a query first!");
+		} else {
+			
 			String filenamePrefix = StringUtil.genFilename(new Date());
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
-			bw.write(xml1);
+			bw.write(xml);
 			bw.close();
-
+			
 			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+			if("true".equals(persist)){
+				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true" );
+				areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+			} 
+			
 			try {
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml1:" + xml1); //$NON-NLS-1$
+				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
-				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml1.toString()), areaDto);
+				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+				
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				List<FlickrDeWestArea> as = null;
@@ -88,12 +97,12 @@ public class ZoomKmlServlet extends HttpServlet {
 					as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 				}
 				areaMgr.count(as, areaDto);
-
 				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath);
 
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);
 				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
+				request.getSession().setAttribute("areaDto", areaDto);
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
@@ -101,18 +110,6 @@ public class ZoomKmlServlet extends HttpServlet {
 				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 			}
 		}
-
-		//		if (xml2 != null && !xml2.equals("")) {
-		//			try {
-		//				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml2:" + xml2); //$NON-NLS-1$
-		//				areaMgr.parseXmlRequest2(as, xml2);
-		//				bw.write(xml2);
-		//			} catch (JDOMException e) {
-		//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-		//			} catch (Exception e) {
-		//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-		//			}
-		//		}
 
 		out.print(XmlUtil.xml2String(document, true));
 		out.flush();
