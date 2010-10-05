@@ -251,15 +251,8 @@ public class TestFlickrDeWestArea {
 
 		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null));
 
-		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
-		//		radius = FlickrDeWestArea.Radius._40000;
-		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
-		//		radius = FlickrDeWestArea.Radius._80000;
-		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
-		//		radius = FlickrDeWestArea.Radius._5000;
-		//		System.out.println(createKml(as, "temp/FlickrDeWestArea" + radius, null));
 	}
-
+	
 	@Test
 	public void testXmlGeneration() throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));

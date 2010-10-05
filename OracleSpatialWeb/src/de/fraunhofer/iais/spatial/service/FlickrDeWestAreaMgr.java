@@ -229,9 +229,10 @@ public class FlickrDeWestAreaMgr {
 			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
 			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
 			
-			// construct the Query Stirngs
 			Set<String> queryStrs = new TreeSet<String>();
 			areaDto.setQueryStrs(queryStrs);
+			Set<String> years4Chart = new TreeSet<String>();
+			areaDto.setYears4Chart(years4Chart);
 			
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			areaDto.setQueryLevel(QueryLevel.DAY);
@@ -251,7 +252,7 @@ public class FlickrDeWestAreaMgr {
 					calendar.add(Calendar.DATE, 1);
 					
 					// for TimeSeriesChart
-					areaDto.getYears().add(FlickrDeWestAreaDao.yearDateFormat.format(calendar.getTime()));
+					areaDto.getYears4Chart().add(FlickrDeWestAreaDao.yearDateFormat.format(calendar.getTime()));
 				}
 			}
 		}
@@ -264,9 +265,10 @@ public class FlickrDeWestAreaMgr {
 			Set<Date> selectedDays = new LinkedHashSet<Date>();
 			areaDto.setSelectedDays(selectedDays);
 			
-			// construct the Query Stirngs
 			Set<String> queryStrs = new TreeSet<String>();
 			areaDto.setQueryStrs(queryStrs);
+			Set<String> years4Chart = new TreeSet<String>();
+			areaDto.setYears4Chart(years4Chart);
 			
 			// day of week in English format
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
@@ -279,7 +281,7 @@ public class FlickrDeWestAreaMgr {
 				queryStrs.add(FlickrDeWestAreaDao.dayDateFormat.format(selectedDay));
 				
 				// for TimeSeriesChart
-				areaDto.getYears().add(FlickrDeWestAreaDao.yearDateFormat.format(selectedDay));
+				areaDto.getYears4Chart().add(FlickrDeWestAreaDao.yearDateFormat.format(selectedDay));
 			}
 		}
 		
@@ -287,6 +289,10 @@ public class FlickrDeWestAreaMgr {
 		// <calendar>
 		Element calendarElement = rootElement.getChild("calendar");
 		if (calendarElement != null) {
+			
+			// for TimeSeriesChart
+			areaDto.setYears4Chart(areaDto.getYears());
+			
 			// <calendar><years>
 			Element yearsElement = calendarElement.getChild("years");
 			if (yearsElement != null) {
@@ -349,17 +355,12 @@ public class FlickrDeWestAreaMgr {
 
 			setCalendarQueryStrs(areaDto);
 			areaDto.setQueryLevel(QueryLevel.HOUR);
-			
 		}
 		
-		if (areaDto.getQueryStrs() == null) {
-			setCalendarQueryStrs(areaDto);
-			areaDto.setQueryLevel(QueryLevel.HOUR);
-		}
 	}
 
 	private void setCalendarQueryStrs(FlickrDeWestAreaDto areaDto) {
-		// construct the Query Stirngs
+		// construct the Query Strings
 		Set<String> queryStrs = new TreeSet<String>();
 		areaDto.setQueryStrs(queryStrs);
 
@@ -392,7 +393,7 @@ public class FlickrDeWestAreaMgr {
 						calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(h));
 						// filter out the selected weekdays
 						if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
-//								queryStrs.add(y + "-" + m + "-" + d + "@" + h);
+//							queryStrs.add(y + "-" + m + "-" + d + "@" + h);
 							queryStrs.add(FlickrDeWestAreaDao.hourDateFormat.format(calendar.getTime()));
 						}
 					}
@@ -401,9 +402,6 @@ public class FlickrDeWestAreaMgr {
 		}
 	}
 
-	public void createTimeChart(String id) {
-
-	}
 
 	public String createMarkersXml(List<FlickrDeWestArea> as, String file) {
 		Document document = new Document();

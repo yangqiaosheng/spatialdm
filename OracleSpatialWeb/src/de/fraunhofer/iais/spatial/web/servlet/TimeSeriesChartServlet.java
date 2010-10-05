@@ -41,30 +41,43 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		if (areaid == null || "".equals(areaid))
 			return;
 
-		String xmlfile = request.getParameter("xml");
+//		String xmlfile = request.getParameter("xml");
+//
+//		if (xmlfile != null && !"".equals(xmlfile)) {
+//
+//			BufferedReader br = new BufferedReader(new FileReader(localBasePath + xmlfile));
+//			StringBuffer xml = new StringBuffer();
+//			String thisLine;
+//			while ((thisLine = br.readLine()) != null) {
+//				xml.append(thisLine);
+//			}
+//
+//			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+//			try {
+//				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+//
+//				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
+//				if (area != null) {
+//					areaMgr.createTimeSeriesChart(area, areaDto.getYears(), sos);
+//				}
+//			} catch (Exception e) {
+//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+//			}
+//		}
 
-		if (xmlfile != null && !"".equals(xmlfile)) {
-
-			BufferedReader br = new BufferedReader(new FileReader(localBasePath + xmlfile));
-			StringBuffer xml = new StringBuffer();
-			String thisLine;
-			while ((thisLine = br.readLine()) != null) {
-				xml.append(thisLine);
-			}
-
-			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+		FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+		if(areaDto != null){
 			try {
-				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 
 				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
 				if (area != null) {
-					areaMgr.createTimeSeriesChart(area, areaDto.getYears(), sos);
+					areaMgr.createTimeSeriesChart(area, areaDto.getYears4Chart(), sos);
 				}
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 			}
 		}
-
+		
 	}
 
 	/**
