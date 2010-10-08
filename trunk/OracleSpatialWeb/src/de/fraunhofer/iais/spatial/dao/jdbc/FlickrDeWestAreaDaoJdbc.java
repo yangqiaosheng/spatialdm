@@ -5,10 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,12 +19,13 @@ import java.util.regex.Pattern;
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.DB;
 
-public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
+public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 
 	/* (non-Javadoc)
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getAllAreas(Radius)
@@ -181,33 +185,28 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhoto(int, Radius, String, int)
 	 */
 	@Override
-	public FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx) {
-		FlickrDeWestArea area = getAreaById(areaid, radius);
+	public FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String queryStr, int idx) {
 
+		FlickrDeWestPhoto photo = null;
+		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStr);
+		String oracleDatePatternStr = FlickrDeWestAreaDao.judgeOracleDatePatternStr(queryLevel);
+		
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
-		FlickrDeWestPhoto photo = null;
 		try {
-			selectStmt = DB.getPstmt(conn, "select * from (select rownum rn, t2.* from (select t1.* from FLICKR_DE_WEST_TABLE t1, FLICKR_DE_WEST_TABLE_GEOM g" + " where t1.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius
-					+ "_ID = ? and TRUNC(t1.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t1.dt desc) t2 )" + " where rn = ?");
+			selectStmt = DB.getPstmt(conn, "select * from (select rownum rn, t2.* from (select t1.* from FLICKR_DE_WEST_TABLE t1, FLICKR_DE_WEST_TABLE_GEOM g"
+					+ " where t1.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius
+					+ "_ID = ? and to_char(t1.dt, '" + oracleDatePatternStr + "') = ? order by t1.dt desc) t2 )"
+					+ " where rn = ?");
 			selectStmt.setInt(1, areaid);
-			selectStmt.setString(2, hour);
+			selectStmt.setString(2, queryStr);
 			selectStmt.setInt(3, idx);
 			rs = DB.getRs(selectStmt);
 			if (rs.next()) {
 				photo = new FlickrDeWestPhoto();
 
-				photo.setArea(area);
-				photo.setId(rs.getLong("PHOTO_ID"));
-				photo.setDate(rs.getTimestamp("DT"));
-				photo.setLatitude(rs.getDouble("LATITUDE"));
-				photo.setLongitude(rs.getDouble("LONGITUDE"));
-				photo.setPersonId(rs.getString("PERSON"));
-				photo.setRawTags(rs.getString("RAWTAGS"));
-				photo.setSmallUrl(rs.getString("SMALLURL"));
-				photo.setTitle(rs.getString("TITLE"));
-				photo.setViewed(rs.getInt("VIEWED"));
+				initPhotoFromRs(areaid, radius, rs, photo);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -221,51 +220,31 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(int, Radius, SortedSet<String>, int)
-	 */
-	@Override
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, Set<String> hours, int num) {
-		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		TreeSet<String> hoursTemp = new TreeSet<String>(hours);
-		while (photos.size() < num && hoursTemp.size() > 0) {
-			photos.addAll(this.getPhotos(areaid, radius, hoursTemp.last(), num - photos.size()));
-			hoursTemp.remove(hoursTemp.last());
-		}
-		return photos;
-	}
-
-	/* (non-Javadoc)
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(int, Radius, String, int)
 	 */
 	@Override
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String hour, int num) {
-		FlickrDeWestArea area = getAreaById(areaid, radius);
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String queryStr, int num) {
+		
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-
+		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStr);
+		String oracleDatePatternStr = FlickrDeWestAreaDao.judgeOracleDatePatternStr(queryLevel);
+		
 		Connection conn = DB.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 		try {
-			selectStmt = DB.getPstmt(conn, "select * from (select t.* from FLICKR_DE_WEST_TABLE t, FLICKR_DE_WEST_TABLE_GEOM g" + " where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius
-					+ "_ID = ? and TRUNC(t.dt, 'HH24') = to_date (?, 'yyyy-MM-dd@HH24') order by t.dt desc)" + " where rownum < ?");
+			selectStmt = DB.getPstmt(conn, "select * from (select t.* from FLICKR_DE_WEST_TABLE t, FLICKR_DE_WEST_TABLE_GEOM g"
+					+ " where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius
+					+ "_ID = ? and to_char(t.dt, '" + oracleDatePatternStr + "') = ? order by t.dt desc)"
+					+ " where rownum <= ?");
 			selectStmt.setInt(1, areaid);
-			selectStmt.setString(2, hour);
+			selectStmt.setString(2, queryStr);
 			selectStmt.setInt(3, num);
 			rs = DB.getRs(selectStmt);
 			while (rs.next()) {
 				FlickrDeWestPhoto photo = new FlickrDeWestPhoto();
 				photos.add(photo);
-
-				photo.setArea(area);
-				photo.setId(rs.getLong("PHOTO_ID"));
-				photo.setDate(rs.getTimestamp("DT"));
-				photo.setLatitude(rs.getDouble("LATITUDE"));
-				photo.setLongitude(rs.getDouble("LONGITUDE"));
-				photo.setPersonId(rs.getString("PERSON"));
-				photo.setRawTags(rs.getString("RAWTAGS"));
-				photo.setSmallUrl(rs.getString("SMALLURL"));
-				photo.setTitle(rs.getString("TITLE"));
-				photo.setViewed(rs.getInt("VIEWED"));
+				initPhotoFromRs(areaid, radius, rs, photo);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -274,8 +253,110 @@ public class FlickrDeWestAreaDaoJdbc implements FlickrDeWestAreaDao {
 			DB.close(selectStmt);
 			DB.close(conn);
 		}
-
+	
 		return photos;
+	}
+	
+	
+	private List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, QueryLevel queryLevel, Collection<String> queryStrs, int num) {
+		System.out.println(queryStrs);
+		
+		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+		String oracleDatePatternStr = FlickrDeWestAreaDao.judgeOracleDatePatternStr(queryLevel);
+		
+		Connection conn = DB.getConn();
+		PreparedStatement selectStmt = null;
+		ResultSet rs = null;
+		
+		String dateCondition = "(";
+		for(String s : queryStrs){
+			dateCondition += "to_char(t.dt, '" + oracleDatePatternStr + "') = '" + s + "' or ";
+		}
+		dateCondition = dateCondition.substring(0, dateCondition.lastIndexOf(" or ")) + ")";
+		
+		System.out.println(dateCondition);
+		try {
+			selectStmt = DB.getPstmt(conn, "select * from (select t.* from FLICKR_DE_WEST_TABLE t, FLICKR_DE_WEST_TABLE_GEOM g"
+					+ " where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + radius
+					+ "_ID = ? and " + dateCondition + " order by t.dt desc)"
+					+ " where rownum <= ?");
+			selectStmt.setInt(1, areaid);
+			selectStmt.setInt(2, num);
+			rs = DB.getRs(selectStmt);
+			while (rs.next()) {
+				FlickrDeWestPhoto photo = new FlickrDeWestPhoto();
+				photos.add(photo);
+				initPhotoFromRs(areaid, radius, rs, photo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.close(rs);
+			DB.close(selectStmt);
+			DB.close(conn);
+		}
+	
+		return photos;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(int, Radius, SortedSet<String>, int)
+	 */
+//	@Override
+//	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
+//		int batchSize = 1;
+//		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+//		List<String> tempQueryStrs = new ArrayList<String>(queryStrs);
+//		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(tempQueryStrs.get(0));
+//		
+//		for (int i = tempQueryStrs.size() - 1 ; photos.size() < num && i >= 0 ; i = i - batchSize) {
+//			if( i >= batchSize -1 ){
+//				photos.addAll(this.getPhotos(areaid, radius, queryLevel, tempQueryStrs.subList(i - batchSize, i + 1), num - photos.size()));
+//			}else{
+//				System.out.println("i:" + tempQueryStrs.subList(0, 3));
+//				
+//				photos.addAll(this.getPhotos(areaid, radius, queryLevel, tempQueryStrs.subList(0, i + 1), num - photos.size()));
+//			}
+//		}
+//		return photos;
+//	}
+	
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(int, Radius, SortedSet<String>, int)
+	 */
+	@Override
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
+		int batchSize = 1;
+		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+		List<String> tempQueryStrs = new ArrayList<String>(queryStrs);
+		for (int i = tempQueryStrs.size() - 1 ; photos.size() < num && i >= 0 ; i--) {
+				photos.addAll(this.getPhotos(areaid, radius, tempQueryStrs.get(i), num - photos.size()));
+		}
+		return photos;
+	}
+
+	private void initPhotoFromRs(int areaid, Radius radius, ResultSet rs, FlickrDeWestPhoto photo) throws SQLException {
+		//eager fetch
+		/*
+		FlickrDeWestArea area = getAreaById(areaid, radius);
+		*/
+		
+		//lazy fetch
+		FlickrDeWestArea area = new FlickrDeWestArea();
+		area.setId(areaid);
+		area.setRadius(radius);
+		
+		photo.setArea(area);
+		photo.setId(rs.getLong("PHOTO_ID"));
+		photo.setDate(rs.getTimestamp("DT"));
+		photo.setLatitude(rs.getDouble("LATITUDE"));
+		photo.setLongitude(rs.getDouble("LONGITUDE"));
+		photo.setPersonId(rs.getString("PERSON"));
+		photo.setRawTags(rs.getString("RAWTAGS"));
+		photo.setSmallUrl(rs.getString("SMALLURL"));
+		photo.setTitle(rs.getString("TITLE"));
+		photo.setViewed(rs.getInt("VIEWED"));
 	}
 
 	private void loadHoursCount(FlickrDeWestArea a) {
