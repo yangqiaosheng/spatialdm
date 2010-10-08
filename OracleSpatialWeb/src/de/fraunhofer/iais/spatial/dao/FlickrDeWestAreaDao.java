@@ -3,13 +3,20 @@ package de.fraunhofer.iais.spatial.dao;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.regex.Pattern;
 
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
-public interface FlickrDeWestAreaDao {
+public abstract class FlickrDeWestAreaDao {
+	
+	public static String oracleHourPatternStr = "YYYY-MM-DD@HH24";
+	public static String oracleDayPatternStr = "YYYY-MM-DD";
+	public static String oracleMonthPatternStr = "YYYY-MM";
+	public static String oracleYearPatternStr = "YYYY";
 
 	public static SimpleDateFormat hourDateFormat = new SimpleDateFormat("yyyy-MM-dd@HH");
 	public static SimpleDateFormat dayDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -78,7 +85,7 @@ public interface FlickrDeWestAreaDao {
 	 * @param num - numbers of result
 	 * @return
 	 */
-	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, Set<String> hours, int num);
+	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> hours, int num);
 
 	/**
 	 * Returns a List of FlickrDeWestPhoto instances within the area
@@ -90,4 +97,39 @@ public interface FlickrDeWestAreaDao {
 	 */
 	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String hour, int num);
 
+	
+	protected static String judgeOracleDatePatternStr(QueryLevel queryLevel){
+		String oracleDatePatternStr = null;
+	
+		switch (queryLevel) {
+		case YEAR:
+			oracleDatePatternStr = FlickrDeWestAreaDao.oracleYearPatternStr;
+			break;
+		case MONTH:
+			oracleDatePatternStr = FlickrDeWestAreaDao.oracleMonthPatternStr;
+			break;
+		case DAY:
+			oracleDatePatternStr = FlickrDeWestAreaDao.oracleDayPatternStr;
+			break;
+		case HOUR:
+			oracleDatePatternStr = FlickrDeWestAreaDao.oracleHourPatternStr;
+			break;
+		}
+		return oracleDatePatternStr;
+	}
+	
+	protected static QueryLevel judgeQueryLevel(String QueryStr){
+		if(QueryStr.matches(FlickrDeWestAreaDao.hourRegExPattern.pattern().split(":")[0])){
+			return QueryLevel.HOUR;
+		}else if(QueryStr.matches(FlickrDeWestAreaDao.dayRegExPattern.pattern().split(":")[0])){
+			return QueryLevel.DAY;
+		}else if(QueryStr.matches(FlickrDeWestAreaDao.monthRegExPattern.pattern().split(":")[0])){
+			return QueryLevel.MONTH;
+		}else if(QueryStr.matches(FlickrDeWestAreaDao.yearRegExPattern.pattern().split(":")[0])){
+			return QueryLevel.YEAR;
+		}else{
+			return null;
+		}
+		
+	}
 }

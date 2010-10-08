@@ -20,6 +20,22 @@ public class FlickrDeWestPhoto {
 	private String rawTags;
 	private String smallUrl;
 
+	@Override
+	public String toString() {
+		return super.toString()
+				+ "\tPHOTO_ID:" + this.getId()
+				+ "\tAreaid:" + this.getArea().getId()
+				+ "\tRadius:" + this.getArea().getRadius()
+				+ "\tDT:" + this.getDate()
+				+ "\tLATITUDE:" + this.getLatitude()
+				+ "\tLONGITUDE:" + this.getLongitude()
+				+ "\tPERSON:" + this.getPersonId()
+				+ "\tRAWTAGS:" + this.getRawTags()
+				+ "\tTITLE:" + this.getTitle()
+				+ "\tSMALLURL:" + this.getSmallUrl()
+				+ "\tVIEWED:" + this.getViewed();
+	}
+
 	public long getId() {
 		return id;
 	}

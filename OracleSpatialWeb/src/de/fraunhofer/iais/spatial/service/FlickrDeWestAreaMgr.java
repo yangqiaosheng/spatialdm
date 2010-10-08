@@ -102,6 +102,8 @@ public class FlickrDeWestAreaMgr {
 			a.setSelectCount(num);
 		}
 	}
+	
+	
 
 	private void allYears(Set<String> years) {
 		for (int i = 2005; i <= 2009; i++) {
@@ -290,9 +292,6 @@ public class FlickrDeWestAreaMgr {
 		Element calendarElement = rootElement.getChild("calendar");
 		if (calendarElement != null) {
 			
-			// for TimeSeriesChart
-			areaDto.setYears4Chart(areaDto.getYears());
-			
 			// <calendar><years>
 			Element yearsElement = calendarElement.getChild("years");
 			if (yearsElement != null) {
@@ -363,30 +362,38 @@ public class FlickrDeWestAreaMgr {
 		// construct the Query Strings
 		Set<String> queryStrs = new TreeSet<String>();
 		areaDto.setQueryStrs(queryStrs);
+		
+		Set<String> tempYears = new TreeSet<String>(areaDto.getYears());
+		Set<String> tempMonths = new TreeSet<String>(areaDto.getMonths());
+		Set<String> tempDays = new TreeSet<String>(areaDto.getDays());
+		Set<String> tempHours = new TreeSet<String>(areaDto.getHours());
+		
+		// for TimeSeriesChart
+		areaDto.setYears4Chart(tempYears);
 
 		// complete the options when they are not selected
-		if (areaDto.getYears().size() == 0) {
-			this.allYears(areaDto.getYears());
+		if (tempYears.size() == 0) {
+			this.allYears(tempYears);
 		}
-		if (areaDto.getMonths().size() == 0) {
-			this.allMonths(areaDto.getMonths());
+		if (tempMonths.size() == 0) {
+			this.allMonths(tempMonths);
 		}
-		if (areaDto.getDays().size() == 0) {
-			this.allDays(areaDto.getDays());
+		if (tempDays.size() == 0) {
+			this.allDays(tempDays);
 		}
-		if (areaDto.getHours().size() == 0) {
-			this.allHours(areaDto.getHours());
+		if (tempHours.size() == 0) {
+			this.allHours(tempHours);
 		}
 
 		// day of week in English format
 		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
 		Calendar calendar = Calendar.getInstance();
 		
-		for (String y : areaDto.getYears()) {
-			for (String m : areaDto.getMonths()) {
-				for (String d : areaDto.getDays()) {
-					for (String h : areaDto.getHours()) {
-//							calendar.set(Integer.parseInt(y), Integer.parseInt(m) - 1, Integer.parseInt(d));
+		for (String y : tempYears) {
+			for (String m : tempMonths) {
+				for (String d : tempDays) {
+					for (String h : tempHours) {
+//						calendar.set(Integer.parseInt(y), Integer.parseInt(m) - 1, Integer.parseInt(d));
 						calendar.set(Calendar.YEAR, Integer.parseInt(y));
 						calendar.set(Calendar.MONTH, Integer.parseInt(m) - 1);
 						calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(d));

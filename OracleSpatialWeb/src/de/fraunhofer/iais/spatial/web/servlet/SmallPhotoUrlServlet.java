@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +24,9 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class SmallPhotoUrlServlet extends HttpServlet {
 
+	private static final long serialVersionUID = 289355222687198395L;
+	
+	private static final int NUMBER_OF_PHOTOS = 10;
 	private static FlickrDeWestAreaMgr areaMgr = null;
 	
 	
@@ -55,8 +59,10 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			messageElement.setText("wrong input parameter!");
 		} else {
 			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
-			System.out.println("areaid:" + areaid +"|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs());
-			photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + radius), areaDto.getQueryStrs(), 20);
+//			Set<String> queryStrs = this.createQueryStrs(areaDto);
+			
+//			System.out.println("areaid:" + areaid +"|radius:" + radius + "|queryStrs:" + queryStrs);
+//			photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + radius), queryStrs, 20);
 			
 		}
 
@@ -66,8 +72,16 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		out.close();
 	}
 	
-	public String photosResponseXml(Document document, int areaid, Radius radius, Set<String> hours, int num) {
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, hours, 20);
+//	private Set<String> createQueryStrs(FlickrDeWestAreaDto areaDto){
+//		
+//	}
+//	
+//	private Set<String> createQueryStr(FlickrDeWestAreaDto areaDto){
+//		
+//	}
+	
+	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> hours, int num) {
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, hours, NUMBER_OF_PHOTOS);
 
 		Element rootElement = document.getRootElement();
 
@@ -83,7 +97,6 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
 			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
 			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
-			photoElement.addContent(new Element("polygonArea").setText(String.valueOf(p.getArea().getArea())));
 			photoElement.addContent(new Element("date").setText(String.valueOf(p.getDate())));
 			photoElement.addContent(new Element("latitude").setText(String.valueOf(p.getLatitude())));
 			photoElement.addContent(new Element("longitude").setText(String.valueOf(p.getLongitude())));
