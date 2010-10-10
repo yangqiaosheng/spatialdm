@@ -12,7 +12,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public abstract class FlickrDeWestAreaDao {
-	
+
 	public static String oracleHourPatternStr = "YYYY-MM-DD@HH24";
 	public static String oracleDayPatternStr = "YYYY-MM-DD";
 	public static String oracleMonthPatternStr = "YYYY-MM";
@@ -27,8 +27,8 @@ public abstract class FlickrDeWestAreaDao {
 	public static Pattern dayRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
 	public static Pattern monthRegExPattern = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
 	public static Pattern yearRegExPattern = Pattern.compile("(\\d{4}):(\\d{1,});");
-	
-	
+
+
 	/**
 	 * Returns a List of all the FlickrDeWestArea instances
 	 * @return List<FlickrDeWestArea>
@@ -36,7 +36,7 @@ public abstract class FlickrDeWestAreaDao {
 	public abstract List<FlickrDeWestArea> getAllAreas(Radius radius);
 
 	/**
-	 * Returns the instance of FlickrDeWestArea related to that areaid 
+	 * Returns the instance of FlickrDeWestArea related to that areaid
 	 * @param areaid
 	 * @return FlickrDeWestArea
 	 */
@@ -67,40 +67,22 @@ public abstract class FlickrDeWestAreaDao {
 	 */
 	public abstract int getTotalCount(int areaid, Radius radius);
 
-	/**
-	 * Returns a FlickrDeWestPhoto instance within the area
-	 * @param areaid
-	 * @param radius
-	 * @param hour
-	 * @param idx - index number of the result
-	 * @return
-	 */
-	public abstract FlickrDeWestPhoto getPhoto(int areaid, Radius radius, String hour, int idx);
-
-	/** 
-	 * Returns a List of FlickrDeWestPhoto instances within the area
-	 * @param areaid
-	 * @param radius
-	 * @param hours
-	 * @param num - numbers of result
-	 * @return
-	 */
-	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> hours, int num);
 
 	/**
 	 * Returns a List of FlickrDeWestPhoto instances within the area
 	 * @param areaid
 	 * @param radius
-	 * @param hour
+	 * @param queryStrs
 	 * @param num - numbers of result
 	 * @return
 	 */
-	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, String hour, int num);
+	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num);
 
-	
+
+
 	protected static String judgeOracleDatePatternStr(QueryLevel queryLevel){
 		String oracleDatePatternStr = null;
-	
+
 		switch (queryLevel) {
 		case YEAR:
 			oracleDatePatternStr = FlickrDeWestAreaDao.oracleYearPatternStr;
@@ -117,7 +99,7 @@ public abstract class FlickrDeWestAreaDao {
 		}
 		return oracleDatePatternStr;
 	}
-	
+
 	protected static QueryLevel judgeQueryLevel(String QueryStr){
 		if(QueryStr.matches(FlickrDeWestAreaDao.hourRegExPattern.pattern().split(":")[0])){
 			return QueryLevel.HOUR;
@@ -130,6 +112,6 @@ public abstract class FlickrDeWestAreaDao {
 		}else{
 			return null;
 		}
-		
+
 	}
 }

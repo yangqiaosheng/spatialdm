@@ -3,11 +3,22 @@ function getSmallPhotos() {
 	var JQueryObj = $("#username");
 	var username = JQueryObj.val();
 	alert(username);
-	$.get('SmallPhotoUrl', { areaid: username, radius: '20000'}, callback);
+	$.get('SmallPhotoUrl', { areaid: username, radius: '20000'}, parseXml(), "xml");
+
 }
 
-function callback(data) {
-//    alert(data);
+function parseXml(xml) {
+
+
 	var ResultObj = $("#result");
-	ResultObj.html(data);
+
+
+	var xmlObj = $(xml);
+    xmlObj.find("photo").each(function(i){
+                            var oId = $(this).attr("id");
+                            var IdValue = oId.text();
+                            var oUrl = $(this).chlidren("url");
+                            ResultObj.html(IdValue + " " +  oUrl.value() + "<br>");
+						})
+alert($(xml).find("id").text());
 }

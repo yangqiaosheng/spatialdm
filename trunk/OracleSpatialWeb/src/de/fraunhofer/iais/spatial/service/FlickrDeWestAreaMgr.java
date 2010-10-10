@@ -11,7 +11,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +37,6 @@ import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
@@ -102,8 +101,8 @@ public class FlickrDeWestAreaMgr {
 			a.setSelectCount(num);
 		}
 	}
-	
-	
+
+
 
 	private void allYears(Set<String> years) {
 		for (int i = 2005; i <= 2009; i++) {
@@ -230,21 +229,21 @@ public class FlickrDeWestAreaMgr {
 		if (intervalStr != null && !"".equals(intervalStr.trim())) {
 			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
 			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
-			
-			Set<String> queryStrs = new TreeSet<String>();
+
+			SortedSet<String> queryStrs = new TreeSet<String>();
 			areaDto.setQueryStrs(queryStrs);
-			Set<String> years4Chart = new TreeSet<String>();
+			SortedSet<String> years4Chart = new TreeSet<String>();
 			areaDto.setYears4Chart(years4Chart);
-			
+
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			areaDto.setQueryLevel(QueryLevel.DAY);
-			
+
 			if (intervalMachter.find()) {
 				Date beginDate = inputDateFormat.parse(intervalMachter.group(1));
 				Date endDate = inputDateFormat.parse(intervalMachter.group(2));
 				areaDto.setBeginDate(beginDate);
 				areaDto.setEndDate(endDate);
-				
+
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(beginDate);
 				Calendar end = Calendar.getInstance();
@@ -252,7 +251,7 @@ public class FlickrDeWestAreaMgr {
 				while (calendar.getTime().before(end.getTime())) {
 					queryStrs.add(FlickrDeWestAreaDao.dayDateFormat.format(calendar.getTime()));
 					calendar.add(Calendar.DATE, 1);
-					
+
 					// for TimeSeriesChart
 					areaDto.getYears4Chart().add(FlickrDeWestAreaDao.yearDateFormat.format(calendar.getTime()));
 				}
@@ -264,34 +263,34 @@ public class FlickrDeWestAreaMgr {
 		if (selectedDaysStr != null && !"".equals(selectedDaysStr.trim())) {
 			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
-			Set<Date> selectedDays = new LinkedHashSet<Date>();
+			SortedSet<Date> selectedDays = new TreeSet<Date>();
 			areaDto.setSelectedDays(selectedDays);
-			
-			Set<String> queryStrs = new TreeSet<String>();
+
+			SortedSet<String> queryStrs = new TreeSet<String>();
 			areaDto.setQueryStrs(queryStrs);
-			Set<String> years4Chart = new TreeSet<String>();
+			SortedSet<String> years4Chart = new TreeSet<String>();
 			areaDto.setYears4Chart(years4Chart);
-			
+
 			// day of week in English format
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
 			areaDto.setQueryLevel(QueryLevel.DAY);
-			
+
 			while (selectedDaysMachter.find()) {
 				Date selectedDay = inputDateFormat.parse(selectedDaysMachter.group());
 				selectedDays.add(selectedDay);
-				
+
 				queryStrs.add(FlickrDeWestAreaDao.dayDateFormat.format(selectedDay));
-				
+
 				// for TimeSeriesChart
 				areaDto.getYears4Chart().add(FlickrDeWestAreaDao.yearDateFormat.format(selectedDay));
 			}
 		}
-		
-		
+
+
 		// <calendar>
 		Element calendarElement = rootElement.getChild("calendar");
 		if (calendarElement != null) {
-			
+
 			// <calendar><years>
 			Element yearsElement = calendarElement.getChild("years");
 			if (yearsElement != null) {
@@ -355,19 +354,19 @@ public class FlickrDeWestAreaMgr {
 			setCalendarQueryStrs(areaDto);
 			areaDto.setQueryLevel(QueryLevel.HOUR);
 		}
-		
+
 	}
 
 	private void setCalendarQueryStrs(FlickrDeWestAreaDto areaDto) {
 		// construct the Query Strings
-		Set<String> queryStrs = new TreeSet<String>();
+		SortedSet<String> queryStrs = new TreeSet<String>();
 		areaDto.setQueryStrs(queryStrs);
-		
-		Set<String> tempYears = new TreeSet<String>(areaDto.getYears());
-		Set<String> tempMonths = new TreeSet<String>(areaDto.getMonths());
-		Set<String> tempDays = new TreeSet<String>(areaDto.getDays());
-		Set<String> tempHours = new TreeSet<String>(areaDto.getHours());
-		
+
+		SortedSet<String> tempYears = new TreeSet<String>(areaDto.getYears());
+		SortedSet<String> tempMonths = new TreeSet<String>(areaDto.getMonths());
+		SortedSet<String> tempDays = new TreeSet<String>(areaDto.getDays());
+		SortedSet<String> tempHours = new TreeSet<String>(areaDto.getHours());
+
 		// for TimeSeriesChart
 		areaDto.setYears4Chart(tempYears);
 
@@ -388,7 +387,7 @@ public class FlickrDeWestAreaMgr {
 		// day of week in English format
 		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
 		Calendar calendar = Calendar.getInstance();
-		
+
 		for (String y : tempYears) {
 			for (String m : tempMonths) {
 				for (String d : tempDays) {
@@ -516,12 +515,12 @@ public class FlickrDeWestAreaMgr {
 //					r = (double) Math.log10(a.getSelectCount() + 1) / 60.0 * scale;
 					icon = remoteBasePath + "images/circle_or.ico";
 				}
-				
+
 				r = (double) Math.log10(a.getSelectCount() + 1) / 80.0 * scale;
 				if (r > 0.1) {
 					r = 0.1;
 				}
-				
+
 				hrefElement.addContent(icon);
 
 				Element latLonBoxElement = new Element("LatLonBox", namespace);
@@ -626,6 +625,6 @@ public class FlickrDeWestAreaMgr {
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
 
-	
+
 
 }
