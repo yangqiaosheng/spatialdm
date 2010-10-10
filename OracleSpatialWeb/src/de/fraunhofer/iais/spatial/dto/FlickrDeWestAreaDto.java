@@ -4,18 +4,18 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public class FlickrDeWestAreaDto {
-	private Set<String> years = new TreeSet<String>();
-	private Set<String> months = new TreeSet<String>();
-	private Set<String> days = new TreeSet<String>();
-	private Set<String> hours = new TreeSet<String>();
-	private Set<String> weekdays = new TreeSet<String>();
-	private Set<String> queryStrs;
+	private SortedSet<String> years = new TreeSet<String>();
+	private SortedSet<String> months = new TreeSet<String>();
+	private SortedSet<String> days = new TreeSet<String>();
+	private SortedSet<String> hours = new TreeSet<String>();
+	private SortedSet<String> weekdays = new TreeSet<String>();
+	private SortedSet<String> queryStrs;
 	private QueryLevel queryLevel;
 	private Radius radius;
 	private int zoom;
@@ -24,50 +24,50 @@ public class FlickrDeWestAreaDto {
 	private List<Point2D> polygon;
 	private Date beginDate;
 	private Date endDate;
-	private Set<Date> selectedDays;
-	private Set<String> years4Chart;
+	private SortedSet<Date> selectedDays;
+	private SortedSet<String> years4Chart;
 
 	public enum QueryLevel {
 		HOUR, DAY, MONTH, YEAR;
 	}
 
-	public Set<String> getYears() {
+	public SortedSet<String> getYears() {
 		return years;
 	}
 
-	public void setYears(Set<String> years) {
+	public void setYears(SortedSet<String> years) {
 		this.years = years;
 	}
 
-	public Set<String> getMonths() {
+	public SortedSet<String> getMonths() {
 		return months;
 	}
 
-	public void setMonths(Set<String> months) {
+	public void setMonths(SortedSet<String> months) {
 		this.months = months;
 	}
 
-	public Set<String> getDays() {
+	public SortedSet<String> getDays() {
 		return days;
 	}
 
-	public void setDays(Set<String> days) {
+	public void setDays(SortedSet<String> days) {
 		this.days = days;
 	}
 
-	public Set<String> getHours() {
+	public SortedSet<String> getHours() {
 		return hours;
 	}
 
-	public void setHours(Set<String> hours) {
+	public void setHours(SortedSet<String> hours) {
 		this.hours = hours;
 	}
 
-	public Set<String> getWeekdays() {
+	public SortedSet<String> getWeekdays() {
 		return weekdays;
 	}
 
-	public void setWeekdays(Set<String> weekdays) {
+	public void setWeekdays(SortedSet<String> weekdays) {
 		this.weekdays = weekdays;
 	}
 
@@ -103,11 +103,11 @@ public class FlickrDeWestAreaDto {
 		this.boundaryRect = boundaryRect;
 	}
 
-	public Set<String> getQueryStrs() {
+	public SortedSet<String> getQueryStrs() {
 		return queryStrs;
 	}
 
-	public void setQueryStrs(Set<String> queryStrs) {
+	public void setQueryStrs(SortedSet<String> queryStrs) {
 		this.queryStrs = queryStrs;
 	}
 
@@ -143,19 +143,19 @@ public class FlickrDeWestAreaDto {
 		this.endDate = endDate;
 	}
 
-	public Set<Date> getSelectedDays() {
+	public SortedSet<Date> getSelectedDays() {
 		return selectedDays;
 	}
 
-	public void setSelectedDays(Set<Date> selectedDays) {
+	public void setSelectedDays(SortedSet<Date> selectedDays) {
 		this.selectedDays = selectedDays;
 	}
 
-	public Set<String> getYears4Chart() {
+	public SortedSet<String> getYears4Chart() {
 		return years4Chart;
 	}
 
-	public void setYears4Chart(Set<String> years4Chart) {
+	public void setYears4Chart(SortedSet<String> years4Chart) {
 		this.years4Chart = years4Chart;
 	}
 }

@@ -1,6 +1,5 @@
 package de.fraunhofer.iais.spatial.util;
 
-import java.beans.PropertyVetoException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -13,7 +12,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.jolbox.bonecp.BoneCPConfig;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 public class DB {
 
@@ -23,8 +23,8 @@ public class DB {
 	private static final Logger logger = LoggerFactory.getLogger(DB.class);
 
 	private static Properties pros = null;
-	//	private static BoneCPDataSource ds = null;
-	private static ComboPooledDataSource ds = null;
+	private static BoneCPDataSource ds = null;
+//	private static ComboPooledDataSource ds = null;
 
 	private DB() {
 
@@ -32,7 +32,7 @@ public class DB {
 
 	/**
 	 * initialize the c3p0 Connection Pool
-	*/
+	*//*
 	static {
 		// initialize the JDBC Configuration
 		logger.debug("static() - begin to setup Connection Pool");
@@ -49,7 +49,7 @@ public class DB {
 			ComboPooledDataSource cpds = new ComboPooledDataSource();
 			cpds.setDriverClass(pros.getProperty("driver"));
 
-			//loads the jdbc driver            
+			//loads the jdbc driver
 			cpds.setJdbcUrl(pros.getProperty("url"));
 			cpds.setUser(pros.getProperty("username"));
 			cpds.setPassword(pros.getProperty("password"));
@@ -62,16 +62,16 @@ public class DB {
 		}
 
 		logger.debug("static() - finish to setup Connection Pool");
-	}
+	}*/
 
 	/**
 	 * initialize the BoneCP Connection Pool
 	 */
-	/*
+
 	static {
 	// initialize the JDBC Configuration
 	logger.debug("static() - begin to setup Connection Pool");
-	
+
 	pros = new Properties();
 	try {
 		pros.load(new FileReader(DB.class.getResource("/jdbc.properties").getFile()));
@@ -88,18 +88,18 @@ public class DB {
 		config.setJdbcUrl(pros.getProperty("url")); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
 		config.setUsername(pros.getProperty("username"));
 		config.setPassword(pros.getProperty("password"));
-		config.setMinConnectionsPerPartition(1);
-		config.setMaxConnectionsPerPartition(5);
-		config.setPartitionCount(1);
+		config.setMinConnectionsPerPartition(2);
+		config.setMaxConnectionsPerPartition(10);
+		config.setPartitionCount(3);
 
 		ds = new BoneCPDataSource(config);
 	} catch (ClassNotFoundException e) {
 		logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$
 		e.printStackTrace();
 	}
-	
+
 	logger.debug("static() - finish to setup Connection Pool");
-	} */
+	}
 
 	@Override
 	protected void finalize() throws Throwable {

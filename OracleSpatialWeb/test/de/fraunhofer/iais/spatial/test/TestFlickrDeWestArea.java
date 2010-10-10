@@ -123,35 +123,26 @@ public class TestFlickrDeWestArea {
 		}
 	}
 
-	@Test
-	public void testPhoto() {
-		long start = System.currentTimeMillis();
-		for (int i = 1; i <= 20; i++) {
-			FlickrDeWestPhoto p = areaMgr.getAreaDao().getPhoto(1, Radius.R80000, "2007-08-11@13", i);
-			if (p != null) {
-				System.out.println(p);
-			}
-		}
-		
-		System.out.println(System.currentTimeMillis()-start);
-	}
 
 	@Test
 	public void testPhoto2() {
 		long start = System.currentTimeMillis();
-		
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, "2007-08-11@13", 20);
+
+		TreeSet<String> hours = new TreeSet<String>();
+		hours.add("2007-08-11@13");
+
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
 		for (FlickrDeWestPhoto p : photos) {
 			System.out.println(p);
 		}
 
 		System.out.println(System.currentTimeMillis()-start);
 	}
-	
+
 	@Test
 	public void testPhoto3() {
 		long start = System.currentTimeMillis();
-		
+
 		TreeSet<String> hours = new TreeSet<String>();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
@@ -164,16 +155,16 @@ public class TestFlickrDeWestArea {
 
 		System.out.println(System.currentTimeMillis()-start);
 	}
-	
+
 	@Test
 	public void testPhoto4() {
 		long start = System.currentTimeMillis();
-		
+
 		TreeSet<String> hours = new TreeSet<String>();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
-		
+
 		for(int i = 2005 ; i < 2010 ; i++){
 			for (int j = 10; j <= 12; j++){
 				for (int k = 10; k < 30; k++){
@@ -184,8 +175,40 @@ public class TestFlickrDeWestArea {
 			}
 		}
 
+
+
 		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
 		for (FlickrDeWestPhoto p : photos) {
+			System.out.println(p);
+		}
+
+		List<FlickrDeWestPhoto> photos2 = areaMgr.getAreaDao().getPhotos(1, Radius.R40000, hours, 20);
+		for (FlickrDeWestPhoto p : photos2) {
+			System.out.println(p);
+		}
+
+		List<FlickrDeWestPhoto> photos3 = areaMgr.getAreaDao().getPhotos(1, Radius.R20000, hours, 20);
+		for (FlickrDeWestPhoto p : photos3) {
+			System.out.println(p);
+		}
+
+		List<FlickrDeWestPhoto> photos4 = areaMgr.getAreaDao().getPhotos(1, Radius.R10000, hours, 20);
+		for (FlickrDeWestPhoto p : photos4) {
+			System.out.println(p);
+		}
+
+
+		List<FlickrDeWestPhoto> photos5 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, hours, 20);
+		for (FlickrDeWestPhoto p : photos5) {
+			System.out.println(p);
+		}
+
+		TreeSet<String> years = new TreeSet<String>();
+		years.add("2007");
+		years.add("2009");
+		years.add("2006");
+		List<FlickrDeWestPhoto> photos6 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, years, 20);
+		for (FlickrDeWestPhoto p : photos6) {
 			System.out.println(p);
 		}
 
@@ -278,7 +301,7 @@ public class TestFlickrDeWestArea {
 		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null));
 
 	}
-	
+
 	@Test
 	public void testXmlGeneration() throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
@@ -293,7 +316,7 @@ public class TestFlickrDeWestArea {
 		System.out.println(XmlUtil.xml2String(document, false));
 		System.out.println(URLEncoder.encode((XmlUtil.xml2String(document, true)), "UTF-8"));
 	}
-	
+
 //	@Test
 //	public void testQueryLevel() {
 //		String hour = "2009-07-07@13";
@@ -306,5 +329,5 @@ public class TestFlickrDeWestArea {
 //		String year = "2009";
 //		System.out.println(FlickrDeWestAreaDao.judgeQueryLevel(year));
 //	}
-	
+
 }

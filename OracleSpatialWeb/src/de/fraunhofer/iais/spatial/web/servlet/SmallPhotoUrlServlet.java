@@ -25,16 +25,16 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 public class SmallPhotoUrlServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 289355222687198395L;
-	
+
 	private static final int NUMBER_OF_PHOTOS = 10;
 	private static FlickrDeWestAreaMgr areaMgr = null;
-	
-	
+
+
 	/**
 		 * The doGet method of the servlet. <br>
 		 *
 		 * This method is called when a form has its tag value method equals to get.
-		 * 
+		 *
 		 * @param request the request send by the client to the server
 		 * @param response the response send by the server to the client
 		 * @throws ServletException if an error occurred
@@ -45,8 +45,6 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		response.setContentType("text/xml");
 		String areaid = request.getParameter("areaid");
-		String radius = request.getParameter("radius");
-		System.out.println("areaid:" + areaid +"|radius:" + radius);
 		PrintWriter out = response.getWriter();
 
 		Document document = new Document();
@@ -55,15 +53,14 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		if ((areaid == null || areaid.equals("")) && (radius == null || radius.equals(""))) {
+		if (areaid == null || areaid.equals("")) {
 			messageElement.setText("wrong input parameter!");
 		} else {
 			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
-//			Set<String> queryStrs = this.createQueryStrs(areaDto);
-			
-//			System.out.println("areaid:" + areaid +"|radius:" + radius + "|queryStrs:" + queryStrs);
-//			photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + radius), queryStrs, 20);
-			
+
+			System.out.println("areaid:" + areaid +"|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs());
+
+			photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), 20);
 		}
 
 		out.print(XmlUtil.xml2String(document, true));
@@ -71,17 +68,17 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		out.flush();
 		out.close();
 	}
-	
+
 //	private Set<String> createQueryStrs(FlickrDeWestAreaDto areaDto){
-//		
+//
 //	}
-//	
+//
 //	private Set<String> createQueryStr(FlickrDeWestAreaDto areaDto){
-//		
+//
 //	}
-	
-	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> hours, int num) {
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, hours, NUMBER_OF_PHOTOS);
+
+	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, NUMBER_OF_PHOTOS);
 
 		Element rootElement = document.getRootElement();
 
@@ -109,10 +106,10 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		return XmlUtil.xml2String(document, true);
 	}
-	
+
 	/**
 	 * Initialization of the servlet. <br>
-	 * 
+	 *
 	 * @throws ServletException
 	 *             - if an error occurs
 	 */
