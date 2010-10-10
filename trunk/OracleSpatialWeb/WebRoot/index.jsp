@@ -71,7 +71,7 @@ pageEncoding="ISO-8859-1"%>
         <link type="text/css" rel="stylesheet" href="css/carousel.css" />
         <link type="text/css" rel="stylesheet" href="css/calendar.css" />
         <link type="text/css" rel="stylesheet" href="css/legend.css" />
-	<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
+	    <link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
 
 
     </head>
