@@ -12,7 +12,7 @@
 		<link type="text/css" rel="stylesheet" href="css/legend.css" />
 		<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
 
-		<script type="text/javascript" src="script/jquery.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="script/jCarousel/lib/jquery.jcarousel.min.js"></script>
 		<script type="text/javascript" src="script/jCarousel.js"></script>
