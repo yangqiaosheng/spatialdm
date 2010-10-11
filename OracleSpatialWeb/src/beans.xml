@@ -4,21 +4,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	
+
+	<!-- Area -->
+<!--
 	<bean id="areaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.AreaDaoJdbc" />
 	<bean id="areaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.AreaDaoMybatis" />
 	<bean id="areaMgr" class="de.fraunhofer.iais.spatial.service.AreaMgr">
 		<property name="areaDao" ref="areaDaoJdbcImpl" />
 	</bean>
-	
+-->
+
+	<!-- FlickrDeWestArea -->
 	<bean id="flickrDeWestAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc" />
-<!--	<bean id="flickrDeWestAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrDeWestAreaDaoMybatis" />-->
+<!--<bean id="flickrDeWestAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrDeWestAreaDaoMybatis" />-->
 	<bean id="flickrDeWestAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr">
 		<property name="areaDao" ref="flickrDeWestAreaDaoJdbcImpl" />
 	</bean>
-	
-	<bean id="milanpolyDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.MilanpolyDaoJdbc" />
-	<bean id="milanpolyDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.MilanpolyDaoMybatis" />
-	<bean id="milanpolyMgr" class="de.fraunhofer.iais.spatial.service.MilanpolyMgr">	
-	</bean>
+
 </beans>
