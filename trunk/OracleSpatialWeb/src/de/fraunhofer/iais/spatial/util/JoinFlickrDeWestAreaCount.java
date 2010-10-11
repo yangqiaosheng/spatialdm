@@ -13,12 +13,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.fraunhofer.iais.spatial.dao.jdbc.DB;
+
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 
 public class JoinFlickrDeWestAreaCount {
 	static long start = System.currentTimeMillis();
 	static int count = 0;
+	DB db = new DB();
 
 	public static void main(String[] args) throws Exception {
 		JoinFlickrDeWestAreaCount t = new JoinFlickrDeWestAreaCount();
@@ -43,7 +46,7 @@ public class JoinFlickrDeWestAreaCount {
 		t.copyTable();
 
 		System.out.println("escaped time:" + (System.currentTimeMillis() - start) / 1000.0);
-		//		
+		//
 		//		t.update("Haolin",  "FLICKR_DE_WEST_TABLE_COUNT", "PERSON", "1   ", "5000");
 		//		t.select();
 		//		t.listCalendar();
@@ -52,9 +55,9 @@ public class JoinFlickrDeWestAreaCount {
 	}
 
 	private void countHour(String radiusString) throws Exception {
-		Connection conn = DB.getConn();
-		PreparedStatement selectAreaStmt = DB.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_" + radiusString + " a");
-		ResultSet selectAreaRs = DB.getRs(selectAreaStmt);
+		Connection conn = db.getConn();
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_" + radiusString + " a");
+		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 		String areaId = "";
 		int i = 0;
 		for (int l = 0; l < 0; l++) {
@@ -72,16 +75,16 @@ public class JoinFlickrDeWestAreaCount {
 			double mbrY2 = j_geom.getMBR()[3];
 			System.out.println("area id:" + areaId + "mbr:" + mbrX1 + ":" + mbrY1 + ":" + mbrX2 + ":" + mbrY2);
 
-			PreparedStatement selectFlickrStmt = DB.getPstmt(conn, "select DISTINCT to_char(dt,'yyyy-MM-dd@HH24') d from FLICKR_DE_WEST_TABLE where longitude > ? and longitude < ? and latitude > ? and latitude < ? order by d");
+			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select DISTINCT to_char(dt,'yyyy-MM-dd@HH24') d from FLICKR_DE_WEST_TABLE where longitude > ? and longitude < ? and latitude > ? and latitude < ? order by d");
 			selectFlickrStmt.setDouble(1, mbrX1);
 			selectFlickrStmt.setDouble(2, mbrX2);
 			selectFlickrStmt.setDouble(3, mbrY1);
 			selectFlickrStmt.setDouble(4, mbrY2);
-			ResultSet selectFlickrRs = DB.getRs(selectFlickrStmt);
+			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
 
 			for (int j = 0; selectFlickrRs.next(); j++) {
 				String date = selectFlickrRs.getString("d");
-				PreparedStatement joinStmt = DB.getPstmt(conn, "select count(*) num " + "from FLICKR_DE_WEST_TABLE_" + radiusString
+				PreparedStatement joinStmt = db.getPstmt(conn, "select count(*) num " + "from FLICKR_DE_WEST_TABLE_" + radiusString
 						+ " t, (select * from flickr_de_west_table f where f.longitude > ? and f.longitude < ? and f.latitude > ? and f.latitude < ? and  f.dt >= to_date(?,'yyyy-MM-dd@HH24:mi:ss') and f.dt <= to_date(?,'yyyy-MM-dd@HH24:mi:ss')) f2"
 						+ " WHERE t.id=?  and sdo_relate(t.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(f2.longitude, f2.latitude, NULL),NULL,NULL),'mask=anyinteract,querytype=join') = 'TRUE'");
 				joinStmt.setDouble(1, mbrX1);
@@ -91,7 +94,7 @@ public class JoinFlickrDeWestAreaCount {
 				joinStmt.setString(5, date + ":00:00");
 				joinStmt.setString(6, date + ":59:59");
 				joinStmt.setString(7, areaId);
-				ResultSet joinRs = DB.getRs(joinStmt);
+				ResultSet joinRs = db.getRs(joinStmt);
 				if (joinRs.next()) {
 					int num = joinRs.getInt("num");
 					i += num;
@@ -117,9 +120,9 @@ public class JoinFlickrDeWestAreaCount {
 	}
 
 	private void countPerson(String radiusString) throws Exception {
-		Connection conn = DB.getConn();
-		PreparedStatement selectAreaStmt = DB.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_" + radiusString + " a");
-		ResultSet selectAreaRs = DB.getRs(selectAreaStmt);
+		Connection conn = db.getConn();
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_" + radiusString + " a");
+		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 		String areaId = "";
 		int i = 0;
 		while (selectAreaRs.next()) {
@@ -134,15 +137,15 @@ public class JoinFlickrDeWestAreaCount {
 			double mbrY2 = j_geom.getMBR()[3];
 			System.out.println("area id:" + areaId + "mbr:" + mbrX1 + ":" + mbrY1 + ":" + mbrX2 + ":" + mbrY2);
 
-			PreparedStatement selectFlickrStmt = DB.getPstmt(conn, "select DISTINCT person from FLICKR_DE_WEST_TABLE where longitude > ? and longitude < ? and latitude > ? and latitude < ?");
+			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select DISTINCT person from FLICKR_DE_WEST_TABLE where longitude > ? and longitude < ? and latitude > ? and latitude < ?");
 			selectFlickrStmt.setDouble(1, mbrX1);
 			selectFlickrStmt.setDouble(2, mbrX2);
 			selectFlickrStmt.setDouble(3, mbrY1);
 			selectFlickrStmt.setDouble(4, mbrY2);
-			ResultSet selectFlickrRs = DB.getRs(selectFlickrStmt);
+			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
 			for (int j = 0; selectFlickrRs.next(); j++) {
 
-				PreparedStatement joinStmt = DB.getPstmt(conn, "select count(*) num " + "from FLICKR_DE_WEST_TABLE_" + radiusString
+				PreparedStatement joinStmt = db.getPstmt(conn, "select count(*) num " + "from FLICKR_DE_WEST_TABLE_" + radiusString
 						+ " t, (select * from flickr_de_west_table f where f.longitude > ? and f.longitude < ? and f.latitude > ? and f.latitude < ? and  f.person=?) f2"
 						+ " WHERE t.id=?  and sdo_relate(t.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(f2.longitude, f2.latitude, NULL),NULL,NULL),'mask=anyinteract,querytype=join') = 'TRUE'");
 				String person = selectFlickrRs.getString("person");
@@ -152,7 +155,7 @@ public class JoinFlickrDeWestAreaCount {
 				joinStmt.setDouble(4, mbrY2);
 				joinStmt.setString(5, person);
 				joinStmt.setString(6, areaId);
-				ResultSet joinRs = DB.getRs(joinStmt);
+				ResultSet joinRs = db.getRs(joinStmt);
 
 				if (joinRs.next()) {
 					int num = joinRs.getInt("num");
@@ -181,10 +184,10 @@ public class JoinFlickrDeWestAreaCount {
 	}
 
 	private void countDay() throws Exception {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 
-		PreparedStatement personStmt = DB.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_Count");
-		ResultSet pset = DB.getRs(personStmt);
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_Count");
+		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
 			String id = pset.getString("id");
@@ -211,7 +214,7 @@ public class JoinFlickrDeWestAreaCount {
 				if (!day.equals("")) {
 					dayStr.append(day + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = DB.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set day = ? where id = ? and radius = ?");
+				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set day = ? where id = ? and radius = ?");
 				iStmt.setString(1, dayStr.toString());
 				iStmt.setString(2, id);
 				iStmt.setString(3, radius);
@@ -226,10 +229,10 @@ public class JoinFlickrDeWestAreaCount {
 	}
 
 	private void countMonth() throws Exception {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 
-		PreparedStatement personStmt = DB.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_Count");
-		ResultSet pset = DB.getRs(personStmt);
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_Count");
+		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
 			String id = pset.getString("id");
@@ -256,7 +259,7 @@ public class JoinFlickrDeWestAreaCount {
 				if (!month.equals("")) {
 					monthStr.append(month + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = DB.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set month = ? where id = ? and radius = ?");
+				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set month = ? where id = ? and radius = ?");
 				iStmt.setString(1, monthStr.toString());
 				iStmt.setString(2, id);
 				iStmt.setString(3, radius);
@@ -271,10 +274,10 @@ public class JoinFlickrDeWestAreaCount {
 	}
 
 	private void countYear() throws Exception {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 
-		PreparedStatement personStmt = DB.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_Count");
-		ResultSet pset = DB.getRs(personStmt);
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_Count");
+		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
 			String id = pset.getString("id");
@@ -301,7 +304,7 @@ public class JoinFlickrDeWestAreaCount {
 				if (!year.equals("")) {
 					yearStr.append(year + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = DB.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set year = ? where id = ? and radius = ?");
+				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set year = ? where id = ? and radius = ?");
 				iStmt.setString(1, yearStr.toString());
 				iStmt.setString(2, id);
 				iStmt.setString(3, radius);
@@ -316,10 +319,10 @@ public class JoinFlickrDeWestAreaCount {
 	}
 
 	private void countTotal() throws Exception {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 
-		PreparedStatement personStmt = DB.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_Count");
-		ResultSet pset = DB.getRs(personStmt);
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_Count");
+		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
 			String id = pset.getString("id");
@@ -334,7 +337,7 @@ public class JoinFlickrDeWestAreaCount {
 					hour += Integer.parseInt(m.group(1));
 				}
 
-				PreparedStatement iStmt = DB.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set total = ? where id = ? and radius = ?");
+				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set total = ? where id = ? and radius = ?");
 				iStmt.setInt(1, hour);
 				iStmt.setString(2, id);
 				iStmt.setString(3, radius);
@@ -348,8 +351,8 @@ public class JoinFlickrDeWestAreaCount {
 	}
 
 	private void insert(String count, String table, String column, String id, String radius) throws Exception {
-		Connection conn = DB.getConn();
-		PreparedStatement insertStmt = DB.getPstmt(conn, "insert into " + table + " (id, radius, " + column + ") values (?, ?, ?)");
+		Connection conn = db.getConn();
+		PreparedStatement insertStmt = db.getPstmt(conn, "insert into " + table + " (id, radius, " + column + ") values (?, ?, ?)");
 		insertStmt.setString(1, id);
 		insertStmt.setString(2, radius);
 		insertStmt.setString(3, count);
@@ -359,8 +362,8 @@ public class JoinFlickrDeWestAreaCount {
 	}
 
 	private void update(String count, String table, String column, String id, String radius) throws Exception {
-		Connection conn = DB.getConn();
-		PreparedStatement insertStmt = DB.getPstmt(conn, "update " + table + " set " + column + " = ? where id = ? and radius = ?");
+		Connection conn = db.getConn();
+		PreparedStatement insertStmt = db.getPstmt(conn, "update " + table + " set " + column + " = ? where id = ? and radius = ?");
 		insertStmt.setString(1, count);
 		insertStmt.setString(2, id);
 		insertStmt.setString(3, radius);
@@ -372,9 +375,9 @@ public class JoinFlickrDeWestAreaCount {
 
 	private void select() throws Exception {
 
-		Connection conn = DB.getConn();
-		PreparedStatement selectStmt = DB.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_count");
-		ResultSet rset = DB.getRs(selectStmt);
+		Connection conn = db.getConn();
+		PreparedStatement selectStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_count");
+		ResultSet rset = db.getRs(selectStmt);
 
 		while (rset.next()) {
 			System.out.println(rset.getString("id") + rset.getString("radius") + rset.getString("hour"));
@@ -419,33 +422,33 @@ public class JoinFlickrDeWestAreaCount {
 		radiuses.add("20000");
 		radiuses.add("40000");
 		radiuses.add("80000");
-		Connection conn = DB.getConn();
-		PreparedStatement pstmt1 = DB.getPstmt(conn, "select PHOTO_ID, LONGITUDE, LATITUDE from FLICKR_DE_WEST_TABLE");
-		ResultSet rs1 = DB.getRs(pstmt1);
+		Connection conn = db.getConn();
+		PreparedStatement pstmt1 = db.getPstmt(conn, "select PHOTO_ID, LONGITUDE, LATITUDE from FLICKR_DE_WEST_TABLE");
+		ResultSet rs1 = db.getRs(pstmt1);
 		while (rs1.next()) {
 			double x = rs1.getDouble("LONGITUDE");
 			double y = rs1.getDouble("LATITUDE");
 			for (String radius : radiuses) {
-				PreparedStatement pstmt2 = DB.getPstmt(conn, "select ID from FLICKR_DE_WEST_TABLE_" + radius + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius
+				PreparedStatement pstmt2 = db.getPstmt(conn, "select ID from FLICKR_DE_WEST_TABLE_" + radius + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius
 						+ "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
 				pstmt2.setDouble(1, x);
 				pstmt2.setDouble(2, y);
-				ResultSet rs2 = DB.getRs(pstmt2);
+				ResultSet rs2 = db.getRs(pstmt2);
 				if (rs2.next()) {
 					System.out.println("i:" + (i++) + " escaped time:" + (System.currentTimeMillis() - start) / 1000.0);
-					PreparedStatement pstmt3 = DB.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_GEOM set CLUSTER_R" + radius + "_ID = ? where PHOTO_ID = ?");
+					PreparedStatement pstmt3 = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_GEOM set CLUSTER_R" + radius + "_ID = ? where PHOTO_ID = ?");
 					pstmt3.setString(1, rs2.getString("ID"));
 					pstmt3.setString(2, rs1.getString("PHOTO_ID"));
 					pstmt3.executeUpdate();
-					DB.close(pstmt3);
+					db.close(pstmt3);
 				}
-				DB.close(pstmt2);
-				DB.close(rs2);
+				db.close(pstmt2);
+				db.close(rs2);
 			}
 		}
-		DB.close(rs1);
-		DB.close(pstmt1);
-		DB.close(conn);
+		db.close(rs1);
+		db.close(pstmt1);
+		db.close(conn);
 	}
 
 	private void copyTable() throws ClassNotFoundException, SQLException {

@@ -15,9 +15,14 @@ import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 import de.fraunhofer.iais.spatial.dao.AreaDao;
 import de.fraunhofer.iais.spatial.entity.Area;
-import de.fraunhofer.iais.spatial.util.DB;
 
 public class AreaDaoJdbc implements AreaDao {
+
+	private DB db;
+
+	public void setDb(DB db) {
+		this.db = db;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.AreaDao#getAllAreas()
@@ -25,10 +30,10 @@ public class AreaDaoJdbc implements AreaDao {
 	@Override
 	public List<Area> getAllAreas() {
 		List<Area> as = new ArrayList<Area>();
-		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
+		Connection conn = db.getConn();
+		PreparedStatement pstmt = db.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
 				+ " where m.table_name = 'AREAS20KMRADIUS'");
-		ResultSet rs = DB.getRs(pstmt);
+		ResultSet rs = db.getRs(pstmt);
 
 		try {
 			while (rs.next()) {
@@ -40,9 +45,9 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(pstmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(pstmt);
+			db.close(conn);
 		}
 		return as;
 	}
@@ -53,13 +58,13 @@ public class AreaDaoJdbc implements AreaDao {
 	@Override
 	public Area getAreaById(int areaid) {
 		Area a = new Area();
-		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m" + " WHERE c.ID = ?");
+		Connection conn = db.getConn();
+		PreparedStatement pstmt = db.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m" + " WHERE c.ID = ?");
 
 		ResultSet rs = null;
 		try {
 			pstmt.setInt(1, areaid);
-			rs = DB.getRs(pstmt);
+			rs = db.getRs(pstmt);
 			while (rs.next()) {
 				initFromRs(a, rs);
 			}
@@ -67,9 +72,9 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(pstmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(pstmt);
+			db.close(conn);
 		}
 		return a;
 	}
@@ -80,8 +85,8 @@ public class AreaDaoJdbc implements AreaDao {
 	@Override
 	public List<Area> getAreasByPoint(double x, double y) {
 		List<Area> as = new ArrayList<Area>();
-		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
+		Connection conn = db.getConn();
+		PreparedStatement pstmt = db.getPstmt(conn, "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
 				+ " WHERE m.table_name = 'AREAS20KMRADIUS' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
 
 		ResultSet rs = null;
@@ -89,7 +94,7 @@ public class AreaDaoJdbc implements AreaDao {
 		try {
 			pstmt.setDouble(1, x);
 			pstmt.setDouble(2, y);
-			rs = DB.getRs(pstmt);
+			rs = db.getRs(pstmt);
 			while (rs.next()) {
 				Area a = new Area();
 				initFromRs(a, rs);
@@ -99,9 +104,9 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(pstmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(pstmt);
+			db.close(conn);
 		}
 		return as;
 	}
@@ -112,8 +117,8 @@ public class AreaDaoJdbc implements AreaDao {
 	@Override
 	public List<Area> getAreasByRect(double x1, double y1, double x2, double y2) {
 		List<Area> as = new ArrayList<Area>();
-		Connection conn = DB.getConn();
-		PreparedStatement pstmt = DB.getPstmt(conn, "" + "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
+		Connection conn = db.getConn();
+		PreparedStatement pstmt = db.getPstmt(conn, "" + "select ID, NAME, GEOM, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from AREAS20KMRADIUS c, user_sdo_geom_metadata m"
 				+ " WHERE m.table_name = 'AREAS20KMRADIUS' and sdo_relate(c.geom, SDO_geometry(2003,8307,NULL,SDO_elem_info_array(1,1003,3), SDO_ordinate_array(?,?, ?,?)),'mask=anyinteract') = 'TRUE'");
 
 		ResultSet rs = null;
@@ -123,7 +128,7 @@ public class AreaDaoJdbc implements AreaDao {
 			pstmt.setDouble(2, y1);
 			pstmt.setDouble(3, x2);
 			pstmt.setDouble(4, y2);
-			rs = DB.getRs(pstmt);
+			rs = db.getRs(pstmt);
 			while (rs.next()) {
 				Area a = new Area();
 				initFromRs(a, rs);
@@ -133,9 +138,9 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(pstmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(pstmt);
+			db.close(conn);
 		}
 		return as;
 	}
@@ -145,14 +150,14 @@ public class AreaDaoJdbc implements AreaDao {
 	 */
 	@Override
 	public int getPersonCount(int areaid, String person) {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 		int num = 0;
 		try {
-			selectStmt = DB.getPstmt(conn, "select person from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt = db.getPstmt(conn, "select person from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, areaid);
-			rs = DB.getRs(selectStmt);
+			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("person");
 				if (count != null) {
@@ -166,9 +171,9 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(selectStmt);
+			db.close(conn);
 		}
 		return num;
 	}
@@ -178,23 +183,23 @@ public class AreaDaoJdbc implements AreaDao {
 	 */
 	@Override
 	public int getTotalCount(int areaid) {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 		int num = 0;
 		try {
-			selectStmt = DB.getPstmt(conn, "select total from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt = db.getPstmt(conn, "select total from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, areaid);
-			rs = DB.getRs(selectStmt);
+			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				num = rs.getInt("total");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(selectStmt);
+			db.close(conn);
 		}
 		return num;
 	}
@@ -239,7 +244,7 @@ public class AreaDaoJdbc implements AreaDao {
 	}
 
 	private void loadDaysCount(Area a) {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
@@ -247,9 +252,9 @@ public class AreaDaoJdbc implements AreaDao {
 		a.setDaysCount(daysCount);
 
 		try {
-			selectStmt = DB.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt = db.getPstmt(conn, "select day from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, a.getId());
-			rs = DB.getRs(selectStmt);
+			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("day");
 				if (count != null) {
@@ -263,14 +268,14 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(selectStmt);
+			db.close(conn);
 		}
 	}
 
 	private void loadHoursCount(Area a) {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
@@ -278,9 +283,9 @@ public class AreaDaoJdbc implements AreaDao {
 		a.setHoursCount(hoursCount);
 
 		try {
-			selectStmt = DB.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt = db.getPstmt(conn, "select hour from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, a.getId());
-			rs = DB.getRs(selectStmt);
+			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("hour");
 				if (count != null) {
@@ -294,14 +299,14 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(selectStmt);
+			db.close(conn);
 		}
 	}
 
 	private void loadMonthsCount(Area a) {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
@@ -309,9 +314,9 @@ public class AreaDaoJdbc implements AreaDao {
 		a.setMonthsCount(monthsCount);
 
 		try {
-			selectStmt = DB.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt = db.getPstmt(conn, "select month from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, a.getId());
-			rs = DB.getRs(selectStmt);
+			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("month");
 				if (count != null) {
@@ -325,14 +330,14 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(selectStmt);
+			db.close(conn);
 		}
 	}
 
 	private void loadYearsCount(Area a) {
-		Connection conn = DB.getConn();
+		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
@@ -340,9 +345,9 @@ public class AreaDaoJdbc implements AreaDao {
 		a.setYearsCount(yearsCount);
 
 		try {
-			selectStmt = DB.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
+			selectStmt = db.getPstmt(conn, "select year from AREAS20KMRADIUS_COUNT where id = ?");
 			selectStmt.setInt(1, a.getId());
-			rs = DB.getRs(selectStmt);
+			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("year");
 				if (count != null) {
@@ -356,9 +361,9 @@ public class AreaDaoJdbc implements AreaDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(conn);
+			db.close(rs);
+			db.close(selectStmt);
+			db.close(conn);
 		}
 	}
 }
