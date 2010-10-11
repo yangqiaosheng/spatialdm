@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 import de.fraunhofer.iais.spatial.dao.MilanpolyDao;
@@ -26,7 +28,6 @@ public class MilanpolyDaoJdbc implements MilanpolyDao {
 		Connection conn = db.getConn();
 		PreparedStatement pstmt = db.getPstmt(conn, "select ID, NAME, GEOM, CLUSTERING_OF_SOM_CELL, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area from MILANPOLY c");
 		ResultSet rs = db.getRs(pstmt);
-
 		try {
 			while (rs.next()) {
 				Milanpoly m = new Milanpoly();
