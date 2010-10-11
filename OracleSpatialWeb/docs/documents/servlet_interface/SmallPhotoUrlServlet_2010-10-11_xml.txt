@@ -1,6 +1,6 @@
-SmallPhotoUrlServlet
+SmallPhotoUrlServle
 
-REQUEST: http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/OracleSpatialWeb/SmallPhotoUrl  
+REQUEST: http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/OracleSpatialWeb/SmallPhotoUrl
 POST areaid=123
 
 ----------------------------------------------------------------
@@ -9,7 +9,7 @@ RESPONSE EXAMPLE 1 (SUCCESS):
 <response>
   <message>SUCCESS</message>
   <photos>
-    
+
 	<photo index="1">
       <photoId>3223356479</photoId>
       <polygonId>6</polygonId>
@@ -23,13 +23,13 @@ RESPONSE EXAMPLE 1 (SUCCESS):
       <viewed>53</viewed>
       <rawTags>offroad pentax 110 plymouth 1970 tamiya cuda rc istds modelcar zoomlens hpi tlt mudder 18250 da18250</rawTags>
     </photo>
-	
+
     <photo index="2">
         ......
     </photo>
-	
-	 more photos ..... 
-  
+
+	 more photos .....
+
   </photos>
 </response>
 
@@ -47,7 +47,7 @@ RESPONSE EXAMPLE 1 (FAILURE):
 ------------------------------------------------------------------------------------------
 TimeSeriesChartServlet:
 
-REQUEST: http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/OracleSpatialWeb/TimeSeriesChart  
+REQUEST: http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/OracleSpatialWeb/TimeSeriesChart
 POST areaid=123
 
 RESPONSE: byte stream of an JPEG image
