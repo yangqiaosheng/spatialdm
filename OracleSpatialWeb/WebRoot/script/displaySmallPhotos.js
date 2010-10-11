@@ -1,6 +1,7 @@
 
 
 function getSmallPhotos(areaid) {
+	alert(areaid);
 	$.get('SmallPhotoUrl', {
 				areaid : areaid
 			}, parsePhotosXml);
