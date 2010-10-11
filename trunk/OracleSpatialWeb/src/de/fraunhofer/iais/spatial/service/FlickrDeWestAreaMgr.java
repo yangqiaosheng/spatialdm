@@ -480,7 +480,7 @@ public class FlickrDeWestAreaMgr {
 			if (a.getTotalCount() != 0) {
 				String name = "total:" + a.getTotalCount();
 				//				String description = "select:" + String.valueOf(a.getSelectCount());
-				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
+				String description = "<p onclick='getSmallPhotos(1)'>select:" + String.valueOf(a.getSelectCount()) + "</p><script>alert(100);</script><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
 						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 				String groundOverlayColor = "bbffffff"; //transparency
 
@@ -549,8 +549,8 @@ public class FlickrDeWestAreaMgr {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "total:" + a.getTotalCount();
 			//			String description = "count: " + String.valueOf(a.getTotalCount());
-			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
-					+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
+			String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><script type='text/javascript'>setInterval('tick()',50);function tick(){document.getElementById('clock').innerHTML=new Date();      } ;</script><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
+			+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
 			String polyStyleColor = "330000"; //not transparent
 			//			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";

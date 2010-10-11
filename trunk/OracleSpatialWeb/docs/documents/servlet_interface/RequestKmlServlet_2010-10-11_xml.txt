@@ -1,0 +1,87 @@
+RequestKmlServlet
+
+REQUEST: http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/OracleSpatialWeb/RequestKml
+POST  xml=
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+  <screen>
+    <bounds>
+	  ((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))
+	</bounds>
+    <center>
+	  (51.58830123054393, 6.971684570312502)
+	</center>
+    <zoom>11</zoom>
+  </screen>
+
+  <polygon>
+    (51.58830123054393, 6.971684570312502)
+	(51.67184146523792, 7.647343750000002)
+	(51.44644311790073, 7.298527832031252)
+  </polygon>
+
+  <interval>15/09/2010 - 19/10/2010</interval>
+
+  <selected_days>
+    Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005
+  </selected_days>
+
+  <calendar>
+    <years>
+      <year>2007</year>
+      <year>2008</year>
+      <year>2009</year>
+    </years>
+    <months>
+      <month>01</month>
+      <month>05</month>
+      <month>09</month>
+      <month>11</month>
+      <month>12</month>
+    </months>
+    <days>
+      <day>03</day>
+      <day>09</day>
+      <day>12</day>
+      <day>17</day>
+    </days>
+      <hours>
+      <hour>15</hour>
+    </hours>
+    <weekdays>
+      <weekday>Saturday</weekday>
+      <weekday>Sunday</weekday>
+    </weekdays>
+  </calendar>
+</request>
+
+----------------------------------------------------------------
+RESPONSE EXAMPLE 1 (SUCCESS):
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+  <message>SUCCESS</message>
+  <url>
+    http://kd-photomap.iais.fraunhofer.de:80/OracleSpatialWeb/kml/100924161800-c5ba6bbc.kml
+  </url>
+</response>
+
+----------------------------------------------------------------
+RESPONSE EXAMPLE 1 (FAILURE):
+
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+  <message>wrong input parameter!</message>
+  <exceptions>
+    org.jdom.input.JDOMParseException: Error on line 2: The element type "rdequest" must be terminated by the matching end-tag "...
+  </exceptions>
+</response>
+
+----------------------------------------------------------------
+// JavaScript:Display the kml on browser
+xmlhttp.onreadystatechange = function() {
+	if(xmlhttp.readyState == 4){
+		// from the response get the element with url and the kml which now is generated for each user.
+		url = xmlhttp.responseXML.getElementsByTagName("url")[0].firstChild.nodeValue;
+		loadkml_1(url);
+	}
+};

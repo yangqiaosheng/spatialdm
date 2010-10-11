@@ -1,5 +1,8 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -23,10 +26,14 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 
 public class SmallPhotoUrlServlet extends HttpServlet {
+	/**
+	* Logger for this class
+	*/
+	private static final Logger logger = LoggerFactory.getLogger(SmallPhotoUrlServlet.class);
 
 	private static final long serialVersionUID = 289355222687198395L;
 
-	private static final int NUMBER_OF_PHOTOS = 10;
+	private static final int NUMBER_OF_PHOTOS = 15;
 	private static FlickrDeWestAreaMgr areaMgr = null;
 
 
@@ -58,13 +65,15 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		} else {
 			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 
-			System.out.println("areaid:" + areaid +"|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs());
+			logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 			photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), 20);
 		}
 
 		out.print(XmlUtil.xml2String(document, true));
-		System.out.println(XmlUtil.xml2String(document, false));
+
+		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - " + XmlUtil.xml2String(document, false)); //$NON-NLS-1$
+
 		out.flush();
 		out.close();
 	}

@@ -4,13 +4,14 @@ pageEncoding="ISO-8859-1"%>
 <html>
     <head>
         <script type="text/javascript">
-	       var g_kml_layer = [];
+	   	   var g_kml_layer = [];
            var g_kml_counter = 0;
         </script>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Spatial Data Visualization</title>
 
         <link rel="stylesheet" type="text/css" href="css/fonts.css" />
+
         <!-- key for localhost:8080 -->
         <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRTwM0brOpm-All5BF6PoaKBxRWWERQz8kv3AfRcmeXeips11HUqEo81xQ" type="text/javascript"></script>
         <!-- key for http://kd-photomap.iais.fraunhofer.de -->
@@ -65,18 +66,20 @@ pageEncoding="ISO-8859-1"%>
 	</script>
 	<script type="text/javascript" src="script/IndividualPolygon.js">
 	</script>
+	<script type="text/javascript" src="script/displaySmallPhotos.js">
+	</script>
 
 
         <link type="text/css" rel="stylesheet" href="css/general.css" />
         <link type="text/css" rel="stylesheet" href="css/carousel.css" />
         <link type="text/css" rel="stylesheet" href="css/calendar.css" />
         <link type="text/css" rel="stylesheet" href="css/legend.css" />
-	    <link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
+	<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
 
 
     </head>
     <!--if one of the functions gtom onload is not executing, then the chain is broken and the next ones will not execute as well-->
-    <body onload="onLoad();loadStart();"  onunload="GUnload()" onresize="onResize()">
+    <body onload="onLoad(); start(); loadStart();";  onunload="GUnload()"; onresize="onResize();">
         <div style="display: none;">
             <img id="calImg" src="images/calendar.gif" class="trigger" />
         </div>
