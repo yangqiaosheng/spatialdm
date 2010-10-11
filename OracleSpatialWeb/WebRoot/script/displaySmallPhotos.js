@@ -1,14 +1,8 @@
 
 
-function getSmallPhotos() {
-	// alert($("#userName"));
-	var JQueryObj = $("#username");
-	var username = JQueryObj.val();
-	alert(username);
-
+function getSmallPhotos(areaid) {
 	$.get('SmallPhotoUrl', {
-				areaid : username,
-				radius : '20000'
+				areaid : areaid
 			}, parsePhotosXml);
 }
 
@@ -22,8 +16,11 @@ function parsePhotosXml(xml) {
 //  alert($(this).attr('index'));
         var itemObj = $("#item" + $(this).attr('index'));
         itemObj.html("<img src='" + $(this).children("smallUrl").text() + "'>");
-		ResultObj.html(ResultObj.html() + $(this).attr('index') + " " + $(this).children("date").text() + " <img src='"
-				+ $(this).children("smallUrl").text() + "'><br>");
+//		ResultObj.html(ResultObj.html() + $(this).attr('index') + " " + $(this).children("date").text() + " <img src='"
+//				+ $(this).children("smallUrl").text() + "'><br>");
+
+		var itemdescObj = $("#itemdesc" + $(this).attr('index'));
+        itemdescObj.html("<p>" + $(this).children("date").text() + "</p>");
 	})
 
 }

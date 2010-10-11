@@ -9,6 +9,20 @@
 /*overflow-y: scroll;
   overflow-x: scroll;*/
 }
+
+.itemdesc {
+  width: 110px;
+  height: 30px;
+  font-size: small;
+  overflow:hidden;
+  vertical-align: middle;
+  MARGIN-RIGHT: auto;
+  MARGIN-LEFT: auto;
+}
+
+.item.img.middle { vertical-align: middle }
+
+
 #maxContainer {
   width: 50%;
   position: absolute;

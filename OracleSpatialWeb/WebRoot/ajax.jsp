@@ -21,8 +21,8 @@
 	</head>
 	<body>
 		Test The AJAX:
-		<input type="text" id="username" />
-		<input type="button" value="submit" onclick="getSmallPhotos()" />
+		<input type="text" id="areaid" />
+		<input type="button" value="submit" onclick="getSmallPhotos(6)" />
 		<div id="result"></div>
 
 		<jsp:include page="carousel.jsp" />
