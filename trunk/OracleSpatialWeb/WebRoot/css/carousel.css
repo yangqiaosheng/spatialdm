@@ -1,48 +1,52 @@
 .item {
-  width: 130px;
-  height: 130px;
-  background-color: #A7BDF7;
-  overflow:hidden;
-  vertical-align: middle;
-  MARGIN-RIGHT: auto;
-  MARGIN-LEFT: auto;
-/*overflow-y: scroll;
+	width: 130px;
+	height: 130px;
+	background-color: #A7BDF7;
+	overflow: hidden;
+	vertical-align: middle;
+	MARGIN-RIGHT: auto;
+	MARGIN-LEFT: auto;
+	/*overflow-y: scroll;
   overflow-x: scroll;*/
 }
 
 .itemdesc {
-  width: 110px;
-  height: 30px;
-  font-size: small;
-  overflow:hidden;
-  vertical-align: middle;
-  MARGIN-RIGHT: auto;
-  MARGIN-LEFT: auto;
+	background-color: Beige;
+	color: Olive;
+	font-size: small;
+	height: 15px;
+	margin: auto;
+	overflow: hidden;
+	vertical-align: middle;
+	width: 110px;
 }
 
-.item.img.middle { vertical-align: middle }
-
+.item.img.middle {
+	vertical-align: middle
+}
 
 #maxContainer {
-  width: 50%;
-  position: absolute;
-  top: 0;
-  left: 25%;
-  top: 78%
+	width: 50%;
+	position: absolute;
+	top: 0;
+	left: 25%;
+	top: 78%
 }
+
 #container {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 /**
 * I can overwrite to have a carousel with dinamic widht.
 */
 .jcarousel-skin-tango .jcarousel-container-horizontal {
-  width: auto;
-  height: 100%;
+	width: auto;
+	height: 100%;
 }
+
 .jcarousel-skin-tango .jcarousel-clip-horizontal {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 }

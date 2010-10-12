@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>  
-<!DOCTYPE mapper 
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="de.fraunhofer.iais.spatial.entity.Area">
-<!-- cache: flushInterval: 24hours -->
-<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>
+
+	<!-- cache: flushInterval: 24hours -->
+   	<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>
+
 	<select id="selectAll" resultType="Area">
 		select
 			ID,
@@ -38,40 +40,40 @@
 		from AREAS20KMRADIUS m, user_sdo_geom_metadata d
 		where d.table_name = 'AREAS20KMRADIUS' and sdo_relate(m.geom, #{j_geom},'mask=anyinteract') = 'TRUE'
 	</select>
-	
+
 	<select id="personCount" resultType="String" parameterType="int">
-		select person 
-		from AREAS20KMRADIUS_COUNT 
+		select person
+		from AREAS20KMRADIUS_COUNT
 		where ID = #{id}
 	</select>
-	
+
 	<select id="hourCount" resultType="String" parameterType="int">
-		select hour 
-		from AREAS20KMRADIUS_COUNT 
+		select hour
+		from AREAS20KMRADIUS_COUNT
 		where ID = #{id}
 	</select>
-	
+
 	<select id="dayCount" resultType="String" parameterType="int">
-		select day 
-		from AREAS20KMRADIUS_COUNT 
+		select day
+		from AREAS20KMRADIUS_COUNT
 		where ID = #{id}
 	</select>
-	
+
 	<select id="monthCount" resultType="String" parameterType="int">
-		select month 
-		from AREAS20KMRADIUS_COUNT 
+		select month
+		from AREAS20KMRADIUS_COUNT
 		where ID = #{id}
 	</select>
-	
+
 	<select id="yearCount" resultType="String" parameterType="int">
-		select year 
-		from AREAS20KMRADIUS_COUNT 
+		select year
+		from AREAS20KMRADIUS_COUNT
 		where ID = #{id}
 	</select>
-	
+
 	<select id="totalCount" resultType="int" parameterType="int">
-		select total 
-		from AREAS20KMRADIUS_COUNT 
+		select total
+		from AREAS20KMRADIUS_COUNT
 		where ID = #{id}
 	</select>
 </mapper>

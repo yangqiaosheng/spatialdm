@@ -1,21 +1,21 @@
 #container {
 	/* font-size: 13px; */
-	
-	/*width:70%; margin-left:30%; margin-right:0%;		
+
+	/*width:70%; margin-left:30%; margin-right:0%;
 				margin-top:400px;				*/
 	margin-left:1%;
 	margin-top:1%;
-	position: absolute;	
-	
+	position: absolute;
+
 	left: 40%;
 	right: 10%;
 	width: 50%;
-	
+
 	bottom: 5%;
-	top: 65%;	
+	top: 65%;
 	height: 30%;
 	z-index: 11;
-	opacity: 0.9;	
+	opacity: 0.9;
 }
 
 #container a {
@@ -28,14 +28,14 @@
 
 #container .intro {
 	background-color: #A7BDF7;
-	
+
 	margin: 0px 14px 0px 4px;
 	width: 202px;
 }
 
 #container .item {
 	background-color: #A7BDF7;
-	
+
 	margin: 0 22px 0 12px;
 	overflow: hidden;
 	padding-right: 80px;
@@ -81,7 +81,7 @@
 }
 
 #container .item cite {
-	
+
 	font-size: 77%;
 	line-height: normal;
 	margin-bottom: 30px;

@@ -237,7 +237,7 @@ function loadStart()
 		case 73:
 			nameString[i] = "23";
 			break;
-			// ***********************************************************************		
+			// ***********************************************************************
 		case 74:
 			nameString[i]="Monday";
 			break;
@@ -265,24 +265,24 @@ function loadStart()
         {
                 fieldHeader[i] = document.getElementById('controltime_header' + i);
                 numberHeader[i]=0;
-        }	
+        }
 }
 //this fucntion receive a parameter as number of the argument- even if the parameter is not visible
 function selectbutton()
-{			
+{
 	var argv = selectbutton.arguments;
 	number[argv[0]]++;	// even, odd for selection deselection
 	if (number[argv[0]]%2!=0)
-	{			
-		field[argv[0]].style.background='#ffffff';		
+	{
+		field[argv[0]].style.background='#ffffff';
 	}
 	else
-	{	
+	{
 		field[argv[0]].style.background='#06A8FA';
-	}	
+	}
 }
 
-function selectbuttonHeader() {	 
+function selectbuttonHeader() {
         var argv = selectbuttonHeader.arguments;
         numberHeader[argv[0]]++; // even, odd for selection deselection
         fieldHeader[argv[0]].style.background = '#8AA8F3';
@@ -330,7 +330,7 @@ function selectbuttonHeader() {
 
 // load xml string parser
 //However, before an XML document can be accessed and manipulated, it must be loaded into an XML DOM object.
-//An XML parser reads XML, and converts it into an XML DOM object that can be accessed with JavaScript. 
+//An XML parser reads XML, and converts it into an XML DOM object that can be accessed with JavaScript.
 function loadXMLString(txt) {
 	if (window.DOMParser) {
 		parser = new DOMParser();
@@ -340,7 +340,7 @@ function loadXMLString(txt) {
 		xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
 		xmlDoc.async = "false";
 		xmlDoc.loadXML(txt);
-	}	
+	}
 	return xmlDoc;
 }
 var t=1;
@@ -352,27 +352,39 @@ var t=1;
 function ask() {
 //	g_kml_counter = 0;
 	text1=""; // text is the data that I send. This must also to be refreshed.
-	
+
 	var bounds = map.getBounds();
 	var center = map.getCenter();
 	var zoomLevel = map.getZoom();
-	headerXML = createHeaderXML(bounds, center, zoomLevel);		
-	bodyXML = timeController1XML(text1);		
-	sendToServerCalendarData(headerXML, bodyXML);	
+	headerXML = createHeaderXML(bounds, center, zoomLevel);
+	bodyXML = timeController1XML(text1);
+	sendToServerCalendarData(headerXML, bodyXML);
 }
 //var t_count=0;
 var l=0;
 function loadkml(url) {
   for (var i=g_kml_counter-l; i<g_kml_counter;i++)
   {
-    g_kml_layer[i].setMap(); 
-    g_kml_layer[i].setMap(null); 
-  }   
+    g_kml_layer[i].setMap();
+    g_kml_layer[i].setMap(null);
+  }
   g_kml_layer[g_kml_counter] = new google.maps.KmlLayer(url, {
     suppressInfoWindows: false,
     preserveViewport: true,
     map:map
-  }); 		      
+  });
+
+  google.maps.event.addListener(g_kml_layer[g_kml_counter], 'click', function(kmlEvent) {
+    var areaid = kmlEvent.featureData.name;
+    var parameters = kmlEvent.featureData.description;
+
+    kmlEvent.featureData.name= "";
+    kmlEvent.featureData.description= "<iframe width='650' height= '400' frameborder='0' src='areaDescription.jsp?" + parameters + "'>Browser not Compatible</iframe>";
+
+    getSmallPhotos(areaid);
+
+  });
+
   g_kml_counter++;
   l=1;
 }
@@ -380,7 +392,7 @@ function loadkml(url) {
 //waiting function that I don't use
 
 //waiting function that I don't use
- 
+
 function refreshButtons() { // ok number[i] reverse to 0
         for ( var i = 1; i < 100; i++) {
                 if (number[i] != 0) {
@@ -391,7 +403,7 @@ function refreshButtons() { // ok number[i] reverse to 0
         text="refresh"; // text is the data that I send. This must also to be refreshed.(for select and deselect from user)
         jQuery("#content1_1").html(text);
 	g_kml_layer[g_kml_counter-1].setMap();
-        g_kml_layer[g_kml_counter-1].setMap(null); 
+        g_kml_layer[g_kml_counter-1].setMap(null);
 	g_kml_layer = new Array(1000);
 	g_kml_counter=0;
 	l=0;
