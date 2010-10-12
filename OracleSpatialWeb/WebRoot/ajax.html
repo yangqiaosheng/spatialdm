@@ -5,12 +5,15 @@
 		<title>test AJAX</title>
 		<script type="text/javascript" src="script/jquery.js"></script>
 		<script type="text/javascript" src="script/displaySmallPhotos.js"></script>
+    	<script type="text/javascript">
+      		setInterval("tick()",50);
+     		function tick(){
+       		 	document.getElementById("clock").innerHTML=new Date();
+	      	}
+     		getSmallPhotos(1);
+	    </script>
 	</head>
 	<body>
-		Test The AJAX:
-		<input type="text" id="areaid" />
-		<input type="button" value="submit" onclick="getSmallPhotos()" />
-		<div id="result"></div>
-
+		<div style="width:350px;" id="clock"></div>
 	</body>
 </html>

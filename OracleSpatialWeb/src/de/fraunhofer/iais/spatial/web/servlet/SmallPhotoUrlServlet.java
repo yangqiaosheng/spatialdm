@@ -63,11 +63,19 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		if (areaid == null || areaid.equals("")) {
 			messageElement.setText("wrong input parameter!");
 		} else {
+			logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
 			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 
-			logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if(areaDto == null){
+				logger.error("doGet(HttpServletRequest, HttpServletResponse) - no areaDto in the session"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				messageElement.setText("Please make a query first.");
+			} else {
+				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-			photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), 20);
+				photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs());
+				messageElement.setText("SUCCESS");
+			}
 		}
 
 		out.print(XmlUtil.xml2String(document, true));
@@ -86,7 +94,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 //
 //	}
 
-	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
+	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs) {
 		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, NUMBER_OF_PHOTOS);
 
 		Element rootElement = document.getRootElement();
