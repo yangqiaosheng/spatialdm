@@ -20,6 +20,15 @@
 
 	</head>
 	<body>
+
+		Input an areaid:
+		<input type="text" name="areaid" id="areaid" />
+		<input type="button" value="Request Photos" onclick="getSmallPhotos(areaid.value)" />
+		<div id="photo"></div>
+		<hr>
+		<br>
+
+
 		Request Parameters:
 		<% FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto)session.getAttribute("areaDto"); %>
 		<% if(areaDto != null) { %>
@@ -42,13 +51,6 @@
 			</tr>
 		</table>
 
-		<hr>
-		<br>
-
-		Input an areaid:
-		<input type="text" name="areaid" id="areaid" />
-		<input type="button" value="Request Photos" onclick="getSmallPhotos(areaid.value)" />
-		<div id="result"></div>
 		<% } else { %>
 			Please do a query here: <a href="index.jsp">index.jsp</a>
 		<% }  %>
