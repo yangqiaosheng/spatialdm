@@ -1,7 +1,7 @@
 
 
 function getSmallPhotos(areaid) {
-	$.get('http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SmallPhotoUrl', {
+	$.get('SmallPhotoUrl', {
 				areaid : areaid
 			}, parsePhotosXml);
 }
@@ -14,6 +14,11 @@ function addPhotoMaker(lat, lng) {
 			});
 }
 
+function showPhoto(url) {
+    var photoObj = $("#photo");
+    photoObj.html("<img align='middle' src='" + url + "'>");
+}
+
 function removePhotoMaker() {
 	g_photo_marker.setMap(null);
 }
@@ -22,7 +27,7 @@ function parsePhotosXml(xml) {
 
 	var xmlObj = $(xml);
 
-	//clean the items
+	// clean the items
 	for (var i = 1; i <= 15; i++) {
 		var itemObj = $("#item" + i);
 		itemObj.html("");
@@ -33,17 +38,36 @@ function parsePhotosXml(xml) {
 		itemdescObj.fadeTo('slow', 0);
 	}
 
-	//fill the items with photos
+	// fill the items with photos
 	xmlObj.find("photo").each(function(j) {
-		var itemObj = $("#item" + $(this).attr('index'));
-		itemObj.html("<div class='itemimg' onmouseout='removePhotoMaker()' onmouseover='addPhotoMaker(" + $(this).children("latitude").text() + ","
-				+ $(this).children("longitude").text() + ")' ><img align='middle' src='" + $(this).children("smallUrl").text() + "'></div>");
-		itemObj.css('border', 'ridge');
-		itemObj.css('border-width', 'medium');
-		itemObj.css('border-color', 'blue');
+				var index = $(this).attr('index');
+				var url = $(this).children("smallUrl").text();
+				var date = $(this).children("date").text();
+				var longitude = $(this).children("longitude").text();
+				var latitude = $(this).children("latitude").text();
+				var viewed = $(this).children("viewed").text();
+				var title = $(this).children("title").text();
+				var personId = $(this).children("personId").text();
+				var photoId = $(this).children("photoId").text();
+				var rawTags = $(this).children("rawTags").text();
 
-		var itemdescObj = $("#itemdesc" + $(this).attr('index'));
-		itemdescObj.html($(this).children("date").text());
-		itemdescObj.fadeTo('slow', 1);
-	})
+				var itemObj = $("#item" + index);
+				itemObj.html("<div class='itemimg' id='itemimg" + index + "'><img align='middle' src='" + url + "'></div>");
+// itemObj.html("<div class='itemimg' id='itemimg" + index + "' onmouseout='removePhotoMaker()' onmouseover='addPhotoMaker(" + latitude + ","
+// + longitude + ")' ><img align='middle' src='" + url + "'></div>");
+				itemObj.css('border', 'ridge');
+				itemObj.css('border-width', 'medium');
+				itemObj.css('border-color', 'blue');
+
+				var itemimgObj = $("#itemimg" + index)
+				itemimgObj.css('display', 'none');
+				itemimgObj.fadeTo(1000, 0.1).fadeTo(1000, 1);
+				itemimgObj.click(function() {
+							 showPhoto(url);
+						});
+
+				var itemdescObj = $("#itemdesc" + index);
+				itemdescObj.html(date);
+				itemdescObj.fadeTo(1500, 1);
+			})
 }
