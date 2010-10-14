@@ -375,10 +375,9 @@ function loadkml(url) {
   });
 
   google.maps.event.addListener(g_kml_layer[g_kml_counter], 'click', function(kmlEvent) {
-    var areaid = kmlEvent.featureData.name;
-    var parameters = kmlEvent.featureData.description;
+    var areaid = kmlEvent.featureData.id;
+    var parameters = kmlEvent.featureData.snippet;
 
-    kmlEvent.featureData.name= "";
     kmlEvent.featureData.description= "<iframe width='650' height= '400' frameborder='0' src='areaDescription.jsp?" + parameters + "'>Browser not Compatible</iframe>";
 
     getSmallPhotos(areaid);

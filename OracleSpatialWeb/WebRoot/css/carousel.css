@@ -19,6 +19,7 @@
 	overflow: hidden;
 	vertical-align: middle;
 	width: 110px;
+	display: none;
 }
 
 .item.img.middle {
