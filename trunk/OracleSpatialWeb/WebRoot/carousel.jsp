@@ -5,7 +5,6 @@
 		<ul id="carousel" class="jcarousel-skin-tango">
 			<li>
 				<div class="item" id="item1"></div>
-				<br>
 				<div class="itemdesc" id="itemdesc1"></div>
 			</li>
 			<li>

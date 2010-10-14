@@ -478,10 +478,12 @@ public class FlickrDeWestAreaMgr {
 		// GroundOverlay
 		for (FlickrDeWestArea a : as) {
 			if (a.getTotalCount() != 0) {
-				String name = "total:" + a.getTotalCount();
-				//				String description = "select:" + String.valueOf(a.getSelectCount());
-				String description = "<p>select:" + String.valueOf(a.getSelectCount()) + "</p><br><div style='width:600px;height:300px'><img width='600' height='300' src='" + remoteBasePath + "TimeSeriesChart?areaid=" + a.getId() + "&xml="
-						+ URLEncoder.encode(file + ".xml", "UTF-8") + "'></div>";
+				String name = "";
+				//			String description = "count: " + String.valueOf(a.getTotalCount());
+				String description = "areaid=" + a.getId()
+									+ "&total=" + a.getTotalCount()
+									+ "&selected=" + a.getSelectCount();
+
 				String groundOverlayColor = "bbffffff"; //transparency
 
 				Element groundOverlayElement = new Element("GroundOverlay", namespace);
@@ -547,11 +549,12 @@ public class FlickrDeWestAreaMgr {
 		// Polygon
 		for (FlickrDeWestArea a : as) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
-			String name = String.valueOf(a.getId());
+			String name = "";
 			//			String description = "count: " + String.valueOf(a.getTotalCount());
 			String description = "areaid=" + a.getId()
 								+ "&total=" + a.getTotalCount()
 								+ "&selected=" + a.getSelectCount();
+
 			String polyStyleColor = "330000"; //not transparent
 			//			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
@@ -576,7 +579,9 @@ public class FlickrDeWestAreaMgr {
 			nameElement.addContent(name);
 			Element descriptionElement = new Element("description", namespace);
 			descriptionElement.addContent(new CDATA(description));
+
 			Element styleElement = new Element("Style", namespace);
+			placemarkElement.setAttribute("id", String.valueOf(a.getId()));
 			placemarkElement.addContent(nameElement);
 			placemarkElement.addContent(descriptionElement);
 			placemarkElement.addContent(styleElement);

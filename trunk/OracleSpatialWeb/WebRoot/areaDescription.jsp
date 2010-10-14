@@ -20,7 +20,7 @@
 		<br>
 
 		<div style='width:600px; height:300px'>
-			<img src='TimeSeriesChart?areaid=1' >
+			<img src='TimeSeriesChart?areaid=<%=request.getParameter("areaid") %>' >
 		</div>
 	</body>
 </html>
