@@ -94,6 +94,10 @@ pageEncoding="ISO-8859-1"%>
 	 </div>
 	 <jsp:include page="carousel.jsp"/>
 	 <jsp:include page="legend.jsp"/>
+	 <div class="photoWindow timeCstar" id="photoWindow">
+	 	<div class="photoWindowDesc" id="photoWindowDesc"></div>
+	 	<div class="photoWindowImg" id="photoWindowImg"></div>
+	 </div>
 
       <script type="text/javascript" src="script/TimeController.js"> </script>
       <script type="text/javascript" src="script/sendToServer.js"> </script>

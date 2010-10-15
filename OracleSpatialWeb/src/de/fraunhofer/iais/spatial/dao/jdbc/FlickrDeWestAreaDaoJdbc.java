@@ -1,5 +1,6 @@
 package de.fraunhofer.iais.spatial.dao.jdbc;
 
+import java.awt.geom.Point2D;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,6 +143,57 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 			pstmt.setDouble(2, y1);
 			pstmt.setDouble(3, x2);
 			pstmt.setDouble(4, y2);
+			rs = db.getRs(pstmt);
+			while (rs.next()) {
+				FlickrDeWestArea a = new FlickrDeWestArea();
+				a.setRadius(radius);
+				initAreaFromRs(a, rs);
+				as.add(a);
+			}
+			initAreas(as);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.close(rs);
+			db.close(pstmt);
+			db.close(conn);
+		}
+		return as;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getAreasByPolygon(List<Point2D>, Radius)
+	 */
+	@Override
+	public List<FlickrDeWestArea> getAreasByPolygon(List<Point2D> polygon, Radius radius) {
+		List<FlickrDeWestArea> as = new ArrayList<FlickrDeWestArea>();
+
+		String parameters = "";
+
+		for (int i = 0; i < polygon.size() + 1; i++) {
+			parameters += ",?,?";
+		}
+		parameters = parameters.substring(parameters.indexOf(',') + 1);
+
+		Connection conn = db.getConn();
+		PreparedStatement pstmt = db.getPstmt(conn, "" + "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius
+				+ " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius
+				+ "' and sdo_relate(c.geom, SDO_geometry(2003,8307,NULL,SDO_elem_info_array(1,1003,1), SDO_ordinate_array(" + parameters + ")),'mask=anyinteract') = 'TRUE'");
+
+		ResultSet rs = null;
+
+		try {
+			for (int i = 0; i < polygon.size(); i++) {
+				System.out.println((2 * i + 1) + ":" + polygon.get(i).getX());
+				System.out.println((2 * i + 2) + ":" + polygon.get(i).getY());
+				pstmt.setDouble(2 * i + 1, polygon.get(i).getX());
+				pstmt.setDouble(2 * i + 2, polygon.get(i).getY());
+			}
+			System.out.println((2 * polygon.size() + 1) + ":" + polygon.get(0).getX());
+			System.out.println((2 * polygon.size() + 2) + ":" + polygon.get(0).getY());
+			pstmt.setDouble(2 * polygon.size() + 1, polygon.get(0).getX());
+			pstmt.setDouble(2 * polygon.size() + 2, polygon.get(0).getY());
+
 			rs = db.getRs(pstmt);
 			while (rs.next()) {
 				FlickrDeWestArea a = new FlickrDeWestArea();

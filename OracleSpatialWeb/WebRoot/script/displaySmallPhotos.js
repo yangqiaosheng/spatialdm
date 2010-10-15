@@ -6,17 +6,34 @@ function getSmallPhotos(areaid) {
 			}, parsePhotosXml);
 }
 
-function addPhotoMaker(lat, lng) {
+function addPhotoMaker(lat, lng, title) {
 	g_photo_marker = new google.maps.Marker({
 				position : new google.maps.LatLng(lat, lng),
 				map : map,
-				title : lat + "," + lng
+				title : title
 			});
 }
 
-function showPhoto(url) {
-    var photoObj = $("#photo");
-    photoObj.html("<img align='middle' src='" + url + "'>");
+function showPhoto(date, personId, rawTags, latitude, longitude, title, url) {
+	var photoWindowObj = $("#photoWindow");
+	photoWindowObj.fadeTo('fast', 1);
+
+	var photoWindowDescObj = $("#photoWindowDesc");
+	var photoWindowImgObj = $("#photoWindowImg");
+	photoWindowImgObj.html("<img src='" + url + "'>");
+
+	$("#legendInfo").html("<table border='1' bordercolor='gray'>" +
+			"<tr><td>Title:</td><td>" + title + "</td></tr>" +
+			"<tr><td>Person:</td><td>" + personId + "</td></tr>" +
+			"<tr><td>Date:</td><td>"+date+"</td></tr>" +
+			"<tr><td>RawTags:</td><td>"+rawTags+"</td></tr>" +
+			"<table>");
+}
+
+function hidePhoto(){
+	var photoWindowObj = $("#photoWindow");
+	photoWindowObj.hide();
+	$("#legendInfo").html("");
 }
 
 function removePhotoMaker() {
@@ -57,13 +74,25 @@ function parsePhotosXml(xml) {
 // + longitude + ")' ><img align='middle' src='" + url + "'></div>");
 				itemObj.css('border', 'ridge');
 				itemObj.css('border-width', 'medium');
-				itemObj.css('border-color', 'blue');
+				itemObj.css('border-color', 'gray');
 
 				var itemimgObj = $("#itemimg" + index)
 				itemimgObj.css('display', 'none');
+				itemimgObj.css('cursor', 'pointer');
 				itemimgObj.fadeTo(1000, 0.1).fadeTo(1000, 1);
 				itemimgObj.click(function() {
-							 showPhoto(url);
+							g_photo_selected = true;
+						});
+				itemimgObj.mouseenter(function() {
+							g_photo_selected = false;
+							addPhotoMaker(latitude, longitude, title);
+							showPhoto(date, personId, rawTags, latitude, longitude, title, url);
+						});
+				itemimgObj.mouseleave(function() {
+							if(g_photo_selected != true){
+								removePhotoMaker();
+								hidePhoto();
+							}
 						});
 
 				var itemdescObj = $("#itemdesc" + index);

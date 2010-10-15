@@ -16,7 +16,7 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 	};
 //	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml");
 	xmlHttp.open("POST", "http://localhost:8080/OracleSpatialWeb/RequestKml");
-	
+
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	xmlHttp.send("xml=" + encodeURIComponent(textToSend));
 }
@@ -63,7 +63,7 @@ function sendToServer_ScreenCenter_ScreenBounds(headerXML, bodyXML) {
 				$("#item1").append("\n [12..)");
 				$("#item2").append("\n" + map.getZoom());
 			}
-			$("#legendInfo").html("screenBounds:" + url);
+			$("#legendInfo").html("screenBounds:" + screenBounds_screenCenter);
 		}
 	};
 	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/RequestKml")

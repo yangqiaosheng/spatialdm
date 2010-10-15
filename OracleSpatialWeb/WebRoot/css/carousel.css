@@ -22,8 +22,13 @@
 	display: none;
 }
 
-.item.img.middle {
-	vertical-align: middle
+.photoWindow {
+  position: absolute;
+  width: auto;
+  height: auto;
+  left: 80%;
+  top: 51%;
+  display: none;
 }
 
 #maxContainer {

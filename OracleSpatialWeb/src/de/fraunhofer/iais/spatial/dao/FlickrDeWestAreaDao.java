@@ -1,5 +1,6 @@
 package de.fraunhofer.iais.spatial.dao;
 
+import java.awt.geom.Point2D;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +60,14 @@ public abstract class FlickrDeWestAreaDao {
 	 * @return List<FlickrDeWestArea>
 	 */
 	public abstract List<FlickrDeWestArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius);
+
+	/**
+	 * Returns a List of FlickrDeWestArea instances which interact to this polygon
+	 * @param polygon
+	 * @param radius
+	 * @return
+	 */
+	public abstract List<FlickrDeWestArea> getAreasByPolygon(List<Point2D> polygon, Radius radius);
 
 	/**
 	 * get the total amount of photos uploaded within this area
