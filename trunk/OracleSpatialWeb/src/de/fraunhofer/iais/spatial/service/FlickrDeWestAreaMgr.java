@@ -102,8 +102,6 @@ public class FlickrDeWestAreaMgr {
 		}
 	}
 
-
-
 	private void allYears(Set<String> years) {
 		for (int i = 2005; i <= 2009; i++) {
 			years.add(String.format("%04d", i));
@@ -129,12 +127,12 @@ public class FlickrDeWestAreaMgr {
 	}
 
 	public void count(List<FlickrDeWestArea> as, FlickrDeWestAreaDto areaDto) throws Exception {
-		System.out.println("#query:" + areaDto.getQueryStrs().size() * 139);
 
+		System.out.println("#query:" + areaDto.getQueryStrs().size() * 139);
 		//		if (strs.size() > 5 * 12 * 31 * 24)
 		//			throw new Exception("excceed the maximun #queries!");
 
-		if (areaDto.getQueryStrs().size() > 0 && areaDto.getQueryLevel() != null) {
+		if ( areaDto.getQueryStrs().size() > 0 && areaDto.getQueryLevel() != null) {
 			switch (areaDto.getQueryLevel()) {
 			case HOUR:
 				this.countHours(as, areaDto.getQueryStrs());
@@ -222,6 +220,8 @@ public class FlickrDeWestAreaMgr {
 				point.setLocation(Double.parseDouble(polygonMachter.group(2)), Double.parseDouble(polygonMachter.group(1)));
 				polygon.add(point);
 			}
+
+			setCalendarQueryStrs(areaDto);
 		}
 
 		// <interval>15/09/2010 - 19/10/2010</interval>
@@ -352,12 +352,14 @@ public class FlickrDeWestAreaMgr {
 			}
 
 			setCalendarQueryStrs(areaDto);
-			areaDto.setQueryLevel(QueryLevel.HOUR);
 		}
 
 	}
 
 	private void setCalendarQueryStrs(FlickrDeWestAreaDto areaDto) {
+
+		areaDto.setQueryLevel(QueryLevel.HOUR);
+
 		// construct the Query Strings
 		SortedSet<String> queryStrs = new TreeSet<String>();
 		areaDto.setQueryStrs(queryStrs);

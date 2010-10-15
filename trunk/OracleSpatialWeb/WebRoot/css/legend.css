@@ -5,10 +5,10 @@ label.error {
   font-weight: bold;
   background-color: #A7BDF7;
   display: inline;
-}            
+}
+
 .legendContainer {
   position: absolute;
-  top: 0;
   width: 20%;
   height: auto;
   left: 80%;
@@ -23,15 +23,15 @@ label.error {
   height: auto;
   border-width: .1em;
   border-style: solid;
-  border-color: #06A8FA; 
+  border-color: #06A8FA;
 }
-#idlegendContainer{				
+#idlegendContainer{
   border-width: .1em;
   border-style: solid;
   border-color: #06A8FA;
   left: 80%;
   top: 85%;
-}			
+}
 
 
 

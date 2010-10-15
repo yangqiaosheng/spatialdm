@@ -70,31 +70,34 @@ public class ZoomKmlServlet extends HttpServlet {
 		} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
 			messageElement.setText("please do a query first!");
 		} else {
-			
+
 			String filenamePrefix = StringUtil.genFilename(new Date());
 
 //			BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
 //			bw.write(xml);
 //			bw.close();
-			
+
 			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 			if("true".equals(persist)){
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true" );
 				areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
-			} 
-			
+			}
+
 			try {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
-				
+
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				List<FlickrDeWestArea> as = null;
-				if (areaDto.getBoundaryRect() == null) {
-					as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
-				} else {
+
+				if (areaDto.getPolygon() != null) {
+					as = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
+				} else if (areaDto.getBoundaryRect() != null) {
 					as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+				} else {
+					as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
 				areaMgr.count(as, areaDto);
 				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath);
@@ -123,7 +126,7 @@ public class ZoomKmlServlet extends HttpServlet {
 
 	/**
 	 * Initialization of the servlet. <br>
-	 * 
+	 *
 	 * @throws ServletException
 	 *             - if an error occurs
 	 */
