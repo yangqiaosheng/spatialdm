@@ -90,11 +90,11 @@ public class TestUKRode {
 					continue;
 				}
 
-				String lineStyleWidth = String.valueOf((int)(avgSpeed/20)+1);
+				String lineStyleWidth = String.valueOf((int)((avgSpeed-40)/15)+1);
 				String lineStyleColor = "FF0000";
 				String coordinates = lngFrom + "," + latFrom + ", 0 \n" + lngTo + "," + latTo + ", 0";
 
-				String redColor = Integer.toHexString((int) ((avgSpeed-20) / 140 * 255) & 0x000000FF);
+				String redColor = Integer.toHexString((int) ((avgSpeed-40) / 130 * 255) & 0x000000FF);
 
 				// create kml
 				Element placemarkElement = new Element("Placemark", namespace);
@@ -147,4 +147,88 @@ public class TestUKRode {
 		XmlUtil.xml2File(document, "temp/testUK.kml", false);
 		XmlUtil.xml2String(document, false);
 	}
+
+	@Test
+		public void testSimpleXmlfromView() throws SQLException {
+
+			Document document = new Document();
+			Element rootElement = new Element("Paths");
+			document.setRootElement(rootElement);
+
+
+			Connection conn = db.getConn();
+
+			PreparedStatement selectStmt = db.getPstmt(conn, "select t.LINK_CODE, AVG(t.MEASURED_SPEED_KPH) AS SPEED from datasample_geom_view t group by (t.LINK_CODE)");
+			ResultSet rset = db.getRs(selectStmt);
+			int i = 0;
+			while (rset.next()) {
+				int linkCode = rset.getInt("LINK_CODE");
+				double avgSpeed = rset.getDouble("SPEED");
+
+				PreparedStatement selectStmt2 = db.getPstmt(conn,
+						"select t.LINK_CODE, t.LATITUDE_FROM, t.LONGITUDE_FROM, t.LATITUDE_TO, t.LONGITUDE_TO, t.LOCATION_CODE_FROM, t.LOCATION_CODE_TO from datasample_geom_view t"
+								+ " where t.LINK_CODE = ?");
+				selectStmt2.setInt(1, linkCode);
+				ResultSet rset2 = db.getRs(selectStmt2);
+				if (rset2.next()) {
+
+					String id = String.valueOf(linkCode);
+					String description = String.valueOf((float)avgSpeed) + "kph";
+					String latFrom = rset2.getString("LATITUDE_FROM");
+					String lngFrom = rset2.getString("LONGITUDE_FROM");
+					String latTo = rset2.getString("LATITUDE_TO");
+					String lngTo = rset2.getString("LONGITUDE_TO");
+
+					if(latFrom == null || lngFrom == null || latTo == null || lngTo == null){
+						continue;
+					}
+
+					String lineStyleWidth = String.valueOf((int)((avgSpeed-40)/15)+1);
+					String lineStyleColor = "FF0000";
+					String coordinates = lngFrom + "," + latFrom + ", 0 \n" + lngTo + "," + latTo + ", 0";
+
+					String redColor = Integer.toHexString((int) ((avgSpeed-40) / 130 * 255) & 0x000000FF);
+
+					// create kml
+					Element pathElement = new Element("Path");
+					rootElement.addContent(pathElement);
+
+					Element speedElement = new Element("Speed");
+					speedElement.addContent(description);
+
+					pathElement.setAttribute("id", id);
+					pathElement.addContent(speedElement);
+
+
+					Element lindWidthElement = new Element("LineWidth");
+					lindWidthElement.addContent(lineStyleWidth);
+					Element lineColorElement2 = new Element("LineColor");
+					lineColorElement2.addContent(lineStyleColor + redColor);
+					pathElement.addContent(lindWidthElement);
+					pathElement.addContent(lineColorElement2);
+
+					Element coordinatesElement = new Element("Coordinates");
+					pathElement.addContent(coordinatesElement);
+					coordinatesElement.addContent(coordinates);
+				}
+
+				db.close(rset2);
+				db.close(selectStmt2);
+
+	//			if (i >= 100) {
+	//				break;
+	//			}
+	//			i++;
+			}
+
+			db.close(rset);
+			db.close(selectStmt);
+			db.close(conn);
+			rset.close();
+			selectStmt.close();
+			conn.close();
+
+			XmlUtil.xml2File(document, "temp/testUK.xml", false);
+			XmlUtil.xml2String(document, false);
+		}
 }
