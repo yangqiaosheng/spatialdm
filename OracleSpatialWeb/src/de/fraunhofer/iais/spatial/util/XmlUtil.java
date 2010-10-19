@@ -22,7 +22,7 @@ public class XmlUtil {
 		return xmlOutputter.outputString(document);
 	}
 
-	public static void xml2File(Document document, String filenamePrefix, boolean compact) {
+	public static void xml2File(Document document, String url, boolean compact) {
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		if (compact == true) {
 			xmlOutputter.setFormat(Format.getCompactFormat());
@@ -32,7 +32,7 @@ public class XmlUtil {
 
 		FileOutputStream fos = null;
 		try {
-			fos = new FileOutputStream(filenamePrefix + ".kml");
+			fos = new FileOutputStream(url);
 
 			xmlOutputter.output(document, fos);
 		} catch (FileNotFoundException e) {
@@ -50,7 +50,7 @@ public class XmlUtil {
 		}
 	}
 
-	public static void xml2Zip(Document document, String filenamePrefix, boolean compact) {
+	public static void xml2Kmz(Document document, String filenamePrefix, boolean compact) {
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		if (compact == true) {
 			xmlOutputter.setFormat(Format.getCompactFormat());

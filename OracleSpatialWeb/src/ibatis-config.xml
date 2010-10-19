@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration 
- 	PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
-	"http://mybatis.org/dtd/mybatis-3-config.dtd"> 
+<!DOCTYPE configuration
+ 	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
 	<properties resource="jdbc.properties" />
 	<typeAliases>
-		<typeAlias type="de.fraunhofer.iais.spatial.entity.Milanpoly"
-			alias="Milanpoly" />
-		<typeAlias type="de.fraunhofer.iais.spatial.entity.Area"
-			alias="Area" />
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.Milanpoly" alias="Milanpoly" />
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.Area" alias="Area" />
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.FlickrDeWestArea" alias="FlickrDeWestArea" />
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto" alias="FlickrDeWestPhoto" />
+		<typeAlias type="de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto" alias="FlickrDeWestAreaDto" />
 	</typeAliases>
 	<typeHandlers>
-		<typeHandler
-			handler="de.fraunhofer.iais.spatial.dao.mybatis.type.SdoGeometryTypeHandler"
-			javaType="oracle.spatial.geometry.JGeometry" />
-			<typeHandler
-			handler="de.fraunhofer.iais.spatial.dao.mybatis.type.Point2DTypeHandler"
-			javaType="java.awt.geom.Point2D" />
+		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.SdoGeometryTypeHandler" javaType="oracle.spatial.geometry.JGeometry" />
+		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.Point2DTypeHandler" javaType="java.awt.geom.Point2D" />
 	</typeHandlers>
 	<environments default="development">
 		<environment id="development">
@@ -31,7 +28,9 @@
 		</environment>
 	</environments>
 	<mappers>
-<!--		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Milanpoly.xml" />-->
+		<!--		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Milanpoly.xml" />-->
 		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Area.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrDeWestArea.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrDeWestPhoto.xml" />
 	</mappers>
 </configuration>

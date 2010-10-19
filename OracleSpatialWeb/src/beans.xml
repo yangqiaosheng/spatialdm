@@ -11,6 +11,7 @@
 
 	<!-- JDBC database connection configuration file -->
 	<context:property-placeholder location="classpath*:jdbc.properties" />
+<!--	<context:property-placeholder location="classpath*:jdbc_marin.properties" />-->
 
 	<!-- JDBC DataSource configuration -->
 	<bean id="jdbcDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -76,9 +77,9 @@
 	<bean id="flickrDeWestAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc">
 		<property name="db" ref="db" />
 	</bean>
-<!--<bean id="flickrDeWestAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrDeWestAreaDaoMybatis" /> -->
+	<bean id="flickrDeWestAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrDeWestAreaDaoMybatis" /> 
 	<bean id="flickrDeWestAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr">
-		<property name="areaDao" ref="flickrDeWestAreaDaoJdbcImpl" />
+		<property name="areaDao" ref="flickrDeWestAreaDaoMybatisImpl" />
 	</bean>
 
 </beans>

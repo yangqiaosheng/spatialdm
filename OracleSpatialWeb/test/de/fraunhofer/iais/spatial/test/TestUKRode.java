@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+
+import javax.annotation.Resource;
 
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -12,18 +13,21 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import de.fraunhofer.iais.spatial.util.DBUtil;
+import de.fraunhofer.iais.spatial.dao.jdbc.DB;
+import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
-public class TestUKRode {
+@ContextConfiguration("classpath:beans.xml")
+public class TestUKRode extends AbstractJUnit4SpringContextTests{
 
-	private DBUtil db = new DBUtil();
+	@Resource(name = "db")
+	private DB db;
 
-	@BeforeClass
-	public static void initClass() {
-
-	}
 
 	@Test
 	public void testView() throws SQLException {
@@ -64,7 +68,7 @@ public class TestUKRode {
 
 		Connection conn = db.getConn();
 
-		PreparedStatement selectStmt = db.getPstmt(conn, "select t.LINK_CODE, AVG(t.MEASURED_SPEED_KPH) AS SPEED from datasample_geom_view t group by (t.LINK_CODE)");
+		PreparedStatement selectStmt = db.getPstmt(conn, "select t.LINK_CODE, AVG(t.MEASURED_SPEED_KPH) AS SPEED from datasample t group by (t.LINK_CODE)");
 		ResultSet rset = db.getRs(selectStmt);
 		int i = 0;
 		while (rset.next()) {
@@ -151,6 +155,8 @@ public class TestUKRode {
 	@Test
 		public void testSimpleXmlfromView() throws SQLException {
 
+			long start = System.currentTimeMillis();
+
 			Document document = new Document();
 			Element rootElement = new Element("Paths");
 			document.setRootElement(rootElement);
@@ -158,7 +164,7 @@ public class TestUKRode {
 
 			Connection conn = db.getConn();
 
-			PreparedStatement selectStmt = db.getPstmt(conn, "select t.LINK_CODE, AVG(t.MEASURED_SPEED_KPH) AS SPEED from datasample_geom_view t group by (t.LINK_CODE)");
+			PreparedStatement selectStmt = db.getPstmt(conn, "select t.LINK_CODE, AVG(t.MEASURED_SPEED_KPH) AS SPEED from datasample t group by (t.LINK_CODE)");
 			ResultSet rset = db.getRs(selectStmt);
 			int i = 0;
 			while (rset.next()) {
@@ -215,12 +221,13 @@ public class TestUKRode {
 				db.close(rset2);
 				db.close(selectStmt2);
 
-	//			if (i >= 100) {
-	//				break;
-	//			}
-	//			i++;
+//				if (i >= 5) {
+//					break;
+//				}
+				i++;
 			}
 
+			System.out.println("i:" + i);
 			db.close(rset);
 			db.close(selectStmt);
 			db.close(conn);
@@ -230,5 +237,9 @@ public class TestUKRode {
 
 			XmlUtil.xml2File(document, "temp/testUK.xml", false);
 			XmlUtil.xml2String(document, false);
+
+			System.out.println("cost time: " + (System.currentTimeMillis() - start));
 		}
+
+
 }

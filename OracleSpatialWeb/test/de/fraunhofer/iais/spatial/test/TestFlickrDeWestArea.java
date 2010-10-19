@@ -18,6 +18,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -25,6 +27,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
@@ -37,15 +41,14 @@ import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 import de.fraunhofer.iais.spatial.web.servlet.SmallPhotoUrlServlet;
 
-public class TestFlickrDeWestArea {
+@ContextConfiguration("classpath:beans.xml")
+public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 
-	private static FlickrDeWestAreaMgr areaMgr = null;
+	@Resource(name = "flickrDeWestAreaMgr")
+	private FlickrDeWestAreaMgr areaMgr = null;
 
 	@BeforeClass
 	public static void initClass() {
-		// Spring IOC
-		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "beans.xml" });
-		areaMgr = context.getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
 		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir") + "\\");
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 	}
@@ -123,7 +126,6 @@ public class TestFlickrDeWestArea {
 		}
 	}
 
-
 	@Test
 	public void testPhoto2() {
 		long start = System.currentTimeMillis();
@@ -136,7 +138,7 @@ public class TestFlickrDeWestArea {
 			System.out.println(p);
 		}
 
-		System.out.println(System.currentTimeMillis()-start);
+		System.out.println(System.currentTimeMillis() - start);
 	}
 
 	@Test
@@ -153,7 +155,7 @@ public class TestFlickrDeWestArea {
 			System.out.println(p);
 		}
 
-		System.out.println(System.currentTimeMillis()-start);
+		System.out.println(System.currentTimeMillis() - start);
 	}
 
 	@Test
@@ -165,17 +167,15 @@ public class TestFlickrDeWestArea {
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
 
-		for(int i = 2005 ; i < 2010 ; i++){
-			for (int j = 10; j <= 12; j++){
-				for (int k = 10; k < 30; k++){
-					for (int l = 10; l < 24; l++){
-						hours.add(i+"-"+j+"-"+k+"@"+l);
+		for (int i = 2005; i < 2010; i++) {
+			for (int j = 10; j <= 12; j++) {
+				for (int k = 10; k < 30; k++) {
+					for (int l = 10; l < 24; l++) {
+						hours.add(i + "-" + j + "-" + k + "@" + l);
 					}
 				}
 			}
 		}
-
-
 
 		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
 		for (FlickrDeWestPhoto p : photos) {
@@ -197,7 +197,6 @@ public class TestFlickrDeWestArea {
 			System.out.println(p);
 		}
 
-
 		List<FlickrDeWestPhoto> photos5 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, hours, 20);
 		for (FlickrDeWestPhoto p : photos5) {
 			System.out.println(p);
@@ -212,7 +211,58 @@ public class TestFlickrDeWestArea {
 			System.out.println(p);
 		}
 
-		System.out.println(System.currentTimeMillis()-start);
+		System.out.println(System.currentTimeMillis() - start);
+	}
+
+	@Test
+	public void testPhotoXml() {
+		long start = System.currentTimeMillis();
+
+		TreeSet<String> hours = new TreeSet<String>();
+		hours.add("2007-08-11@13");
+		hours.add("2007-08-11@11");
+		hours.add("2007-05-09@13");
+
+		for (int i = 2005; i < 2010; i++) {
+			for (int j = 10; j <= 12; j++) {
+				for (int k = 10; k < 30; k++) {
+					for (int l = 10; l < 24; l++) {
+						hours.add(i + "-" + j + "-" + k + "@" + l);
+					}
+				}
+			}
+		}
+		System.out.println(photosResponseXml(1, Radius.R10000, hours, 100));
+	}
+	private String photosResponseXml(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, num);
+
+
+		Document document = new Document();
+		Element rootElement = new Element("photos");
+		document.setRootElement(rootElement);
+
+
+		int i = 1;
+		for (FlickrDeWestPhoto p : photos) {
+			Element photoElement = new Element("photo");
+			rootElement.addContent(photoElement);
+			photoElement.setAttribute("index", String.valueOf(i++));
+
+			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
+			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
+			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
+			photoElement.addContent(new Element("date").setText(String.valueOf(p.getDate())));
+			photoElement.addContent(new Element("latitude").setText(String.valueOf(p.getLatitude())));
+			photoElement.addContent(new Element("longitude").setText(String.valueOf(p.getLongitude())));
+			photoElement.addContent(new Element("personId").setText(String.valueOf(p.getPersonId())));
+			photoElement.addContent(new Element("title").setText(String.valueOf(p.getTitle())));
+			photoElement.addContent(new Element("smallUrl").setText(String.valueOf(p.getSmallUrl())));
+			photoElement.addContent(new Element("viewed").setText(String.valueOf(p.getViewed())));
+			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
+		}
+		XmlUtil.xml2File(document, "temp/FlickrDeWestPhoto_" + radius + ".xml", false);
+		return XmlUtil.xml2String(document, false);
 	}
 
 	@Test
@@ -315,6 +365,42 @@ public class TestFlickrDeWestArea {
 		Document document = builder.build(new ByteArrayInputStream(xmlStr.getBytes()));
 		System.out.println(XmlUtil.xml2String(document, false));
 		System.out.println(URLEncoder.encode((XmlUtil.xml2String(document, true)), "UTF-8"));
+	}
+
+	@Test
+	public void testSelectAll() {
+		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(Radius.R80000);
+		for (FlickrDeWestArea a : as) {
+			String coordinates = "\t";
+			if (a.getGeom().getOrdinatesArray() != null) {
+				for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
+					coordinates += a.getGeom().getOrdinatesArray()[i] + ", ";
+					if (i % 2 == 1) {
+						coordinates += "0\t";
+					}
+				}
+			}
+
+			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
+			System.out.println(coordinates + "\n");
+		}
+	}
+
+	@Test
+	public void testSelectById() {
+		FlickrDeWestArea a = areaMgr.getAreaDao().getAreaById(1, Radius.R80000);
+		String coordinates = "\t";
+		if (a.getGeom().getOrdinatesArray() != null) {
+			for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
+				coordinates += a.getGeom().getOrdinatesArray()[i] + ", ";
+				if (i % 2 == 1) {
+					coordinates += "0\t";
+				}
+			}
+		}
+
+		System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
+		System.out.println(coordinates + "\n");
 	}
 
 //	@Test

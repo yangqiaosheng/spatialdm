@@ -38,7 +38,7 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 		long currentDate = Long.parseLong(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
 		for (File f : files) {
 			String filename = f.getName();
-			if (filename.length() == 25 && filename.matches("\\d{12}-\\w{8}.\\w{1}ml")) {
+			if (filename.length() == 25 && filename.matches("\\d{12}-\\w{8}.km\\w{1}")) {
 				long fileDate = Long.parseLong(filename.substring(0, 12));
 				if (currentDate > fileDate + period) {
 					logger.debug("run() - delete:" + filename); //$NON-NLS-1$

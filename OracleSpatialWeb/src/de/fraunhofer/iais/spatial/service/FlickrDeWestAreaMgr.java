@@ -54,6 +54,14 @@ public class FlickrDeWestAreaMgr {
 		this.flickrDeWestAreaDao = areaDao;
 	}
 
+	public void fillCache() {
+		this.flickrDeWestAreaDao.getAllAreas(Radius.R80000);
+		this.flickrDeWestAreaDao.getAllAreas(Radius.R40000);
+		this.flickrDeWestAreaDao.getAllAreas(Radius.R20000);
+//		this.flickrDeWestAreaDao.getAllAreas(Radius.R10000);
+//		this.flickrDeWestAreaDao.getAllAreas(Radius.R5000);
+	}
+
 	public void countHours(List<FlickrDeWestArea> as, Set<String> hours) {
 		for (FlickrDeWestArea a : as) {
 			int num = 0;
@@ -629,9 +637,9 @@ public class FlickrDeWestAreaMgr {
 			coordinatesElement.addContent(coordinates);
 		}
 		if(compress == true){
-			XmlUtil.xml2Zip(document, localBasePath + filenamePrefix, true);
+			XmlUtil.xml2Kmz(document, localBasePath + filenamePrefix, true);
 		}else {
-			XmlUtil.xml2File(document, localBasePath + filenamePrefix, false);
+			XmlUtil.xml2File(document, localBasePath + filenamePrefix + ".kml", false);
 		}
 		return XmlUtil.xml2String(document, false);
 		// return xml2String(document).replaceAll("\r\n", " ");
