@@ -181,7 +181,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 				+ "' and sdo_relate(c.geom, SDO_geometry(2003,8307,NULL,SDO_elem_info_array(1,1003,1), SDO_ordinate_array(" + parameters + ")),'mask=anyinteract') = 'TRUE'");
 
 		ResultSet rs = null;
-
+ 
 		try {
 			for (int i = 0; i < polygon.size(); i++) {
 				System.out.println((2 * i + 1) + ":" + polygon.get(i).getX());

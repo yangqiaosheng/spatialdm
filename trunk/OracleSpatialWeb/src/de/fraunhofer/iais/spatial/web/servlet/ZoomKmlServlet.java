@@ -133,6 +133,7 @@ public class ZoomKmlServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
+		areaMgr.fillCache();
 	}
 
 }

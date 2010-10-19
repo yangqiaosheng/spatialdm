@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto">
+
+	<!-- cache: flushInterval: 24hours -->
+<!--   	<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>-->
+
+	<select id="selectByDateQuery" resultType="FlickrDeWestPhoto" parameterType="map">
+		<![CDATA[
+		select
+			PHOTO_ID as "id",
+			DT as "date",
+			LATITUDE,
+			LONGITUDE,
+			PERSON as "personId",
+			RAWTAGS,
+			SMALLURL,
+			TITLE,
+			VIEWED
+ 		from (
+ 			select t.* from
+ 					FLICKR_DE_WEST_TABLE t,
+ 					FLICKR_DE_WEST_TABLE_GEOM g
+			where t.PHOTO_ID = g.PHOTO_ID
+			 		and g.CLUSTER_R${radius}_ID = #{areaid}
+			 		and t.dt >= to_date(#{queryStr}, #{oracleDatePatternStr})
+			 		and t.dt <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
+			 order by t.dt desc
+			 )
+		where rownum <= #{num}
+		]]>
+	</select>
+
+</mapper>

@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import oracle.spatial.geometry.JGeometry;
+
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public class FlickrDeWestAreaDto {
+
 	private SortedSet<String> years = new TreeSet<String>();
 	private SortedSet<String> months = new TreeSet<String>();
 	private SortedSet<String> days = new TreeSet<String>();
@@ -17,6 +20,7 @@ public class FlickrDeWestAreaDto {
 	private SortedSet<String> weekdays = new TreeSet<String>();
 	private SortedSet<String> queryStrs;
 	private QueryLevel queryLevel;
+	private int areaid;
 	private Radius radius;
 	private int zoom;
 	private Point2D center;
@@ -26,6 +30,7 @@ public class FlickrDeWestAreaDto {
 	private Date endDate;
 	private SortedSet<Date> selectedDays;
 	private SortedSet<String> years4Chart;
+	JGeometry queryGeom;
 
 	public enum QueryLevel {
 		HOUR, DAY, MONTH, YEAR;
@@ -69,6 +74,14 @@ public class FlickrDeWestAreaDto {
 
 	public void setWeekdays(SortedSet<String> weekdays) {
 		this.weekdays = weekdays;
+	}
+
+	public int getAreaid() {
+		return areaid;
+	}
+
+	public void setAreaid(int areaid) {
+		this.areaid = areaid;
 	}
 
 	public Radius getRadius() {
@@ -158,4 +171,13 @@ public class FlickrDeWestAreaDto {
 	public void setYears4Chart(SortedSet<String> years4Chart) {
 		this.years4Chart = years4Chart;
 	}
+
+	public JGeometry getQueryGeom() {
+		return queryGeom;
+	}
+
+	public void setQueryGeom(JGeometry queryGeom) {
+		this.queryGeom = queryGeom;
+	}
+
 }
