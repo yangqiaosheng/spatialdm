@@ -461,7 +461,7 @@ public class FlickrDeWestAreaMgr {
 		ChartUtil.createTimeSeriesChart(countsMap, os);
 	}
 
-	public String createKml(List<FlickrDeWestArea> as, String file, Radius radius, String remoteBasePath) throws UnsupportedEncodingException {
+	public String createKml(List<FlickrDeWestArea> as, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 		if (remoteBasePath == null || "".equals(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
@@ -628,7 +628,11 @@ public class FlickrDeWestAreaMgr {
 			linearRingElement.addContent(coordinatesElement);
 			coordinatesElement.addContent(coordinates);
 		}
-		XmlUtil.xml2File(document, localBasePath + file + ".kml", false);
+		if(compress == true){
+			XmlUtil.xml2Zip(document, localBasePath + filenamePrefix, true);
+		}else {
+			XmlUtil.xml2File(document, localBasePath + filenamePrefix, false);
+		}
 		return XmlUtil.xml2String(document, false);
 		// return xml2String(document).replaceAll("\r\n", " ");
 	}
