@@ -298,7 +298,7 @@ public class TestFlickrDeWestArea {
 		}
 		areaMgr.count(as, areaDto);
 
-		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null));
+		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null, true));
 
 	}
 

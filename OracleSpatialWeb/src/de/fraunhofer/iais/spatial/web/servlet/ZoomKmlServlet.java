@@ -100,11 +100,11 @@ public class ZoomKmlServlet extends HttpServlet {
 					as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
 				areaMgr.count(as, areaDto);
-				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath);
+				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, true);
 
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);
-				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
+				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kmz");
 				request.getSession().setAttribute("areaDto", areaDto);
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
