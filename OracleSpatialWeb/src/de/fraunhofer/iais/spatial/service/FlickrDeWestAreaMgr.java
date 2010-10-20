@@ -6,19 +6,17 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -459,7 +457,8 @@ public class FlickrDeWestAreaMgr {
 
 	public void createTimeSeriesChart(FlickrDeWestArea a, Set<String> years, OutputStream os) throws ParseException, IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Map<Date, Integer> countsMap = new LinkedHashMap<Date, Integer>();
+		
+		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
 		for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
 			if (years.contains(e.getKey().substring(0, 4))) {
 				countsMap.put(sdf.parse(e.getKey()), e.getValue());
