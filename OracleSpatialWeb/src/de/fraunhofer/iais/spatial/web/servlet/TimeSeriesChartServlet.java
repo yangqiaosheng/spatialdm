@@ -35,35 +35,11 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		response.setContentType("image/jpeg");
 		response.setHeader("Cache-Control", "no-cache");
 		ServletOutputStream sos = response.getOutputStream();
-//		String localBasePath = System.getProperty("oraclespatialweb.root");
 
 		String areaid = request.getParameter("areaid");
 		if (areaid == null || "".equals(areaid))
 			return;
 
-//		String xmlfile = request.getParameter("xml");
-//
-//		if (xmlfile != null && !"".equals(xmlfile)) {
-//
-//			BufferedReader br = new BufferedReader(new FileReader(localBasePath + xmlfile));
-//			StringBuffer xml = new StringBuffer();
-//			String thisLine;
-//			while ((thisLine = br.readLine()) != null) {
-//				xml.append(thisLine);
-//			}
-//
-//			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
-//			try {
-//				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
-//
-//				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
-//				if (area != null) {
-//					areaMgr.createTimeSeriesChart(area, areaDto.getYears(), sos);
-//				}
-//			} catch (Exception e) {
-//				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-//			}
-//		}
 
 		FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 		if(areaDto != null){
@@ -75,14 +51,15 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				}
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+				sos.close();
 			}
 		}
-		
+
 	}
 
 	/**
 	 * Initialization of the servlet. <br>
-	 * 
+	 *
 	 * @throws ServletException
 	 *             - if an error occurs
 	 */
