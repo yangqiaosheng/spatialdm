@@ -249,17 +249,18 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 			rootElement.addContent(photoElement);
 			photoElement.setAttribute("index", String.valueOf(i++));
 
-			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
-			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
-			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
+//			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
+//			photoElement.addContent(new Element("personId").setText(String.valueOf(p.getPersonId())));
+//			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
+//			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
 			photoElement.addContent(new Element("date").setText(String.valueOf(p.getDate())));
 			photoElement.addContent(new Element("latitude").setText(String.valueOf(p.getLatitude())));
 			photoElement.addContent(new Element("longitude").setText(String.valueOf(p.getLongitude())));
-			photoElement.addContent(new Element("personId").setText(String.valueOf(p.getPersonId())));
 			photoElement.addContent(new Element("title").setText(String.valueOf(p.getTitle())));
-			photoElement.addContent(new Element("smallUrl").setText(String.valueOf(p.getSmallUrl())));
-			photoElement.addContent(new Element("viewed").setText(String.valueOf(p.getViewed())));
-			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
+			photoElement.addContent(new Element("pageUrl").setText("http://www.flickr.com/photos/" + p.getPersonId() + "/" + p.getId()));
+			photoElement.addContent(new Element("photoUrl").setText(String.valueOf(p.getSmallUrl())));
+//			photoElement.addContent(new Element("viewed").setText(String.valueOf(p.getViewed())));
+//			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
 		}
 		XmlUtil.xml2File(document, "temp/FlickrDeWestPhoto_" + radius + ".xml", false);
 		return XmlUtil.xml2String(document, false);
