@@ -57,7 +57,7 @@ public class FlickrDeWestAreaMgr {
 	public void fillCache() {
 		this.flickrDeWestAreaDao.getAllAreas(Radius.R80000);
 		this.flickrDeWestAreaDao.getAllAreas(Radius.R40000);
-		this.flickrDeWestAreaDao.getAllAreas(Radius.R20000);
+//		this.flickrDeWestAreaDao.getAllAreas(Radius.R20000);
 //		this.flickrDeWestAreaDao.getAllAreas(Radius.R10000);
 //		this.flickrDeWestAreaDao.getAllAreas(Radius.R5000);
 	}
