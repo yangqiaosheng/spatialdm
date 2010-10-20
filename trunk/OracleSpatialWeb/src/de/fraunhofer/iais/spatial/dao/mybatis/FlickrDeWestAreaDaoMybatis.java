@@ -28,7 +28,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 
-	private final static String resource = "ibatis-config.xml";
+	private final static String resource = "mybatis-config.xml";
 	private static SqlSessionFactory sqlSessionFactory = null;
 
 	public FlickrDeWestAreaDaoMybatis() {

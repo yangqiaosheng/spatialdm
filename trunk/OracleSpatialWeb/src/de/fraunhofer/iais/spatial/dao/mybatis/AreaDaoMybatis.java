@@ -20,7 +20,7 @@ import de.fraunhofer.iais.spatial.entity.Area;
 
 public class AreaDaoMybatis implements AreaDao {
 
-	private final static String resource = "ibatis-config.xml";
+	private final static String resource = "mybatis-config.xml";
 	private static SqlSessionFactory sqlSessionFactory = null;
 
 	public AreaDaoMybatis() {

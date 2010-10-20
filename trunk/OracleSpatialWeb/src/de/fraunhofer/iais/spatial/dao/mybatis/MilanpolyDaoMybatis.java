@@ -15,7 +15,7 @@ import de.fraunhofer.iais.spatial.dao.MilanpolyDao;
 import de.fraunhofer.iais.spatial.entity.Milanpoly;
 
 public class MilanpolyDaoMybatis implements MilanpolyDao {
-	public final static String resource = "ibatis-config.xml";
+	public final static String resource = "mybatis-config.xml";
 	public static SqlSessionFactory sqlSessionFactory = null;
 
 	public MilanpolyDaoMybatis() {
