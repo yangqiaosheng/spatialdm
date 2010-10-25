@@ -363,17 +363,19 @@ function ask() {
 //var t_count=0;
 var l=0;
 function loadkml(url) {
+//  alert("in the load alert");
   for (var i=g_kml_counter-l; i<g_kml_counter;i++)
   {
     g_kml_layer[i].setMap();
     g_kml_layer[i].setMap(null);
   }
+  //alert("load 1");
   g_kml_layer[g_kml_counter] = new google.maps.KmlLayer(url, {
     suppressInfoWindows: false,
     preserveViewport: true,
     map:map
   });
-
+  //alert("load 2");
   google.maps.event.addListener(g_kml_layer[g_kml_counter], 'click', function(kmlEvent) {
     var areaid = kmlEvent.featureData.id;
     var parameters = kmlEvent.featureData.snippet;
@@ -383,7 +385,7 @@ function loadkml(url) {
     getSmallPhotos(areaid);
 
   });
-
+  //alert("load 3");
   g_kml_counter++;
   l=1;
 }

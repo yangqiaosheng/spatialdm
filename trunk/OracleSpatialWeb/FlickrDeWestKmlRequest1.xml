@@ -13,12 +13,13 @@
 
 	<calendar>
 		<years>
-			<year>2005</year>
-			<year>2008</year>
+<!--			<year>2005</year>-->
+<!--			<year>2008</year>-->
 			<year>2009</year>
 		</years>
-<!--		<months>-->
+		<months>
 <!--			<month>January</month>-->
+			<month>February</month>
 <!--			<month>March</month>-->
 <!--			<month>April</month>-->
 <!--			<month>May</month>-->
@@ -26,7 +27,7 @@
 <!--			<month>October</month>-->
 <!--			<month>November</month>-->
 <!--			<month>December</month>-->
-<!--		</months>-->
+		</months>
 <!--		<days>-->
 <!--			<day>3</day>-->
 <!--			<day>09</day>-->
@@ -39,8 +40,8 @@
 	</hours>
 <!---->
 		<weekdays>
-		<weekday>Saturday</weekday>
-		<weekday>Sunday</weekday>
+<!--		<weekday>Saturday</weekday>-->
+<!--		<weekday>Sunday</weekday>-->
 		</weekdays>
 	</calendar>
 

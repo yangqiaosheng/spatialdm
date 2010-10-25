@@ -12,11 +12,8 @@ pageEncoding="ISO-8859-1"%>
 
         <link rel="stylesheet" type="text/css" href="css/fonts.css" />
 
-        <!-- key for localhost:8080 -->
-        <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRTwM0brOpm-All5BF6PoaKBxRWWERQz8kv3AfRcmeXeips11HUqEo81xQ" type="text/javascript"></script>
-        <!-- key for http://kd-photomap.iais.fraunhofer.de -->
-<!--    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>	-->
-
+              <!-- key for http://kd-photomap.iais.fraunhofer.de -->
+	 <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true">
         </script>
 
@@ -27,10 +24,7 @@ pageEncoding="ISO-8859-1"%>
         <link type="text/css" rel="stylesheet" href="css/controllerTimeStyle.css" />
         <link type="text/css" rel="stylesheet" href="css/contrllerSearchStyle.css" />
         <link type="text/css" rel="stylesheet" href="css/verticalmenu.css" />
-
-	<!--Simile start -->
-	<script src="http://api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true" type="text/javascript"></script>
-	<!--Simile end-->
+	
 
         <!--this is jQuery use:)-->
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js">
@@ -54,6 +48,8 @@ pageEncoding="ISO-8859-1"%>
 	</script>
 	<script type="text/javascript" src="script/DragnDrop.js">
 	</script>
+	<script type="text/javascript" src="script/ReSize.js">
+	</script>
         <script type="text/javascript" src="script/jCarousel.js">
         </script>
         <script type="text/javascript" src="script/Legend.js">
@@ -70,16 +66,16 @@ pageEncoding="ISO-8859-1"%>
 	</script>
 
 
-        <link type="text/css" rel="stylesheet" href="css/general.css" />
-        <link type="text/css" rel="stylesheet" href="css/carousel.css" />
-        <link type="text/css" rel="stylesheet" href="css/calendar.css" />
-        <link type="text/css" rel="stylesheet" href="css/legend.css" />
+    <link type="text/css" rel="stylesheet" href="css/general.css" />
+    <link type="text/css" rel="stylesheet" href="css/carousel.css" />
+    <link type="text/css" rel="stylesheet" href="css/calendar.css" />
+    <link type="text/css" rel="stylesheet" href="css/legend.css" />
 	<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
 
 
     </head>
     <!--if one of the functions gtom onload is not executing, then the chain is broken and the next ones will not execute as well-->
-    <body onload="onLoad(); start(); loadStart();";  onunload="GUnload()"; onresize="onResize();">
+    <body onload="start(); loadStart();";  onunload="GUnload()"; onresize="onResize();">
         <div style="display: none;">
             <img id="calImg" src="images/calendar.gif" class="trigger" />
         </div>
@@ -87,22 +83,39 @@ pageEncoding="ISO-8859-1"%>
         </div>
         <br/>
         <div id="move">
-	  <jsp:include page="table1.jsp"/>
-	  <jsp:include page="table2.jsp"/>
-	  <jsp:include page="table3.jsp"/>
-	  <jsp:include page="table4.jsp"/>
-	 </div>
-	 <jsp:include page="carousel.jsp"/>
-	 <jsp:include page="legend.jsp"/>
-	 <div class="photoWindow timeCstar" id="photoWindow">
-	 	<div class="photoWindowDesc" id="photoWindowDesc"></div>
-	 	<div class="photoWindowImg" id="photoWindowImg"></div>
-	 </div>
+			<jsp:include page="table1.jsp"/>		
+			<jsp:include page="table2.jsp"/>
+			<jsp:include page="table3.jsp"/>	  	
+		</div>
+		<jsp:include page="carousel.jsp"/>
+		<jsp:include page="legend.jsp"/>
+		<div class="photoWindow timeCstar" id="photoWindow">
+			<div class="photoWindowDesc" id="photoWindowDesc"></div>
+			<div class="photoWindowImg" id="photoWindowImg"></div>
+		</div>
 
-      <script type="text/javascript" src="script/TimeController.js"> </script>
-      <script type="text/javascript" src="script/sendToServer.js"> </script>
-      <script type="text/javascript" src="script/prepareXMLforServer.js"> </script>
-      <script type="text/javascript" src="script/VerticalMenu.js"></script>
+		<script type="text/javascript" src="script/TimeController.js"> </script>
+		<script type="text/javascript" src="script/traffic.js"></script>
+		<script type="text/javascript" src="script/sendToServer.js"> </script>
+		<script type="text/javascript" src="script/prepareXMLforServer.js"> </script>
+		<script type="text/javascript" src="script/VerticalMenu.js"></script>
+		
+		<!--later I will see where I put this -->
+		<script>			
+		jQuery(".head").hover(function () {
+			jQuery(this).removeClass("headerButtonbefore");
+			jQuery(this).addClass("headerButtonafter");
+			}, function () {
+			jQuery(this).removeClass("headerButtonafter");
+			jQuery(this).addClass("headerButtonbefore");			
+		});
+		//jQuery("#Introduction").click(function(){
+		//	jQuery("#content").val("#content1");
+		//});
+		jQuery("#Pictures").click(function(){
+			jQuery("#content").load("content2.html");			
+		});
+		</script>
 
      </body>
 </html>
