@@ -395,6 +395,7 @@ public class FlickrDeWestAreaMgr {
 		// day of week in English format
 		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
 		Calendar calendar = Calendar.getInstance();
+		calendar.setLenient(false);
 
 		for (String y : tempYears) {
 			for (String m : tempMonths) {
@@ -405,10 +406,15 @@ public class FlickrDeWestAreaMgr {
 						calendar.set(Calendar.MONTH, Integer.parseInt(m) - 1);
 						calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(d));
 						calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(h));
-						// filter out the selected weekdays
-						if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
-//							queryStrs.add(y + "-" + m + "-" + d + "@" + h);
-							queryStrs.add(FlickrDeWestAreaDao.hourDateFormat.format(calendar.getTime()));
+
+						try {
+							// filter out the selected weekdays
+							if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
+								//queryStrs.add(y + "-" + m + "-" + d + "@" + h);
+								queryStrs.add(FlickrDeWestAreaDao.hourDateFormat.format(calendar.getTime()));
+							}
+						} catch (IllegalArgumentException e) {
+							// omit the wrong date
 						}
 					}
 				}
@@ -457,7 +463,7 @@ public class FlickrDeWestAreaMgr {
 
 	public void createTimeSeriesChart(FlickrDeWestArea a, Set<String> years, OutputStream os) throws ParseException, IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		
+
 		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
 		for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
 			if (years.contains(e.getKey().substring(0, 4))) {
@@ -564,8 +570,8 @@ public class FlickrDeWestAreaMgr {
 								+ "&total=" + a.getTotalCount()
 								+ "&selected=" + a.getSelectCount();
 
-			String polyStyleColor = "330000"; //not transparent
-			//			String polyStyleColor = "000000"; //transparent
+//			String polyStyleColor = "330000"; //not transparent
+			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
 			String lineStyleWidth = "1";

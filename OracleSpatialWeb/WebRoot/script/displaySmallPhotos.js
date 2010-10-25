@@ -1,5 +1,3 @@
-
-
 function getSmallPhotos(areaid) {
 	$.get('SmallPhotoUrl', {
 				areaid : areaid
@@ -14,7 +12,7 @@ function addPhotoMaker(lat, lng, title) {
 			});
 }
 
-function showPhoto(date, personId, rawTags, latitude, longitude, title, url) {
+function showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url) {
 	var photoWindowObj = $("#photoWindow");
 	photoWindowObj.fadeTo('fast', 1);
 
@@ -41,7 +39,6 @@ function removePhotoMaker() {
 }
 
 function parsePhotosXml(xml) {
-
 	var xmlObj = $(xml);
 
 	// clean the items
@@ -67,9 +64,10 @@ function parsePhotosXml(xml) {
 				var personId = $(this).children("personId").text();
 				var photoId = $(this).children("photoId").text();
 				var rawTags = $(this).children("rawTags").text();
+				var flickrWebUrl = "http://www.flickr.com/photos/" + personId +  "/" + photoId + "/";
 
 				var itemObj = $("#item" + index);
-				itemObj.html("<div class='itemimg' id='itemimg" + index + "'><img align='middle' src='" + url + "'></div>");
+				itemObj.html("<a href='" + flickrWebUrl + "' target='_blank'><div class='itemimg' id='itemimg" + index + "'><img align='middle' src='" + url + "'></div></a>");
 // itemObj.html("<div class='itemimg' id='itemimg" + index + "' onmouseout='removePhotoMaker()' onmouseover='addPhotoMaker(" + latitude + ","
 // + longitude + ")' ><img align='middle' src='" + url + "'></div>");
 				itemObj.css('border', 'ridge');
@@ -80,19 +78,19 @@ function parsePhotosXml(xml) {
 				itemimgObj.css('display', 'none');
 				itemimgObj.css('cursor', 'pointer');
 				itemimgObj.fadeTo(1000, 0.1).fadeTo(1000, 1);
-				itemimgObj.click(function() {
-							g_photo_selected = true;
-						});
+//				itemimgObj.click(function() {
+//							g_photo_selected = true;
+//						});
 				itemimgObj.mouseenter(function() {
-							g_photo_selected = false;
+//							g_photo_selected = false;
 							addPhotoMaker(latitude, longitude, title);
-							showPhoto(date, personId, rawTags, latitude, longitude, title, url);
+							showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url);
 						});
 				itemimgObj.mouseleave(function() {
-							if(g_photo_selected != true){
+//							if(g_photo_selected != true){
 								removePhotoMaker();
 								hidePhoto();
-							}
+//							}
 						});
 
 				var itemdescObj = $("#itemdesc" + index);

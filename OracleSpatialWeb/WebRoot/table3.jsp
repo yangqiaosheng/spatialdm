@@ -1,4 +1,4 @@
-<div id="table3">
+<div id="table3" class="tabcontent">
   <span>
     <input type="checkbox" id="CalendarcheckBox"><b id="timeC2" class="timeCstar">Time Controller 2</b></input>
   </span>

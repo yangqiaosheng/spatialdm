@@ -2,7 +2,7 @@
 $(document).ready(function(){       
    var listenerHandle;
    function agregationPolygonsAdd(){
-       $("#voronoiT").attr('value', 'Disable triangle agregation');        
+           $("#voronoiT").attr('value', 'Disable triangle agregation');        
 	   $("#legendInfo").html("<span>number of pictures </span><br/> <span> <img src='images/circle_bl.ico' width='20px' height='20px'/> 1-99 </span> <br/><span> <img src='images/circle_gr.ico' width='20px' height='20px' /> 100-999</span><br/><span> <img src='images/circle_lgr.ico' width='20px' height='20px'/> 1000-9999</span> <br/><span> <img src='images/circle_or.ico' width='20px' height='20px'/> &ge 10000</span>");	   
 	    listenerHandle = google.maps.event.addListener(map, 'zoom_changed', function(){   
 	    var bounds = map.getBounds();
