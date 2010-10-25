@@ -94,7 +94,7 @@ function parsePhotosXml(xml) {
 						});
 
 				var itemdescObj = $("#itemdesc" + index);
-				itemdescObj.html(date);
+				itemdescObj.html(index + " - " + date);
 				itemdescObj.fadeTo(1500, 1);
 			})
 }
