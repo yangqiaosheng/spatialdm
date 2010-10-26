@@ -79,6 +79,7 @@ public abstract class FlickrDeWestAreaDao {
 
 	/**
 	 * Returns a List of FlickrDeWestPhoto instances within the area
+	 * starting index: 0
 	 * @param areaid
 	 * @param radius
 	 * @param queryStrs
@@ -87,6 +88,17 @@ public abstract class FlickrDeWestAreaDao {
 	 */
 	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num);
 
+
+	/**
+	 * Returns a List of FlickrDeWestPhoto instances within the area
+	 * @param areaid
+	 * @param radius
+	 * @param queryStrs
+	 * @param start - starting index
+	 * @param num
+	 * @return
+	 */
+	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int start, int num);
 
 
 	protected static String judgeOracleDatePatternStr(QueryLevel queryLevel){
