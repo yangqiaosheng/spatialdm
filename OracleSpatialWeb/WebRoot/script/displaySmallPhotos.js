@@ -59,9 +59,9 @@ function cleanPhotoItems(){
       itemObj.css('border', 'none');
       itemObj.fadeTo(0, 0);
 
-//      var itemdescObj = $("#itemdesc" + i)
-//      itemdescObj.html("");
-//      itemdescObj.fadeTo(0, 0);
+      var itemdescObj = $("#itemdesc" + i)
+      itemdescObj.html("");
+      itemdescObj.fadeTo(0, 0);
   }
   g_carouselTotalSize = 0;
 }
@@ -96,20 +96,20 @@ function parsePhotosXml(xml) {
 				itemimgObj.css('display', 'none');
 				itemimgObj.css('cursor', 'pointer');
 				itemimgObj.fadeTo(1000, 0.1).fadeTo(1000, 1);
-//				itemimgObj.click(function() {
-//							g_photo_selected = true;
-//						});
-//				itemimgObj.mouseenter(function() {
-////							g_photo_selected = false;
-//							addPhotoMaker(latitude, longitude, title);
-//							showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url);
-//						});
-//				itemimgObj.mouseleave(function() {
-////							if(g_photo_selected != true){
-//								removePhotoMaker();
-//								hidePhoto();
-////							}
-//						});
+				itemimgObj.click(function() {
+							g_photo_selected = true;
+						});
+				itemimgObj.mouseenter(function() {
+							g_photo_selected = false;
+							addPhotoMaker(latitude, longitude, title);
+							showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url);
+						});
+				itemimgObj.mouseleave(function() {
+							if(g_photo_selected != true){
+								hidePhoto();
+							}
+							removePhotoMaker();
+						});
 
 				var itemdescObj = $("#itemdesc" + index);
 				itemdescObj.html(index + " - " + date);

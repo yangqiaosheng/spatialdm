@@ -102,3 +102,8 @@
 a[role=button]:focus {
 	outline: dotted 1px #000;
 }
+
+.carouselTitle {
+	margin-bottom: 0px;
+	text-align: center;
+}

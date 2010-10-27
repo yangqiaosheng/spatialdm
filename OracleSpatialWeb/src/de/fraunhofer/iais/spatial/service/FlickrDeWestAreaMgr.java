@@ -481,7 +481,9 @@ public class FlickrDeWestAreaMgr {
 		}
 
 		Document document = new Document();
+
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
+//		Namespace namespace = Namespace.getNamespace(null);
 		Element rootElement = new Element("kml", namespace);
 
 		float scale = (float) (Integer.parseInt(radius.toString()) / 30000.0);
@@ -610,7 +612,7 @@ public class FlickrDeWestAreaMgr {
 				color = 255;
 			}
 
-			polyColorElement.addContent(polyStyleColor + Integer.toHexString(color));
+			polyColorElement.addContent(polyStyleColor + StringUtil.byteToHexString((byte) color));
 			Element polyFillElement = new Element("fill", namespace);
 			polyFillElement.addContent(polyStyleFill);
 			Element polyOutlineElement = new Element("outline", namespace);
