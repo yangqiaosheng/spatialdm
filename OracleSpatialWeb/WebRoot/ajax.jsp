@@ -25,6 +25,7 @@
 		<input type="text" name="areaid" id="areaid" />
 		<input id="submitButton" type="button" value="Request Photos" onclick="getSmallPhotos(areaid.value, 1)" />
 		<input id="photoInit" type="checkbox" name="photoInit"/>
+
 		<div id="photo"></div>
 		<hr>
 		<br>
