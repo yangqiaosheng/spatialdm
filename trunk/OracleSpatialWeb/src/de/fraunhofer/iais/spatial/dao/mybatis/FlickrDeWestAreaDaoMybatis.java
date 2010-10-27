@@ -261,6 +261,8 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 
 	@Override
 	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int start, int num) {
+		start--;
+
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
 		FlickrDeWestArea area = this.getAreaById(areaid, radius);
 		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStrs.first());
@@ -341,7 +343,7 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 
 	@Override
 	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
-		return this.getPhotos(areaid, radius, queryStrs, 0, num);
+		return this.getPhotos(areaid, radius, queryStrs, 1, num);
 	}
 
 

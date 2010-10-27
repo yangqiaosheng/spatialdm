@@ -1,6 +1,19 @@
-function getSmallPhotos(areaid) {
+g_areaid = -1;
+
+function getSmallPhotos(areaid, start) {
+//    alert("start1:" + start);
+
+    if(start == 1){
+        g_jcarousel.scroll(1);
+        cleanPhotoItems();
+        g_carouselTotalSize = g_carouselPageSize;
+    }
+
+    g_areaid = areaid;
+//     alert("g_areaid:" + g_areaid);
 	$.get('SmallPhotoUrl', {
-				areaid : areaid
+				areaid : g_areaid,
+                start : start
 			}, parsePhotosXml);
 }
 
@@ -38,19 +51,23 @@ function removePhotoMaker() {
 	g_photo_marker.setMap(null);
 }
 
+function cleanPhotoItems(){
+//clean the items
+  for (var i = 1; i <= g_carouselTotalSize; i++) {
+      var itemObj = $("#item" + i);
+      itemObj.html("");
+      itemObj.css('border', 'none');
+      itemObj.fadeTo(0, 0);
+
+//      var itemdescObj = $("#itemdesc" + i)
+//      itemdescObj.html("");
+//      itemdescObj.fadeTo(0, 0);
+  }
+  g_carouselTotalSize = 0;
+}
+
 function parsePhotosXml(xml) {
 	var xmlObj = $(xml);
-
-	// clean the items
-	for (var i = 1; i <= 15; i++) {
-		var itemObj = $("#item" + i);
-		itemObj.html("");
-		itemObj.css('border', 'none');
-
-		var itemdescObj = $("#itemdesc" + i)
-		itemdescObj.html("");
-		itemdescObj.fadeTo('slow', 0);
-	}
 
 	// fill the items with photos
 	xmlObj.find("photo").each(function(j) {
@@ -73,6 +90,7 @@ function parsePhotosXml(xml) {
 				itemObj.css('border', 'ridge');
 				itemObj.css('border-width', 'medium');
 				itemObj.css('border-color', 'gray');
+                itemObj.fadeTo(0, 1);
 
 				var itemimgObj = $("#itemimg" + index)
 				itemimgObj.css('display', 'none');
@@ -81,20 +99,21 @@ function parsePhotosXml(xml) {
 //				itemimgObj.click(function() {
 //							g_photo_selected = true;
 //						});
-				itemimgObj.mouseenter(function() {
-//							g_photo_selected = false;
-							addPhotoMaker(latitude, longitude, title);
-							showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url);
-						});
-				itemimgObj.mouseleave(function() {
-//							if(g_photo_selected != true){
-								removePhotoMaker();
-								hidePhoto();
-//							}
-						});
+//				itemimgObj.mouseenter(function() {
+////							g_photo_selected = false;
+//							addPhotoMaker(latitude, longitude, title);
+//							showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url);
+//						});
+//				itemimgObj.mouseleave(function() {
+////							if(g_photo_selected != true){
+//								removePhotoMaker();
+//								hidePhoto();
+////							}
+//						});
 
 				var itemdescObj = $("#itemdesc" + index);
 				itemdescObj.html(index + " - " + date);
 				itemdescObj.fadeTo(1500, 1);
 			})
+
 }

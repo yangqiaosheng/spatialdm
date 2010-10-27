@@ -52,6 +52,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		response.setContentType("text/xml");
 		String areaid = request.getParameter("areaid");
+		String start = request.getParameter("start");
 		PrintWriter out = response.getWriter();
 
 		Document document = new Document();
@@ -60,7 +61,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		if (areaid == null || areaid.equals("")) {
+		if (areaid == null || areaid.equals("") || start == null || Integer.parseInt(start) < 0) {
 			messageElement.setText("wrong input parameter!");
 		} else {
 			logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -73,7 +74,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			} else {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs());
+				photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), Integer.parseInt(start));
 				messageElement.setText("SUCCESS");
 			}
 		}
@@ -94,19 +95,19 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 //
 //	}
 
-	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs) {
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, NUMBER_OF_PHOTOS);
+	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int start) {
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, start, NUMBER_OF_PHOTOS);
 
 		Element rootElement = document.getRootElement();
 
 		Element photosElement = new Element("photos");
 		rootElement.addContent(photosElement);
 
-		int i = 1;
+		int i = 0;
 		for (FlickrDeWestPhoto p : photos) {
 			Element photoElement = new Element("photo");
 			photosElement.addContent(photoElement);
-			photoElement.setAttribute("index", String.valueOf(i++));
+			photoElement.setAttribute("index", String.valueOf(start + (i++)));
 
 			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
 			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));

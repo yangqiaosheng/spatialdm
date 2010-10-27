@@ -382,7 +382,7 @@ function loadkml(url) {
 
     kmlEvent.featureData.description= "<iframe width='650' height= '400' frameborder='0' src='areaDescription.jsp?" + parameters + "'>Browser not Compatible</iframe>";
 
-    getSmallPhotos(areaid);
+    getSmallPhotos(areaid, 1);
 
   });
   //alert("load 3");
