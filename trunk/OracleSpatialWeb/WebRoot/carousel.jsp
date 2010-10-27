@@ -1,9 +1,15 @@
 
 <!--*****************************************Carousel Code*********************************************************************************-->
 <div id="maxContainer">
-	<div id="container">
-		<ul id="carousel" class="jcarousel-skin-tango">
+	<div id="container" class="jcarousel-skin-tango">
+		<div class="jcarousel-container jcarousel-container-horizontal">
+			<div id="carouselTitle" class="carouselTitle" style="margin-bottom: 0px; text-align: center;">
+				dasfdasdfasd
+			</div>
+			<ul id="carousel">
 
-		</ul>
+			</ul>
+
+		</div>
 	</div>
 </div>
