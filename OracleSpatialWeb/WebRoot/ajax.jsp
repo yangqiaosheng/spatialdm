@@ -23,7 +23,8 @@
 
 		Input an areaid:
 		<input type="text" name="areaid" id="areaid" />
-		<input type="button" value="Request Photos" onclick="getSmallPhotos(areaid.value)" />
+		<input id="submitButton" type="button" value="Request Photos" onclick="getSmallPhotos(areaid.value, 1)" />
+		<input id="photoInit" type="checkbox" name="photoInit"/>
 		<div id="photo"></div>
 		<hr>
 		<br>

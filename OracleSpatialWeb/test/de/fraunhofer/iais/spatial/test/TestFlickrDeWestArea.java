@@ -442,11 +442,11 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 		}
 
 		int startIdx = 20;
-		List<FlickrDeWestPhoto> photos32 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, startIdx, 55);
+		List<FlickrDeWestPhoto> photos32 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, startIdx, 5);
 		for (int i = 0 ; i< photos32.size(); i++) {
 			FlickrDeWestPhoto p = photos32.get(i);
-			System.out.println((i+1+startIdx) + ":" +p);
-			Assert.assertEquals(photos3.get(startIdx + i).getId(), p.getId());
+			System.out.println((i+startIdx) + ":" +p);
+			Assert.assertEquals(photos3.get(startIdx + i - 1).getId(), p.getId());
 		}
 
 //		List<FlickrDeWestPhoto> photos4 = areaMgr.getAreaDao().getPhotos(1, Radius.R10000, hours, 20);

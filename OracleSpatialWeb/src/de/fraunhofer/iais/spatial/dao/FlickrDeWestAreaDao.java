@@ -79,7 +79,7 @@ public abstract class FlickrDeWestAreaDao {
 
 	/**
 	 * Returns a List of FlickrDeWestPhoto instances within the area
-	 * starting index: 0
+	 * starting index: 1
 	 * @param areaid
 	 * @param radius
 	 * @param queryStrs
@@ -94,7 +94,7 @@ public abstract class FlickrDeWestAreaDao {
 	 * @param areaid
 	 * @param radius
 	 * @param queryStrs
-	 * @param start - starting index
+	 * @param start - starting index >= 1
 	 * @param num
 	 * @return
 	 */
