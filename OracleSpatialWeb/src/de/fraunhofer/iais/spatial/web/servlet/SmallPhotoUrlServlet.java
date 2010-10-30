@@ -33,7 +33,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 289355222687198395L;
 
-	private static final int NUMBER_OF_PHOTOS = 15;
+	private static final int NUMBER_OF_PHOTOS = 60;
 	private static FlickrDeWestAreaMgr areaMgr = null;
 
 
