@@ -1,4 +1,4 @@
-g_carouselPageSize = 15;
+g_carouselPageSize = 60;
 g_carouselTotalSize = 0;
 g_jcarousel = null;
 
@@ -39,7 +39,7 @@ function carousel_itemLastInCallback(carousel, state, last)
 //        mycarousel_itemAddCallback(carousel, carousel.first, carousel.last, data);
 //    });
 
-	if(carousel.last >= g_carouselTotalSize){
+	if(carousel.last >= g_carouselTotalSize - 20){
 //		alert(g_carouselTotalSize);
 //		alert(carousel.last);
 		carousel_addEmptyItems(carousel, g_carouselTotalSize + 1, g_carouselPageSize);
