@@ -1,0 +1,24 @@
+Done! Here's the API key and secret for your new app:
+
+Photo GeoLocation Analyzer
+
+Key: d381fc61544f7b444f0c2c7f41c6d4d9
+
+Secret: b1196d934eaf86ad
+
+
+frob: 72157625149776383-13be7cf468792294-810602
+Press return after you granted access at this URL:
+http://api.flickr.com:80/services/auth/?api_key=d381fc61544f7b444f0c2c7f41c6d4d9&frob=72157625149776383-13be7cf468792294-810602&perms=delete&api_sig=c60a75e7f4fa59654ebb3bd783f54666
+
+Authentication success
+Token: 72157625149782083-809a30c59e620a01
+nsid: 49596882@N02
+Realname:
+Username: Haolin Zhi
+Permission: 3
+
+
+
+
+
