@@ -1,9 +1,9 @@
 g_areaid = -1;
 
-function getSmallPhotos(areaid, start) {
+function getSmallPhotos(areaid, page) {
 //    alert("start1:" + start);
 
-    if(start == 1){
+    if(page == 1){
         g_jcarousel.scroll(1);
         cleanPhotoItems();
         g_carouselTotalSize = g_carouselPageSize;
@@ -13,7 +13,8 @@ function getSmallPhotos(areaid, start) {
 //     alert("g_areaid:" + g_areaid);
 	$.get('SmallPhotoUrl', {
 				areaid : g_areaid,
-                start : start
+                page : page,
+                page_size : g_carouselPageSize
 			}, parsePhotosXml);
 }
 
@@ -95,7 +96,8 @@ function parsePhotosXml(xml) {
 				var itemimgObj = $("#itemimg" + index)
 				itemimgObj.css('display', 'none');
 				itemimgObj.css('cursor', 'pointer');
-				itemimgObj.fadeTo(1000, 0.1).fadeTo(1000, 1);
+//				itemimgObj.fadeTo(1000, 0.1).fadeTo(1000, 1);
+                itemimgObj.fadeTo(0, 1);
 				itemimgObj.click(function() {
 							g_photo_selected = true;
 						});
