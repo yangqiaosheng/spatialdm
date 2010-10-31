@@ -18,15 +18,11 @@ public class MilanpolyDaoMybatis implements MilanpolyDao {
 	public final static String resource = "mybatis-config.xml";
 	public static SqlSessionFactory sqlSessionFactory = null;
 
-	public MilanpolyDaoMybatis() {
+	public MilanpolyDaoMybatis() throws IOException {
 		if (sqlSessionFactory == null) {
-			try {
-				Reader reader = Resources.getResourceAsReader(resource);
-				sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-				System.out.println("initializing session factory");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			Reader reader = Resources.getResourceAsReader(resource);
+			sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+			System.out.println("initializing session factory");
 		}
 	}
 

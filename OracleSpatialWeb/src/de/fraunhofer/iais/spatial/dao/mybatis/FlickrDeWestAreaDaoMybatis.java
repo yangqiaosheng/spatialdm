@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 import oracle.spatial.geometry.JGeometry;
 
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.mybatis.spring.SqlSessionTemplate;
 
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
@@ -29,20 +29,20 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 
 	private final static String resource = "mybatis-config.xml";
-	private static SqlSessionFactory sqlSessionFactory = null;
+	private SqlSessionTemplate sessionTemplate;
 
-	public FlickrDeWestAreaDaoMybatis() {
-		if (sqlSessionFactory == null) {
-			try {
-				Reader reader = Resources.getResourceAsReader(resource);
-				sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-				System.out.println("initializing session factory");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	public void setSessionTemplate(SqlSessionTemplate sessionTemplate) {
+		this.sessionTemplate = sessionTemplate;
 	}
 
+	//	public FlickrDeWestAreaDaoMybatis() throws IOException {
+	//		if (sessionTemplate == null) {
+	//			Reader reader = Resources.getResourceAsReader(resource);
+	//			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+	//			sessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
+	//			System.out.println("initializing session factory");
+	//		}
+	//	}
 
 	private void initArea(FlickrDeWestArea a, Radius radius) {
 		if (a != null) {
@@ -75,18 +75,13 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
 		a.setHoursCount(hoursCount);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(FlickrDeWestArea.class.getName() + ".hourCount", a);
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-				}
+		String count = (String) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".hourCount", a);
+		if (count != null) {
+			Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
+			Matcher m = p.matcher(count);
+			while (m.find()) {
+				hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
 			}
-		} finally {
-			session.close();
 		}
 	}
 
@@ -97,21 +92,15 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();
 		a.setDaysCount(daysCount);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(FlickrDeWestArea.class.getName() + ".dayCount", a);
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
-				}
+		String count = (String) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".dayCount", a);
+		if (count != null) {
+			Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
+			Matcher m = p.matcher(count);
+			while (m.find()) {
+				daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
 			}
-		} finally {
-			session.close();
 		}
 	}
-
 
 	private void loadMonthsCount(FlickrDeWestArea a) {
 		if (a.getMonthsCount() != null)
@@ -120,18 +109,13 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();
 		a.setMonthsCount(monthsCount);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(FlickrDeWestArea.class.getName() + ".monthCount", a);
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
-				}
+		String count = (String) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".monthCount", a);
+		if (count != null) {
+			Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
+			Matcher m = p.matcher(count);
+			while (m.find()) {
+				monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
 			}
-		} finally {
-			session.close();
 		}
 	}
 
@@ -142,18 +126,13 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();
 		a.setYearsCount(yearsCount);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			String count = (String) session.selectOne(FlickrDeWestArea.class.getName() + ".yearCount", a);
-			if (count != null) {
-				Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
-				Matcher m = p.matcher(count);
-				while (m.find()) {
-					yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
-				}
+		String count = (String) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".yearCount", a);
+		if (count != null) {
+			Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
+			Matcher m = p.matcher(count);
+			while (m.find()) {
+				yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
 			}
-		} finally {
-			session.close();
 		}
 	}
 
@@ -162,14 +141,9 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 		areaDto.setRadius(radius);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		List<FlickrDeWestArea> as = null;
-		try {
-			as = session.selectList(FlickrDeWestArea.class.getName() + ".selectAll", areaDto);
-			initAreas(as, radius);
-		} finally {
-			session.close();
-		}
+		List<FlickrDeWestArea> as = sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectAll", areaDto);
+		initAreas(as, radius);
+
 		return as;
 	}
 
@@ -179,14 +153,9 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		FlickrDeWestArea a = null;
-		try {
-			a = (FlickrDeWestArea) session.selectOne(FlickrDeWestArea.class.getName() + ".selectById", areaDto);
-			initArea(a, radius);
-		} finally {
-			session.close();
-		}
+		FlickrDeWestArea a = (FlickrDeWestArea) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".selectById", areaDto);
+		initArea(a, radius);
+
 		return a;
 	}
 
@@ -197,15 +166,9 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrDeWestArea> as = null;
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			as = session.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
-			initAreas(as, radius);
-		} finally {
-			session.close();
-			System.out.println("close");
-		}
+		List<FlickrDeWestArea> as = sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
+		initAreas(as, radius);
+
 		return as;
 	}
 
@@ -219,17 +182,11 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		List<FlickrDeWestArea> as = null;
-		try {
-			as = session.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
-			initAreas(as, radius);
-		} finally {
-			session.close();
-		}
+		List<FlickrDeWestArea> as = sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
+		initAreas(as, radius);
+
 		return as;
 	}
-
 
 	@Override
 	public List<FlickrDeWestArea> getAreasByPolygon(List<Point2D> polygon, Radius radius) {
@@ -238,7 +195,7 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		double[] ordinates = new double[polygon.size() * 2];
 
 		int i = 0;
-		for(Point2D p : polygon){
+		for (Point2D p : polygon) {
 			ordinates[i++] = p.getX();
 			ordinates[i++] = p.getY();
 		}
@@ -248,14 +205,9 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		List<FlickrDeWestArea> as = null;
-		try {
-			as = session.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
-			initAreas(as, radius);
-		} finally {
-			session.close();
-		}
+		List<FlickrDeWestArea> as = sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
+		initAreas(as, radius);
+
 		return as;
 	}
 
@@ -289,13 +241,13 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		List<String> tempQueryStrs = new ArrayList<String>(queryStrs);
 		for (int i = tempQueryStrs.size() - 1; i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
-				if(pos + count.get(tempQueryStrs.get(i)) <= start){
+				if (pos + count.get(tempQueryStrs.get(i)) <= start) {
 					pos += count.get(tempQueryStrs.get(i));
-				}else{
+				} else {
 					break;
 				}
 			}
-			idx ++;
+			idx++;
 		}
 
 		for (int i = tempQueryStrs.size() - idx; photos.size() < num && i >= 0; i--) {
@@ -346,12 +298,11 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		return this.getPhotos(areaid, radius, queryStrs, 1, num);
 	}
 
-
+	@SuppressWarnings("unchecked")
 	protected List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, String queryStr, int num) {
 
 		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStr);
 		String oracleDatePatternStr = FlickrDeWestAreaDao.judgeOracleDatePatternStr(queryLevel);
-		String oracleToDateStr = "to_date('" + queryStr + "', '" + oracleDatePatternStr + "')";
 		Map parameters = new HashMap();
 		parameters.put("areaid", area.getId());
 		parameters.put("radius", area.getRadius());
@@ -360,15 +311,9 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		parameters.put("oracleDatePatternStr", oracleDatePatternStr);
 		parameters.put("num", num);
 
-		List<FlickrDeWestPhoto> photos = null;
+		List<FlickrDeWestPhoto> photos = sessionTemplate.selectList(FlickrDeWestPhoto.class.getName() + ".selectByDateQuery", parameters);
+		this.initPhotos(photos, area);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			photos = session.selectList(FlickrDeWestPhoto.class.getName() + ".selectByDateQuery", parameters);
-			this.initPhotos(photos, area);
-		} finally {
-			session.close();
-		}
 		return photos;
 	}
 
@@ -378,16 +323,8 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		int num = 0;
+		int num = (Integer) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".totalCount", areaDto);
 
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			num = (Integer) session.selectOne(FlickrDeWestArea.class.getName() + ".totalCount", areaDto);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			session.close();
-		}
 		return num;
 	}
 

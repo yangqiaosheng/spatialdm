@@ -23,15 +23,11 @@ public class AreaDaoMybatis implements AreaDao {
 	private final static String resource = "mybatis-config.xml";
 	private static SqlSessionFactory sqlSessionFactory = null;
 
-	public AreaDaoMybatis() {
+	public AreaDaoMybatis() throws IOException {
 		if (sqlSessionFactory == null) {
-			try {
-				Reader reader = Resources.getResourceAsReader(resource);
-				sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-				System.out.println("initializing session factory");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			Reader reader = Resources.getResourceAsReader(resource);
+			sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+			System.out.println("initializing session factory");
 		}
 	}
 
