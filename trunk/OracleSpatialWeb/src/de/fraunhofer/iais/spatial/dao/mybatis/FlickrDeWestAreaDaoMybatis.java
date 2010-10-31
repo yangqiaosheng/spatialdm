@@ -35,14 +35,14 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		this.sessionTemplate = sessionTemplate;
 	}
 
-	//	public FlickrDeWestAreaDaoMybatis() throws IOException {
-	//		if (sessionTemplate == null) {
-	//			Reader reader = Resources.getResourceAsReader(resource);
-	//			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-	//			sessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
-	//			System.out.println("initializing session factory");
-	//		}
-	//	}
+		public FlickrDeWestAreaDaoMybatis() throws IOException {
+			if (sessionTemplate == null) {
+				Reader reader = Resources.getResourceAsReader(resource);
+				SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+				sessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
+				System.out.println("initializing session factory");
+			}
+		}
 
 	private void initArea(FlickrDeWestArea a, Radius radius) {
 		if (a != null) {
