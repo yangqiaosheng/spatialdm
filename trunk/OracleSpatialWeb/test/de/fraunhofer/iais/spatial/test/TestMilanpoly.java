@@ -1,5 +1,6 @@
 package de.fraunhofer.iais.spatial.test;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
@@ -13,7 +14,7 @@ import de.fraunhofer.iais.spatial.service.MilanpolyMgr;
 public class TestMilanpoly {
 
 	@Test
-	public void testQuery() {
+	public void testQuery() throws IOException {
 		MilanpolyDao dao = new MilanpolyDaoMybatis();
 		List<Milanpoly> ms = dao.getAllMilanpolys();
 		//List<Milanpoly> ms = dao.getMilanpolysByPoint(9.17, 45.46);
