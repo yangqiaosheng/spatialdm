@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -97,6 +98,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int start) {
 		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, start, NUMBER_OF_PHOTOS);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		Element rootElement = document.getRootElement();
 
@@ -112,7 +114,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
 			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
 			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
-			photoElement.addContent(new Element("date").setText(String.valueOf(p.getDate())));
+			photoElement.addContent(new Element("date").setText(dateFormat.format(p.getDate())));
 			photoElement.addContent(new Element("latitude").setText(String.valueOf(p.getLatitude())));
 			photoElement.addContent(new Element("longitude").setText(String.valueOf(p.getLongitude())));
 			photoElement.addContent(new Element("personId").setText(String.valueOf(p.getPersonId())));
