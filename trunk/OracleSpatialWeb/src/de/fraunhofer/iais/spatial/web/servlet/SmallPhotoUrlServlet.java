@@ -34,7 +34,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 289355222687198395L;
 
-	private static final int NUMBER_OF_PHOTOS = 60;
+	private static final int MAX_PAGE_SIZE = 200;
 	private static FlickrDeWestAreaMgr areaMgr = null;
 
 
@@ -53,7 +53,8 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		response.setContentType("text/xml");
 		String areaid = request.getParameter("areaid");
-		String start = request.getParameter("start");
+		String page = request.getParameter("page");
+		String pageSize = request.getParameter("page_size");
 		PrintWriter out = response.getWriter();
 
 		Document document = new Document();
@@ -62,7 +63,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		if (areaid == null || areaid.equals("") || start == null || Integer.parseInt(start) < 0) {
+		if (areaid == null || areaid.equals("") || page == null || Integer.parseInt(page) < 0 || pageSize == null || Integer.parseInt(pageSize) < 0 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
 			messageElement.setText("wrong input parameter!");
 		} else {
 			logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -75,7 +76,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			} else {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), Integer.parseInt(start));
+				photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), Integer.parseInt(page), Integer.parseInt(pageSize));
 				messageElement.setText("SUCCESS");
 			}
 		}
@@ -96,8 +97,8 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 //
 //	}
 
-	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int start) {
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, start, NUMBER_OF_PHOTOS);
+	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize ) {
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		Element rootElement = document.getRootElement();
@@ -109,7 +110,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		for (FlickrDeWestPhoto p : photos) {
 			Element photoElement = new Element("photo");
 			photosElement.addContent(photoElement);
-			photoElement.setAttribute("index", String.valueOf(start + (i++)));
+			photoElement.setAttribute("index", String.valueOf(page + (i++)));
 
 			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
 			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));

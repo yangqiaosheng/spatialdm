@@ -212,8 +212,8 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 	}
 
 	@Override
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int start, int num) {
-		start--;
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize) {
+		page--;
 
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
 		FlickrDeWestArea area = this.getAreaById(areaid, radius);
@@ -241,7 +241,7 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		List<String> tempQueryStrs = new ArrayList<String>(queryStrs);
 		for (int i = tempQueryStrs.size() - 1; i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
-				if (pos + count.get(tempQueryStrs.get(i)) <= start) {
+				if (pos + count.get(tempQueryStrs.get(i)) <= page) {
 					pos += count.get(tempQueryStrs.get(i));
 				} else {
 					break;
@@ -250,11 +250,11 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 			idx++;
 		}
 
-		for (int i = tempQueryStrs.size() - idx; photos.size() < num && i >= 0; i--) {
+		for (int i = tempQueryStrs.size() - idx; photos.size() < pageSize && i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
-				List<FlickrDeWestPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), num - photos.size() + (start - pos));
-				photos.addAll(tempPhotos.subList(start - pos, tempPhotos.size()));
-				pos = start;
+				List<FlickrDeWestPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), pageSize - photos.size() + (page - pos));
+				photos.addAll(tempPhotos.subList(page - pos, tempPhotos.size()));
+				pos = page;
 			}
 		}
 		return photos;
@@ -293,10 +293,10 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 	}
 	*/
 
-	@Override
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
-		return this.getPhotos(areaid, radius, queryStrs, 1, num);
-	}
+//	@Override
+//	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
+//		return this.getPhotos(areaid, radius, queryStrs, 1, num);
+//	}
 
 	@SuppressWarnings("unchecked")
 	protected List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, String queryStr, int num) {
