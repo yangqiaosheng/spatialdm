@@ -273,6 +273,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 		return photo;
 	}
 
+	@Override
 	protected List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, String queryStr, int num) {
 
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
@@ -309,56 +310,6 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(FlickrDeWestArea, SortedSet<String>, int, int)
-	 */
-	@Override
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize) {
-		page--;
-		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		FlickrDeWestArea area = this.getAreaById(areaid, radius);
-		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStrs.first());
-		Map<String, Integer> count = null;
-
-		switch (queryLevel) {
-		case YEAR:
-			count = area.getYearsCount();
-			break;
-		case MONTH:
-			count = area.getMonthsCount();
-			break;
-		case DAY:
-			count = area.getDaysCount();
-			break;
-		case HOUR:
-			count = area.getHoursCount();
-			break;
-		}
-
-		int idx = 1;
-		int pos = 0;
-
-		List<String> tempQueryStrs = new ArrayList<String>(queryStrs);
-		for (int i = tempQueryStrs.size() - 1; i >= 0; i--) {
-			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
-				if(pos + count.get(tempQueryStrs.get(i)) <= page){
-					pos += count.get(tempQueryStrs.get(i));
-				}else{
-					break;
-				}
-			}
-			idx ++;
-		}
-
-		for (int i = tempQueryStrs.size() - idx; photos.size() < pageSize && i >= 0; i--) {
-			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
-				List<FlickrDeWestPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), pageSize - photos.size() + (page - pos));
-				photos.addAll(tempPhotos.subList(page - pos, tempPhotos.size()));
-				pos = page;
-			}
-		}
-		return photos;
-	}
 
 	/* (non-Javadoc)
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getPhotos(FlickrDeWestArea, SortedSet<String>, int)

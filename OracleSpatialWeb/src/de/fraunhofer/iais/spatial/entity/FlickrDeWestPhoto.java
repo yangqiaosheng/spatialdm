@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class FlickrDeWestPhoto {
 
+	private int index;
 	private long id;
 	private FlickrDeWestArea area;
 	private double longitude;
@@ -23,6 +24,7 @@ public class FlickrDeWestPhoto {
 	@Override
 	public String toString() {
 		return super.toString()
+				+ "\tindex:" + this.getIndex()
 				+ "\tPHOTO_ID:" + this.getId()
 				+ "\tAreaid:" + this.getArea().getId()
 				+ "\tRadius:" + this.getArea().getRadius()
@@ -34,6 +36,14 @@ public class FlickrDeWestPhoto {
 				+ "\tTITLE:" + this.getTitle()
 				+ "\tSMALLURL:" + this.getSmallUrl()
 				+ "\tVIEWED:" + this.getViewed();
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 	public long getId() {

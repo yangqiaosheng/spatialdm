@@ -4,7 +4,7 @@
 	<div id="container" class="jcarousel-skin-tango">
 		<div class="jcarousel-container jcarousel-container-horizontal">
 
-			<ul id="carousel">
+			<ul id="carousel" class="carousel">
 
 			</ul>
 			<div id="carouselTitle" class="carouselTitle"></div>
