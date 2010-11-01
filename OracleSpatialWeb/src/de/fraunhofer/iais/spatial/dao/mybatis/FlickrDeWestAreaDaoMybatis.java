@@ -35,14 +35,14 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		this.sessionTemplate = sessionTemplate;
 	}
 
-		public FlickrDeWestAreaDaoMybatis() throws IOException {
-			if (sessionTemplate == null) {
-				Reader reader = Resources.getResourceAsReader(resource);
-				SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-				sessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
-				System.out.println("initializing session factory");
-			}
+	public FlickrDeWestAreaDaoMybatis() throws IOException {
+		if (sessionTemplate == null) {
+			Reader reader = Resources.getResourceAsReader(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+			sessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
+			System.out.println("initializing session factory");
 		}
+	}
 
 	private void initArea(FlickrDeWestArea a, Radius radius) {
 		if (a != null) {
@@ -211,7 +211,6 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		return as;
 	}
 
-
 	/*
 	@Override
 	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
@@ -245,10 +244,10 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 	}
 	*/
 
-//	@Override
-//	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
-//		return this.getPhotos(areaid, radius, queryStrs, 1, num);
-//	}
+	//	@Override
+	//	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
+	//		return this.getPhotos(areaid, radius, queryStrs, 1, num);
+	//	}
 
 	@Override
 	@SuppressWarnings("unchecked")
