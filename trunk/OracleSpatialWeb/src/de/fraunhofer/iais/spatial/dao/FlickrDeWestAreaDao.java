@@ -2,7 +2,9 @@ package de.fraunhofer.iais.spatial.dao;
 
 import java.awt.geom.Point2D;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.regex.Pattern;
@@ -86,7 +88,60 @@ public abstract class FlickrDeWestAreaDao {
 	 * @param pageSize
 	 * @return
 	 */
-	public abstract List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize);
+	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize) {
+		int start = (page - 1) * pageSize;
+		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+		FlickrDeWestArea area = this.getAreaById(areaid, radius);
+		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStrs.first());
+		Map<String, Integer> count = null;
+
+		switch (queryLevel) {
+		case YEAR:
+			count = area.getYearsCount();
+			break;
+		case MONTH:
+			count = area.getMonthsCount();
+			break;
+		case DAY:
+			count = area.getDaysCount();
+			break;
+		case HOUR:
+			count = area.getHoursCount();
+			break;
+		}
+
+		int idx = 1;
+		int pos = 0;
+
+		List<String> tempQueryStrs = new ArrayList<String>(queryStrs);
+		for (int i = tempQueryStrs.size() - 1; i >= 0; i--) {
+			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
+				if(pos + count.get(tempQueryStrs.get(i)) <= start){
+					pos += count.get(tempQueryStrs.get(i));
+				}else{
+					break;
+				}
+			}
+			idx ++;
+		}
+
+		for (int i = tempQueryStrs.size() - idx; photos.size() < pageSize && i >= 0; i--) {
+			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
+				List<FlickrDeWestPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), pageSize - photos.size() + (start - pos));
+				photos.addAll(tempPhotos.subList(start - pos, tempPhotos.size()));
+				pos = start;
+			}
+		}
+
+		int i = 1;
+		for (FlickrDeWestPhoto photo : photos){
+			photo.setIndex((i++) + (page - 1) * pageSize);
+		}
+
+		return photos;
+	}
+
+	protected abstract List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, String queryStr, int num);
 
 
 	protected static String judgeOracleDatePatternStr(QueryLevel queryLevel){

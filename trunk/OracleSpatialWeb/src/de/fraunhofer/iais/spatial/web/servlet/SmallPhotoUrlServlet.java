@@ -63,10 +63,11 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		if (areaid == null || areaid.equals("") || page == null || Integer.parseInt(page) < 0 || pageSize == null || Integer.parseInt(pageSize) < 0 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
+		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+		if (areaid == null || areaid.equals("") || page == null || Integer.parseInt(page) < 1 || pageSize == null || Integer.parseInt(pageSize) < 0 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
 			messageElement.setText("wrong input parameter!");
 		} else {
-			logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 
@@ -105,12 +106,12 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		Element photosElement = new Element("photos");
 		rootElement.addContent(photosElement);
+		photosElement.setAttribute("size", String.valueOf(photos.size()));
 
-		int i = 0;
 		for (FlickrDeWestPhoto p : photos) {
 			Element photoElement = new Element("photo");
 			photosElement.addContent(photoElement);
-			photoElement.setAttribute("index", String.valueOf(page + (i++)));
+			photoElement.setAttribute("index", String.valueOf(p.getIndex()));
 
 			photoElement.addContent(new Element("photoId").setText(String.valueOf(p.getId())));
 			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));

@@ -66,7 +66,9 @@ public class OperationExample {
 		extras.add(Extras.VIEWS);
 		extras.add(Extras.LICENSE);
 
-		PhotoList pl = people.getPublicPhotos("27076251@N05", Extras.ALL_EXTRAS, 10, 0);
+		String userid = "49596882@N02";
+//		String userid = "27076251@N05";
+		PhotoList pl = people.getPublicPhotos(userid, Extras.ALL_EXTRAS, 0, 0);
 		System.out.println("total:" + pl.getTotal());
 		for (int i = 0; i < pl.size(); i++) {
 			Photo p = (Photo) pl.get(i);

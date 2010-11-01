@@ -217,6 +217,72 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
+		public void testPhoto5() {
+			long start = System.currentTimeMillis();
+
+			TreeSet<String> hours = new TreeSet<String>();
+			hours.add("2007-08-11@13");
+			hours.add("2007-08-11@11");
+			hours.add("2007-05-09@13");
+	//
+			for (int i = 2005; i < 2010; i++) {
+				for (int j = 10; j <= 12; j++) {
+					for (int k = 10; k < 30; k++) {
+						for (int l = 10; l < 24; l++) {
+							hours.add(i + "-" + j + "-" + k + "@" + l);
+						}
+					}
+				}
+			}
+	//
+	//		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
+	//		for (FlickrDeWestPhoto p : photos) {
+	//			System.out.println(p);
+	//		}
+	//
+	//		List<FlickrDeWestPhoto> photos2 = areaMgr.getAreaDao().getPhotos(1, Radius.R40000, hours, 20);
+	//		for (FlickrDeWestPhoto p : photos2) {
+	//			System.out.println(p);
+	//		}
+
+			List<FlickrDeWestPhoto> photos3 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, 1, 90);
+			for (int i = 0 ; i< photos3.size(); i++) {
+				FlickrDeWestPhoto p = photos3.get(i);
+				System.out.println(p);
+			}
+
+			int page = 3;
+			int pageSize = 5;
+			List<FlickrDeWestPhoto> photos32 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, page, pageSize);
+			for (int i = 0 ; i< photos32.size(); i++) {
+				FlickrDeWestPhoto p = photos32.get(i);
+			System.out.println(p);
+			Assert.assertEquals(photos3.get((page - 1) * pageSize + i).getId(), p.getId());
+		}
+
+	//		List<FlickrDeWestPhoto> photos4 = areaMgr.getAreaDao().getPhotos(1, Radius.R10000, hours, 20);
+	//		for (FlickrDeWestPhoto p : photos4) {
+	//			System.out.println(p);
+	//		}
+	//
+	//		List<FlickrDeWestPhoto> photos5 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, hours, 20);
+	//		for (FlickrDeWestPhoto p : photos5) {
+	//			System.out.println(p);
+	//		}
+
+	//		TreeSet<String> years = new TreeSet<String>();
+	//		years.add("2007");
+	//		years.add("2009");
+	//		years.add("2006");
+	//		List<FlickrDeWestPhoto> photos6 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, years, 20);
+	//		for (FlickrDeWestPhoto p : photos6) {
+	//			System.out.println(p);
+	//		}
+
+			System.out.println(System.currentTimeMillis() - start);
+		}
+
+	@Test
 	public void testPhotoXml() {
 		long start = System.currentTimeMillis();
 
@@ -404,71 +470,6 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 
 		System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
 		System.out.println(coordinates + "\n");
-	}
-
-	@Test
-	public void testPhoto5() {
-		long start = System.currentTimeMillis();
-
-		TreeSet<String> hours = new TreeSet<String>();
-		hours.add("2007-08-11@13");
-		hours.add("2007-08-11@11");
-		hours.add("2007-05-09@13");
-//
-		for (int i = 2005; i < 2010; i++) {
-			for (int j = 10; j <= 12; j++) {
-				for (int k = 10; k < 30; k++) {
-					for (int l = 10; l < 24; l++) {
-						hours.add(i + "-" + j + "-" + k + "@" + l);
-					}
-				}
-			}
-		}
-//
-//		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
-//		for (FlickrDeWestPhoto p : photos) {
-//			System.out.println(p);
-//		}
-//
-//		List<FlickrDeWestPhoto> photos2 = areaMgr.getAreaDao().getPhotos(1, Radius.R40000, hours, 20);
-//		for (FlickrDeWestPhoto p : photos2) {
-//			System.out.println(p);
-//		}
-
-		List<FlickrDeWestPhoto> photos3 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, 1, 90);
-		for (int i = 0 ; i< photos3.size(); i++) {
-			FlickrDeWestPhoto p = photos3.get(i);
-			System.out.println((i+1) + ":" +p);
-		}
-
-		int startIdx = 20;
-		List<FlickrDeWestPhoto> photos32 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, startIdx, 5);
-		for (int i = 0 ; i< photos32.size(); i++) {
-			FlickrDeWestPhoto p = photos32.get(i);
-			System.out.println((i+startIdx) + ":" +p);
-			Assert.assertEquals(photos3.get(startIdx + i - 1).getId(), p.getId());
-		}
-
-//		List<FlickrDeWestPhoto> photos4 = areaMgr.getAreaDao().getPhotos(1, Radius.R10000, hours, 20);
-//		for (FlickrDeWestPhoto p : photos4) {
-//			System.out.println(p);
-//		}
-//
-//		List<FlickrDeWestPhoto> photos5 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, hours, 20);
-//		for (FlickrDeWestPhoto p : photos5) {
-//			System.out.println(p);
-//		}
-
-//		TreeSet<String> years = new TreeSet<String>();
-//		years.add("2007");
-//		years.add("2009");
-//		years.add("2006");
-//		List<FlickrDeWestPhoto> photos6 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, years, 20);
-//		for (FlickrDeWestPhoto p : photos6) {
-//			System.out.println(p);
-//		}
-
-		System.out.println(System.currentTimeMillis() - start);
 	}
 
 //	@Test

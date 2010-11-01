@@ -1,16 +1,14 @@
 g_areaid = -1;
 
 function getSmallPhotos(areaid, page) {
-//    alert("start1:" + start);
 
     if(page == 1){
         g_jcarousel.scroll(1);
         cleanPhotoItems();
-        g_carouselTotalSize = g_carouselPageSize;
+        g_carouselEnd = false;
     }
 
     g_areaid = areaid;
-//     alert("g_areaid:" + g_areaid);
 	$.get('SmallPhotoUrl', {
 				areaid : g_areaid,
                 page : page,
@@ -69,6 +67,12 @@ function cleanPhotoItems(){
 
 function parsePhotosXml(xml) {
 	var xmlObj = $(xml);
+    var size = xmlObj.find("photos").attr('size');
+    if(size < g_carouselPageSize){
+        g_carouselEnd = true;
+    }
+    carousel_addEmptyItems(g_jcarousel, (g_carouselTotalSize + 1), parseInt(size));
+    alert(g_jcarousel.options.size);
 
 	// fill the items with photos
 	xmlObj.find("photo").each(function(j) {
@@ -86,8 +90,6 @@ function parsePhotosXml(xml) {
 
 				var itemObj = $("#item" + index);
 				itemObj.html("<a href='" + flickrWebUrl + "' target='_blank'><div class='itemimg' id='itemimg" + index + "'><img align='middle' src='" + url + "'></div></a>");
-// itemObj.html("<div class='itemimg' id='itemimg" + index + "' onmouseout='removePhotoMaker()' onmouseover='addPhotoMaker(" + latitude + ","
-// + longitude + ")' ><img align='middle' src='" + url + "'></div>");
 				itemObj.css('border', 'ridge');
 				itemObj.css('border-width', 'medium');
 				itemObj.css('border-color', 'gray');
@@ -96,22 +98,22 @@ function parsePhotosXml(xml) {
 				var itemimgObj = $("#itemimg" + index)
 				itemimgObj.css('display', 'none');
 				itemimgObj.css('cursor', 'pointer');
-//				itemimgObj.fadeTo(1000, 0.1).fadeTo(1000, 1);
-                itemimgObj.fadeTo(0, 1);
-				itemimgObj.click(function() {
-							g_photo_selected = true;
-						});
-				itemimgObj.mouseenter(function() {
-							g_photo_selected = false;
-							addPhotoMaker(latitude, longitude, title);
-							showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url);
-						});
-				itemimgObj.mouseleave(function() {
-							if(g_photo_selected != true){
-								hidePhoto();
-							}
-							removePhotoMaker();
-						});
+				itemimgObj.fadeTo(1000, 0.1).fadeTo(1000, 1);
+//              itemimgObj.fadeTo(0, 1);
+//				itemimgObj.click(function() {
+//							g_photo_selected = true;
+//						});
+//				itemimgObj.mouseenter(function() {
+//							g_photo_selected = false;
+//							addPhotoMaker(latitude, longitude, title);
+//							showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url);
+//						});
+//				itemimgObj.mouseleave(function() {
+//							if(g_photo_selected != true){
+//								hidePhoto();
+//							}
+//							removePhotoMaker();
+//						});
 
 				var itemdescObj = $("#itemdesc" + index);
 				itemdescObj.html(index + " - " + date);
