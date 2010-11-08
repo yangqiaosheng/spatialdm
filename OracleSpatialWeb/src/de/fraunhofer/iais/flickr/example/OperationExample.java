@@ -1,6 +1,8 @@
 package de.fraunhofer.iais.flickr.example;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -66,17 +68,18 @@ public class OperationExample {
 		extras.add(Extras.VIEWS);
 		extras.add(Extras.LICENSE);
 
-		String userid = "49596882@N02";
-//		String userid = "27076251@N05";
-		PhotoList pl = people.getPublicPhotos(userid, Extras.ALL_EXTRAS, 0, 0);
+//		String userid = "49596882@N02";
+		String userid = "27076251@N05";
+		PhotoList pl = people.getPublicPhotos(userid, Extras.ALL_EXTRAS, 2, 2);
+//		PhotoList pl = people.getPhotos(userid, Extras.ALL_EXTRAS, 3, 1);
 		System.out.println("total:" + pl.getTotal());
 		for (int i = 0; i < pl.size(); i++) {
 			Photo p = (Photo) pl.get(i);
-			System.out.println(p.getId() + ":" + p.getDateTaken() + ":" + p.getGeoData() + ":" + p.getDescription());
+			System.out.println(p.getId() + ":" + p.getDateTaken() + ":" + p.getGeoData() + ":" + p.getDescription() + ":" + p.getPlaceId() + ":" + p.getWoeId());
 			PlacesInterface placeI = f.getPlacesInterface();
 			if (p.getPlaceId() != null && !"".equals(p.getPlaceId())) {
 				System.out.println("place_id:" + p.getPlaceId());
-				Location location = placeI.resolvePlaceId(p.getPlaceId());
+				Location location = placeI.getInfo(p.getPlaceId(), p.getWoeId());
 				System.out.println(location.getPlaceUrl());
 			}
 		}
@@ -87,11 +90,12 @@ public class OperationExample {
 		Calendar date = Calendar.getInstance();
 		date.roll(Calendar.YEAR, false);
 		//		PhotoList pl = photo.recentlyUpdated(date.getTime(), null, 0, 0);
-		PhotoList pl = photo.getRecent(50, 670);
+		PhotoList pl = photo.getRecent(Extras.ALL_EXTRAS, 50, 670);
 		System.out.println("pages:" + pl.getPages());
 		for (int i = 1; i < pl.size(); i++) {
 			Photo p = (Photo) pl.get(i);
-			System.out.println(p.getId() + ":" + p.getDatePosted());
+			
+			System.out.println(p.getId() + "|" + p.getDateTaken() + "|" + p.getDatePosted());
 		}
 	}
 
@@ -138,8 +142,8 @@ public class OperationExample {
 	public static void main(String[] args) throws ParserConfigurationException, IOException, FlickrException, SAXException {
 		OperationExample t = new OperationExample();
 		//		t.showActivity();
-		t.showPeoplesPhotos();
-		//		t.showRecentPhotos();
+//		t.showPeoplesPhotos();
+		t.showRecentPhotos();
 	}
 
 }

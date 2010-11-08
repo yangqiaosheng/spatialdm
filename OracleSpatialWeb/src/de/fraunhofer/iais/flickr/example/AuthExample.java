@@ -58,7 +58,7 @@ public class AuthExample {
             e.printStackTrace();
         }
         System.out.println("frob: " + frob);
-        URL url = authInterface.buildAuthenticationUrl(Permission.DELETE, frob);
+        URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob);
         System.out.println("Press return after you granted access at this URL:");
         System.out.println(url.toExternalForm());
         BufferedReader infile =
