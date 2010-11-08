@@ -198,7 +198,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		//		days.add("29");
 		//		days.add("30");
 		//		days.add("31");
-		//		
+		//
 		//		hours.add("00");
 		//		hours.add("01");
 		//		hours.add("02");
@@ -210,7 +210,7 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 		//		hours.add("08");
 		//		hours.add("09");
 		//		hours.add("10");
-		//		hours.add("11");		
+		//		hours.add("11");
 		//		hours.add("12");
 		//		hours.add("13");
 		//		hours.add("14");
@@ -278,26 +278,26 @@ public class TestArea extends AbstractJUnit4SpringContextTests {
 	// #queries = #years * #months * #days * #hours * #polygons
 	// #query1:96*139=13344
 	// #query2:93*139=12927
-	
+
 	// single jdbc
 	// spent time:12563
 
 	// single pool
 	// spent time1:4453
 
-	// BoneCP pool(5,10): 10 iteration 
+	// BoneCP pool(5,10): 10 iteration
 	//	spent time total:33781
 	//	spent time avg:2902
 
-	// c3p0 pool(5,10): 10 iteration 
+	// c3p0 pool(5,10): 10 iteration
 	//	spent time total:37484
 	//	spent time avg:3272
-	
-	// Ibatis pool: 10 iteration 
+
+	// Ibatis pool: 10 iteration
 	//	spent time total:34594
 	//	spent time avg:3102
-	
-	// cache+pool: 10 iteration 
+
+	// cache+pool: 10 iteration
 	//	spent time total:12250
 	//	spent time avg:550
 

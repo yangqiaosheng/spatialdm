@@ -474,6 +474,43 @@ public class FlickrDeWestAreaMgr {
 		ChartUtil.createTimeSeriesChart(countsMap, os);
 	}
 
+	public String createXml(List<FlickrDeWestArea> as, String filenamePrefix, Radius radius) throws UnsupportedEncodingException {
+		Document document = new Document();
+		Element rootElement = new Element("polygons");
+		document.setRootElement(rootElement);
+
+		for (FlickrDeWestArea a : as) {
+			Element polygonElement = new Element("polygon");
+			rootElement.addContent(polygonElement);
+			polygonElement.setAttribute("id", String.valueOf(a.getId()));
+			polygonElement.setAttribute("total", String.valueOf(a.getTotalCount()));
+			polygonElement.setAttribute("select", String.valueOf(a.getSelectCount()));
+
+			Element lineElement = new Element("line");
+			polygonElement.addContent(lineElement);
+			lineElement.setAttribute("width", "2");
+
+			JGeometry shape = a.getGeom();
+			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
+				Element pointElement = new Element("point");
+				lineElement.addContent(pointElement);
+				pointElement.setAttribute("lng", String.valueOf(shape.getOrdinatesArray()[i++]));
+				pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i]));
+			}
+
+			Element centerElement = new Element("center");
+			polygonElement.addContent(centerElement);
+			Element pointElement = new Element("point");
+			centerElement.addContent(pointElement);
+			pointElement.setAttribute("lng", String.valueOf(a.getCenter().getX()));
+			pointElement.setAttribute("lat", String.valueOf(a.getCenter().getY()));
+		}
+
+		XmlUtil.xml2File(document, filenamePrefix + ".xml", false);
+
+		return XmlUtil.xml2String(document, false);
+	}
+
 	public String createKml(List<FlickrDeWestArea> as, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 		if (remoteBasePath == null || "".equals(remoteBasePath)) {
