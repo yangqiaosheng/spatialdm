@@ -323,6 +323,15 @@ function selectbuttonHeader() {
                         }
                 }
         }
+	 if (argv[0] == 5) {
+                for ( var i = 74; i <= 80; i++) {
+                        if (number[i] % 2 != 0) {
+                                selectbutton(i);
+                        } else {
+                                selectbutton(i);
+                        }
+                }
+        }
 }
 
 
