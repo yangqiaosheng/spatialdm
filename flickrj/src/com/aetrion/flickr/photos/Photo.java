@@ -93,6 +93,7 @@ public class Photo {
     private String originalFormat;
     private String originalSecret;
     private String placeId;
+    private String woeId;
     private String media;
     private String mediaStatus;
     private String pathAlias;
@@ -134,7 +135,15 @@ public class Photo {
         this.farm = farm;
     }
 
-    public String getServer() {
+    public String getWoeId() {
+		return woeId;
+	}
+
+	public void setWoeId(String woeId) {
+		this.woeId = woeId;
+	}
+
+	public String getServer() {
         return server;
     }
 
@@ -363,7 +372,7 @@ public class Photo {
     }
 
     /**
-     * 
+     *
      * @param views
      * @deprecated attribute no longer available
      */
@@ -373,7 +382,7 @@ public class Photo {
 
     /**
      * Number of views. Set to -1 if the value is not available.
-     * 
+     *
      * @return Number of views
      * @deprecated attribute no longer available
      */
@@ -662,7 +671,7 @@ public class Photo {
 
     /**
      * Get the original-image using the specified URL suffix.
-     * 
+     *
      * @deprecated
      * @see PhotosInterface#getImage(Photo, int)
      * @param suffix The URL suffix, including the .extension
@@ -713,7 +722,7 @@ public class Photo {
     }
 
     /**
-     * 
+     *
      * @deprecated
      * @see PhotosInterface#getImageAsStream(Photo, int)
      * @param suffix

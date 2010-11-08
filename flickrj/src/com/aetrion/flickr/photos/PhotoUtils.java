@@ -62,7 +62,9 @@ public final class PhotoUtils {
         Element defaultElement) {
         Photo photo = new Photo();
         photo.setId(photoElement.getAttribute("id"));
+        photo.setViews(photoElement.getAttribute("views"));
         photo.setPlaceId(photoElement.getAttribute("place_id"));
+        photo.setWoeId(photoElement.getAttribute("woeid"));
         photo.setSecret(photoElement.getAttribute("secret"));
         photo.setServer(photoElement.getAttribute("server"));
         photo.setFarm(photoElement.getAttribute("farm"));
