@@ -418,6 +418,7 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 		areaMgr.count(as, areaDto);
 
 		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null, true));
+//		System.out.println(areaMgr.createXml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius()));
 
 	}
 

@@ -148,16 +148,16 @@ public class PublicPhotoCrawler {
 
 	private static void selectPeople() throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "select PERSON from PEOPLE_EUROPE");
+		PreparedStatement pstmt = db.getPstmt(conn, "select PERSON from PEOPLE_EUROPE where photos_num_new = -1");
 
 		ResultSet rs = null;
 		try {
 			rs = db.getRs(pstmt);
 			while (rs.next()) {
-				if (numPeople < 1786) {
-					numPeople++;
-					continue;
-				}
+//				if (numPeople < 1786) {
+//					numPeople++;
+//					continue;
+//				}
 
 				String peopleId = rs.getString("PERSON");
 				getPeoplesPhotos(peopleId);
