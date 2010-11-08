@@ -43,3 +43,20 @@ function selectedCalendarDays(){
   bodyXML = selectedDaysXML(selectedResult); 
   sendToServerCalendarData(headerXML, bodyXML);   
 }
+function refreshCalendar(){
+	$('#inlineDatepicker').datepick('clear'); // Close a popup datepicker and clear its field 
+	$('#inlineDatepicker').datepick('destroy'); // Remove datepicker functionality 
+	  $('#inlineDatepicker').datepick({
+		onSelect: function(date) { 		  
+			selectedDays = date;
+		//alert('You picked ' + selectedDays); 
+		},
+        renderer: $.datepick.themeRollerRenderer,
+        monthsToShow: 2,
+        yearRange: '2005:2011',        
+		dateFormat: 'dd/mm/yyyy',
+        multiSelect: 300   
+    }); /*tha maximum number that one can select by hand*/	
+}
+
+

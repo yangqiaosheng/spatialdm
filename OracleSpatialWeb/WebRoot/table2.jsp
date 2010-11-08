@@ -1,5 +1,5 @@
 <div id="table2" class="tabcontent">
-  <span><input type="checkbox" id ="selectedYMDHCheckbox"><b id="timeC1" class="timeCstar">Selecte time from a table:</b> </input> </span>
+  <span><input type="checkbox" id ="selectedYMDHCheckbox"><b id="timeC1" class="timeCstar">Select time from a table</b> </input> </span>
   <div id="selectedYMDHContent"> <!--for aggregation-->
 	
 	<div class="blocTime" align="center">
@@ -99,7 +99,7 @@
 	
 	
     <div class="blocTime" align="center">	
-	<span id="controltime_header4" class="style1_header"><a class="turn-red" href="#" onclick="javascript:selectbuttonHeader('5');"><b><i>week days</i></b></a></span>	
+	<span id="controltime_header5" class="style1_header"><a class="turn-red" href="#" onclick="javascript:selectbuttonHeader('5');"><b><i>week days</i></b></a></span>	
 	<br/>
     <span id="controltime74" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('74');"><b><i>
 	Monday</i></b></a></span><span id="controltime75" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('75');"><b><i>
@@ -111,8 +111,8 @@
 	Sunday</i></b></a></span>   
     </div>    
     <span>
-      <button name="button8" onclick="javascript:refreshButtons();"> Refresh buttons </button>
-      <button name="button9" onclick="javascript:ask();"> Ask query time! </button>
+      <button name="button8" onclick="javascript:refreshButtons();"> Reset </button>
+      <button name="button9" onclick="javascript:ask();"> Submit </button>
     </span>
   </div>
 </div>

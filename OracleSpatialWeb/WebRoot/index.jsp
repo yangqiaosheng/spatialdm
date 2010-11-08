@@ -13,12 +13,10 @@ pageEncoding="ISO-8859-1"%>
         <link rel="stylesheet" type="text/css" href="css/fonts.css" />
 
               <!-- key for http://kd-photomap.iais.fraunhofer.de -->
-	 <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true">
-        </script>
+	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
 
-	<script type="text/javascript" src="script/GoogleMapsFeatures.js"></script>
-        <script type="text/javascript" src="script/simileTimeLine.js"></script>
+	<script type="text/javascript" src="script/GoogleMapsFeatures.js"></script>        
 
         <link type="text/css" rel="stylesheet" href="css/tableStyle.css" />
         <link type="text/css" rel="stylesheet" href="css/controllerTimeStyle.css" />
@@ -48,7 +46,7 @@ pageEncoding="ISO-8859-1"%>
 	</script>
 	<script type="text/javascript" src="script/DragnDrop.js">
 	</script>
-	<script type="text/javascript" src="script/ReSize.js">
+	<script type="text/javascript" src="script/Resizeble.js">
 	</script>
         <script type="text/javascript" src="script/jCarousel.js">
         </script>
@@ -66,10 +64,10 @@ pageEncoding="ISO-8859-1"%>
 	</script>
 
 
-    <link type="text/css" rel="stylesheet" href="css/general.css" />
-    <link type="text/css" rel="stylesheet" href="css/carousel.css" />
-    <link type="text/css" rel="stylesheet" href="css/calendar.css" />
-    <link type="text/css" rel="stylesheet" href="css/legend.css" />
+    	<link type="text/css" rel="stylesheet" href="css/general.css" />
+	<link type="text/css" rel="stylesheet" href="css/carousel.css" />
+    	<link type="text/css" rel="stylesheet" href="css/calendar.css" />
+	<link type="text/css" rel="stylesheet" href="css/legend.css" />
 	<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
 
 
@@ -89,6 +87,7 @@ pageEncoding="ISO-8859-1"%>
 		</div>
 		<jsp:include page="carousel.jsp"/>
 		<jsp:include page="legend.jsp"/>
+		
 		<div class="photoWindow timeCstar" id="photoWindow">
 			<div class="photoWindowDesc" id="photoWindowDesc"></div>
 			<div class="photoWindowImg" id="photoWindowImg"></div>
@@ -109,13 +108,30 @@ pageEncoding="ISO-8859-1"%>
 			jQuery(this).removeClass("headerButtonafter");
 			jQuery(this).addClass("headerButtonbefore");			
 		});
-		//jQuery("#Introduction").click(function(){
-		//	jQuery("#content").val("#content1");
-		//});
+		jQuery("#Introduction").click(function(){
+			jQuery("#content1").show("slow");
+			jQuery("#content2").hide("slow");
+			jQuery("#content3").hide("slow");
+			jQuery("#content4").hide("slow");
+		});
 		jQuery("#Pictures").click(function(){
-			jQuery("#content").load("content2.html");			
+			jQuery("#content2").show("slow");
+			jQuery("#content1").hide("slow");			
+			jQuery("#content3").hide("slow");			
+			jQuery("#content4").hide("slow");			
+		});
+		jQuery("#Properties").click(function(){
+			jQuery("#content3").show("slow");
+			jQuery("#content1").hide("slow");			
+			jQuery("#content2").hide("slow");			
+			jQuery("#content4").hide("slow");
+		});
+		jQuery("#Others").click(function(){
+			jQuery("#content4").show("slow");
+			jQuery("#content1").hide("slow");			
+			jQuery("#content2").hide("slow");			
+			jQuery("#content3").hide("slow");
 		});
 		</script>
-
      </body>
 </html>

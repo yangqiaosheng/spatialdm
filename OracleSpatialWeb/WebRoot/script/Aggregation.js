@@ -14,21 +14,24 @@ $(document).ready(function(){
         });
     }
       
-    function agregationPolygonsRemove(){
-        jQuery("#voronoiT").attr('value', 'Enable triangle agregation');
+    function agregationPolygonsRemove(){      
         $("#legendInfo").html("");
         refreshButtons();
         google.maps.event.removeListener(listenerHandle);
-    }
-    
-    $(function(){
-        $("#voronoiT").toggle(function(){
-            agregationPolygonsAdd();
-        }, function(){
-            agregationPolygonsRemove();
-        });        	            
-      });
-
+    }     
+    $(function(){			
+		jQuery('#AggregationForm').change(function(){
+			var value = jQuery("input:radio[name='group1']:checked").val();
+			if ( value == 'Enable'){							
+				agregationPolygonsAdd();
+				//alert('Enable');
+			}		
+			else{				
+				agregationPolygonsRemove();
+				//alert('Disable');
+			}
+		});	
+	});
       $(function(){
 	$("#timeC1, #timeC2, #timeC3, #tab1ready, #tab2ready, #tab3ready, #tab4ready").hover(function(){
             $(this).removeClass("timeCstar");
@@ -39,32 +42,7 @@ $(document).ready(function(){
             $(this).addClass("timeCstar");
         }); 
       });    
-      
-      $(function(){
-	$("#SimileTimeController").hide('1');
-        $('#SimileCheckbox').toggle( function()
-	  { $("#SimileTimeController").slideDown('normal');},
-	  function()
-	  { $("#SimileTimeController").slideUp('normal');}
-	); 	    
-      });
-      
-      $(function(){
-	$("#individualPolygonContent").hide('1');
-        $('#individualPolygonCheckbox').toggle( function()
-	  {$("#individualPolygonContent").slideDown('normal');},
-	  function()
-	  {$("#individualPolygonContent").slideUp('normal');});       
-      });
-	
-      $(function(){
-	$("#voronoiDiagramContent").hide('1');
-        $('#voronoiDiagramCheckbox').toggle( function()
-	  {$("#voronoiDiagramContent").slideDown('normal');},
-	  function()
-	  {$("#voronoiDiagramContent").slideUp('normal');});       
-      });
-      
+                    
       $(function(){
 	$("#selectedYMDHContent").hide('1');
         $('#selectedYMDHCheckbox').toggle( function()
