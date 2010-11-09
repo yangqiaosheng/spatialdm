@@ -488,7 +488,7 @@ public class FlickrDeWestAreaMgr {
 
 			Element lineElement = new Element("line");
 			polygonElement.addContent(lineElement);
-			lineElement.setAttribute("width", "2");
+			lineElement.setAttribute("width", "1");
 
 			JGeometry shape = a.getGeom();
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
