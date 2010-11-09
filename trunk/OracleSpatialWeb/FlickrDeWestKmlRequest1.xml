@@ -1,47 +1,47 @@
 <request>
 	<screen>
-		<bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
-		<center>(51.58830123054393, 6.971684570312502)</center>
-		<zoom>11</zoom>
+		<bounds>((50.50134064742177, 6.383916015625002), (50.9412634108359, 8.141728515625001))</bounds>
+		<center>(50.721818280377356, 7.262822265625002)</center>
+		<zoom>10</zoom>
 	</screen>
 
 	<polygon>(51.58830123054393, 6.971684570312502)(51.67184146523792, 7.647343750000002)(51.44644311790073, 7.298527832031252)</polygon>
 
-<!--	<interval>15/09/2007 - 19/10/2010</interval>-->
+	<!--	<interval>15/09/2007 - 19/10/2010</interval>-->
 
-<!--	<selected_days>Sep 08 2009,Sep 10 2009,Oct 14 2009,Oct 19 2006,Sep 24 2007,Sep 22 2005,Sep 09 2005</selected_days>-->
+	<!--	<selected_days>Sep 08 2009,Sep 10 2009,Oct 14 2009,Oct 19 2006,Sep 24 2007,Sep 22 2005,Sep 09 2005</selected_days>-->
 
 	<calendar>
 		<years>
-<!--			<year>2005</year>-->
-<!--			<year>2008</year>-->
+			<!--			<year>2005</year>-->
+			<!--			<year>2008</year>-->
 			<year>2009</year>
 		</years>
 		<months>
-<!--			<month>January</month>-->
+			<!--			<month>January</month>-->
 			<month>February</month>
-<!--			<month>March</month>-->
-<!--			<month>April</month>-->
-<!--			<month>May</month>-->
-<!--			<month>September</month>-->
-<!--			<month>October</month>-->
-<!--			<month>November</month>-->
-<!--			<month>December</month>-->
+			<!--			<month>March</month>-->
+			<!--			<month>April</month>-->
+						<month>May</month>
+						<month>September</month>
+						<month>October</month>
+						<month>November</month>
+						<month>December</month>
 		</months>
-<!--		<days>-->
-<!--			<day>3</day>-->
-<!--			<day>09</day>-->
-<!--			<day>12</day>-->
-<!--			<day>17</day>-->
-<!--		</days>-->
+		<!--		<days>-->
+		<!--			<day>3</day>-->
+		<!--			<day>09</day>-->
+		<!--			<day>12</day>-->
+		<!--			<day>17</day>-->
+		<!--		</days>-->
 <!---->
-	<hours>
-		<hour>15</hour>
-	</hours>
+<!--		<hours>-->
+<!--			<hour>15</hour>-->
+<!--		</hours>-->
 <!---->
 		<weekdays>
-<!--		<weekday>Saturday</weekday>-->
-<!--		<weekday>Sunday</weekday>-->
+			<!--		<weekday>Saturday</weekday>-->
+			<!--		<weekday>Sunday</weekday>-->
 		</weekdays>
 	</calendar>
 
