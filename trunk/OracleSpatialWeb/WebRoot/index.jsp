@@ -98,40 +98,5 @@ pageEncoding="ISO-8859-1"%>
 		<script type="text/javascript" src="script/sendToServer.js"> </script>
 		<script type="text/javascript" src="script/prepareXMLforServer.js"> </script>
 		<script type="text/javascript" src="script/VerticalMenu.js"></script>
-		
-		<!--later I will see where I put this -->
-		<script>			
-		jQuery(".head").hover(function () {
-			jQuery(this).removeClass("headerButtonbefore");
-			jQuery(this).addClass("headerButtonafter");
-			}, function () {
-			jQuery(this).removeClass("headerButtonafter");
-			jQuery(this).addClass("headerButtonbefore");			
-		});
-		jQuery("#Introduction").click(function(){
-			jQuery("#content1").show("slow");
-			jQuery("#content2").hide("slow");
-			jQuery("#content3").hide("slow");
-			jQuery("#content4").hide("slow");
-		});
-		jQuery("#Pictures").click(function(){
-			jQuery("#content2").show("slow");
-			jQuery("#content1").hide("slow");			
-			jQuery("#content3").hide("slow");			
-			jQuery("#content4").hide("slow");			
-		});
-		jQuery("#Properties").click(function(){
-			jQuery("#content3").show("slow");
-			jQuery("#content1").hide("slow");			
-			jQuery("#content2").hide("slow");			
-			jQuery("#content4").hide("slow");
-		});
-		jQuery("#Others").click(function(){
-			jQuery("#content4").show("slow");
-			jQuery("#content1").hide("slow");			
-			jQuery("#content2").hide("slow");			
-			jQuery("#content3").hide("slow");
-		});
-		</script>
      </body>
 </html>

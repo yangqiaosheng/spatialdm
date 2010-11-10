@@ -1,11 +1,17 @@
 g_areaid = -1;
+g_selecteditemidx = 1;
 
-function getSmallPhotos(areaid, page) {
+function getSmallPhotos(areaid, page, selected) {
 
 	if (page == 1) {
 		g_jcarousel.scroll(1);
 		cleanPhotoItems();
 		g_carouselBlocked = false;
+		if(selected > 0){
+			$("#maxContainer").css("visibility", "visible");
+		}else{
+			$("#maxContainer").css("visibility", "hidden");
+		}
 	}
 
 	g_areaid = areaid;
@@ -25,6 +31,8 @@ function addPhotoMaker(lat, lng, title) {
 }
 
 function showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url) {
+
+
 	var photoWindowObj = $("#photoWindow");
 	photoWindowObj.fadeTo('fast', 1);
 
@@ -102,10 +110,15 @@ function parsePhotosXml(xml) {
 					g_photo_selected = false;
 					addPhotoMaker(latitude, longitude, title);
 					showPhoto(photoId, date, personId, rawTags, latitude, longitude, title, url);
+
+					$("#item" + g_selecteditemidx).css('border-color', 'gray');
+					g_selecteditemidx = $(this).attr("id").substr(7,$(this).attr("id").length);
+					$("#item" + g_selecteditemidx).css('border-color', 'Khaki');
 				});
 		itemimgObj.mouseleave(function() {
 					if (g_photo_selected != true) {
 						hidePhoto();
+						$("#item" + g_selecteditemidx).css('border-color', 'gray');
 					}
 					removePhotoMaker();
 				});
