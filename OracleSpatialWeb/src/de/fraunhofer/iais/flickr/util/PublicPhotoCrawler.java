@@ -1,5 +1,8 @@
 package de.fraunhofer.iais.flickr.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -30,12 +33,18 @@ import com.aetrion.flickr.photos.PhotoList;
 
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
-public class PublicPhotoCrawler {
+public class PublicPhotoCrawler extends Thread{
+	/**
+	* Logger for this class
+	*/
+	private static final Logger logger = LoggerFactory.getLogger(PublicPhotoCrawler.class);
 
 	static long numPeople = 0;
 	static long numPhoto = 0;
 
 	static int pageSize = 500;
+	static final int MAX_NUM_RETRY = 500;
+	static int numReTry = 0;
 
 	static DBUtil db = new DBUtil();
 	static String apiKey;
@@ -84,8 +93,8 @@ public class PublicPhotoCrawler {
 		int total = 0;
 		int num = 0;
 
+		updatePeoplesNum(peopleId, -2);
 		do {
-
 			photolist = people.getPublicPhotos(peopleId, extras, pageSize, (int) (num / pageSize + 1));
 			total = photolist.getTotal();
 			for (int i = 0; i < photolist.size(); i++) {
@@ -177,22 +186,36 @@ public class PublicPhotoCrawler {
 		Date startDate = new Date();
 		long start = System.currentTimeMillis();
 
-		try {
-			init();
-			selectPeople();
-//			getPeoplesPhotos("27076251@N05");
+		/*
+		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir"));
+		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
+		 */
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			Date endDate = new Date();
-			long end = System.currentTimeMillis();
-			System.out.println("cost time:" + (end - start));
-			System.out.println("start date:" + startDate);
-			System.out.println("end date:" + endDate);
-			System.out.println("numPhoto:" + numPhoto);
-			System.out.println("numPeople:" + numPeople);
+		while (numReTry <= MAX_NUM_RETRY) {
+			try {
+				init();
+				selectPeople();
+//				getPeoplesPhotos("27076251@N05");
+
+			} catch (Exception e) {
+				logger.error("main(String[])", e); //$NON-NLS-1$
+			} finally {
+				Date endDate = new Date();
+				long end = System.currentTimeMillis();
+				logger.info("main(String[]) - cost time:" + (end - start)); //$NON-NLS-1$
+				logger.info("main(String[]) - start date:" + startDate); //$NON-NLS-1$
+				logger.info("main(String[]) - end date:" + endDate); //$NON-NLS-1$
+				logger.info("main(String[]) - numPhoto:" + numPhoto); //$NON-NLS-1$
+				logger.info("main(String[]) - numPeople:" + numPeople); //$NON-NLS-1$
+				logger.info("main(String[]) - numReTry:" + numReTry); //$NON-NLS-1$
+			}
+
+			try {
+				sleep(30*1000);
+			} catch (InterruptedException e) {
+				logger.error("main(String[])", e); //$NON-NLS-1$
+			}
+			numReTry++;
 		}
-
 	}
 }

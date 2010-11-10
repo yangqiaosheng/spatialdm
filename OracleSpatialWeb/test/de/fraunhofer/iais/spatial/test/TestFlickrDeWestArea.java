@@ -51,7 +51,7 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 
 	@BeforeClass
 	public static void initClass() {
-		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir") + "\\");
+		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir"));
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 	}
 
