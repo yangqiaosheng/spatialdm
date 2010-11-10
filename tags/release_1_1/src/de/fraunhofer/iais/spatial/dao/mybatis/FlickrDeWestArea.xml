@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrDeWestArea">
+
+	<!-- cache: flushInterval: 24hours -->
+   	<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>
+
+	<select id="selectAll" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto">
+		select
+			ID,
+			NAME,
+			GEOM,
+			SDO_GEOM.SDO_AREA(m.geom, 0.005) as "area",
+			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "center"
+		from FLICKR_DE_WEST_TABLE_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_DE_WEST_TABLE_${radius}'
+	</select>
+
+	<select id="selectById" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto">
+		select
+			ID,
+			NAME,
+			GEOM,
+			SDO_GEOM.SDO_AREA(m.geom, 0.005) as "area",
+			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "center"
+		from FLICKR_DE_WEST_TABLE_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_DE_WEST_TABLE_${radius}' and m.ID = #{areaid}
+	</select>
+
+	<select id="selectByIdGeom" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto">
+		select
+			ID,
+			NAME,
+			GEOM,
+			SDO_GEOM.SDO_AREA(m.geom, 0.005) as "area",
+			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "center"
+		from FLICKR_DE_WEST_TABLE_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_DE_WEST_TABLE_${radius}' and sdo_relate(m.geom, #{queryGeom},'mask=anyinteract') = 'TRUE'
+	</select>
+
+	<select id="hourCount" resultType="String" parameterType="FlickrDeWestArea">
+		select hour
+		from FLICKR_DE_WEST_TABLE_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="dayCount" resultType="String" parameterType="FlickrDeWestArea">
+		select day
+		from FLICKR_DE_WEST_TABLE_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="monthCount" resultType="String" parameterType="FlickrDeWestArea">
+		select month
+		from FLICKR_DE_WEST_TABLE_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="yearCount" resultType="String" parameterType="FlickrDeWestArea">
+		select year
+		from FLICKR_DE_WEST_TABLE_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="totalCount" resultType="int" parameterType="FlickrDeWestAreaDto">
+		select total
+		from FLICKR_DE_WEST_TABLE_COUNT
+		where ID = #{areaid} and RADIUS = #{radius}
+	</select>
+</mapper>
