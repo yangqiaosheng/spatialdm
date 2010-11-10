@@ -1,0 +1,113 @@
+.headerButtonbefore , .head{
+	font-family: verdana, sans-serif;
+	font-size: 14px;
+	width:auto;
+	z-index: 11;
+	white-space: nowrap;
+	text-align: center;
+	border-style: solid;
+	border-color: #8AA8F3;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	padding-top: 5px;
+	padding-bottom: 5px;	
+	padding-right: 1%;
+	padding-left: 1%;
+	cursor: pointer;
+	opacity: 0.9;
+}
+
+.headerButtonbefore {
+	background-color: #A7BDF7;
+	color: black;
+	opacity: 0.9;
+}
+
+.headerButtonafter, .headerButtonclick {
+	font-family: verdana, sans-serif;
+	font-size: 14px;
+	background-color: #06A8FA; /* color of the background */
+	color: white; /* color of the text*/
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-right: 1%;
+	padding-left: 1%;
+	opacity: 0.9;
+}
+
+#content {
+	width: auto;
+	height: auto;
+}
+
+.tabcontent {
+    background-color: #A7BDF7; 
+	font-family: sans-serif;
+	font-size: 13px;
+	width:auto;
+	height:auto;
+	border-style: solid;
+	border-color: #8AA8F3; /*blue border*/
+	border-width: 1px;
+	opacity: 0.9;
+}
+
+#tab4focus,#tab1focus,#tab2focus,#tab3focus {
+	font-weight: bold;
+	opacity: 0.9;
+}
+
+html,body,#map_canvas {
+
+	margin: 0%;
+	padding: 0%;
+	height: 100%;
+	width: 100%;
+	overflow:hidden;	/*important for not scroll*/
+}
+
+#move{
+	border-width:0.31em;
+	border-style:solid; 
+	border-color:#8AA8F3; 
+	position:absolute;		
+	margin-left: 1%;
+	margin-top: 1%;
+	width:35%; /*500px*/
+	height:auto; /*it wasn't*/
+	top:0;
+}
+#table_header{
+	width:auto;
+	height:auto;
+}
+#table1{
+	/*position: absolute; */
+	width:auto;
+	/*height:10%;	*/
+	height:auto;
+	
+}
+#table2{			
+	width:auto;
+	height:auto;		
+}
+#table3{
+	
+	width:auto;
+	height:auto;		
+}
+#address{
+	position:absolute;
+	margin-bottom:5px;	
+	top:0;
+	}
+#idmove {
+	cursor:move;
+}
+#headline{
+	width:auto;
+}
+
