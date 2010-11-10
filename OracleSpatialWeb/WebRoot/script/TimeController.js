@@ -371,6 +371,19 @@ function ask() {
 }
 //var t_count=0;
 var l=0;
+
+function gup(parameters, name)
+{
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[;]?"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec(parameters);
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
+
 function loadkml(url) {
 //  alert("in the load alert");
   for (var i=g_kml_counter-l; i<g_kml_counter;i++)
@@ -386,14 +399,14 @@ function loadkml(url) {
   });
   //alert("load 2");
   google.maps.event.addListener(g_kml_layer[g_kml_counter], 'click', function(kmlEvent) {
+    var parameters = kmlEvent.featureData.snippet.toString();
     var areaid = kmlEvent.featureData.id;
-    var parameters = kmlEvent.featureData.snippet;
-
-    kmlEvent.featureData.description= "<iframe width='650' height= '400' frameborder='0' src='areaDescription.jsp?" + parameters + "'>Browser not Compatible</iframe>";
-
-    getSmallPhotos(areaid, 1);
-
+	var total = gup(parameters, 'total');
+	var selected = gup(parameters, 'selected');
+	kmlEvent.featureData.description= "<iframe width='650' height= '400' frameborder='0' src='areaDescription.jsp?" + parameters + "'>Browser not Compatible</iframe>";
+	getSmallPhotos(areaid, 1, selected);
   });
+  $("#maxContainer").css("visibility", "hidden");
   //alert("load 3");
   g_kml_counter++;
   l=1;

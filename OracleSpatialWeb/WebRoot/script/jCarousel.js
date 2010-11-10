@@ -25,8 +25,6 @@ function carousel_initCallback(carousel) {
 	g_jcarousel = carousel;
 }
 
-
-
 function carousel_itemLastInCallback(carousel, state, last){
 	if((carousel.last >= g_carouselTotalSize - 20) && (g_carouselTotalSize >= g_carouselPageSize) && (g_carouselBlocked == false)){
 //		alert("call:" + g_carouselTotalSize + "|carousel.last:" + carousel.last);
@@ -36,12 +34,14 @@ function carousel_itemLastInCallback(carousel, state, last){
 };
 
 function jcarouselInit(){
-	jQuery('#carousel').jcarousel({
+	var carouselObj = $('#carousel');
+	carouselObj.jcarousel({
 		size: 0,
     	initCallback: carousel_initCallback,
     	itemLastInCallback: carousel_itemLastInCallback
     });
-    var carousel = jQuery('#carousel').data('jcarousel'); // taking the instance
+	$("#maxContainer").css("visibility", "hidden");
+    var carousel = carouselObj.data('jcarousel'); // taking the instance
 }
 
 $(document).ready(function(){

@@ -35,7 +35,7 @@ public class PublicPhotoCrawler {
 	static long numPeople = 0;
 	static long numPhoto = 0;
 
-	static int pageSize = 200;
+	static int pageSize = 500;
 
 	static DBUtil db = new DBUtil();
 	static String apiKey;
@@ -85,8 +85,7 @@ public class PublicPhotoCrawler {
 		int num = 0;
 
 		do {
-			System.out.println("owner_id:" + peopleId);
-			System.out.println("total:" + total + " | num:" + num);
+
 			photolist = people.getPublicPhotos(peopleId, extras, pageSize, (int) (num / pageSize + 1));
 			total = photolist.getTotal();
 			for (int i = 0; i < photolist.size(); i++) {
@@ -99,6 +98,9 @@ public class PublicPhotoCrawler {
 				}
 			}
 			num += photolist.size();
+
+			System.out.println("owner_id:" + peopleId);
+			System.out.println("total:" + total + " | num:" + num);
 		} while (num < total);
 
 		updatePeoplesNum(peopleId, total);
