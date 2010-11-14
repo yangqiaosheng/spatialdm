@@ -1,0 +1,91 @@
+//fastIncremental + InsertSpatialIndexDB
+IDBScan clustering results
+========================================================================================
+
+Clustered DataObjects: 10010
+Number of attributes: 2
+Epsilon: 300.0; minPoints: 30
+Index: clusterers.database.InsertCachedSpatialIndexDatabase
+Distance-type: geo.GeoDataObject
+Number of generated clusters: 20
+Elapsed time for DBScan: 6.3
+Elapsed time for IDBScan: 102.5
+
+
+Evaluation:
+Clustered Instances
+
+ 0         30 (  0%)
+ 1         31 (  0%)
+ 2         32 (  0%)
+ 3         32 (  0%)
+ 4         35 (  0%)
+ 5         37 (  0%)
+ 6         43 (  1%)
+ 7         50 (  1%)
+ 8         50 (  1%)
+ 9         61 (  1%)
+10         72 (  1%)
+11         74 (  1%)
+12         77 (  1%)
+13         98 (  1%)
+14        119 (  2%)
+15        134 (  2%)
+16        162 (  2%)
+17        253 (  3%)
+18        288 (  4%)
+19       6002 ( 78%)
+
+Unclustered instances : 2330
+5005 Instances are clustered by DBScan
+5005 Instances are clustered by IDBScan
+
+
+Clustered DataObjects: 10010
+Number of attributes: 2
+Epsilon: 300.0; minPoints: 30
+Index: clusterers.database.InsertCachedSpatialIndexDatabase
+Distance-type: geo.GeoDataObject
+Number of generated clusters: 25
+Elapsed time for DBScan: 6.08
+Elapsed time for IDBScan: 238.31
+
+
+//paperIncremental + InsertSpatialIndexDB
+Clustered DataObjects: 10010
+Number of attributes: 2
+Epsilon: 300.0; minPoints: 30
+Index: clusterers.database.InsertCachedSpatialIndexDatabase
+Distance-type: geo.GeoDataObject
+Number of generated clusters: 20
+Elapsed time for DBScan: 6.27
+Elapsed time for IDBScan: 239.19
+
+
+Evaluation:
+Clustered Instances
+
+ 0         30 (  0%)
+ 1         31 (  0%)
+ 2         32 (  0%)
+ 3         32 (  0%)
+ 4         35 (  0%)
+ 5         37 (  0%)
+ 6         43 (  1%)
+ 7         50 (  1%)
+ 8         50 (  1%)
+ 9         61 (  1%)
+10         72 (  1%)
+11         74 (  1%)
+12         77 (  1%)
+13         98 (  1%)
+14        119 (  2%)
+15        134 (  2%)
+16        162 (  2%)
+17        253 (  3%)
+18        288 (  4%)
+19       6002 ( 78%)
+
+Unclustered instances : 2330
+5005 Instances are clustered by DBScan
+5005 Instances are clustered by IDBScan
