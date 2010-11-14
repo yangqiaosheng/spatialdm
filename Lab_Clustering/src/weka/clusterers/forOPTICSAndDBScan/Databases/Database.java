@@ -38,7 +38,7 @@ import weka.core.Instances;
  *  </p>
  *
  *  @author Haolin Zhi (zhi@cs.uni-bonn.de)
- *  @author Peca Iulian (pkiulian@gmail.com)
+ *  @author Peca Iulian (pkiulian@gmail.com) 
  *  @version $Revision: 1.5 $
  */
 public interface Database {
