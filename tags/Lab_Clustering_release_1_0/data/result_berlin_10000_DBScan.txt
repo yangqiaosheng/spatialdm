@@ -1,0 +1,39 @@
+//InsertSpatialIndexDB
+DBScan clustering results
+========================================================================================
+
+Clustered DataObjects: 10010
+Number of attributes: 2
+Epsilon: 300.0; minPoints: 30
+Index: clusterers.database.InsertCachedSpatialIndexDatabase
+Distance-type: geo.GeoDataObject
+Number of generated clusters: 21
+Elapsed time for DBScan: 74.89
+
+Evaluation:
+Clustered Instances
+
+ 0         30 (  0%)
+ 1         31 (  0%)
+ 2         32 (  0%)
+ 3         32 (  0%)
+ 4         35 (  0%)
+ 5         37 (  0%)
+ 6         43 (  1%)
+ 7         47 (  1%)
+ 8         50 (  1%)
+ 9         53 (  1%)
+10         61 (  1%)
+11         72 (  1%)
+12         74 (  1%)
+13         77 (  1%)
+14         87 (  1%)
+15         98 (  1%)
+16        119 (  2%)
+17        162 (  2%)
+18        253 (  3%)
+19        288 (  4%)
+20       6000 ( 78%)
+
+Unclustered instances : 2329
+10010 Instances are clustered by DBScan
