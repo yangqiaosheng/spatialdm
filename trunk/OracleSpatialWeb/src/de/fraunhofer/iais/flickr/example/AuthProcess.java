@@ -28,14 +28,14 @@ import com.aetrion.flickr.util.IOUtilities;
  * @author mago
  * @version $Id: AuthExample.java,v 1.5 2008/07/05 22:19:48 x-mago Exp $
  */
-public class AuthExample {
+public class AuthProcess {
     Flickr f;
     RequestContext requestContext;
     String frob = "";
     String token = "";
     Properties properties = null;
 
-    public AuthExample() throws ParserConfigurationException, IOException, SAXException {
+    public AuthProcess() throws ParserConfigurationException, IOException, SAXException {
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream("/flickr.properties");
@@ -45,8 +45,8 @@ public class AuthExample {
             IOUtilities.close(in);
         }
         f = new Flickr(
-            properties.getProperty("apiKey"),
-            properties.getProperty("secret"),
+            properties.getProperty("apiKey_2"),
+            properties.getProperty("secret_2"),
             new REST()
         );
         Flickr.debugStream = false;
@@ -78,10 +78,11 @@ public class AuthExample {
             e.printStackTrace();
         }
     }
+    
 
     public static void main(String[] args) {
         try {
-            AuthExample t = new AuthExample();
+            AuthProcess t = new AuthProcess();
         } catch(Exception e) {
             e.printStackTrace();
         }

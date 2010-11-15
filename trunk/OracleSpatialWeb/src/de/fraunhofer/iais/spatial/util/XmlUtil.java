@@ -60,7 +60,7 @@ public class XmlUtil {
 
 		ZipOutputStream zos = null;
 		try {
-			zos = new ZipOutputStream(new FileOutputStream(filenamePrefix + ".kmz"));
+			zos = new ZipOutputStream(new FileOutputStream(filenamePrefix + ".kml"));
 			zos.putNextEntry(new ZipEntry(filenamePrefix.substring(filenamePrefix.indexOf('/') + 1) + ".kml"));
 
 			xmlOutputter.output(document, zos);
