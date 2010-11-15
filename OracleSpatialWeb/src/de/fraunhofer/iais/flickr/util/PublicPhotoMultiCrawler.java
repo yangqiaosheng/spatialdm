@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,43 +34,97 @@ import com.aetrion.flickr.photos.PhotoList;
 
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
-public class PublicPhotoCrawler extends Thread{
+public class PublicPhotoMultiCrawler extends Thread {
 	/**
 	* Logger for this class
 	*/
-	private static final Logger logger = LoggerFactory.getLogger(PublicPhotoCrawler.class);
+	private static final Logger logger = LoggerFactory.getLogger(PublicPhotoMultiCrawler.class);
+
+	static final int pageSize = 500;
+	static final int NUM_THREAD = 3;
+	static final int MAX_NUM_RETRY = 500;
+
+	static int numReTry = 0;
 
 	static long numPeople = 0;
 	static long numPhoto = 0;
 	static long numTotalQuery = 0;
 
-	static int pageSize = 500;
-	static final int MAX_NUM_RETRY = 500;
-	static int numReTry = 0;
-
 	static DBUtil db = new DBUtil();
-	static String apiKey;
-	static String sharedSecret;
-	static Flickr flickr;
-	static RequestContext requestContext;
-	static Properties properties = null;
-	static PeopleInterface peopleInterface;
 
-	private static void init() throws IOException, ParserConfigurationException {
-		InputStream in = null;
-		in = PublicPhotoCrawler.class.getResourceAsStream("/flickr.properties");
-		properties = new Properties();
-		properties.load(in);
-		flickr = new Flickr(properties.getProperty("apiKey_0"), properties.getProperty("secret_0"), new REST());
-		requestContext = RequestContext.getRequestContext();
+	@Override
+	public void run() {
+
+		Date startDate = new Date();
+		long start = System.currentTimeMillis();
+		int id = Integer.parseInt(this.getName());
+		long numThreadQuery = 0;
+
+		/*
+		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir"));
+		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
+		 */
+
+		PeopleInterface peopleInterface = null;
+		try {
+			sleep(id * 1000);
+			peopleInterface = init(this.getName());
+		} catch (Exception e) {
+			logger.error("main(String[])", e); //$NON-NLS-1$
+		}
+
+		while (numReTry <= MAX_NUM_RETRY) {
+
+			try {
+				selectPeople(id, peopleInterface);
+
+			} catch (Exception e) {
+				logger.error("main(String[])", e); //$NON-NLS-1$
+			} finally {
+				Date endDate = new Date();
+				long end = System.currentTimeMillis();
+				logger.info("main(String[]) - ThreadId:" + this.getName()); //$NON-NLS-1$
+				logger.info("main(String[]) - cost time:" + (end - start) + "ms"); //$NON-NLS-1$
+				logger.info("main(String[]) - start date:" + startDate); //$NON-NLS-1$
+				logger.info("main(String[]) - end date:" + endDate); //$NON-NLS-1$
+				logger.info("main(String[]) - numPhoto:" + numPhoto); //$NON-NLS-1$
+				logger.info("main(String[]) - numPeople:" + numPeople); //$NON-NLS-1$
+				logger.info("main(String[]) - numTotalQuery:" + numTotalQuery); //$NON-NLS-1$
+				logger.info("main(String[]) - numThreadQuery:" + numThreadQuery); //$NON-NLS-1$
+				logger.info("main(String[]) - numReTry:" + numReTry); //$NON-NLS-1$
+			}
+
+			try {
+				sleep(30 * 1000);
+			} catch (InterruptedException e) {
+				logger.error("main(String[])", e); //$NON-NLS-1$
+			}
+			numReTry++;
+		}
+	}
+
+	private PeopleInterface init(String ThreadId) throws IOException, ParserConfigurationException {
+
+		Properties properties = new Properties();
+		properties.load(PublicPhotoMultiCrawler.class.getResourceAsStream("/flickr.properties"));
+		String apiKey = properties.getProperty("apiKey_" + ThreadId);
+		String secret = properties.getProperty("secret_" + ThreadId);
+		String token = properties.getProperty("token_" + ThreadId);
+		Flickr flickr = new Flickr(apiKey, secret, new REST());
+		RequestContext requestContext = RequestContext.getRequestContext();
 		Auth auth = new Auth();
 		auth.setPermission(Permission.READ);
-		auth.setToken(properties.getProperty("token_0"));
+		auth.setToken(token);
+
+		logger.info("init(String) - ThreadID:" + ThreadId); //$NON-NLS-1$
+		logger.info("init(String) - apiKey:" + apiKey); //$NON-NLS-1$
+		logger.info("init(String) - secret:" + secret); //$NON-NLS-1$
+		logger.info("init(String) - token:" + token); //$NON-NLS-1$
+
 		requestContext.setAuth(auth);
 		Flickr.debugRequest = true;
 		Flickr.debugStream = true;
-
-		peopleInterface = flickr.getPeopleInterface();
+		return flickr.getPeopleInterface();
 	}
 
 	public static boolean checkLocation(GeoData geoData) {
@@ -85,7 +140,7 @@ public class PublicPhotoCrawler extends Thread{
 		}
 	}
 
-	public static void getPeoplesPhotos(String peopleId) throws IOException, SAXException, FlickrException, SQLException {
+	public static void getPeoplesPhotos(PeopleInterface peopleInterface, String peopleId) throws IOException, SAXException, FlickrException, SQLException {
 
 		Set<String> extras = new HashSet<String>();
 		extras.add(Extras.DATE_TAKEN);
@@ -97,7 +152,7 @@ public class PublicPhotoCrawler extends Thread{
 		int total = 0;
 		int num = 0;
 
-		updatePeoples(peopleId, -2);
+		updatePeoplesNum(peopleId, -2);
 		do {
 			photolist = peopleInterface.getPublicPhotos(peopleId, extras, pageSize, (int) (num / pageSize + 1));
 			total = photolist.getTotal();
@@ -118,13 +173,12 @@ public class PublicPhotoCrawler extends Thread{
 			System.out.println("total:" + total + " | num:" + num);
 			System.out.println("numTotalQuery:" + numTotalQuery);
 		} while (num < total);
-
-		updatePeoples(peopleId, total);
+		updatePeoplesNum(peopleId, total);
 	}
 
-	private static void updatePeoples(String person, int num) throws SQLException {
+	private static void updatePeoplesNum(String person, int num) throws SQLException {
 		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "update PEOPLE_EUROPE set PHOTOS_NUM_NEW = ?, LAST_UPDATE = sysdate where PERSON = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "update PEOPLE_EUROPE set PHOTOS_NUM_NEW = ? where PERSON = ?");
 		try {
 			int i = 1;
 			pstmt.setInt(i++, num);
@@ -164,7 +218,7 @@ public class PublicPhotoCrawler extends Thread{
 		}
 	}
 
-	private static void selectPeople() throws IOException, SAXException, FlickrException, SQLException {
+	private static void selectPeople(int id, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
 		PreparedStatement pstmt = db.getPstmt(conn, "select PERSON from PEOPLE_EUROPE where photos_num_new = -1");
 
@@ -172,14 +226,14 @@ public class PublicPhotoCrawler extends Thread{
 		try {
 			rs = db.getRs(pstmt);
 			while (rs.next()) {
-//				if (numPeople < 1786) {
-//					numPeople++;
-//					continue;
-//				}
 
 				String peopleId = rs.getString("PERSON");
-				getPeoplesPhotos(peopleId);
-				System.out.println("numPeople:" + numPeople++);
+
+				// assign the task to different thread
+				if (new Random(peopleId.hashCode()).nextInt(NUM_THREAD) == id) {
+					getPeoplesPhotos(peopleInterface, peopleId);
+					System.out.println("numPeople:" + numPeople++);
+				}
 			}
 		} finally {
 			db.close(rs);
@@ -190,46 +244,12 @@ public class PublicPhotoCrawler extends Thread{
 
 	public static void main(String[] args) {
 
-		Date startDate = new Date();
-		long start = System.currentTimeMillis();
 
-		/*
-		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir"));
-		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		 */
-
-		try {
-			init();
-		} catch (Exception e) {
-			logger.error("main(String[])", e); //$NON-NLS-1$
+		for (int i = 0; i < NUM_THREAD; i++) {
+			PublicPhotoMultiCrawler crawler = new PublicPhotoMultiCrawler();
+			crawler.start();
+			crawler.setName(String.valueOf(i));
 		}
 
-		while (numReTry <= MAX_NUM_RETRY) {
-
-			try {
-				selectPeople();
-//				getPeoplesPhotos("27076251@N05");
-
-			} catch (Exception e) {
-				logger.error("main(String[])", e); //$NON-NLS-1$
-			} finally {
-				Date endDate = new Date();
-				long end = System.currentTimeMillis();
-				logger.info("main(String[]) - cost time:" + (end - start) + "ms"); //$NON-NLS-1$
-				logger.info("main(String[]) - start date:" + startDate); //$NON-NLS-1$
-				logger.info("main(String[]) - end date:" + endDate); //$NON-NLS-1$
-				logger.info("main(String[]) - numPhoto:" + numPhoto); //$NON-NLS-1$
-				logger.info("main(String[]) - numPeople:" + numPeople); //$NON-NLS-1$
-				logger.info("main(String[]) - numTotalQuery:" + numTotalQuery); //$NON-NLS-1$
-				logger.info("main(String[]) - numReTry:" + numReTry); //$NON-NLS-1$
-			}
-
-			try {
-				sleep(30*1000);
-			} catch (InterruptedException e) {
-				logger.error("main(String[])", e); //$NON-NLS-1$
-			}
-			numReTry++;
-		}
 	}
 }

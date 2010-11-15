@@ -104,7 +104,7 @@ public class ZoomKmlServlet extends HttpServlet {
 
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);
-				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kmz");
+				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
 				request.getSession().setAttribute("areaDto", areaDto);
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
