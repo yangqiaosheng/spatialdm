@@ -41,7 +41,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(PublicPhotoMultiCrawler.class);
 
 	static final int pageSize = 500;
-	static final int NUM_THREAD = 3;
+	static final int NUM_THREAD = 6;
 	static final int MAX_NUM_RETRY = 500;
 
 	static int numReTry = 0;
