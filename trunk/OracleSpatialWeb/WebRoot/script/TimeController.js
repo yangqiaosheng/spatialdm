@@ -391,6 +391,7 @@ function loadkml(url) {
     g_kml_layer[i].setMap();
     g_kml_layer[i].setMap(null);
   }
+  hidePhoto();
   //alert("load 1");
   g_kml_layer[g_kml_counter] = new google.maps.KmlLayer(url, {
     suppressInfoWindows: false,

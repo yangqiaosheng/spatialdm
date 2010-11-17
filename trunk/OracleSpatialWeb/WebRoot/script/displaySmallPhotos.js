@@ -4,9 +4,10 @@ g_selecteditemidx = 1;
 function getSmallPhotos(areaid, page, selected) {
 
 	if (page == 1) {
+		g_carouselBlocked = false;
 		g_jcarousel.scroll(1);
 		cleanPhotoItems();
-		g_carouselBlocked = false;
+		hidePhoto();
 		if(selected > 0){
 			$("#maxContainer").css("visibility", "visible");
 		}else{

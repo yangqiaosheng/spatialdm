@@ -45,12 +45,45 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static final int MAX_NUM_RETRY = 500;
 
 	static int numReTry = 0;
-
 	static long numPeople = 0;
 	static long numPhoto = 0;
 	static long numTotalQuery = 0;
 
 	static DBUtil db = new DBUtil();
+
+
+	public synchronized static int increaseNumReTry(){
+		return numReTry++;
+	}
+
+	public synchronized static long increaseNumPeople(){
+		return numPeople++;
+	}
+
+	public synchronized static long increaseNumPhoto(){
+		return numPhoto++;
+	}
+
+	public synchronized static long increaseNumTotalQuery(){
+		return numTotalQuery++;
+	}
+
+
+	public synchronized static int getNumReTry() {
+		return numReTry;
+	}
+
+	public synchronized static long getNumPeople() {
+		return numPeople;
+	}
+
+	public synchronized static long getNumPhoto() {
+		return numPhoto;
+	}
+
+	public synchronized static long getNumTotalQuery() {
+		return numTotalQuery;
+	}
 
 	@Override
 	public void run() {
@@ -58,7 +91,6 @@ public class PublicPhotoMultiCrawler extends Thread {
 		Date startDate = new Date();
 		long start = System.currentTimeMillis();
 		int id = Integer.parseInt(this.getName());
-		long numThreadQuery = 0;
 
 		/*
 		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir"));
@@ -73,7 +105,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			logger.error("main(String[])", e); //$NON-NLS-1$
 		}
 
-		while (numReTry <= MAX_NUM_RETRY) {
+		while (getNumReTry() <= MAX_NUM_RETRY) {
 
 			try {
 				selectPeople(id, peopleInterface);
@@ -87,11 +119,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 				logger.info("main(String[]) - cost time:" + (end - start) + "ms"); //$NON-NLS-1$
 				logger.info("main(String[]) - start date:" + startDate); //$NON-NLS-1$
 				logger.info("main(String[]) - end date:" + endDate); //$NON-NLS-1$
-				logger.info("main(String[]) - numPhoto:" + numPhoto); //$NON-NLS-1$
-				logger.info("main(String[]) - numPeople:" + numPeople); //$NON-NLS-1$
-				logger.info("main(String[]) - numTotalQuery:" + numTotalQuery); //$NON-NLS-1$
-				logger.info("main(String[]) - numThreadQuery:" + numThreadQuery); //$NON-NLS-1$
-				logger.info("main(String[]) - numReTry:" + numReTry); //$NON-NLS-1$
+				logger.info("main(String[]) - numPhoto:" + getNumPhoto()); //$NON-NLS-1$
+				logger.info("main(String[]) - numPeople:" + getNumPeople()); //$NON-NLS-1$
+				logger.info("main(String[]) - numTotalQuery:" + getNumTotalQuery()); //$NON-NLS-1$
+				logger.info("main(String[]) - numReTry:" + getNumReTry()); //$NON-NLS-1$
 			}
 
 			try {
@@ -99,7 +130,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			} catch (InterruptedException e) {
 				logger.error("main(String[])", e); //$NON-NLS-1$
 			}
-			numReTry++;
+			increaseNumReTry();
 		}
 	}
 
@@ -156,7 +187,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		do {
 			photolist = peopleInterface.getPublicPhotos(peopleId, extras, pageSize, (int) (num / pageSize + 1));
 			total = photolist.getTotal();
-			numTotalQuery++;
+			increaseNumTotalQuery();
 
 			for (int i = 0; i < photolist.size(); i++) {
 				Photo p = (Photo) photolist.get(i);
@@ -171,7 +202,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			System.out.println("owner_id:" + peopleId);
 			System.out.println("total:" + total + " | num:" + num);
-			System.out.println("numTotalQuery:" + numTotalQuery);
+			System.out.println("numTotalQuery:" + getNumTotalQuery());
 		} while (num < total);
 		updatePeoplesNum(peopleId, total);
 	}
@@ -191,6 +222,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void insertPhoto(Photo photo) throws SQLException {
 		Connection conn = db.getConn();
 		PreparedStatement pstmt = db.getPstmt(conn, "insert into FLICKR_EUROPE (PERSON, PHOTO_ID, LONGITUDE, LATITUDE, DT, VIEWED, TITLE, SMALLURL) values (?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?, ?, ?)");
@@ -206,12 +238,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setString(i++, formatter.format(photo.getDateTaken()));
 			pstmt.setInt(i++, photo.getViews());
 			pstmt.setString(i++, photo.getTitle());
-//			pstmt.setString(i++, photo.getTags().toString());
 			pstmt.setString(i++, photo.getSmallUrl());
 
 			pstmt.executeUpdate();
 
-			System.out.println("numPhoto:" + numPhoto++);
+			System.out.println("numPhoto:" + increaseNumPhoto());
 		} finally {
 			db.close(pstmt);
 			db.close(conn);
@@ -232,7 +263,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 				// assign the task to different thread
 				if (new Random(peopleId.hashCode()).nextInt(NUM_THREAD) == id) {
 					getPeoplesPhotos(peopleInterface, peopleId);
-					System.out.println("numPeople:" + numPeople++);
+					System.out.println("numPeople:" + increaseNumPeople());
 				}
 			}
 		} finally {
