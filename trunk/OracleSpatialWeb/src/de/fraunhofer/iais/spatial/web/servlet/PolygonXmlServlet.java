@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,28 +25,18 @@ import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
-public class ZoomKmlServlet extends HttpServlet {
+public class PolygonXmlServlet extends HttpServlet {
 	/**
 	* Logger for this class
 	*/
-	private static final Logger logger = LoggerFactory.getLogger(ZoomKmlServlet.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(PolygonXmlServlet.class);
 	private static final long serialVersionUID = -6814809670117597713L;
-
-	// "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
-	public static final String kmlPath = "kml/";
 
 	private static FlickrDeWestAreaMgr areaMgr = null;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		// web base path for local operation
-		String localBasePath = System.getProperty("oraclespatialweb.root");
-		// web base path for remote access
-		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-		//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
-		System.out.println(remoteBasePath);
 		response.setContentType("text/xml");
 		// response.setContentType("application/vnd.google-earth.kml+xml");
 
@@ -59,6 +50,7 @@ public class ZoomKmlServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 
+		String responseStr = "";
 		Document document = new Document();
 		Element rootElement = new Element("response");
 		document.setRootElement(rootElement);
@@ -67,15 +59,11 @@ public class ZoomKmlServlet extends HttpServlet {
 
 		if (xml == null || xml.equals("")) {
 			messageElement.setText("ERROR: wrong input parameter!");
+			responseStr = XmlUtil.xml2String(document, true);
 		} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
 			messageElement.setText("ERROR: please do a query first!");
+			responseStr = XmlUtil.xml2String(document, true);
 		} else {
-
-			String filenamePrefix = StringUtil.genFilename(new Date());
-
-//			BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
-//			bw.write(xml);
-//			bw.close();
 
 			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 			if("true".equals(persist)){
@@ -100,21 +88,19 @@ public class ZoomKmlServlet extends HttpServlet {
 					as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
 				areaMgr.count(as, areaDto);
-				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, true);
+				responseStr = areaMgr.createXml(as, null, areaDto.getRadius());
 
-				Element urlElement = new Element("url");
-				rootElement.addContent(urlElement);
-				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
-				request.getSession().setAttribute("areaDto", areaDto);
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
 				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+				responseStr = XmlUtil.xml2String(document, true);
 			}
 		}
 
-		out.print(XmlUtil.xml2String(document, true));
+
+		out.print(responseStr);
 		out.flush();
 		out.close();
 	}

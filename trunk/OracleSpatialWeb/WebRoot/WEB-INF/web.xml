@@ -93,18 +93,6 @@
 	</servlet-mapping>
 
 	<servlet>
-		<description>Retrieve the data to create a kml</description>
-		<display-name>RequestKml</display-name>
-		<servlet-name>RequestKml</servlet-name>
-		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RequestKml</servlet-name>
-		<url-pattern>/RequestKmlOld</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<description>Retrieve the data to create a kml with different zoom levels</description>
 		<display-name>ZoomedKml</display-name>
 		<servlet-name>ZoomedKml</servlet-name>
@@ -114,6 +102,18 @@
 	<servlet-mapping>
 		<servlet-name>ZoomedKml</servlet-name>
 		<url-pattern>/RequestKml</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<description>Retrieve the data to create a kml with different zoom levels</description>
+		<display-name>SpatialXml</display-name>
+		<servlet-name>SpatialXml</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.PolygonXmlServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SpatialXml</servlet-name>
+		<url-pattern>/SpatialXml</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
