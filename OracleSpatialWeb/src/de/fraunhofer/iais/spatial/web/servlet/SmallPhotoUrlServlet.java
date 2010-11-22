@@ -66,14 +66,14 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		if (areaid == null || areaid.equals("") || page == null || Integer.parseInt(page) < 1 || pageSize == null || Integer.parseInt(pageSize) < 0 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
-			messageElement.setText("wrong input parameter!");
+			messageElement.setText("ERROR: wrong input parameter!");
 		} else {
 
 			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 
 			if(areaDto == null){
 				logger.error("doGet(HttpServletRequest, HttpServletResponse) - no areaDto in the session"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				messageElement.setText("Please make a query first.");
+				messageElement.setText("ERROR: Please make a query first.");
 			} else {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 

@@ -506,7 +506,9 @@ public class FlickrDeWestAreaMgr {
 			pointElement.setAttribute("lat", String.valueOf(a.getCenter().getY()));
 		}
 
-		XmlUtil.xml2File(document, filenamePrefix + ".xml", false);
+		if(filenamePrefix != null){
+			XmlUtil.xml2File(document, filenamePrefix + ".xml", false);
+		}
 
 		return XmlUtil.xml2String(document, false);
 	}

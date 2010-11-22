@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Properties;
@@ -44,6 +45,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static final int NUM_THREAD = 6;
 	static final int MAX_NUM_RETRY = 500;
 
+	static Calendar beginDateLimit = Calendar.getInstance();
 	static int numReTry = 0;
 	static long numPeople = 0;
 	static long numPhoto = 0;
@@ -191,7 +193,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			for (int i = 0; i < photolist.size(); i++) {
 				Photo p = (Photo) photolist.get(i);
-				if (p.getGeoData() != null && checkLocation(p.getGeoData())) {
+				if (!p.getDateTaken().before(beginDateLimit.getTime()) && p.getGeoData() != null && checkLocation(p.getGeoData())) {
 //					PlacesInterface placeI = flickr.getPlacesInterface();
 //					System.out.println(p.getId() + ":" + p.getDateTaken() + ":" + p.getGeoData() + ":" + p.getDescription() + ":" + p.getPlaceId() + ":" + p.getWoeId());
 //					System.out.println("place_id:" + p.getPlaceId());
@@ -275,7 +277,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	public static void main(String[] args) {
 
-
+		beginDateLimit.set(2005, 00, 01);
 		for (int i = 0; i < NUM_THREAD; i++) {
 			PublicPhotoMultiCrawler crawler = new PublicPhotoMultiCrawler();
 			crawler.start();
