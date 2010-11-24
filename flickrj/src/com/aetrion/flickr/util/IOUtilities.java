@@ -26,6 +26,8 @@ public class IOUtilities {
                 s.close();
             } catch (IOException e) {
 
+            } finally{
+            	s = null;
             }
         }
     }
@@ -36,6 +38,8 @@ public class IOUtilities {
                 s.close();
             } catch (IOException e) {
 
+            } finally{
+            	s = null;
             }
         }
     }
@@ -56,6 +60,8 @@ public class IOUtilities {
                 s.close();
             } catch (IOException e) {
 
+            } finally{
+            	s = null;
             }
         }
     }

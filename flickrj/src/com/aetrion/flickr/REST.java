@@ -155,6 +155,7 @@ public class REST extends Transport {
             throw new RuntimeException(e); // TODO: Replace with a better exception
         } finally {
             IOUtilities.close(in);
+            conn.disconnect();
         }
     }
 
@@ -213,7 +214,7 @@ public class REST extends Transport {
                     Iterator iter = parameters.iterator();
                     while (iter.hasNext()) {
                         Parameter p = (Parameter) iter.next();
-                        
+
                         writeParam(p.getName(), p.getValue(), out, boundary);
                     }
 /*                    Auth auth = requestContext.getAuth();
@@ -280,6 +281,7 @@ public class REST extends Transport {
                 throw new RuntimeException(e); // TODO: Replace with a better exception
             } finally {
                 IOUtilities.close(in);
+                conn.disconnect();
             }
         } finally {
             if (conn != null) {
