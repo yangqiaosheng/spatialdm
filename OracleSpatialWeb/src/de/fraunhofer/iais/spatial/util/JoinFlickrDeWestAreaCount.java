@@ -54,71 +54,6 @@ public class JoinFlickrDeWestAreaCount {
 		//				t.insert("Haolin",  "FLICKR_DE_WEST_TABLE_COUNT", "PERSON", "115", radiusString);
 	}
 
-	private void countHour(String radiusString) throws Exception {
-		Connection conn = db.getConn();
-		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_" + radiusString + " a");
-		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
-		String areaId = "";
-		int i = 0;
-		for (int l = 0; l < 0; l++) {
-			selectAreaRs.next(); //skip
-		}
-		while (selectAreaRs.next()) {
-			StringBuffer hourCount = new StringBuffer();
-			areaId = selectAreaRs.getString("id");
-			STRUCT st = (oracle.sql.STRUCT) selectAreaRs.getObject("geom");
-			// convert STRUCT into geometry
-			JGeometry j_geom = JGeometry.load(st);
-			double mbrX1 = j_geom.getMBR()[0];
-			double mbrY1 = j_geom.getMBR()[1];
-			double mbrX2 = j_geom.getMBR()[2];
-			double mbrY2 = j_geom.getMBR()[3];
-			System.out.println("area id:" + areaId + "mbr:" + mbrX1 + ":" + mbrY1 + ":" + mbrX2 + ":" + mbrY2);
-
-			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select DISTINCT to_char(dt,'yyyy-MM-dd@HH24') d from FLICKR_DE_WEST_TABLE where longitude > ? and longitude < ? and latitude > ? and latitude < ? order by d");
-			selectFlickrStmt.setDouble(1, mbrX1);
-			selectFlickrStmt.setDouble(2, mbrX2);
-			selectFlickrStmt.setDouble(3, mbrY1);
-			selectFlickrStmt.setDouble(4, mbrY2);
-			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
-
-			for (int j = 0; selectFlickrRs.next(); j++) {
-				String date = selectFlickrRs.getString("d");
-				PreparedStatement joinStmt = db.getPstmt(conn, "select count(*) num " + "from FLICKR_DE_WEST_TABLE_" + radiusString
-						+ " t, (select * from flickr_de_west_table f where f.longitude > ? and f.longitude < ? and f.latitude > ? and f.latitude < ? and  f.dt >= to_date(?,'yyyy-MM-dd@HH24:mi:ss') and f.dt <= to_date(?,'yyyy-MM-dd@HH24:mi:ss')) f2"
-						+ " WHERE t.id=?  and sdo_relate(t.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(f2.longitude, f2.latitude, NULL),NULL,NULL),'mask=anyinteract,querytype=join') = 'TRUE'");
-				joinStmt.setDouble(1, mbrX1);
-				joinStmt.setDouble(2, mbrX2);
-				joinStmt.setDouble(3, mbrY1);
-				joinStmt.setDouble(4, mbrY2);
-				joinStmt.setString(5, date + ":00:00");
-				joinStmt.setString(6, date + ":59:59");
-				joinStmt.setString(7, areaId);
-				ResultSet joinRs = db.getRs(joinStmt);
-				if (joinRs.next()) {
-					int num = joinRs.getInt("num");
-					i += num;
-					String info = date + ":" + num + ";";
-					System.out.println(info);
-					if (num != 0) {
-						hourCount.append(info);
-					}
-				}
-				System.out.println("hour i:" + i + " radius: " + radiusString + " escaped time:" + (System.currentTimeMillis() - start) / 1000.0);
-				joinRs.close();
-				joinStmt.close();
-			}
-			System.out.println(hourCount);
-			insert(hourCount.toString(), "FLICKR_DE_WEST_TABLE_COUNT", "HOUR", areaId, radiusString);
-			selectFlickrRs.close();
-			selectFlickrStmt.close();
-		}
-
-		selectAreaRs.close();
-		selectAreaStmt.close();
-		conn.close();
-	}
-
 	private void countPerson(String radiusString) throws Exception {
 		Connection conn = db.getConn();
 		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_" + radiusString + " a");
@@ -178,6 +113,71 @@ public class JoinFlickrDeWestAreaCount {
 			selectFlickrStmt.close();
 		}
 
+		selectAreaRs.close();
+		selectAreaStmt.close();
+		conn.close();
+	}
+
+	private void countHour(String radiusString) throws Exception {
+		Connection conn = db.getConn();
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select * from FLICKR_DE_WEST_TABLE_" + radiusString + " a");
+		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
+		String areaId = "";
+		int i = 0;
+		for (int l = 0; l < 0; l++) {
+			selectAreaRs.next(); //skip
+		}
+		while (selectAreaRs.next()) {
+			StringBuffer hourCount = new StringBuffer();
+			areaId = selectAreaRs.getString("id");
+			STRUCT st = (oracle.sql.STRUCT) selectAreaRs.getObject("geom");
+			// convert STRUCT into geometry
+			JGeometry j_geom = JGeometry.load(st);
+			double mbrX1 = j_geom.getMBR()[0];
+			double mbrY1 = j_geom.getMBR()[1];
+			double mbrX2 = j_geom.getMBR()[2];
+			double mbrY2 = j_geom.getMBR()[3];
+			System.out.println("area id:" + areaId + "mbr:" + mbrX1 + ":" + mbrY1 + ":" + mbrX2 + ":" + mbrY2);
+	
+			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select DISTINCT to_char(dt,'yyyy-MM-dd@HH24') d from FLICKR_DE_WEST_TABLE where longitude > ? and longitude < ? and latitude > ? and latitude < ? order by d");
+			selectFlickrStmt.setDouble(1, mbrX1);
+			selectFlickrStmt.setDouble(2, mbrX2);
+			selectFlickrStmt.setDouble(3, mbrY1);
+			selectFlickrStmt.setDouble(4, mbrY2);
+			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
+	
+			for (int j = 0; selectFlickrRs.next(); j++) {
+				String date = selectFlickrRs.getString("d");
+				PreparedStatement joinStmt = db.getPstmt(conn, "select count(*) num " + "from FLICKR_DE_WEST_TABLE_" + radiusString
+						+ " t, (select * from flickr_de_west_table f where f.longitude > ? and f.longitude < ? and f.latitude > ? and f.latitude < ? and  f.dt >= to_date(?,'yyyy-MM-dd@HH24:mi:ss') and f.dt <= to_date(?,'yyyy-MM-dd@HH24:mi:ss')) f2"
+						+ " WHERE t.id=?  and sdo_relate(t.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(f2.longitude, f2.latitude, NULL),NULL,NULL),'mask=anyinteract,querytype=join') = 'TRUE'");
+				joinStmt.setDouble(1, mbrX1);
+				joinStmt.setDouble(2, mbrX2);
+				joinStmt.setDouble(3, mbrY1);
+				joinStmt.setDouble(4, mbrY2);
+				joinStmt.setString(5, date + ":00:00");
+				joinStmt.setString(6, date + ":59:59");
+				joinStmt.setString(7, areaId);
+				ResultSet joinRs = db.getRs(joinStmt);
+				if (joinRs.next()) {
+					int num = joinRs.getInt("num");
+					i += num;
+					String info = date + ":" + num + ";";
+					System.out.println(info);
+					if (num != 0) {
+						hourCount.append(info);
+					}
+				}
+				System.out.println("hour i:" + i + " radius: " + radiusString + " escaped time:" + (System.currentTimeMillis() - start) / 1000.0);
+				joinRs.close();
+				joinStmt.close();
+			}
+			System.out.println(hourCount);
+			insert(hourCount.toString(), "FLICKR_DE_WEST_TABLE_COUNT", "HOUR", areaId, radiusString);
+			selectFlickrRs.close();
+			selectFlickrStmt.close();
+		}
+	
 		selectAreaRs.close();
 		selectAreaStmt.close();
 		conn.close();

@@ -30,28 +30,29 @@ public class JoinFlickrEuropeAreaCount {
 		JoinFlickrEuropeAreaCount t = new JoinFlickrEuropeAreaCount();
 
 		ArrayList<String> radiusList = new ArrayList<String>();
-		radiusList.add("5000");
-		radiusList.add("10000");
-		radiusList.add("20000");
-		radiusList.add("40000");
-		radiusList.add("80000");
-		radiusList.add("160000");
-		radiusList.add("320000");
-		for (String radius : radiusList) {
-			t.count(QueryLevel.HOUR, radius);
-			t.count(QueryLevel.DAY, radius);
-			t.count(QueryLevel.MONTH, radius);
-			t.count(QueryLevel.YEAR, radius);
-			t.countPeople(radius);
-			t.countTotal();
-		}
+//		radiusList.add("5000");
+//		radiusList.add("10000");
+//		radiusList.add("20000");
+//		radiusList.add("40000");
+//		radiusList.add("80000");
+//		radiusList.add("160000");
+//		radiusList.add("320000");
+//		for (String radius : radiusList) {
+//			t.count(QueryLevel.HOUR, radius);
+//			t.count(QueryLevel.DAY, radius);
+//			t.count(QueryLevel.MONTH, radius);
+//			t.count(QueryLevel.YEAR, radius);
+//			t.countPeople(radius);
+//			t.countTotal();
+//		}
+
 //		t.countPeople("5000");
 //		t.countTotal();
 
-		//		t.countDay();
-		//		t.countMonth();
-		//		t.countYear();
-		//		t.countTotal();
+				t.countDay();
+				t.countMonth();
+				t.countYear();
+				t.countTotal();
 		//
 		//		t.countPerson("80000");
 		//		t.countPerson("40000");
@@ -83,8 +84,9 @@ public class JoinFlickrEuropeAreaCount {
 			StringBuffer count = new StringBuffer();
 			areaId = selectAreaRs.getInt("id");
 
-			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select DISTINCT(to_char(dt,?)) d from day_flickr_europe e, day_flickr_europe_geom t" + " where e.photo_id = t.photo_id and t.region_" + radiusString
-					+ "_id = ? and e.dt >= to_date('2005-01-01','yyyy-MM-dd')" + " order by d");
+			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select DISTINCT(to_char(dt,?)) d from day_flickr_europe_photo p" +
+					" where p.region_" + radiusString
+					+ "_id = ? and p.dt >= to_date('2005-01-01','yyyy-MM-dd')" + " order by d");
 			selectFlickrStmt.setString(1, oracleDatePatternStr);
 			selectFlickrStmt.setInt(2, areaId);
 
@@ -92,8 +94,9 @@ public class JoinFlickrEuropeAreaCount {
 
 			for (int j = 0; selectFlickrRs.next(); j++) {
 				String date = selectFlickrRs.getString("d");
-				PreparedStatement joinStmt = db.getPstmt(conn, "select count(*) num from day_flickr_europe e, day_flickr_europe_geom t" + " where e.photo_id = t.photo_id and t.region_" + radiusString + "_id = ? and"
-						+ " e.dt >= to_date(?,?) and e.dt < to_date(?,?) + interval '1' " + queryLevel.toString());
+				PreparedStatement joinStmt = db.getPstmt(conn, "select count(*) num from day_flickr_europe_photo p"
+						+ " where p.region_" + radiusString + "_id = ? and"
+						+ " p.dt >= to_date(?,?) and p.dt < to_date(?,?) + interval '1' " + queryLevel.toString());
 
 				joinStmt.setInt(1, areaId);
 				joinStmt.setString(2, date);
@@ -132,15 +135,15 @@ public class JoinFlickrEuropeAreaCount {
 
 	private void countPeople(String radiusString) throws Exception {
 		Connection conn = db.getConn();
-		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from day_flickr_europe e, day_flickr_europe_geom t" + " where e.photo_id = t.photo_id");
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(p.region_" + radiusString + "_id) id from DAY_FLICKR_EUROPE_PHOTO p");
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 		int areaId = -1;
 		while (selectAreaRs.next()) {
 			StringBuffer count = new StringBuffer();
 			areaId = selectAreaRs.getInt("id");
 
-			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select e.person person, count(*) num  from day_flickr_europe e, day_flickr_europe_geom t" + " where e.photo_id = t.photo_id and t.region_" + radiusString
-					+ "_id = ? and e.dt >= to_date('2005-01-01','yyyy-MM-dd')" + " group by e.person");
+			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select p.person person, count(*) num  from DAY_FLICKR_EUROPE_PHOTO p"
+					+ " where p.region_" + radiusString	+ "_id = ? and p.dt >= to_date('2005-01-01','yyyy-MM-dd')" + " group by p.person");
 			selectFlickrStmt.setInt(1, areaId);
 
 			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
@@ -231,7 +234,175 @@ public class JoinFlickrEuropeAreaCount {
 		conn.close();
 	}
 
+
+	private void countDay() throws Exception {
+		Connection conn = db.getConn();
+
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from DAY_FLICKR_EUROPE_COUNT");
+		ResultSet pset = db.getRs(personStmt);
+
+		while (pset.next()) {
+			String id = pset.getString("id");
+			String radius = pset.getString("radius");
+			String hourStr = pset.getString("hour");
+			StringBuffer dayStr = new StringBuffer();
+			if (hourStr != null) {
+				//person:28507282@N03
+				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})@\\d{2}:(\\d{1,});");
+				Matcher m = p.matcher(hourStr);
+				String day = "";
+				int hour = 0;
+				while (m.find()) {
+					if (m.group(1).equals(day)) {
+						hour += Integer.parseInt(m.group(2));
+					} else {
+						if (!day.equals("")) {
+							dayStr.append(day + ":" + hour + ";");
+						}
+						day = m.group(1);
+						hour = Integer.parseInt(m.group(2));
+					}
+				}
+				if (!day.equals("")) {
+					dayStr.append(day + ":" + hour + ";");
+				}
+				PreparedStatement iStmt = db.getPstmt(conn, "update DAY_FLICKR_EUROPE_COUNT set day = ? where id = ? and radius = ?");
+				iStmt.setString(1, dayStr.toString());
+				iStmt.setString(2, id);
+				iStmt.setString(3, radius);
+				iStmt.executeUpdate();
+				iStmt.close();
+				System.out.println("id:" + id + "!" + dayStr);
+			}
+		}
+		pset.close();
+		personStmt.close();
+		conn.close();
+	}
+
+	private void countMonth() throws Exception {
+		Connection conn = db.getConn();
+
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from DAY_FLICKR_EUROPE_COUNT");
+		ResultSet pset = db.getRs(personStmt);
+
+		while (pset.next()) {
+			String id = pset.getString("id");
+			String hourStr = pset.getString("hour");
+			String radius = pset.getString("radius");
+			StringBuffer monthStr = new StringBuffer();
+			if (hourStr != null) {
+				//person:28507282@N03
+				Pattern p = Pattern.compile("(\\d{4}-\\d{2})-\\d{2}@\\d{2}:(\\d{1,});");
+				Matcher m = p.matcher(hourStr);
+				String month = "";
+				int hour = 0;
+				while (m.find()) {
+					if (m.group(1).equals(month)) {
+						hour += Integer.parseInt(m.group(2));
+					} else {
+						if (!month.equals("")) {
+							monthStr.append(month + ":" + hour + ";");
+						}
+						month = m.group(1);
+						hour = Integer.parseInt(m.group(2));
+					}
+				}
+				if (!month.equals("")) {
+					monthStr.append(month + ":" + hour + ";");
+				}
+				PreparedStatement iStmt = db.getPstmt(conn, "update DAY_FLICKR_EUROPE_COUNT set month = ? where id = ? and radius = ?");
+				iStmt.setString(1, monthStr.toString());
+				iStmt.setString(2, id);
+				iStmt.setString(3, radius);
+				iStmt.executeUpdate();
+				iStmt.close();
+				System.out.println("id:" + id + "!" + monthStr);
+			}
+		}
+		pset.close();
+		personStmt.close();
+		conn.close();
+	}
+
+	private void countYear() throws Exception {
+		Connection conn = db.getConn();
+
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from DAY_FLICKR_EUROPE_COUNT");
+		ResultSet pset = db.getRs(personStmt);
+
+		while (pset.next()) {
+			String id = pset.getString("id");
+			String hourStr = pset.getString("hour");
+			String radius = pset.getString("radius");
+			StringBuffer yearStr = new StringBuffer();
+			if (hourStr != null) {
+				//person:28507282@N03
+				Pattern p = Pattern.compile("(\\d{4})-\\d{2}-\\d{2}@\\d{2}:(\\d{1,});");
+				Matcher m = p.matcher(hourStr);
+				String year = "";
+				int hour = 0;
+				while (m.find()) {
+					if (m.group(1).equals(year)) {
+						hour += Integer.parseInt(m.group(2));
+					} else {
+						if (!year.equals("")) {
+							yearStr.append(year + ":" + hour + ";");
+						}
+						year = m.group(1);
+						hour = Integer.parseInt(m.group(2));
+					}
+				}
+				if (!year.equals("")) {
+					yearStr.append(year + ":" + hour + ";");
+				}
+				PreparedStatement iStmt = db.getPstmt(conn, "update DAY_FLICKR_EUROPE_COUNT set year = ? where id = ? and radius = ?");
+				iStmt.setString(1, yearStr.toString());
+				iStmt.setString(2, id);
+				iStmt.setString(3, radius);
+				iStmt.executeUpdate();
+				iStmt.close();
+				System.out.println("id:" + id + "!" + yearStr);
+			}
+		}
+		pset.close();
+		personStmt.close();
+		conn.close();
+	}
+
 	private void countTotal() throws Exception {
+		Connection conn = db.getConn();
+
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from DAY_FLICKR_EUROPE_COUNT");
+		ResultSet pset = db.getRs(personStmt);
+
+		while (pset.next()) {
+			String id = pset.getString("id");
+			String hourStr = pset.getString("hour");
+			String radius = pset.getString("radius");
+			if (hourStr != null) {
+				//person:28507282@N03
+				Pattern p = Pattern.compile("\\d{4}-\\d{2}-\\d{2}@\\d{2}:(\\d{1,});");
+				Matcher m = p.matcher(hourStr);
+				int hour = 0;
+				while (m.find()) {
+					hour += Integer.parseInt(m.group(1));
+				}
+
+				PreparedStatement iStmt = db.getPstmt(conn, "update DAY_FLICKR_EUROPE_COUNT set total = ? where id = ? and radius = ?");
+				iStmt.setInt(1, hour);
+				iStmt.setString(2, id);
+				iStmt.setString(3, radius);
+				iStmt.executeUpdate();
+				iStmt.close();
+			}
+		}
+		pset.close();
+		personStmt.close();
+		conn.close();
+	}
+
+	private void countTotalNew() throws Exception {
 		Connection conn = db.getConn();
 
 		PreparedStatement personStmt = db.getPstmt(conn, "select * from day_flickr_europe_count");
@@ -327,19 +498,11 @@ public class JoinFlickrEuropeAreaCount {
 		}
 	}
 
-	private void groupPhotos() throws SQLException {
+	private void groupPhotos(List<String> radiuses) throws SQLException {
 		int i = 0;
-		List<String> radiuses = new ArrayList<String>();
-		radiuses.add("5000");
-		radiuses.add("10000");
-		radiuses.add("20000");
-		radiuses.add("40000");
-		radiuses.add("80000");
-		radiuses.add("160000");
-		radiuses.add("320000");
 
 		Connection conn = db.getConn();
-		PreparedStatement pstmt1 = db.getPstmt(conn, "select e.PHOTO_ID, LONGITUDE, LATITUDE from DAY_FLICKR_EUROPE e, DAY_FLICKR_EUROPE_GEOM g where e.PHOTO_ID = g.PHOTO_ID and g.region_5000_id is NULL");
+		PreparedStatement pstmt1 = db.getPstmt(conn, "select e.PHOTO_ID, LONGITUDE, LATITUDE from DAY_FLICKR_EUROPE_PHOTO p where p.region_5000_id is NULL");
 		ResultSet rs1 = db.getRs(pstmt1);
 		while (rs1.next()) {
 			double x = rs1.getDouble("LONGITUDE");
@@ -351,7 +514,7 @@ public class JoinFlickrEuropeAreaCount {
 				pstmt2.setDouble(2, y);
 				ResultSet rs2 = db.getRs(pstmt2);
 				if (rs2.next()) {
-					PreparedStatement pstmt3 = db.getPstmt(conn, "update DAY_FLICKR_EUROPE_GEOM set REGION_" + radius + "_ID = ? where PHOTO_ID = ?");
+					PreparedStatement pstmt3 = db.getPstmt(conn, "update DAY_FLICKR_EUROPE_PHOTO set REGION_" + radius + "_ID = ? where PHOTO_ID = ?");
 					pstmt3.setString(1, rs2.getString("ID"));
 					pstmt3.setString(2, rs1.getString("PHOTO_ID"));
 					pstmt3.executeUpdate();
