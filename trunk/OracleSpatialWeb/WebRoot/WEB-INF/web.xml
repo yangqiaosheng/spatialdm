@@ -42,6 +42,23 @@
 		<param-value>/WEB-INF/classes/beans.xml, /WEB-INF/classes/schedulingContext-timer.xml</param-value>
 	</context-param>
 
+
+	<!--
+		- JavaMelody configuration
+	-->
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+
+
 	<!--
 		- Load the Log4J configuration
 	-->
@@ -103,7 +120,7 @@
 		<servlet-name>ZoomedKml</servlet-name>
 		<url-pattern>/RequestKml</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description>Retrieve the data to create a kml with different zoom levels</description>
 		<display-name>SpatialXml</display-name>

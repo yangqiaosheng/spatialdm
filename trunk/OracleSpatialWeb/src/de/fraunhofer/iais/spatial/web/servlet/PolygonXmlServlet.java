@@ -60,13 +60,10 @@ public class PolygonXmlServlet extends HttpServlet {
 		if (xml == null || xml.equals("")) {
 			messageElement.setText("ERROR: wrong input parameter!");
 			responseStr = XmlUtil.xml2String(document, true);
-		} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
-			messageElement.setText("ERROR: please do a query first!");
-			responseStr = XmlUtil.xml2String(document, true);
 		} else {
 
 			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
-			if("true".equals(persist)){
+			if("true".equals(persist) && request.getSession().getAttribute("areaDto") != null){
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true" );
 				areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 			}
@@ -89,8 +86,7 @@ public class PolygonXmlServlet extends HttpServlet {
 				}
 				areaMgr.count(as, areaDto);
 				responseStr = areaMgr.createXml(as, null, areaDto.getRadius());
-
-				messageElement.setText("SUCCESS");
+				request.getSession().setAttribute("areaDto", areaDto);
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");

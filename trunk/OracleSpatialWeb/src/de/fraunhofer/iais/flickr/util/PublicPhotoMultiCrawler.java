@@ -44,6 +44,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static final int pageSize = 500;
 	static final int NUM_THREAD = 6;
 	static final int MAX_NUM_RETRY = 500;
+	static final int MAX_TITLE_LENGTH = 300;
 
 	static Calendar beginDateLimit = Calendar.getInstance();
 	static int numReTry = 0;
@@ -239,7 +240,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			pstmt.setString(i++, formatter.format(photo.getDateTaken()));
 			pstmt.setInt(i++, photo.getViews());
-			pstmt.setString(i++, photo.getTitle());
+			String title = photo.getTitle();
+			if(title.length() > MAX_TITLE_LENGTH){
+				title = title.substring(0, MAX_TITLE_LENGTH);
+			}
+			pstmt.setString(i++, title);
 			pstmt.setString(i++, photo.getSmallUrl());
 
 			pstmt.executeUpdate();
