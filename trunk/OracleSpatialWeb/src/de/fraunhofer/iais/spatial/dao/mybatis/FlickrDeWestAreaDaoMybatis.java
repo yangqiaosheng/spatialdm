@@ -275,8 +275,11 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		int num = (Integer) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".totalCount", areaDto);
-
+		Object numObj = sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".totalCount", areaDto);
+		int num = 0;
+		if(numObj != null){
+			num = (Integer)numObj;
+		}
 		return num;
 	}
 
