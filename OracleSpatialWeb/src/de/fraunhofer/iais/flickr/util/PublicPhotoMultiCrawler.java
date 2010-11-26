@@ -194,7 +194,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			for (int i = 0; i < photolist.size(); i++) {
 				Photo p = (Photo) photolist.get(i);
-				if (!p.getDateTaken().before(beginDateLimit.getTime()) && p.getGeoData() != null && checkLocation(p.getGeoData())) {
+				if (!p.getDateTaken().before(beginDateLimit.getTime()) && !p.getDateTaken().after(new Date()) && p.getGeoData() != null && checkLocation(p.getGeoData())) {
 //					PlacesInterface placeI = flickr.getPlacesInterface();
 //					System.out.println(p.getId() + ":" + p.getDateTaken() + ":" + p.getGeoData() + ":" + p.getDescription() + ":" + p.getPlaceId() + ":" + p.getWoeId());
 //					System.out.println("place_id:" + p.getPlaceId());

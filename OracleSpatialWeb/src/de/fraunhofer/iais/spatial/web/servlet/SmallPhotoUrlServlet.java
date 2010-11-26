@@ -38,6 +38,11 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 	private static FlickrDeWestAreaMgr areaMgr = null;
 
 
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doGet(req, resp);
+	}
+
 	/**
 		 * The doGet method of the servlet. <br>
 		 *
