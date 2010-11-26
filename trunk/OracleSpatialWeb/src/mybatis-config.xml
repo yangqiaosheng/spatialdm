@@ -26,7 +26,15 @@
 				<property name="password" value="${password}" />
 			</dataSource>
 		</environment>
+
+		<environment id="deployment">
+			<transactionManager type="JDBC" />
+			<dataSource type="JNDI">
+				<property name="data_source" value="java:comp/env/jdbc/OracleCP" />
+			</dataSource>
+		</environment>
 	</environments>
+
 	<mappers>
 		<!--		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Milanpoly.xml" />-->
 		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Area.xml" />
