@@ -100,19 +100,19 @@ public class PublicPhotoMultiCrawler extends Thread {
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 		 */
 
-		PeopleInterface peopleInterface = null;
-		try {
-			sleep(id * 1000);
-			peopleInterface = init(this.getName());
-		} catch (Exception e) {
-			logger.error("main(String[])", e); //$NON-NLS-1$
-		}
+//		PeopleInterface peopleInterface = null;
+//		try {
+//			sleep(id * 1000);
+//			peopleInterface = init(this.getName());
+//		} catch (Exception e) {
+//			logger.error("main(String[])", e); //$NON-NLS-1$
+//		}
 
 		while (getNumReTry() <= MAX_NUM_RETRY) {
 
 			try {
+				PeopleInterface peopleInterface = init(this.getName());
 				selectPeople(id, peopleInterface);
-
 			} catch (Exception e) {
 				logger.error("main(String[])", e); //$NON-NLS-1$
 			} finally {
@@ -129,11 +129,12 @@ public class PublicPhotoMultiCrawler extends Thread {
 			}
 
 			try {
-				sleep(30 * 1000);
+				sleep(300 * 1000);
 			} catch (InterruptedException e) {
 				logger.error("main(String[])", e); //$NON-NLS-1$
+			} finally{
+				increaseNumReTry();
 			}
-			increaseNumReTry();
 		}
 	}
 
