@@ -7,12 +7,9 @@ import java.io.FileReader;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -27,21 +24,16 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
-import de.fraunhofer.iais.spatial.web.servlet.SmallPhotoUrlServlet;
 
 @ContextConfiguration("classpath:beans.xml")
 public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
@@ -217,70 +209,70 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-		public void testPhoto5() {
-			long start = System.currentTimeMillis();
+	public void testPhoto5() {
+		long start = System.currentTimeMillis();
 
-			TreeSet<String> hours = new TreeSet<String>();
-			hours.add("2007-08-11@13");
-			hours.add("2007-08-11@11");
-			hours.add("2007-05-09@13");
-	//
-			for (int i = 2005; i < 2010; i++) {
-				for (int j = 10; j <= 12; j++) {
-					for (int k = 10; k < 30; k++) {
-						for (int l = 10; l < 24; l++) {
-							hours.add(i + "-" + j + "-" + k + "@" + l);
-						}
+		TreeSet<String> hours = new TreeSet<String>();
+		hours.add("2007-08-11@13");
+		hours.add("2007-08-11@11");
+		hours.add("2007-05-09@13");
+		//
+		for (int i = 2005; i < 2010; i++) {
+			for (int j = 10; j <= 12; j++) {
+				for (int k = 10; k < 30; k++) {
+					for (int l = 10; l < 24; l++) {
+						hours.add(i + "-" + j + "-" + k + "@" + l);
 					}
 				}
 			}
-	//
-	//		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
-	//		for (FlickrDeWestPhoto p : photos) {
-	//			System.out.println(p);
-	//		}
-	//
-	//		List<FlickrDeWestPhoto> photos2 = areaMgr.getAreaDao().getPhotos(1, Radius.R40000, hours, 20);
-	//		for (FlickrDeWestPhoto p : photos2) {
-	//			System.out.println(p);
-	//		}
+		}
+		//
+		//		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
+		//		for (FlickrDeWestPhoto p : photos) {
+		//			System.out.println(p);
+		//		}
+		//
+		//		List<FlickrDeWestPhoto> photos2 = areaMgr.getAreaDao().getPhotos(1, Radius.R40000, hours, 20);
+		//		for (FlickrDeWestPhoto p : photos2) {
+		//			System.out.println(p);
+		//		}
 
-			List<FlickrDeWestPhoto> photos3 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, 1, 90);
-			for (int i = 0 ; i< photos3.size(); i++) {
-				FlickrDeWestPhoto p = photos3.get(i);
-				System.out.println(p);
-			}
+		List<FlickrDeWestPhoto> photos3 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, 1, 90);
+		for (int i = 0; i < photos3.size(); i++) {
+			FlickrDeWestPhoto p = photos3.get(i);
+			System.out.println(p);
+		}
 
-			int page = 3;
-			int pageSize = 5;
-			List<FlickrDeWestPhoto> photos32 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, page, pageSize);
-			for (int i = 0 ; i< photos32.size(); i++) {
-				FlickrDeWestPhoto p = photos32.get(i);
+		int page = 3;
+		int pageSize = 5;
+		List<FlickrDeWestPhoto> photos32 = areaMgr.getAreaDao().getPhotos(4, Radius.R5000, hours, page, pageSize);
+		for (int i = 0; i < photos32.size(); i++) {
+			FlickrDeWestPhoto p = photos32.get(i);
 			System.out.println(p);
 			Assert.assertEquals(photos3.get((page - 1) * pageSize + i).getId(), p.getId());
 		}
 
-	//		List<FlickrDeWestPhoto> photos4 = areaMgr.getAreaDao().getPhotos(1, Radius.R10000, hours, 20);
-	//		for (FlickrDeWestPhoto p : photos4) {
-	//			System.out.println(p);
-	//		}
-	//
-	//		List<FlickrDeWestPhoto> photos5 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, hours, 20);
-	//		for (FlickrDeWestPhoto p : photos5) {
-	//			System.out.println(p);
-	//		}
+		//		List<FlickrDeWestPhoto> photos4 = areaMgr.getAreaDao().getPhotos(1, Radius.R10000, hours, 20);
+		//		for (FlickrDeWestPhoto p : photos4) {
+		//			System.out.println(p);
+		//		}
+		//
+		//		List<FlickrDeWestPhoto> photos5 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, hours, 20);
+		//		for (FlickrDeWestPhoto p : photos5) {
+		//			System.out.println(p);
+		//		}
 
-	//		TreeSet<String> years = new TreeSet<String>();
-	//		years.add("2007");
-	//		years.add("2009");
-	//		years.add("2006");
-	//		List<FlickrDeWestPhoto> photos6 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, years, 20);
-	//		for (FlickrDeWestPhoto p : photos6) {
-	//			System.out.println(p);
-	//		}
+		//		TreeSet<String> years = new TreeSet<String>();
+		//		years.add("2007");
+		//		years.add("2009");
+		//		years.add("2006");
+		//		List<FlickrDeWestPhoto> photos6 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, years, 20);
+		//		for (FlickrDeWestPhoto p : photos6) {
+		//			System.out.println(p);
+		//		}
 
-			System.out.println(System.currentTimeMillis() - start);
-		}
+		System.out.println(System.currentTimeMillis() - start);
+	}
 
 	@Test
 	public void testPhotoXml() {
@@ -302,14 +294,13 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 		}
 		System.out.println(photosResponseXml(1, Radius.R10000, hours, 100));
 	}
+
 	private String photosResponseXml(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
 		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, 1, num);
-
 
 		Document document = new Document();
 		Element rootElement = new Element("photos");
 		document.setRootElement(rootElement);
-
 
 		int i = 1;
 		for (FlickrDeWestPhoto p : photos) {
