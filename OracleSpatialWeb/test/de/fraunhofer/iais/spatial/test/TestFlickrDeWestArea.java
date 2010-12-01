@@ -51,7 +51,7 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 
 	@BeforeClass
 	public static void initClass() {
-		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir"));
+		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir") + "/");
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 	}
 
@@ -86,7 +86,7 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 		FlickrDeWestArea a = areaMgr.getAreaDao().getAreaById(1, FlickrDeWestArea.Radius.R80000);
 
 		String coordinates = "\t";
-		if (a.getGeom().getOrdinatesArray() != null) {
+		if (a != null && a.getGeom().getOrdinatesArray() != null) {
 			for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
 				coordinates += a.getGeom().getOrdinatesArray()[i] + ", ";
 				if (i % 2 == 1) {
