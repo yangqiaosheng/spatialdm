@@ -86,7 +86,7 @@
 	<!-- Mybatis configuration -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="jndiDataSource" />
-		<property name="mapperLocations" value="classpath*:mybatis-config.xml" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	<bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
@@ -100,7 +100,7 @@
 		<property name="sessionTemplate" ref="sessionTemplate" />
 	</bean>
 	<bean id="flickrDeWestAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr">
-		<property name="areaDao" ref="flickrDeWestAreaDaoJdbcImpl" />
+		<property name="areaDao" ref="flickrDeWestAreaDaoMybatisImpl" />
 	</bean>
 
 </beans>
