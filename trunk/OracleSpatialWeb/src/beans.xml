@@ -52,34 +52,55 @@
 		<property name="username" value="${username}" />
 		<property name="password" value="${password}" />
 
-		<property name="maxConnectionsPerPartition" value="10" />
-		<property name="minConnectionsPerPartition" value="3" />
+		<property name="maxConnectionsPerPartition" value="3" />
+		<property name="minConnectionsPerPartition" value="1" />
 		<property name="partitionCount" value="3" />
+	</bean>
+
+	<!-- Oracle Implicit Connection Caching(ICC) DataSource configuration -->
+	<bean id="oracleIccDataSource" class="oracle.jdbc.pool.OracleDataSource" destroy-method="close">
+		<property name="connectionCachingEnabled" value="true" />
+		<property name="URL" value="${url}" />
+		<property name="user" value="${username}" />
+		<property name="password" value="${password}" />
+
+		<property name="connectionCacheProperties">
+			<props>
+				<prop key="MaxLimit">10</prop>
+				<prop key="MinLimit">3</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- JNDI DataSource configuration -->
+	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+      	<property name="jndiName" value="java:comp/env/jdbc/OracleCP"/>
+      	<property name="resourceRef" value="true" />
 	</bean>
 
 	<!-- DataSource Selector -->
 	<bean id="db" class="de.fraunhofer.iais.spatial.dao.jdbc.DB">
-		<property name="dataSource" ref="c3p0DataSource" />
+		<property name="dataSource" ref="oracleIccDataSource" />
 	</bean>
 
-
-	<!-- Area -->
-	<bean id="areaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.AreaDaoJdbc">
-		<property name="db" ref="db" />
+	<!-- Mybatis configuration -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="jndiDataSource" />
+		<property name="mapperLocations" value="classpath*:mybatis-config.xml" />
 	</bean>
-	<bean id="areaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.AreaDaoMybatis" />
-	<bean id="areaMgr" class="de.fraunhofer.iais.spatial.service.AreaMgr">
-		<property name="areaDao" ref="areaDaoJdbcImpl" />
+	<bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
-
 
 	<!-- FlickrDeWest -->
 	<bean id="flickrDeWestAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc">
 		<property name="db" ref="db" />
 	</bean>
-	<bean id="flickrDeWestAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrDeWestAreaDaoMybatis" />
+	<bean id="flickrDeWestAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrDeWestAreaDaoMybatis">
+		<property name="sessionTemplate" ref="sessionTemplate" />
+	</bean>
 	<bean id="flickrDeWestAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr">
-		<property name="areaDao" ref="flickrDeWestAreaDaoMybatisImpl" />
+		<property name="areaDao" ref="flickrDeWestAreaDaoJdbcImpl" />
 	</bean>
 
 </beans>

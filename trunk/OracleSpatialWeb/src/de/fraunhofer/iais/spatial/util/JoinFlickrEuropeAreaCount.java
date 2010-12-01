@@ -9,17 +9,14 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
-import de.fraunhofer.iais.spatial.dao.jdbc.DB;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
-
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
+import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
 
 public class JoinFlickrEuropeAreaCount {
 	static long start = System.currentTimeMillis();
