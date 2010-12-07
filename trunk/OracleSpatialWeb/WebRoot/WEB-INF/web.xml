@@ -2,7 +2,7 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
 	<display-name>OracleSpatialWeb</display-name>
-	
+
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
@@ -10,14 +10,14 @@
 	<session-config>
 		<session-timeout>300</session-timeout>
 	</session-config>
-	
+
 	<resource-ref>
-	    <description>Oracle Connection Pool</description>
-	    <res-ref-name>jdbc/OracleCP</res-ref-name>
-	    <res-type>javax.sql.DataSource</res-type>
-	    <res-auth>Container</res-auth>
-  	</resource-ref>
-	
+		<description>Oracle Connection Pool</description>
+		<res-ref-name>jdbc/OracleCP</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+
 
 	<mime-mapping>
 		<extension>kml</extension>
@@ -47,7 +47,11 @@
 	-->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/classes/beans.xml, /WEB-INF/classes/schedulingContext-timer.xml</param-value>
+		<param-value>
+			classpath:net/bull/javamelody/monitoring-spring.xml
+			classpath:beans.xml
+			classpath:schedulingContext-timer.xml
+	    </param-value>
 	</context-param>
 
 
@@ -57,6 +61,10 @@
 	<filter>
 		<filter-name>monitoring</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		<init-param>
+			<param-name>system-actions-enabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>monitoring</filter-name>
