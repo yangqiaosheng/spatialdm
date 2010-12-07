@@ -18,6 +18,8 @@ import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
+import com.aetrion.flickr.groups.members.Member;
+import com.aetrion.flickr.groups.members.MembersList;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
@@ -53,10 +55,10 @@ public class ContactsInterface {
      * @throws IOException
      * @throws SAXException
      */
-    public Collection getList() throws IOException, SAXException, FlickrException {
-        List contacts = new ArrayList();
+    public Collection<Contact> getList() throws IOException, SAXException, FlickrException {
+        List<Contact> contacts = new ArrayList<Contact>();
 
-        List parameters = new ArrayList();
+        List<Parameter> parameters = new ArrayList<Parameter>();
         parameters.add(new Parameter("method", METHOD_GET_LIST));
         parameters.add(new Parameter("api_key", apiKey));
         parameters.add(
@@ -106,11 +108,11 @@ public class ContactsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getListRecentlyUploaded(Date lastUpload, String filter)
+    public Collection<Contact> getListRecentlyUploaded(Date lastUpload, String filter)
       throws IOException, SAXException, FlickrException {
-        List contacts = new ArrayList();
+        List<Contact> contacts = new ArrayList<Contact>();
 
-        List parameters = new ArrayList();
+        List<Parameter> parameters = new ArrayList<Parameter>();
         parameters.add(new Parameter("method", METHOD_GET_LIST_RECENTLY_UPLOADED));
         parameters.add(new Parameter("api_key", apiKey));
 
@@ -167,38 +169,46 @@ public class ContactsInterface {
      * @throws SAXException
      * @throws FlickrException
      */
-    public Collection getPublicList(String userId) throws IOException, SAXException, FlickrException {
-        List contacts = new ArrayList();
+    public MembersList getPublicList(String userId, int perPage, int page) throws IOException, SAXException, FlickrException {
+    	MembersList members = new MembersList();
 
-        List parameters = new ArrayList();
+        List<Parameter> parameters = new ArrayList<Parameter>();
         parameters.add(new Parameter("method", METHOD_GET_PUBLIC_LIST));
         parameters.add(new Parameter("api_key", apiKey));
-
         parameters.add(new Parameter("user_id", userId));
+        if (perPage > 0) {
+            parameters.add(new Parameter("per_page", "" + perPage));
+        }
+        if (page > 0) {
+            parameters.add(new Parameter("page", "" + page));
+        }
 
         Response response = transportAPI.get(transportAPI.getPath(), parameters);
         if (response.isError()) {
             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
         }
 
-        Element contactsElement = response.getPayload();
-        NodeList contactNodes = contactsElement.getElementsByTagName("contact");
-        for (int i = 0; i < contactNodes.getLength(); i++) {
-            Element contactElement = (Element) contactNodes.item(i);
-            Contact contact = new Contact();
-            contact.setId(contactElement.getAttribute("nsid"));
-            contact.setUsername(contactElement.getAttribute("username"));
-            contact.setIgnored("1".equals(contactElement.getAttribute("ignored")));
-            contact.setOnline(OnlineStatus.fromType(contactElement.getAttribute("online")));
-            contact.setIconFarm(contactElement.getAttribute("iconfarm"));
-            contact.setIconServer(contactElement.getAttribute("iconserver"));
-            if (contact.getOnline() == OnlineStatus.AWAY) {
-                contactElement.normalize();
-                contact.setAwayMessage(XMLUtilities.getValue(contactElement));
-            }
-            contacts.add(contact);
+        Element mElement = response.getPayload();
+        members.setPage(mElement.getAttribute("page"));
+        members.setPages(mElement.getAttribute("pages"));
+        members.setPerPage(mElement.getAttribute("perpage"));
+        members.setTotal(mElement.getAttribute("total"));
+
+        NodeList mNodes = mElement.getElementsByTagName("contact");
+        for (int i = 0; i < mNodes.getLength(); i++) {
+            Element element = (Element) mNodes.item(i);
+            members.add(parseMember(element));
         }
-        return contacts;
+        return members;
+    }
+
+    private Member parseMember(Element mElement) {
+        Member member = new Member();
+        member.setId(mElement.getAttribute("nsid"));
+        member.setUserName(mElement.getAttribute("username"));
+        member.setIconServer(mElement.getAttribute("iconserver"));
+        member.setIconFarm(mElement.getAttribute("iconfarm"));
+        return member;
     }
 
 }
