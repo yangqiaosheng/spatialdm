@@ -15,57 +15,57 @@ package com.aetrion.flickr.photos.upload;
  * @version $Id: Ticket.java,v 1.2 2007/11/02 21:46:52 x-mago Exp $
  */
 public class Ticket {
-    public static final int UNCOMPLETED = 0;
-    public static final int COMPLETED = 1;
-    public static final int FAILED = 2;
+	public static final int UNCOMPLETED = 0;
+	public static final int COMPLETED = 1;
+	public static final int FAILED = 2;
 
-    private String ticketId;
-    private boolean invalid;
-    private String photoId;
-    private int status;
+	private String ticketId;
+	private boolean invalid;
+	private String photoId;
+	private int status;
 
-    public boolean isInvalid() {
-        return invalid;
-    }
+	public boolean isInvalid() {
+		return invalid;
+	}
 
-    public void setInvalid(boolean invalid) {
-        this.invalid = invalid;
-    }
+	public void setInvalid(boolean invalid) {
+		this.invalid = invalid;
+	}
 
-    public String getPhotoId() {
-        return photoId;
-    }
+	public String getPhotoId() {
+		return photoId;
+	}
 
-    public void setPhotoId(String photoId) {
-        this.photoId = photoId;
-    }
+	public void setPhotoId(String photoId) {
+		this.photoId = photoId;
+	}
 
-    public String getTicketId() {
-        return ticketId;
-    }
+	public String getTicketId() {
+		return ticketId;
+	}
 
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId;
-    }
+	public void setTicketId(String ticketId) {
+		this.ticketId = ticketId;
+	}
 
-    public int getStatus() {
-        return status;
-    }
+	public int getStatus() {
+		return status;
+	}
 
-    public void setStatus(int complete) {
-        this.status = complete;
-    }
+	public void setStatus(int complete) {
+		this.status = complete;
+	}
 
-    public boolean hasCompleted() {
-        return status == COMPLETED;
-    }
+	public boolean hasCompleted() {
+		return status == COMPLETED;
+	}
 
-    public boolean hasFailed() {
-        return status == FAILED;
-    }
+	public boolean hasFailed() {
+		return status == FAILED;
+	}
 
-    public boolean isBusy() {
-        return status == UNCOMPLETED;
-    }
+	public boolean isBusy() {
+		return status == UNCOMPLETED;
+	}
 
 }

@@ -16,54 +16,54 @@ import java.io.Writer;
  */
 public class IOUtilities {
 
-    private IOUtilities() {
+	private IOUtilities() {
 
-    }
+	}
 
-    public static void close(InputStream s) {
-        if (s != null) {
-            try {
-                s.close();
-            } catch (IOException e) {
+	public static void close(InputStream s) {
+		if (s != null) {
+			try {
+				s.close();
+			} catch (IOException e) {
 
-            } finally{
-            	s = null;
-            }
-        }
-    }
+			} finally {
+				s = null;
+			}
+		}
+	}
 
-    public static void close(OutputStream s) {
-        if (s != null) {
-            try {
-                s.close();
-            } catch (IOException e) {
+	public static void close(OutputStream s) {
+		if (s != null) {
+			try {
+				s.close();
+			} catch (IOException e) {
 
-            } finally{
-            	s = null;
-            }
-        }
-    }
+			} finally {
+				s = null;
+			}
+		}
+	}
 
-    public static void close(Reader s) {
-        if (s != null) {
-            try {
-                s.close();
-            } catch (IOException e) {
+	public static void close(Reader s) {
+		if (s != null) {
+			try {
+				s.close();
+			} catch (IOException e) {
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    public static void close(Writer s) {
-        if (s != null) {
-            try {
-                s.close();
-            } catch (IOException e) {
+	public static void close(Writer s) {
+		if (s != null) {
+			try {
+				s.close();
+			} catch (IOException e) {
 
-            } finally{
-            	s = null;
-            }
-        }
-    }
+			} finally {
+				s = null;
+			}
+		}
+	}
 
 }

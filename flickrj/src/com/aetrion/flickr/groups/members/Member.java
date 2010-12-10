@@ -11,60 +11,64 @@ public class Member {
 	private static final long serialVersionUID = 12L;
 
 	private String id;
-    private String userName;
-    private int iconFarm = -1;
-    private int iconServer = -1;
-    private String memberType;
+	private String userName;
+	private int iconFarm = -1;
+	private int iconServer = -1;
+	private String memberType;
 
-    public static final String TYPE_MEMBER = "2";
-    public static final String TYPE_MODERATOR = "3";
-    public static final String TYPE_ADMIN = "4";
+	public static final String TYPE_MEMBER = "2";
+	public static final String TYPE_MODERATOR = "3";
+	public static final String TYPE_ADMIN = "4";
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getUserName() {
-        return userName;
-    }
+	public String getUserName() {
+		return userName;
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
-    public int getIconFarm() {
-        return iconFarm;
-    }
+	public int getIconFarm() {
+		return iconFarm;
+	}
 
-    public void setIconFarm(String iconFarm) {
-        if (iconFarm != null) setIconFarm(Integer.parseInt(iconFarm));
-    }
+	public void setIconFarm(String iconFarm) {
+		if (iconFarm != null) {
+			setIconFarm(Integer.parseInt(iconFarm));
+		}
+	}
 
-    public void setIconFarm(int iconFarm) {
-        this.iconFarm = iconFarm;
-    }
+	public void setIconFarm(int iconFarm) {
+		this.iconFarm = iconFarm;
+	}
 
-    public int getIconServer() {
-        return iconServer;
-    }
+	public int getIconServer() {
+		return iconServer;
+	}
 
-    public void setIconServer(String iconServer) {
-        if (iconServer != null) setIconServer(Integer.parseInt(iconServer));
-    }
+	public void setIconServer(String iconServer) {
+		if (iconServer != null) {
+			setIconServer(Integer.parseInt(iconServer));
+		}
+	}
 
-    public void setIconServer(int iconServer) {
-        this.iconServer = iconServer;
-    }
+	public void setIconServer(int iconServer) {
+		this.iconServer = iconServer;
+	}
 
-    public String getMemberType() {
-        return memberType;
-    }
+	public String getMemberType() {
+		return memberType;
+	}
 
-    public void setMemberType(String memberType) {
-        this.memberType = memberType;
-    }
+	public void setMemberType(String memberType) {
+		this.memberType = memberType;
+	}
 }

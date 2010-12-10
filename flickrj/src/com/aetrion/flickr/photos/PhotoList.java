@@ -16,5 +16,4 @@ public class PhotoList extends SearchResultList {
 	// (avoid compiler warning)
 	private static final long serialVersionUID = -4735611134085303463L;
 
-
 }

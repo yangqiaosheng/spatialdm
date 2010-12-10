@@ -11,28 +11,29 @@ import java.util.Date;
  * @version $Id: Event.java,v 1.2 2007/07/22 16:18:20 x-mago Exp $
  */
 public class Event {
-    private String id;
-    private String type;
-    private String user;
-    private String username;
-    private String value;
-    private Date dateadded;
+	private String id;
+	private String type;
+	private String user;
+	private String username;
+	private String value;
+	private Date dateadded;
 
-    public Event() {
-    }
+	public Event() {
+	}
 
-    public Date getDateadded() {
-        return dateadded;
-    }
+	public Date getDateadded() {
+		return dateadded;
+	}
 
-    public void setDateadded(Date dateadded) {
-        this.dateadded = dateadded;
-    }
+	public void setDateadded(Date dateadded) {
+		this.dateadded = dateadded;
+	}
 
-    public void setDateadded(String dateAdded) {
-        if (dateAdded == null || "".equals(dateAdded)) return;
-        setDateadded(new Date(Long.parseLong(dateAdded) * (long) 1000));
-    }
+	public void setDateadded(String dateAdded) {
+		if (dateAdded == null || "".equals(dateAdded))
+			return;
+		setDateadded(new Date(Long.parseLong(dateAdded) * 1000));
+	}
 
 	public String getId() {
 		return id;

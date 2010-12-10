@@ -15,33 +15,36 @@ import java.io.OutputStream;
  */
 public class DebugOutputStream extends FilterOutputStream {
 
-    private OutputStream debugOut;
+	private OutputStream debugOut;
 
-    /**
-     * Creates a <code>FilterInputStream</code> by assigning the  argument <code>in</code> to the field
-     * <code>this.in</code> so as to remember it for later use.
-     *
-     * @param out the underlying output stream, or <code>null</code> if this instance is to be created without an
-     * underlying stream.
-     */
-    public DebugOutputStream(OutputStream out, OutputStream debugOut) {
-        super(out);
-        this.debugOut = debugOut;
-    }
+	/**
+	 * Creates a <code>FilterInputStream</code> by assigning the  argument <code>in</code> to the field
+	 * <code>this.in</code> so as to remember it for later use.
+	 *
+	 * @param out the underlying output stream, or <code>null</code> if this instance is to be created without an
+	 * underlying stream.
+	 */
+	public DebugOutputStream(OutputStream out, OutputStream debugOut) {
+		super(out);
+		this.debugOut = debugOut;
+	}
 
-    public void write(int b) throws IOException {
-        super.write(b);
-        debugOut.write((char) b);
-    }
+	@Override
+	public void write(int b) throws IOException {
+		super.write(b);
+		debugOut.write((char) b);
+	}
 
-    public void write(byte[] b) throws IOException {
-        super.write(b);
-        debugOut.write(b);
-    }
+	@Override
+	public void write(byte[] b) throws IOException {
+		super.write(b);
+		debugOut.write(b);
+	}
 
-    public void write(byte[] b, int offset, int length) throws IOException {
-        super.write(b, offset, length);
-        debugOut.write(b, offset, length);
-    }
+	@Override
+	public void write(byte[] b, int offset, int length) throws IOException {
+		super.write(b, offset, length);
+		debugOut.write(b, offset, length);
+	}
 
 }

@@ -11,34 +11,34 @@ import java.util.List;
  */
 public class TagRaw {
 	private static final long serialVersionUID = 12L;
-    String owner;
-    String clean;
-    List raw = new ArrayList();
+	String owner;
+	String clean;
+	List raw = new ArrayList();
 
-    public TagRaw() {
-    }
+	public TagRaw() {
+	}
 
-    public String getClean() {
-        return clean;
-    }
+	public String getClean() {
+		return clean;
+	}
 
-    public void setClean(String clean) {
-        this.clean = clean;
-    }
+	public void setClean(String clean) {
+		this.clean = clean;
+	}
 
-    public String getOwner() {
-        return owner;
-    }
+	public String getOwner() {
+		return owner;
+	}
 
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 
-    public List getRaw() {
-        return raw;
-    }
+	public List getRaw() {
+		return raw;
+	}
 
-    public void addRaw(String rawStr) {
-        raw.add(rawStr);
-    }
+	public void addRaw(String rawStr) {
+		raw.add(rawStr);
+	}
 }

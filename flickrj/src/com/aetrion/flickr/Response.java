@@ -14,15 +14,15 @@ import org.w3c.dom.Element;
  */
 public interface Response {
 
-    void parse(Document document);
+	void parse(Document document);
 
-    boolean isError();
+	boolean isError();
 
-    String getErrorCode();
+	String getErrorCode();
 
-    String getErrorMessage();
-    
-    Element getPayload();
-    
-    Collection getPayloadCollection();
+	String getErrorMessage();
+
+	Element getPayload();
+
+	Collection getPayloadCollection();
 }

@@ -11,17 +11,17 @@ import java.util.ArrayList;
  */
 public class Cluster {
 	private static final long serialVersionUID = 12L;
-    private ArrayList<Tag> tags = new ArrayList<Tag>();
+	private ArrayList<Tag> tags = new ArrayList<Tag>();
 
-    public void addTag(Tag tag) {
-        tags.add(tag);
-    }
+	public void addTag(Tag tag) {
+		tags.add(tag);
+	}
 
-    public ArrayList<Tag> getTags() {
-        return tags;
-    }
+	public ArrayList<Tag> getTags() {
+		return tags;
+	}
 
-    public void setTags(ArrayList<Tag> tags) {
-        this.tags = tags;
-    }
+	public void setTags(ArrayList<Tag> tags) {
+		this.tags = tags;
+	}
 }

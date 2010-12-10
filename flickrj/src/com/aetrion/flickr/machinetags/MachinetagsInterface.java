@@ -13,7 +13,6 @@ import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.Parameter;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
-import com.aetrion.flickr.auth.AuthUtilities;
 import com.aetrion.flickr.util.XMLUtilities;
 
 /**
@@ -212,304 +211,290 @@ RDF Describes Flickr. That's really all you need to know about RDF.
  * @see <a href="http://husk.org/code/machine-tag-browser.html">machine-tag-browser</a>
  */
 public class MachinetagsInterface {
-    private static final String METHOD_GET_NAMESPACES = "flickr.machinetags.getNamespaces";
-    private static final String METHOD_GET_PAIRS = "flickr.machinetags.getPairs";
-    private static final String METHOD_GET_PREDICATES = "flickr.machinetags.getPredicates";
-    private static final String METHOD_GET_VALUES = "flickr.machinetags.getValues";
-    private static final String METHOD_GET_RECENTVALUES = "flickr.machinetags.getRecentValues";
+	private static final String METHOD_GET_NAMESPACES = "flickr.machinetags.getNamespaces";
+	private static final String METHOD_GET_PAIRS = "flickr.machinetags.getPairs";
+	private static final String METHOD_GET_PREDICATES = "flickr.machinetags.getPredicates";
+	private static final String METHOD_GET_VALUES = "flickr.machinetags.getValues";
+	private static final String METHOD_GET_RECENTVALUES = "flickr.machinetags.getRecentValues";
 
-    private String apiKey;
-    private String sharedSecret;
-    private Transport transportAPI;
+	private String apiKey;
+	private String sharedSecret;
+	private Transport transportAPI;
 
-    public MachinetagsInterface(String apiKey, String sharedSecret, Transport transportAPI) {
-        this.apiKey = apiKey;
-        this.sharedSecret = sharedSecret;
-        this.transportAPI = transportAPI;
-    }
+	public MachinetagsInterface(String apiKey, String sharedSecret, Transport transportAPI) {
+		this.apiKey = apiKey;
+		this.sharedSecret = sharedSecret;
+		this.transportAPI = transportAPI;
+	}
 
-    /**
-     * Return a list of unique namespaces, optionally limited by a given
-     * predicate, in alphabetical order.
-     *
-     * This method does not require authentication.
-     *
-     * @param predicate
-     * @param perPage
-     * @param page
-     * @return NamespacesList
-     * @throws FlickrException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public NamespacesList getNamespaces(String predicate, int perPage, int page)
-      throws FlickrException, IOException, SAXException {
-        List parameters = new ArrayList();
-        NamespacesList nsList = new NamespacesList();
-        parameters.add(new Parameter("method", METHOD_GET_NAMESPACES));
-        parameters.add(new Parameter("api_key", apiKey));
+	/**
+	 * Return a list of unique namespaces, optionally limited by a given
+	 * predicate, in alphabetical order.
+	 *
+	 * This method does not require authentication.
+	 *
+	 * @param predicate
+	 * @param perPage
+	 * @param page
+	 * @return NamespacesList
+	 * @throws FlickrException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	public NamespacesList getNamespaces(String predicate, int perPage, int page) throws FlickrException, IOException, SAXException {
+		List parameters = new ArrayList();
+		NamespacesList nsList = new NamespacesList();
+		parameters.add(new Parameter("method", METHOD_GET_NAMESPACES));
+		parameters.add(new Parameter("api_key", apiKey));
 
-        if (predicate != null) {
-            parameters.add(new Parameter("predicate", predicate));
-        }
-        if (perPage > 0) {
-            parameters.add(new Parameter("per_page", "" + perPage));
-        }
-        if (page > 0) {
-            parameters.add(new Parameter("page", "" + page));
-        }
+		if (predicate != null) {
+			parameters.add(new Parameter("predicate", predicate));
+		}
+		if (perPage > 0) {
+			parameters.add(new Parameter("per_page", "" + perPage));
+		}
+		if (page > 0) {
+			parameters.add(new Parameter("page", "" + page));
+		}
 
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-        Element nsElement = response.getPayload();
-        NodeList nsNodes = nsElement.getElementsByTagName("namespace");
-        nsList.setPage("1");
-        nsList.setPages("1");
-        nsList.setPerPage("" + nsNodes.getLength());
-        nsList.setTotal("" + nsNodes.getLength());
-        for (int i = 0; i < nsNodes.getLength(); i++) {
-            Element element = (Element) nsNodes.item(i);
-            nsList.add(parseNamespace(element));
-        }
-        return nsList;
-    }
+		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		if (response.isError())
+			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+		Element nsElement = response.getPayload();
+		NodeList nsNodes = nsElement.getElementsByTagName("namespace");
+		nsList.setPage("1");
+		nsList.setPages("1");
+		nsList.setPerPage("" + nsNodes.getLength());
+		nsList.setTotal("" + nsNodes.getLength());
+		for (int i = 0; i < nsNodes.getLength(); i++) {
+			Element element = (Element) nsNodes.item(i);
+			nsList.add(parseNamespace(element));
+		}
+		return nsList;
+	}
 
-    /**
-     * Return a list of unique namespace and predicate pairs,
-     * optionally limited by predicate or namespace, in alphabetical order.
-     *
-     * This method does not require authentication.
-     *
-     * @param namespace optional, can be null
-     * @param predicate optional, can be null
-     * @param perPage The number of photos to show per page
-     * @param page The page offset
-     * @return NamespacesList containing Pair-objects
-     * @throws FlickrException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public NamespacesList getPairs(String namespace, String predicate, int perPage, int page)
-      throws FlickrException, IOException, SAXException {
-        List parameters = new ArrayList();
-        NamespacesList nsList = new NamespacesList();
-        parameters.add(new Parameter("method", METHOD_GET_PAIRS));
-        parameters.add(new Parameter("api_key", apiKey));
+	/**
+	 * Return a list of unique namespace and predicate pairs,
+	 * optionally limited by predicate or namespace, in alphabetical order.
+	 *
+	 * This method does not require authentication.
+	 *
+	 * @param namespace optional, can be null
+	 * @param predicate optional, can be null
+	 * @param perPage The number of photos to show per page
+	 * @param page The page offset
+	 * @return NamespacesList containing Pair-objects
+	 * @throws FlickrException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	public NamespacesList getPairs(String namespace, String predicate, int perPage, int page) throws FlickrException, IOException, SAXException {
+		List parameters = new ArrayList();
+		NamespacesList nsList = new NamespacesList();
+		parameters.add(new Parameter("method", METHOD_GET_PAIRS));
+		parameters.add(new Parameter("api_key", apiKey));
 
-        if (namespace != null) {
-            parameters.add(new Parameter("namespace", namespace));
-        }
-        if (predicate != null) {
-            parameters.add(new Parameter("predicate", predicate));
-        }
-        if (perPage > 0) {
-            parameters.add(new Parameter("per_page", "" + perPage));
-        }
-        if (page > 0) {
-            parameters.add(new Parameter("page", "" + page));
-        }
+		if (namespace != null) {
+			parameters.add(new Parameter("namespace", namespace));
+		}
+		if (predicate != null) {
+			parameters.add(new Parameter("predicate", predicate));
+		}
+		if (perPage > 0) {
+			parameters.add(new Parameter("per_page", "" + perPage));
+		}
+		if (page > 0) {
+			parameters.add(new Parameter("page", "" + page));
+		}
 
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-        Element nsElement = response.getPayload();
-        NodeList nsNodes = nsElement.getElementsByTagName("pair");
-        nsList.setPage(nsElement.getAttribute("page"));
-        nsList.setPages(nsElement.getAttribute("pages"));
-        nsList.setPerPage(nsElement.getAttribute("perPage"));
-        nsList.setTotal("" + nsNodes.getLength());
-        for (int i = 0; i < nsNodes.getLength(); i++) {
-            Element element = (Element) nsNodes.item(i);
-            nsList.add(parsePair(element));
-        }
-        return nsList;
-    }
+		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		if (response.isError())
+			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+		Element nsElement = response.getPayload();
+		NodeList nsNodes = nsElement.getElementsByTagName("pair");
+		nsList.setPage(nsElement.getAttribute("page"));
+		nsList.setPages(nsElement.getAttribute("pages"));
+		nsList.setPerPage(nsElement.getAttribute("perPage"));
+		nsList.setTotal("" + nsNodes.getLength());
+		for (int i = 0; i < nsNodes.getLength(); i++) {
+			Element element = (Element) nsNodes.item(i);
+			nsList.add(parsePair(element));
+		}
+		return nsList;
+	}
 
-    /**
-     * Return a list of unique predicates,
-     * optionally limited by a given namespace.
-     *
-     * This method does not require authentication.
-     *
-     * @param namespace The namespace that all values should be restricted to.
-     * @param perPage The number of photos to show per page
-     * @param page The page offset
-     * @return NamespacesList containing Predicate
-     * @throws FlickrException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public NamespacesList getPredicates(String namespace, int perPage, int page)
-      throws FlickrException, IOException, SAXException {
-        List parameters = new ArrayList();
-        NamespacesList nsList = new NamespacesList();
-        parameters.add(new Parameter("method", METHOD_GET_PREDICATES));
-        parameters.add(new Parameter("api_key", apiKey));
+	/**
+	 * Return a list of unique predicates,
+	 * optionally limited by a given namespace.
+	 *
+	 * This method does not require authentication.
+	 *
+	 * @param namespace The namespace that all values should be restricted to.
+	 * @param perPage The number of photos to show per page
+	 * @param page The page offset
+	 * @return NamespacesList containing Predicate
+	 * @throws FlickrException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	public NamespacesList getPredicates(String namespace, int perPage, int page) throws FlickrException, IOException, SAXException {
+		List parameters = new ArrayList();
+		NamespacesList nsList = new NamespacesList();
+		parameters.add(new Parameter("method", METHOD_GET_PREDICATES));
+		parameters.add(new Parameter("api_key", apiKey));
 
-        if (namespace != null) {
-            parameters.add(new Parameter("namespace", namespace));
-        }
-        if (perPage > 0) {
-            parameters.add(new Parameter("per_page", "" + perPage));
-        }
-        if (page > 0) {
-            parameters.add(new Parameter("page", "" + page));
-        }
+		if (namespace != null) {
+			parameters.add(new Parameter("namespace", namespace));
+		}
+		if (perPage > 0) {
+			parameters.add(new Parameter("per_page", "" + perPage));
+		}
+		if (page > 0) {
+			parameters.add(new Parameter("page", "" + page));
+		}
 
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-        Element nsElement = response.getPayload();
-        NodeList nsNodes = nsElement.getElementsByTagName("predicate");
-        nsList.setPage(nsElement.getAttribute("page"));
-        nsList.setPages(nsElement.getAttribute("pages"));
-        nsList.setPerPage(nsElement.getAttribute("perPage"));
-        nsList.setTotal("" + nsNodes.getLength());
-        for (int i = 0; i < nsNodes.getLength(); i++) {
-            Element element = (Element) nsNodes.item(i);
-            nsList.add(parsePredicate(element));
-        }
-        return nsList;
-    }
+		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		if (response.isError())
+			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+		Element nsElement = response.getPayload();
+		NodeList nsNodes = nsElement.getElementsByTagName("predicate");
+		nsList.setPage(nsElement.getAttribute("page"));
+		nsList.setPages(nsElement.getAttribute("pages"));
+		nsList.setPerPage(nsElement.getAttribute("perPage"));
+		nsList.setTotal("" + nsNodes.getLength());
+		for (int i = 0; i < nsNodes.getLength(); i++) {
+			Element element = (Element) nsNodes.item(i);
+			nsList.add(parsePredicate(element));
+		}
+		return nsList;
+	}
 
-    /**
-     * Return a list of unique values for a namespace and predicate.
-     *
-     * This method does not require authentication.
-     *
-     * @param namespace The namespace that all values should be restricted to.
-     * @param predicate The predicate that all values should be restricted to.
-     * @param perPage The number of photos to show per page
-     * @param page The page offset
-     * @return NamespacesList
-     * @throws FlickrException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public NamespacesList getValues(String namespace, String predicate, int perPage, int page)
-      throws FlickrException, IOException, SAXException {
-        List parameters = new ArrayList();
-        NamespacesList valuesList = new NamespacesList();
-        parameters.add(new Parameter("method", METHOD_GET_VALUES));
-        parameters.add(new Parameter("api_key", apiKey));
+	/**
+	 * Return a list of unique values for a namespace and predicate.
+	 *
+	 * This method does not require authentication.
+	 *
+	 * @param namespace The namespace that all values should be restricted to.
+	 * @param predicate The predicate that all values should be restricted to.
+	 * @param perPage The number of photos to show per page
+	 * @param page The page offset
+	 * @return NamespacesList
+	 * @throws FlickrException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	public NamespacesList getValues(String namespace, String predicate, int perPage, int page) throws FlickrException, IOException, SAXException {
+		List parameters = new ArrayList();
+		NamespacesList valuesList = new NamespacesList();
+		parameters.add(new Parameter("method", METHOD_GET_VALUES));
+		parameters.add(new Parameter("api_key", apiKey));
 
-        if (namespace != null) {
-            parameters.add(new Parameter("namespace", namespace));
-        }
-        if (predicate != null) {
-            parameters.add(new Parameter("predicate", predicate));
-        }
-        if (perPage > 0) {
-            parameters.add(new Parameter("per_page", "" + perPage));
-        }
-        if (page > 0) {
-            parameters.add(new Parameter("page", "" + page));
-        }
+		if (namespace != null) {
+			parameters.add(new Parameter("namespace", namespace));
+		}
+		if (predicate != null) {
+			parameters.add(new Parameter("predicate", predicate));
+		}
+		if (perPage > 0) {
+			parameters.add(new Parameter("per_page", "" + perPage));
+		}
+		if (page > 0) {
+			parameters.add(new Parameter("page", "" + page));
+		}
 
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-        Element nsElement = response.getPayload();
-        NodeList nsNodes = nsElement.getElementsByTagName("value");
-        valuesList.setPage(nsElement.getAttribute("page"));
-        valuesList.setPages(nsElement.getAttribute("pages"));
-        valuesList.setPerPage(nsElement.getAttribute("perPage"));
-        valuesList.setTotal("" + nsNodes.getLength());
-        for (int i = 0; i < nsNodes.getLength(); i++) {
-            Element element = (Element) nsNodes.item(i);
-            valuesList.add(parseValue(element));
-        }
-        return valuesList;
-    }
+		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		if (response.isError())
+			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+		Element nsElement = response.getPayload();
+		NodeList nsNodes = nsElement.getElementsByTagName("value");
+		valuesList.setPage(nsElement.getAttribute("page"));
+		valuesList.setPages(nsElement.getAttribute("pages"));
+		valuesList.setPerPage(nsElement.getAttribute("perPage"));
+		valuesList.setTotal("" + nsNodes.getLength());
+		for (int i = 0; i < nsNodes.getLength(); i++) {
+			Element element = (Element) nsNodes.item(i);
+			valuesList.add(parseValue(element));
+		}
+		return valuesList;
+	}
 
-    /**
-     * Fetch recently used (or created) machine tags values.
-     *
-     * This method does not require authentication.
-     *
-     * @param namespace The namespace that all values should be restricted to.
-     * @param predicate The predicate that all values should be restricted to.
-     * @param addedSince Only return machine tags values that have been added since this Date. 
-     * @return NamespacesList
-     * @throws FlickrException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public NamespacesList getRecentValues(String namespace, String predicate, Date addedSince)
-      throws FlickrException, IOException, SAXException {
-        List parameters = new ArrayList();
-        NamespacesList valuesList = new NamespacesList();
-        parameters.add(new Parameter("method", METHOD_GET_RECENTVALUES));
-        parameters.add(new Parameter("api_key", apiKey));
+	/**
+	 * Fetch recently used (or created) machine tags values.
+	 *
+	 * This method does not require authentication.
+	 *
+	 * @param namespace The namespace that all values should be restricted to.
+	 * @param predicate The predicate that all values should be restricted to.
+	 * @param addedSince Only return machine tags values that have been added since this Date. 
+	 * @return NamespacesList
+	 * @throws FlickrException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	public NamespacesList getRecentValues(String namespace, String predicate, Date addedSince) throws FlickrException, IOException, SAXException {
+		List parameters = new ArrayList();
+		NamespacesList valuesList = new NamespacesList();
+		parameters.add(new Parameter("method", METHOD_GET_RECENTVALUES));
+		parameters.add(new Parameter("api_key", apiKey));
 
-        if (namespace != null) {
-            parameters.add(new Parameter("namespace", namespace));
-        }
-        if (predicate != null) {
-            parameters.add(new Parameter("predicate", predicate));
-        }
-        if (addedSince != null) {
-            parameters.add(new Parameter(
-                "added_since",
-                new Long(addedSince.getTime() / 1000L))
-            );
-        }
+		if (namespace != null) {
+			parameters.add(new Parameter("namespace", namespace));
+		}
+		if (predicate != null) {
+			parameters.add(new Parameter("predicate", predicate));
+		}
+		if (addedSince != null) {
+			parameters.add(new Parameter("added_since", new Long(addedSince.getTime() / 1000L)));
+		}
 
-        Response response = transportAPI.get(transportAPI.getPath(), parameters);
-        if (response.isError()) {
-            throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-        }
-        Element nsElement = response.getPayload();
-        NodeList nsNodes = nsElement.getElementsByTagName("value");
-        valuesList.setPage(nsElement.getAttribute("page"));
-        valuesList.setPages(nsElement.getAttribute("pages"));
-        valuesList.setPerPage(nsElement.getAttribute("perPage"));
-        valuesList.setTotal("" + nsNodes.getLength());
-        for (int i = 0; i < nsNodes.getLength(); i++) {
-            Element element = (Element) nsNodes.item(i);
-            valuesList.add(parseValue(element));
-        }
-        return valuesList;
-    }
+		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		if (response.isError())
+			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+		Element nsElement = response.getPayload();
+		NodeList nsNodes = nsElement.getElementsByTagName("value");
+		valuesList.setPage(nsElement.getAttribute("page"));
+		valuesList.setPages(nsElement.getAttribute("pages"));
+		valuesList.setPerPage(nsElement.getAttribute("perPage"));
+		valuesList.setTotal("" + nsNodes.getLength());
+		for (int i = 0; i < nsNodes.getLength(); i++) {
+			Element element = (Element) nsNodes.item(i);
+			valuesList.add(parseValue(element));
+		}
+		return valuesList;
+	}
 
-    private Value parseValue(Element nsElement) {
-        Value value = new Value();
-        value.setUsage(nsElement.getAttribute("usage"));
-        value.setNamespace(nsElement.getAttribute("namespace"));
-        value.setPredicate(nsElement.getAttribute("predicate"));
-        value.setFirstAdded(nsElement.getAttribute("first_added"));
-        value.setLastAdded(nsElement.getAttribute("last_added"));
-        value.setValue(XMLUtilities.getValue(nsElement));
-        return value;
-    }
-    
-    
-    private Predicate parsePredicate(Element nsElement) {
-        Predicate predicate = new Predicate();
-        predicate.setUsage(nsElement.getAttribute("usage"));
-        predicate.setNamespaces(nsElement.getAttribute("namespaces"));
-        predicate.setValue(XMLUtilities.getValue(nsElement));
-        return predicate;
-    }
+	private Value parseValue(Element nsElement) {
+		Value value = new Value();
+		value.setUsage(nsElement.getAttribute("usage"));
+		value.setNamespace(nsElement.getAttribute("namespace"));
+		value.setPredicate(nsElement.getAttribute("predicate"));
+		value.setFirstAdded(nsElement.getAttribute("first_added"));
+		value.setLastAdded(nsElement.getAttribute("last_added"));
+		value.setValue(XMLUtilities.getValue(nsElement));
+		return value;
+	}
 
-    private Namespace parseNamespace(Element nsElement) {
-        Namespace ns = new Namespace();
-        ns.setUsage(nsElement.getAttribute("usage"));
-        ns.setPredicates(nsElement.getAttribute("predicates"));
-        ns.setValue(XMLUtilities.getValue(nsElement));
-        return ns;
-    }
+	private Predicate parsePredicate(Element nsElement) {
+		Predicate predicate = new Predicate();
+		predicate.setUsage(nsElement.getAttribute("usage"));
+		predicate.setNamespaces(nsElement.getAttribute("namespaces"));
+		predicate.setValue(XMLUtilities.getValue(nsElement));
+		return predicate;
+	}
 
-    private Pair parsePair(Element nsElement) {
-        Pair pair = new Pair();
-        pair.setUsage(nsElement.getAttribute("usage"));
-        pair.setNamespace(nsElement.getAttribute("namespace"));
-        pair.setPredicate(nsElement.getAttribute("predicate"));
-        return pair;
-    }
+	private Namespace parseNamespace(Element nsElement) {
+		Namespace ns = new Namespace();
+		ns.setUsage(nsElement.getAttribute("usage"));
+		ns.setPredicates(nsElement.getAttribute("predicates"));
+		ns.setValue(XMLUtilities.getValue(nsElement));
+		return ns;
+	}
+
+	private Pair parsePair(Element nsElement) {
+		Pair pair = new Pair();
+		pair.setUsage(nsElement.getAttribute("usage"));
+		pair.setNamespace(nsElement.getAttribute("namespace"));
+		pair.setPredicate(nsElement.getAttribute("predicate"));
+		return pair;
+	}
 }

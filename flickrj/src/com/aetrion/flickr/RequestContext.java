@@ -18,70 +18,74 @@ import com.aetrion.flickr.auth.Auth;
  */
 public class RequestContext {
 
-    private static RequestContextThreadLocal threadLocal =
-            new RequestContextThreadLocal();
+	private static RequestContextThreadLocal threadLocal = new RequestContextThreadLocal();
 
-    private Auth auth;
-    private String sharedSecret;
-    private List extras;
+	private Auth auth;
+	private String sharedSecret;
+	private List extras;
 
-    /**
-     * Get the RequestContext instance for the current Thread.
-     *
-     * @return The RequestContext
-     */
-    public static RequestContext getRequestContext() {
-        return (RequestContext) threadLocal.get();
-    }
+	/**
+	 * Get the RequestContext instance for the current Thread.
+	 *
+	 * @return The RequestContext
+	 */
+	public static RequestContext getRequestContext() {
+		return (RequestContext) threadLocal.get();
+	}
 
-    public Auth getAuth() {
-        return auth;
-    }
+	public Auth getAuth() {
+		return auth;
+	}
 
-    public void setAuth(Auth auth) {
-        this.auth = auth;
-    }
+	public void setAuth(Auth auth) {
+		this.auth = auth;
+	}
 
-    /**
-     * Get a shared secret which is used for any calls which require signing.
-     *
-     * @deprecated Get the secret from {@link Flickr#getSharedSecret()}.
-     * @return The shared secret
-     */
-    public String getSharedSecret() {
-        return sharedSecret;
-    }
+	/**
+	 * Get a shared secret which is used for any calls which require signing.
+	 *
+	 * @deprecated Get the secret from {@link Flickr#getSharedSecret()}.
+	 * @return The shared secret
+	 */
+	@Deprecated
+	public String getSharedSecret() {
+		return sharedSecret;
+	}
 
-    /**
-     * Set the shared secret which is used for any calls which require signing.
-     *
-     * @deprecated Set the secret in {@link Flickr#setSharedSecret(String)}.
-     * @param sharedSecret The shared secret
-     */
-    public void setSharedSecret(String sharedSecret) {
-        this.sharedSecret = sharedSecret;
-    }
+	/**
+	 * Set the shared secret which is used for any calls which require signing.
+	 *
+	 * @deprecated Set the secret in {@link Flickr#setSharedSecret(String)}.
+	 * @param sharedSecret The shared secret
+	 */
+	@Deprecated
+	public void setSharedSecret(String sharedSecret) {
+		this.sharedSecret = sharedSecret;
+	}
 
-    /**
-     * Get the List of extra return values requested.
-     *
-     * @return List of extra return values requested
-     */
-    public List getExtras() {
-        if (extras == null) extras = new ArrayList();
-        return extras;
-    }
+	/**
+	 * Get the List of extra return values requested.
+	 *
+	 * @return List of extra return values requested
+	 */
+	public List getExtras() {
+		if (extras == null) {
+			extras = new ArrayList();
+		}
+		return extras;
+	}
 
-    public void setExtras(List extras) {
-        this.extras = extras;
-    }
+	public void setExtras(List extras) {
+		this.extras = extras;
+	}
 
-    private static class RequestContextThreadLocal extends ThreadLocal {
+	private static class RequestContextThreadLocal extends ThreadLocal {
 
-        protected Object initialValue() {
-            return new RequestContext();
-        }
+		@Override
+		protected Object initialValue() {
+			return new RequestContext();
+		}
 
-    }
+	}
 
 }

@@ -70,9 +70,8 @@ public class PeopleInterface {
 		parameters.add(new Parameter("find_email", email));
 
 		Response response = transportAPI.get(transportAPI.getPath(), parameters);
-		if (response.isError()) {
+		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-		}
 		Element userElement = response.getPayload();
 		User user = new User();
 		user.setId(userElement.getAttribute("nsid"));
@@ -99,9 +98,8 @@ public class PeopleInterface {
 		parameters.add(new Parameter("username", username));
 
 		Response response = transportAPI.get(transportAPI.getPath(), parameters);
-		if (response.isError()) {
+		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-		}
 		Element userElement = response.getPayload();
 		User user = new User();
 		user.setId(userElement.getAttribute("nsid"));
@@ -129,9 +127,8 @@ public class PeopleInterface {
 		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
 		Response response = transportAPI.get(transportAPI.getPath(), parameters);
-		if (response.isError()) {
+		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-		}
 		Element userElement = response.getPayload();
 		User user = new User();
 		user.setId(userElement.getAttribute("nsid"));
@@ -183,9 +180,8 @@ public class PeopleInterface {
 		parameters.add(new Parameter("user_id", userId));
 
 		Response response = transportAPI.get(transportAPI.getPath(), parameters);
-		if (response.isError()) {
+		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-		}
 		Element groupsElement = response.getPayload();
 		NodeList groupNodes = groupsElement.getElementsByTagName("group");
 		for (int i = 0; i < groupNodes.getLength(); i++) {
@@ -240,9 +236,8 @@ public class PeopleInterface {
 		}
 
 		Response response = transportAPI.get(transportAPI.getPath(), parameters);
-		if (response.isError()) {
+		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-		}
 		Element photosElement = response.getPayload();
 		photos.setPage(photosElement.getAttribute("page"));
 		photos.setPages(photosElement.getAttribute("pages"));
@@ -274,9 +269,8 @@ public class PeopleInterface {
 		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
 		Response response = transportAPI.get(transportAPI.getPath(), parameters);
-		if (response.isError()) {
+		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
-		}
 		Element userElement = response.getPayload();
 		User user = new User();
 		user.setId(userElement.getAttribute("id"));

@@ -20,27 +20,27 @@ public interface AuthStore {
 	 * @throws IOException 
 	 */
 	void store(Auth token) throws IOException;
-	
+
 	/**
 	 * Retrieve Auth for a given NSID.
 	 * @param nsid NSID
 	 * @return Auth
 	 */
 	Auth retrieve(String nsid);
-	
+
 	/**
 	 * Retrieve all Auth objects being stored.
 	 *
 	 * @return Auth objects
 	 */
 	Auth[] retrieveAll();
-	
+
 	/**
 	 * Clear out the store.
 	 *
 	 */
 	void clearAll();
-	
+
 	/**
 	 * Clear for a given NSID.
 	 * @param nsid

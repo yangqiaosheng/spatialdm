@@ -13,27 +13,27 @@ import java.util.Collection;
 public class Photosets {
 	private static final long serialVersionUID = 12L;
 
-    private boolean canCreate;
-    private Collection photosets;
+	private boolean canCreate;
+	private Collection photosets;
 
-    public Photosets() {
+	public Photosets() {
 
-    }
+	}
 
-    public boolean isCanCreate() {
-        return canCreate;
-    }
+	public boolean isCanCreate() {
+		return canCreate;
+	}
 
-    public void setCanCreate(boolean canCreate) {
-        this.canCreate = canCreate;
-    }
+	public void setCanCreate(boolean canCreate) {
+		this.canCreate = canCreate;
+	}
 
-    public Collection getPhotosets() {
-        return photosets;
-    }
+	public Collection getPhotosets() {
+		return photosets;
+	}
 
-    public void setPhotosets(Collection photosets) {
-        this.photosets = photosets;
-    }
+	public void setPhotosets(Collection photosets) {
+		this.photosets = photosets;
+	}
 
 }

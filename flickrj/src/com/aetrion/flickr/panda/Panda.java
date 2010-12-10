@@ -8,15 +8,15 @@ package com.aetrion.flickr.panda;
  * @see com.aetrion.flickr.panda.PandaInterface#getPhotos(Panda, java.util.Set, int, int)
  */
 public class Panda {
-    private static final long serialVersionUID = 12L;
+	private static final long serialVersionUID = 12L;
 
-    String name;
+	String name;
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 }

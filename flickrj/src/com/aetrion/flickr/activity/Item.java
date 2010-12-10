@@ -11,28 +11,28 @@ import java.util.Collection;
  * @version $Id: Item.java,v 1.2 2007/07/22 16:18:20 x-mago Exp $
  */
 public class Item {
-    private String type;
-    private String id;
-    private String title;
-    private String owner;
-    private String secret;
-    private String server;
-    private String farm;
+	private String type;
+	private String id;
+	private String title;
+	private String owner;
+	private String secret;
+	private String server;
+	private String farm;
 
-    // userComments
-    private int comments = 0;
-    private int notes = 0;
+	// userComments
+	private int comments = 0;
+	private int notes = 0;
 
-    // userPhotos
-    private int commentsOld = 0;
-    private int commentsNew = 0;
-    private int notesOld = 0;
-    private int notesNew = 0;
+	// userPhotos
+	private int commentsOld = 0;
+	private int commentsNew = 0;
+	private int notesOld = 0;
+	private int notesNew = 0;
 
-    private int views = 0;
-    private int faves = 0;
-    private int more = 0;
-    private Collection events;
+	private int views = 0;
+	private int faves = 0;
+	private int more = 0;
+	private Collection events;
 
 	public Item() {
 	}
@@ -138,69 +138,69 @@ public class Item {
 		this.comments = comments;
 	}
 
-    /**
-     * Available if delivered by ActivityInterface.userComments()
-     *
-     * @return number of notes
-     */
-    public int getNotes() {
-        return notes;
-    }
+	/**
+	 * Available if delivered by ActivityInterface.userComments()
+	 *
+	 * @return number of notes
+	 */
+	public int getNotes() {
+		return notes;
+	}
 
-    public void setNotes(int notes) {
-        this.notes = notes;
-    }
+	public void setNotes(int notes) {
+		this.notes = notes;
+	}
 
-    /**
-     * Available if delivered by ActivityInterface.userPhotos()
-     *
-     * @return number of new comments
-     */
-    public int getCommentsNew() {
-        return commentsNew;
-    }
+	/**
+	 * Available if delivered by ActivityInterface.userPhotos()
+	 *
+	 * @return number of new comments
+	 */
+	public int getCommentsNew() {
+		return commentsNew;
+	}
 
-    public void setCommentsNew(int commentsNew) {
-        this.commentsNew = commentsNew;
-    }
+	public void setCommentsNew(int commentsNew) {
+		this.commentsNew = commentsNew;
+	}
 
-    /**
-     * Available if delivered by ActivityInterface.userPhotos()
-     *
-     * @return number of old comments
-     */
-    public int getCommentsOld() {
-        return commentsOld;
-    }
+	/**
+	 * Available if delivered by ActivityInterface.userPhotos()
+	 *
+	 * @return number of old comments
+	 */
+	public int getCommentsOld() {
+		return commentsOld;
+	}
 
-    public void setCommentsOld(int commentsOld) {
-        this.commentsOld = commentsOld;
-    }
+	public void setCommentsOld(int commentsOld) {
+		this.commentsOld = commentsOld;
+	}
 
-    /**
-     * Available if delivered by ActivityInterface.userPhotos()
-     *
-     * @return number of new notes
-     */
-    public int getNotesNew() {
-        return notesNew;
-    }
+	/**
+	 * Available if delivered by ActivityInterface.userPhotos()
+	 *
+	 * @return number of new notes
+	 */
+	public int getNotesNew() {
+		return notesNew;
+	}
 
-    public void setNotesNew(int notesNew) {
-        this.notesNew = notesNew;
-    }
+	public void setNotesNew(int notesNew) {
+		this.notesNew = notesNew;
+	}
 
-    /**
-     * Available if delivered by ActivityInterface.userPhotos()
-     *
-     * @return number of old notes
-     */
-    public int getNotesOld() {
-        return notesOld;
-    }
+	/**
+	 * Available if delivered by ActivityInterface.userPhotos()
+	 *
+	 * @return number of old notes
+	 */
+	public int getNotesOld() {
+		return notesOld;
+	}
 
-    public void setNotesOld(int notesOld) {
-        this.notesOld = notesOld;
-    }
+	public void setNotesOld(int notesOld) {
+		this.notesOld = notesOld;
+	}
 
 }

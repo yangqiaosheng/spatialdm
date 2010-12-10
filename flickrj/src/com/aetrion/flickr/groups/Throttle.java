@@ -8,49 +8,49 @@ package com.aetrion.flickr.groups;
  * @version $Id: Throttle.java,v 1.3 2009/07/12 22:43:07 x-mago Exp $
  */
 public class Throttle {
-    private static final long serialVersionUID = 12L;
+	private static final long serialVersionUID = 12L;
 
-    private int count;
-    private String mode;
-    private int remaining;
+	private int count;
+	private String mode;
+	private int remaining;
 
-    /**
-     * Posts are limited to this number of Photos.
-     *
-     * @return mx number of posts allowed
-     */
-    public int getCount() {
-        return count;
-    }
+	/**
+	 * Posts are limited to this number of Photos.
+	 *
+	 * @return mx number of posts allowed
+	 */
+	public int getCount() {
+		return count;
+	}
 
-    public void setCount(int count) {
-        this.count = count;
-    }
+	public void setCount(int count) {
+		this.count = count;
+	}
 
-    /**
-     * Throttle mode - day, month or none.
-     *
-     * @return mode
-     */
-    public String getMode() {
-        return mode;
-    }
+	/**
+	 * Throttle mode - day, month or none.
+	 *
+	 * @return mode
+	 */
+	public String getMode() {
+		return mode;
+	}
 
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 
-    /**
-     * Number of remaining Photos to add.<br>
-     * (lokks, like not longer available)
-     *
-     * @return units
-     */
-    public int getRemaining() {
-        return remaining;
-    }
+	/**
+	 * Number of remaining Photos to add.<br>
+	 * (lokks, like not longer available)
+	 *
+	 * @return units
+	 */
+	public int getRemaining() {
+		return remaining;
+	}
 
-    public void setRemaining(int remaining) {
-        this.remaining = remaining;
-    }
+	public void setRemaining(int remaining) {
+		this.remaining = remaining;
+	}
 }
