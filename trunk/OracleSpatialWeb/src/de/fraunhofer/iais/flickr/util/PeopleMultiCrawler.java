@@ -44,15 +44,16 @@ import com.aetrion.flickr.photos.PhotoList;
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class PeopleMultiCrawler extends Thread {
+
 	/**
 	* Logger for this class
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(PeopleMultiCrawler.class);
 
 	static final int pageSize = 1000;
-	static final int NUM_THREAD = 1;
+	static final int NUM_THREAD = 6;
 	static final int MAX_NUM_RETRY = 500;
-	static final int MAX_TITLE_LENGTH = 300;
+	static final int MAX_USERNAME_LENGTH = 20;
 
 	static Calendar beginDateLimit = Calendar.getInstance();
 	static int numReTry = 0;
@@ -61,6 +62,8 @@ public class PeopleMultiCrawler extends Thread {
 	static long numTotalQuery = 0;
 
 	static DBUtil db = new DBUtil();
+
+	boolean finished = false;
 
 	public synchronized static int increaseNumReTry() {
 		return numReTry++;
@@ -99,26 +102,13 @@ public class PeopleMultiCrawler extends Thread {
 
 		Date startDate = new Date();
 		long start = System.currentTimeMillis();
-		int id = Integer.parseInt(this.getName());
-
-		/*
-		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir"));
-		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		 */
-
-//		PeopleInterface peopleInterface = null;
-//		try {
-//			sleep(id * 1000);
-//			peopleInterface = init(this.getName());
-//		} catch (Exception e) {
-//			logger.error("main(String[])", e); //$NON-NLS-1$
-//		}
+		int threadId = Integer.parseInt(this.getName());
 
 		while (getNumReTry() <= MAX_NUM_RETRY) {
 
 			try {
-				ContactsInterface contactsInterface = init(this.getName());
-				selectPeople(id, contactsInterface);
+				ContactsInterface contactsInterface = this.init(this.getName());
+				this.selectPeople(threadId, contactsInterface);
 			} catch (Exception e) {
 				logger.error("main(String[])", e); //$NON-NLS-1$
 			} finally {
@@ -131,6 +121,12 @@ public class PeopleMultiCrawler extends Thread {
 				logger.info("main(String[]) - numCheckedPeople:" + numCheckedPeople + " |numInsertedPeople:" + getNumInsertedPeople()); //$NON-NLS-1$
 				logger.info("main(String[]) - numTotalQuery:" + getNumTotalQuery()); //$NON-NLS-1$
 				logger.info("main(String[]) - numReTry:" + getNumReTry()); //$NON-NLS-1$
+			}
+
+			if (finished) {
+				// process finished and exit
+				System.out.println("process finished and exit");
+				break;
 			}
 
 			try {
@@ -167,33 +163,62 @@ public class PeopleMultiCrawler extends Thread {
 		return flickr.getContactsInterface();
 	}
 
-	private static void getPeopleContacts(ContactsInterface contactsInterface, String userid) throws IOException, SAXException, FlickrException, SQLException {
+	private void selectPeople(int threadId, ContactsInterface contactsInterface) throws IOException, SAXException, FlickrException, SQLException {
+		Connection conn = db.getConn();
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CHECKED_CONTACT_UPDATE = 0");
+
+		ResultSet rs = null;
+		try {
+			rs = db.getRs(pstmt);
+			while (rs.next()) {
+
+				String userId = rs.getString("USER_ID");
+
+				// assign the task to different thread
+				if (new Random(userId.hashCode()).nextInt(NUM_THREAD) == threadId) {
+					this.retrievePeopleContacts(contactsInterface, userId);
+					System.out.println("thread_id:" + threadId + "user_id=" + userId + " |numCheckedPeople:" + getNumCheckedPeople() + " |numInsertedPeople:" + increaseNumInsertedPeople());
+				}
+			}
+
+			// process finished
+			finished = true;
+
+		} finally {
+			db.close(rs);
+			db.close(pstmt);
+			db.close(conn);
+		}
+	}
+
+	private void retrievePeopleContacts(ContactsInterface contactsInterface, String userId) throws IOException, SAXException, FlickrException {
 		MembersList memberslist;
 		int pages = 0;
 		int page = 1;
 		int total = 0;
 		int num = 0;
 
+		System.out.println(userId);
 		do {
-			memberslist = contactsInterface.getPublicList(userid, pageSize, page++);
+			memberslist = contactsInterface.getPublicList(userId, pageSize, page++);
 			total = memberslist.getTotal();
 			pages = memberslist.getPages();
 			increaseNumTotalQuery();
 			if (memberslist.size() > 0) {
-				insertPeople(userid, memberslist);
+				this.insertPeople(userId, memberslist);
 			}
 
 			num += memberslist.size();
 
-			System.out.println("owner_id:" + userid);
+			System.out.println("owner_id:" + userId);
 			System.out.println("total:" + total + " | num:" + memberslist.size() + " | sumNum:" + num);
 			System.out.println("numTotalQuery:" + getNumTotalQuery());
 		} while (page <= pages);
 	}
 
-	private static void insertPeople(String userid, MembersList memberslist) {
+	private void insertPeople(String userId, MembersList memberslist) {
 		Connection conn = db.getConn();
-		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CHECKED = 1 where t.USERID = ?");
+		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CHECKED_CONTACT_UPDATE = 1 where t.USER_ID = ?");
 
 		try {
 			conn.setAutoCommit(false);
@@ -203,19 +228,24 @@ public class PeopleMultiCrawler extends Thread {
 				ResultSet rs = null;
 				try {
 					Member m = (Member) memberslist.get(i);
-					selectPstmt = db.getPstmt(conn, "select USERID from FLICKR_PEOPLE where USERID = ?");
+					selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");
 					selectPstmt.setString(1, m.getId());
 					rs = db.getRs(selectPstmt);
 
-					if(rs.next()){
-						System.out.println(userid + " already existed");
+					if (rs.next()) {
+						System.out.println(userId + " already existed");
 					} else {
-						insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USERID, USERNAME, CHECKED) values (?, ?, 0)");
+						String username = m.getUserName();
+						if (username != null && username.length() > MAX_USERNAME_LENGTH) {
+							username = username.substring(0, MAX_USERNAME_LENGTH);
+						}
+
+						insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME) values (?, ?)");
 						insertPstmt.setString(1, m.getId());
-						insertPstmt.setString(2, m.getUserName());
+						insertPstmt.setString(2, username);
 						insertPstmt.executeUpdate();
 						increaseNumInsertedPeople();
-						System.out.println(userid + " inserted");
+						System.out.println(userId + " inserted");
 					}
 
 				} finally {
@@ -225,13 +255,12 @@ public class PeopleMultiCrawler extends Thread {
 				}
 			}
 
-			updatePstmt.setString(1, userid);
+			updatePstmt.setString(1, userId);
 			updatePstmt.executeUpdate();
 			increaseNumCheckedPeople();
 
 			conn.commit();
-		}catch (SQLIntegrityConstraintViolationException e) {
-			System.out.println("EEEEEEEEEEROROOROROOR");
+
 		} catch (SQLException e) {
 			logger.error("insertPeople()", e); //$NON-NLS-1$
 			try {
@@ -241,30 +270,6 @@ public class PeopleMultiCrawler extends Thread {
 			}
 		} finally {
 			db.close(updatePstmt);
-			db.close(conn);
-		}
-	}
-
-	private static void selectPeople(int id, ContactsInterface contactsInterface) throws IOException, SAXException, FlickrException, SQLException {
-		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "select USERID from flickr_people t where t.checked = 0");
-
-		ResultSet rs = null;
-		try {
-			rs = db.getRs(pstmt);
-			while (rs.next()) {
-
-				String userid = rs.getString("USERID");
-
-				// assign the task to different thread
-				if (new Random(userid.hashCode()).nextInt(NUM_THREAD) == id) {
-					getPeopleContacts(contactsInterface, userid);
-					System.out.println("numInsertedPeople:" + increaseNumInsertedPeople());
-				}
-			}
-		} finally {
-			db.close(rs);
-			db.close(pstmt);
 			db.close(conn);
 		}
 	}

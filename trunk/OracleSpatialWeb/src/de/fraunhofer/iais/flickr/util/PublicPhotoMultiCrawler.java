@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -43,10 +44,15 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	static final int pageSize = 500;
 	static final int NUM_THREAD = 6;
-	static final int MAX_NUM_RETRY = 500;
-	static final int MAX_TITLE_LENGTH = 300;
+	static final int MAX_NUM_RETRY = 250;
+	static final int MAX_TITLE_LENGTH = 255;
 
-	static Calendar beginDateLimit = Calendar.getInstance();
+	static final double MIN_LONGITUDE = -13.119622;
+	static final double MIN_LATITUDE = 34.26329;
+	static final double MAX_LONGITUDE = 35.287624;
+	static final double MAX_LATITUDE = 72.09216;
+
+	static Calendar beginDateLimit;
 	static int numReTry = 0;
 	static long numPeople = 0;
 	static long numPhoto = 0;
@@ -54,23 +60,23 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	static DBUtil db = new DBUtil();
 
+	boolean finished = false;
 
-	public synchronized static int increaseNumReTry(){
-		return numReTry++;
+	public synchronized static int increaseNumReTry() {
+		return ++numReTry;
 	}
 
-	public synchronized static long increaseNumPeople(){
-		return numPeople++;
+	public synchronized static long increaseNumPeople() {
+		return ++numPeople;
 	}
 
-	public synchronized static long increaseNumPhoto(){
-		return numPhoto++;
+	public synchronized static long increaseNumPhoto() {
+		return ++numPhoto;
 	}
 
-	public synchronized static long increaseNumTotalQuery(){
-		return numTotalQuery++;
+	public synchronized static long increaseNumTotalQuery() {
+		return ++numTotalQuery;
 	}
-
 
 	public synchronized static int getNumReTry() {
 		return numReTry;
@@ -88,31 +94,42 @@ public class PublicPhotoMultiCrawler extends Thread {
 		return numTotalQuery;
 	}
 
+	public boolean checkLocation(GeoData geoData) {
+
+		if (geoData != null && geoData.getLongitude() > MIN_LONGITUDE && geoData.getLongitude() < MAX_LONGITUDE && geoData.getLatitude() > MIN_LATITUDE && geoData.getLatitude() < MAX_LATITUDE) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean checkDate(Date takenDate, Date uploadDate) {
+		if (takenDate != null && uploadDate != null && !takenDate.before(beginDateLimit.getTime()) && !takenDate.after(new Date()) && uploadDate.after(takenDate)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	@Override
 	public void run() {
 
 		Date startDate = new Date();
 		long start = System.currentTimeMillis();
-		int id = Integer.parseInt(this.getName());
 
-		/*
-		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir"));
-		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		 */
+		try {
+			sleep(100);
+		} catch (InterruptedException e) {
+			logger.error("main(String[])", e); //$NON-NLS-1$
+		}
 
-//		PeopleInterface peopleInterface = null;
-//		try {
-//			sleep(id * 1000);
-//			peopleInterface = init(this.getName());
-//		} catch (Exception e) {
-//			logger.error("main(String[])", e); //$NON-NLS-1$
-//		}
+		int threadId = Integer.parseInt(this.getName());
 
 		while (getNumReTry() <= MAX_NUM_RETRY) {
 
 			try {
 				PeopleInterface peopleInterface = init(this.getName());
-				selectPeople(id, peopleInterface);
+				selectPeople(threadId, peopleInterface);
 			} catch (Exception e) {
 				logger.error("main(String[])", e); //$NON-NLS-1$
 			} finally {
@@ -128,11 +145,16 @@ public class PublicPhotoMultiCrawler extends Thread {
 				logger.info("main(String[]) - numReTry:" + getNumReTry()); //$NON-NLS-1$
 			}
 
+			if (finished) {
+				// process finished and exit
+				break;
+			}
+
 			try {
 				sleep(300 * 1000);
 			} catch (InterruptedException e) {
 				logger.error("main(String[])", e); //$NON-NLS-1$
-			} finally{
+			} finally {
 				increaseNumReTry();
 			}
 		}
@@ -162,118 +184,27 @@ public class PublicPhotoMultiCrawler extends Thread {
 		return flickr.getPeopleInterface();
 	}
 
-	public static boolean checkLocation(GeoData geoData) {
-		double x1 = -13.119622;
-		double x2 = 35.287624;
-		double y1 = 34.26329;
-		double y2 = 72.09216;
-
-		if (geoData.getLongitude() > x1 && geoData.getLongitude() < x2 && geoData.getLatitude() > y1 && geoData.getLatitude() < y2) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public static void getPeoplesPhotos(PeopleInterface peopleInterface, String peopleId) throws IOException, SAXException, FlickrException, SQLException {
-
-		Set<String> extras = new HashSet<String>();
-		extras.add(Extras.DATE_TAKEN);
-		extras.add(Extras.GEO);
-		extras.add(Extras.VIEWS);
-//		extras.add(Extras.TAGS);
-
-		PhotoList photolist;
-		int total = 0;
-		int num = 0;
-
-		updatePeoplesNum(peopleId, -2);
-		do {
-			photolist = peopleInterface.getPublicPhotos(peopleId, extras, pageSize, (int) (num / pageSize + 1));
-			total = photolist.getTotal();
-			increaseNumTotalQuery();
-
-			for (int i = 0; i < photolist.size(); i++) {
-				Photo p = (Photo) photolist.get(i);
-				if (!p.getDateTaken().before(beginDateLimit.getTime()) && !p.getDateTaken().after(new Date()) && p.getGeoData() != null && checkLocation(p.getGeoData())) {
-//					PlacesInterface placeI = flickr.getPlacesInterface();
-//					System.out.println(p.getId() + ":" + p.getDateTaken() + ":" + p.getGeoData() + ":" + p.getDescription() + ":" + p.getPlaceId() + ":" + p.getWoeId());
-//					System.out.println("place_id:" + p.getPlaceId());
-					insertPhoto(p);
-				}
-			}
-			num += photolist.size();
-
-			System.out.println("owner_id:" + peopleId);
-			System.out.println("total:" + total + " | num:" + num);
-			System.out.println("numTotalQuery:" + getNumTotalQuery());
-		} while (num < total);
-		updatePeoplesNum(peopleId, total);
-	}
-
-	private static void updatePeoplesNum(String person, int num) throws SQLException {
+	private void selectPeople(int threadId, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "update PEOPLE_EUROPE set PHOTOS_NUM_NEW = ? where PERSON = ?");
-		try {
-			int i = 1;
-			pstmt.setInt(i++, num);
-			pstmt.setString(i++, person);
-			pstmt.executeUpdate();
-
-		} finally {
-			db.close(pstmt);
-			db.close(conn);
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private static void insertPhoto(Photo photo) throws SQLException {
-		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "insert into FLICKR_EUROPE (PERSON, PHOTO_ID, LONGITUDE, LATITUDE, DT, VIEWED, TITLE, SMALLURL) values (?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?, ?, ?)");
-		try {
-			int i = 1;
-			pstmt.setString(i++, photo.getOwner().getId());
-			pstmt.setString(i++, photo.getId());
-			pstmt.setDouble(i++, photo.getGeoData().getLongitude());
-			pstmt.setDouble(i++, photo.getGeoData().getLatitude());
-
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-			pstmt.setString(i++, formatter.format(photo.getDateTaken()));
-			pstmt.setInt(i++, photo.getViews());
-			String title = photo.getTitle();
-			if(title.length() > MAX_TITLE_LENGTH){
-				title = title.substring(0, MAX_TITLE_LENGTH);
-			}
-			pstmt.setString(i++, title);
-			pstmt.setString(i++, photo.getSmallUrl());
-
-			pstmt.executeUpdate();
-
-			System.out.println("numPhoto:" + increaseNumPhoto());
-		} finally {
-			db.close(pstmt);
-			db.close(conn);
-		}
-	}
-
-	private static void selectPeople(int id, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
-		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "select PERSON from PEOPLE_EUROPE where photos_num_new = -1");
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, LAST_UPLOAD_DATE from FLICKR_PEOPLE t where t.CHECKED_PHOTO_UPDATE = 0");
 
 		ResultSet rs = null;
 		try {
 			rs = db.getRs(pstmt);
 			while (rs.next()) {
 
-				String peopleId = rs.getString("PERSON");
+				String userId = rs.getString("USER_ID");
+				Date lastUploadDate = rs.getTimestamp("LAST_UPLOAD_DATE");
 
 				// assign the task to different thread
-				if (new Random(peopleId.hashCode()).nextInt(NUM_THREAD) == id) {
-					getPeoplesPhotos(peopleInterface, peopleId);
+				if (new Random(userId.hashCode()).nextInt(NUM_THREAD) == threadId) {
+					retrievePeoplesPhotos(peopleInterface, userId, lastUploadDate);
 					System.out.println("numPeople:" + increaseNumPeople());
 				}
 			}
+
+			// process finished
+			finished = true;
 		} finally {
 			db.close(rs);
 			db.close(pstmt);
@@ -281,9 +212,155 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
+	private void retrievePeoplesPhotos(PeopleInterface peopleInterface, String userId, Date lastUploadDate) throws IOException, SAXException, FlickrException, SQLException {
+
+		Set<String> extras = new HashSet<String>();
+		extras.add(Extras.DATE_TAKEN);
+		extras.add(Extras.DATE_UPLOAD);
+		extras.add(Extras.GEO);
+		extras.add(Extras.VIEWS);
+		//		extras.add(Extras.TAGS);
+
+		PhotoList photos;
+		int pages = 0;
+		int page = 1;
+		int total = 0;
+		int num = 0;
+
+		Calendar minUploadDate = beginDateLimit;
+		if (lastUploadDate != null && lastUploadDate.after(beginDateLimit.getTime())) {
+			minUploadDate.setTime(lastUploadDate);
+		}
+
+		Calendar maxUploadDate = Calendar.getInstance();
+		Calendar minTakenDate = beginDateLimit;
+		Calendar maxTakenDate = Calendar.getInstance();
+
+		PhotoList insertPhotos = new PhotoList();
+		do {
+			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
+//			photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE, extras, pageSize, page++);
+			total = photos.getTotal();
+			pages = photos.getPages();
+			increaseNumTotalQuery();
+
+			for (int i = 0; i < photos.size(); i++) {
+				Photo p = (Photo) photos.get(i);
+				if (checkDate(p.getDateTaken(), p.getDatePosted()) && checkLocation(p.getGeoData())) {
+					insertPhotos.add(p);
+				}
+			}
+			num += photos.size();
+
+			System.out.println("owner_id:" + userId);
+			System.out.println("total:" + total + " | num:" + num);
+			System.out.println("numTotalQuery:" + getNumTotalQuery());
+		} while (page <= pages);
+
+		insertPhotos(insertPhotos, userId);
+	}
+
+	private void insertPhotos(PhotoList photos, String userId) throws SQLException {
+		Connection conn = db.getConn();
+		TreeSet<Date> uploadDates = new TreeSet<Date>();
+		TreeSet<Date> takenDates = new TreeSet<Date>();
+		try {
+			conn.setAutoCommit(false);
+
+			for (int i = 0; i < photos.size(); i++) {
+				Photo p = (Photo) photos.get(i);
+				insertPhoto(conn, p);
+				uploadDates.add(p.getDatePosted());
+				takenDates.add(p.getDateTaken());
+			}
+
+			if (photos.size() > 0) {
+				updatePeoplesInfo(conn, userId, uploadDates.last(), takenDates.last());
+			} else {
+				updatePeoplesInfo(conn, userId);
+			}
+
+			conn.commit();
+		} catch (SQLException e) {
+			logger.error("insertPeople()", e); //$NON-NLS-1$
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				logger.error("insertPeople()", e); //$NON-NLS-1$
+			}
+		} finally {
+			db.close(conn);
+		}
+	}
+
+	private void insertPhoto(Connection conn, Photo photo) throws SQLException {
+		PreparedStatement pstmt = db
+				.getPstmt(
+						conn,
+						"insert into FLICKR_EUROPE (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?, ?, ?, ?, ?, ?)");
+		try {
+			int i = 1;
+			pstmt.setString(i++, photo.getId());
+			pstmt.setString(i++, photo.getOwner().getId());
+			pstmt.setDouble(i++, photo.getGeoData().getLongitude());
+			pstmt.setDouble(i++, photo.getGeoData().getLatitude());
+
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			pstmt.setString(i++, formatter.format(photo.getDateTaken()));
+			pstmt.setString(i++, formatter.format(photo.getDatePosted()));
+			pstmt.setInt(i++, photo.getViews());
+			String title = photo.getTitle();
+			if (title != null && title.length() > MAX_TITLE_LENGTH) {
+				title = title.substring(0, MAX_TITLE_LENGTH);
+			}
+			pstmt.setString(i++, title);
+			pstmt.setString(i++, photo.getSmallUrl());
+			pstmt.setString(i++, photo.getPlaceId());
+			pstmt.setString(i++, photo.getWoeId());
+			pstmt.setInt(i++, photo.getGeoData().getAccuracy());
+			pstmt.executeUpdate();
+
+			System.out.println("numPhoto:" + increaseNumPhoto());
+		} finally {
+			db.close(pstmt);
+		}
+	}
+
+	private void updatePeoplesInfo(Connection conn, String userId, Date lastUploadDate, Date lastTakenDate) throws SQLException {
+		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CHECKED_PHOTO_UPDATE = 1, t.LAST_UPLOAD_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), t.LAST_TAKEN_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') where USER_ID = ?");
+		try {
+
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			int i = 1;
+			pstmt.setString(i++, formatter.format(lastUploadDate));
+			pstmt.setString(i++, formatter.format(lastTakenDate));
+			pstmt.setString(i++, userId);
+			pstmt.executeUpdate();
+
+		} finally {
+			db.close(pstmt);
+		}
+	}
+
+	private void updatePeoplesInfo(Connection conn, String userId) throws SQLException {
+		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CHECKED_PHOTO_UPDATE = 1 where USER_ID = ?");
+		try {
+			System.out.println("update user: " + userId);
+			pstmt.setString(1, userId);
+			pstmt.executeUpdate();
+
+		} finally {
+			db.close(pstmt);
+		}
+	}
+
 	public static void main(String[] args) {
 
+		beginDateLimit = Calendar.getInstance();
 		beginDateLimit.set(2005, 00, 01);
+
 		for (int i = 0; i < NUM_THREAD; i++) {
 			PublicPhotoMultiCrawler crawler = new PublicPhotoMultiCrawler();
 			crawler.start();
