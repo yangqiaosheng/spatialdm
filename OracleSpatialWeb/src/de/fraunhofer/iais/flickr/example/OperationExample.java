@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -50,11 +51,11 @@ public class OperationExample {
 		in = getClass().getResourceAsStream("/flickr.properties");
 		properties = new Properties();
 		properties.load(in);
-		f = new Flickr(properties.getProperty("apiKey"), properties.getProperty("secret"), new REST());
+		f = new Flickr(properties.getProperty("apiKey_0"), properties.getProperty("secret_0"), new REST());
 		requestContext = RequestContext.getRequestContext();
 		Auth auth = new Auth();
 		auth.setPermission(Permission.READ);
-		auth.setToken(properties.getProperty("token"));
+		auth.setToken(properties.getProperty("token_0"));
 		requestContext.setAuth(auth);
 		Flickr.debugRequest = true;
 		Flickr.debugStream = true;
@@ -64,23 +65,30 @@ public class OperationExample {
 		PeopleInterface people = f.getPeopleInterface();
 		Set<String> extras = new HashSet<String>();
 		extras.add(Extras.DATE_TAKEN);
+		extras.add(Extras.DATE_UPLOAD);
 		extras.add(Extras.GEO);
 		extras.add(Extras.VIEWS);
 		extras.add(Extras.LICENSE);
 
-//		String userid = "49596882@N02";
-		String userid = "27076251@N05";
-		PhotoList pl = people.getPublicPhotos(userid, Extras.ALL_EXTRAS, 2, 2);
-//		PhotoList pl = people.getPhotos(userid, Extras.ALL_EXTRAS, 3, 1);
+//		String userId = "49596882@N02";
+		String userId = "27076251@N05";
+//		PhotoList pl = people.getPublicPhotos(userId, Extras.ALL_EXTRAS, 20, 2);
+		Calendar maxTakenDate = Calendar.getInstance();
+		maxTakenDate.set(2010, 10, 1);
+
+		Calendar minTakenDate = Calendar.getInstance();
+		minTakenDate.set(2010, 9, 1);
+
+		PhotoList pl = people.getPhotos(userId, null, null, minTakenDate.getTime(), maxTakenDate.getTime(), extras, 20, 1);
 		System.out.println("total:" + pl.getTotal());
 		for (int i = 0; i < pl.size(); i++) {
 			Photo p = (Photo) pl.get(i);
-			System.out.println(p.getId() + ":" + p.getDateTaken() + ":" + p.getGeoData() + ":" + p.getDescription() + ":" + p.getPlaceId() + ":" + p.getWoeId());
+			System.out.println(p.getId() + ":" + p.getDateTaken().toLocaleString() + " | " + p.getDatePosted().toLocaleString() + ":" + p.getGeoData() + ":" + p.getDescription() + ":" + p.getPlaceId() + ":" + p.getWoeId());
 			PlacesInterface placeI = f.getPlacesInterface();
 			if (p.getPlaceId() != null && !"".equals(p.getPlaceId())) {
-				System.out.println("place_id:" + p.getPlaceId());
-				Location location = placeI.getInfo(p.getPlaceId(), p.getWoeId());
-				System.out.println(location.getPlaceUrl());
+//				System.out.println("place_id:" + p.getPlaceId());
+//				Location location = placeI.getInfo(p.getPlaceId(), p.getWoeId());
+//				System.out.println(location.getPlaceUrl());
 			}
 		}
 	}
@@ -94,7 +102,21 @@ public class OperationExample {
 		System.out.println("pages:" + pl.getPages());
 		for (int i = 1; i < pl.size(); i++) {
 			Photo p = (Photo) pl.get(i);
-			
+
+			System.out.println(p.getId() + "|" + p.getDateTaken() + "|" + p.getDatePosted());
+		}
+	}
+
+	public void showSearchPhotos() throws IOException, SAXException, FlickrException {
+		PhotosInterface photo = f.getPhotosInterface();
+		Calendar date = Calendar.getInstance();
+		date.roll(Calendar.YEAR, false);
+		//		PhotoList pl = photo.recentlyUpdated(date.getTime(), null, 0, 0);
+		PhotoList pl = photo.getRecent(Extras.ALL_EXTRAS, 50, 670);
+		System.out.println("pages:" + pl.getPages());
+		for (int i = 1; i < pl.size(); i++) {
+			Photo p = (Photo) pl.get(i);
+
 			System.out.println(p.getId() + "|" + p.getDateTaken() + "|" + p.getDatePosted());
 		}
 	}
@@ -142,8 +164,8 @@ public class OperationExample {
 	public static void main(String[] args) throws ParserConfigurationException, IOException, FlickrException, SAXException {
 		OperationExample t = new OperationExample();
 		//		t.showActivity();
-//		t.showPeoplesPhotos();
-		t.showRecentPhotos();
+		t.showPeoplesPhotos();
+//		t.showRecentPhotos();
 	}
 
 }
