@@ -11,7 +11,7 @@ import com.aetrion.flickr.SearchResultList;
  *
  * @author Anthony Eden
  */
-public class PhotoList extends SearchResultList {
+public class PhotoList extends SearchResultList<Photo> {
 
 	// (avoid compiler warning)
 	private static final long serialVersionUID = -4735611134085303463L;

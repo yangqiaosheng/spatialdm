@@ -6,6 +6,7 @@ package com.aetrion.flickr.people;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -36,19 +37,20 @@ public class PeopleInterface {
 	public static final String METHOD_FIND_BY_EMAIL = "flickr.people.findByEmail";
 	public static final String METHOD_FIND_BY_USERNAME = "flickr.people.findByUsername";
 	public static final String METHOD_GET_INFO = "flickr.people.getInfo";
-	public static final String METHOD_GET_ONLINE_LIST = "flickr.people.getOnlineList";
+	public static final String METHOD_GET_PHOTOS = "flickr.people.getPhotos";
+	public static final String METHOD_SEARCH = "flickr.photos.search";
 	public static final String METHOD_GET_PUBLIC_GROUPS = "flickr.people.getPublicGroups";
 	public static final String METHOD_GET_PUBLIC_PHOTOS = "flickr.people.getPublicPhotos";
 	public static final String METHOD_GET_UPLOAD_STATUS = "flickr.people.getUploadStatus";
 
 	private String apiKey;
 	private String sharedSecret;
-	private Transport transportAPI;
+	private Transport transport;
 
 	public PeopleInterface(String apiKey, String sharedSecret, Transport transportAPI) {
 		this.apiKey = apiKey;
 		this.sharedSecret = sharedSecret;
-		this.transportAPI = transportAPI;
+		this.transport = transportAPI;
 	}
 
 	/**
@@ -63,13 +65,13 @@ public class PeopleInterface {
 	 * @throws FlickrException
 	 */
 	public User findByEmail(String email) throws IOException, SAXException, FlickrException {
-		List parameters = new ArrayList();
+		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter("method", METHOD_FIND_BY_EMAIL));
 		parameters.add(new Parameter("api_key", apiKey));
 
 		parameters.add(new Parameter("find_email", email));
 
-		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		Response response = transport.get(transport.getPath(), parameters);
 		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
 		Element userElement = response.getPayload();
@@ -91,13 +93,13 @@ public class PeopleInterface {
 	 * @throws FlickrException
 	 */
 	public User findByUsername(String username) throws IOException, SAXException, FlickrException {
-		List parameters = new ArrayList();
+		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter("method", METHOD_FIND_BY_USERNAME));
 		parameters.add(new Parameter("api_key", apiKey));
 
 		parameters.add(new Parameter("username", username));
 
-		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		Response response = transport.get(transport.getPath(), parameters);
 		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
 		Element userElement = response.getPayload();
@@ -119,14 +121,14 @@ public class PeopleInterface {
 	 * @throws FlickrException
 	 */
 	public User getInfo(String userId) throws IOException, SAXException, FlickrException {
-		List parameters = new ArrayList();
+		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter("method", METHOD_GET_INFO));
 		parameters.add(new Parameter("api_key", apiKey));
 
 		parameters.add(new Parameter("user_id", userId));
 		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
-		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		Response response = transport.get(transport.getPath(), parameters);
 		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
 		Element userElement = response.getPayload();
@@ -171,15 +173,15 @@ public class PeopleInterface {
 	 * @throws FlickrException
 	 */
 	public Collection getPublicGroups(String userId) throws IOException, SAXException, FlickrException {
-		List groups = new ArrayList();
+		List<Group> groups = new ArrayList<Group>();
 
-		List parameters = new ArrayList();
+		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter("method", METHOD_GET_PUBLIC_GROUPS));
 		parameters.add(new Parameter("api_key", apiKey));
 
 		parameters.add(new Parameter("user_id", userId));
 
-		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		Response response = transport.get(transport.getPath(), parameters);
 		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
 		Element groupsElement = response.getPayload();
@@ -196,10 +198,6 @@ public class PeopleInterface {
 		return groups;
 	}
 
-	public PhotoList getPublicPhotos(String userId, int perPage, int page) throws IOException, SAXException, FlickrException {
-		return getPublicPhotos(userId, Extras.MIN_EXTRAS, perPage, page);
-	}
-
 	/**
 	 * Get a collection of public photos for the specified user ID.
 	 *
@@ -208,17 +206,16 @@ public class PeopleInterface {
 	 * @see com.aetrion.flickr.photos.Extras
 	 * @param userId The User ID
 	 * @param extras Set of extra-attributes to include (may be null)
-	 * @param perPage The number of photos per page
-	 * @param page The page offset
+	 * @param perPage Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
+	 * @param page The page of results to return. If this argument is omitted, it defaults to 1.
 	 * @return The PhotoList collection
 	 * @throws IOException
 	 * @throws SAXException
 	 * @throws FlickrException
 	 */
-	public PhotoList getPublicPhotos(String userId, Set extras, int perPage, int page) throws IOException, SAXException, FlickrException {
-		PhotoList photos = new PhotoList();
+	public PhotoList getPublicPhotos(String userId, Set<String> extras, int perPage, int page) throws IOException, SAXException, FlickrException {
 
-		List parameters = new ArrayList();
+		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter("method", METHOD_GET_PUBLIC_PHOTOS));
 		parameters.add(new Parameter("api_key", apiKey));
 
@@ -235,20 +232,141 @@ public class PeopleInterface {
 			parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
 		}
 
-		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		Response response = transport.get(transport.getPath(), parameters);
 		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
 		Element photosElement = response.getPayload();
-		photos.setPage(photosElement.getAttribute("page"));
-		photos.setPages(photosElement.getAttribute("pages"));
-		photos.setPerPage(photosElement.getAttribute("perpage"));
-		photos.setTotal(photosElement.getAttribute("total"));
+		PhotoList photos = PhotoUtils.createPhotoList(photosElement);
+		return photos;
+	}
 
-		NodeList photoNodes = photosElement.getElementsByTagName("photo");
-		for (int i = 0; i < photoNodes.getLength(); i++) {
-			Element photoElement = (Element) photoNodes.item(i);
-			photos.add(PhotoUtils.createPhoto(photoElement));
+
+	/**
+	 * Return photos from the given user's photostream. Only photos visible to the calling user will be returned.
+	 * This method must be authenticated;
+	 * To return public photos for a user, use {@link PeopleInterface#getPublicPhotos(String, Set, int, int)}.
+	 *
+	 * @see com.aetrion.flickr.photos.Extras
+	 * @param userId The User ID
+	 * @param minUploadDate Minimum upload date. Photos with an upload date greater than or equal to this value will be returned. The date should be in the form of a unix timestamp.
+	 * @param maxUploadDate Maximum upload date. Photos with an upload date less than or equal to this value will be returned. The date should be in the form of a unix timestamp.
+	 * @param minTakenDate Minimum taken date. Photos with an taken date greater than or equal to this value will be returned. The date should be in the form of a mysql datetime.
+	 * @param maxTakenDate Maximum taken date. Photos with an taken date less than or equal to this value will be returned. The date should be in the form of a mysql datetime.
+	 * @param extras Set of extra-attributes to include (may be null)
+	 * @param perPage Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
+	 * @param page The page of results to return. If this argument is omitted, it defaults to 1.
+	 * @return The PhotoList collection
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws FlickrException
+	 */
+	public PhotoList getPhotos(String userId, Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, Set<String> extras, int perPage, int page) throws IOException, SAXException, FlickrException {
+
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(new Parameter("method", METHOD_GET_PHOTOS));
+		parameters.add(new Parameter("api_key", apiKey));
+
+		parameters.add(new Parameter("user_id", userId));
+
+		if (perPage > 0) {
+			parameters.add(new Parameter("per_page", "" + perPage));
 		}
+		if (page > 0) {
+			parameters.add(new Parameter("page", "" + page));
+		}
+		if (minUploadDate != null){
+			parameters.add(new Parameter("min_upload_date", "" + (long)(minUploadDate.getTime()/1000)));
+		}
+		if (maxUploadDate != null){
+			parameters.add(new Parameter("max_upload_date", "" + (long)(maxUploadDate.getTime()/1000)));
+		}
+		if (minTakenDate != null){
+			parameters.add(new Parameter("min_taken_date", "" + (long)(minTakenDate.getTime()/1000)));
+		}
+		if (maxTakenDate != null){
+			parameters.add(new Parameter("max_taken_date", "" + (long)(maxTakenDate.getTime()/1000)));
+		}
+		if (extras != null) {
+			parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
+		}
+
+		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
+
+		Response response = transport.get(transport.getPath(), parameters);
+		if (response.isError())
+			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+		Element photosElement = response.getPayload();
+		PhotoList photos = PhotoUtils.createPhotoList(photosElement);
+		return photos;
+	}
+
+
+	/**
+	 * Return a list of geo-tagged photos matching some criteria. Only photos visible to the calling user will be returned.
+	 * To return private or semi-private photos, the caller must be authenticated with 'read' permissions, and have permission to view the photos.
+	 * Unauthenticated calls will only return public photos.
+	 *
+	 * This method does not require authentication
+	 *
+	 * A tag, for instance, is considered a limiting agent as are user defined min_date_taken and min_date_upload parameters — If no limiting factor is passed we return only photos added in the last 12 hours (though we may extend the limit in the future).
+	 *
+	 * Unlike standard photo queries, geo (or bounding box) queries will only return 250 results per page.
+	 *
+	 * @see com.aetrion.flickr.photos.Extras
+	 * @param userId The User ID
+	 * @param minUploadDate Minimum upload date. Photos with an upload date greater than or equal to this value will be returned. The date should be in the form of a unix timestamp.
+	 * @param maxUploadDate Maximum upload date. Photos with an upload date less than or equal to this value will be returned. The date should be in the form of a unix timestamp.
+	 * @param minTakenDate Minimum taken date. Photos with an taken date greater than or equal to this value will be returned. The date should be in the form of a mysql datetime.
+	 * @param maxTakenDate Maximum taken date. Photos with an taken date less than or equal to this value will be returned. The date should be in the form of a mysql datetime.
+	 * @param minLongitude
+	 * @param minLatitude
+	 * @param maxLongitude
+	 * @param maxLatitude
+	 * @param extras Set of extra-attributes to include (may be null)
+	 * @param perPage Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
+	 * @param page The page of results to return. If this argument is omitted, it defaults to 1.
+	 * @return The PhotoList collection
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws FlickrException
+	 */
+	public PhotoList getSearchWithGeoPhoto(String userId, Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, double minLongitude, double minLatitude, double maxLongitude, double maxLatitude, Set<String> extras, int perPage, int page) throws IOException, SAXException, FlickrException {
+
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(new Parameter("method", METHOD_SEARCH));
+		parameters.add(new Parameter("api_key", apiKey));
+
+		parameters.add(new Parameter("user_id", userId));
+
+		if (perPage > 0) {
+			parameters.add(new Parameter("per_page", "" + perPage));
+		}
+		if (page > 0) {
+			parameters.add(new Parameter("page", "" + page));
+		}
+		if (minUploadDate != null){
+			parameters.add(new Parameter("min_upload_date", "" + (long)(minUploadDate.getTime()/1000)));
+		}
+		if (maxUploadDate != null){
+			parameters.add(new Parameter("max_upload_date", "" + (long)(maxUploadDate.getTime()/1000)));
+		}
+		if (minTakenDate != null){
+			parameters.add(new Parameter("min_taken_date", "" + (long)(minTakenDate.getTime()/1000)));
+		}
+		if (maxTakenDate != null){
+			parameters.add(new Parameter("max_taken_date", "" + (long)(maxTakenDate.getTime()/1000)));
+		}
+		if (extras != null) {
+			parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
+		}
+		parameters.add(new Parameter("bbox", "" + minLongitude + "," + minLatitude + "," + maxLongitude + "," + maxLatitude + ","));
+		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
+
+		Response response = transport.get(transport.getPath(), parameters);
+		if (response.isError())
+			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+		Element photosElement = response.getPayload();
+		PhotoList photos = PhotoUtils.createPhotoList(photosElement);
 		return photos;
 	}
 
@@ -263,12 +381,12 @@ public class PeopleInterface {
 	 * @throws FlickrException
 	 */
 	public User getUploadStatus() throws IOException, SAXException, FlickrException {
-		List parameters = new ArrayList();
+		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter("method", METHOD_GET_UPLOAD_STATUS));
 		parameters.add(new Parameter("api_key", apiKey));
 		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
-		Response response = transportAPI.get(transportAPI.getPath(), parameters);
+		Response response = transport.get(transport.getPath(), parameters);
 		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
 		Element userElement = response.getPayload();

@@ -28,6 +28,10 @@ public class GeoData {
 		accuracy = Integer.parseInt(accuracyStr);
 	}
 
+	/**
+	 *
+	 * @return Recorded accuracy level of the location information. World level is 1, Country is ~3, Region ~6, City ~11, Street ~16. Current range is 1-16. Defaults to 16 if not specified.
+	 */
 	public int getAccuracy() {
 		return accuracy;
 	}
@@ -37,7 +41,8 @@ public class GeoData {
 	 *
 	 * World level is 1, Country is ~3, Region ~6, City ~11, Street ~16.
 	 *
-	 * @param accuracy
+	 * @param accuracy - level of the location information. World level is 1, Country is ~3, Region ~6, City ~11, Street ~16. Current range is 1-16. Defaults to 16 if not specified.
+
 	 * @see com.aetrion.flickr.Flickr#ACCURACY_WORLD
 	 * @see com.aetrion.flickr.Flickr#ACCURACY_COUNTRY
 	 * @see com.aetrion.flickr.Flickr#ACCURACY_REGION
@@ -48,18 +53,34 @@ public class GeoData {
 		this.accuracy = accuracy;
 	}
 
+	/**
+	 *
+	 * @return The latitude whose valid range is -90 to 90. Anything more than 6 decimal places will be truncated.
+	 */
 	public float getLatitude() {
 		return latitude;
 	}
 
+	/**
+	 *
+	 * @param latitude - The latitude whose valid range is -90 to 90. Anything more than 6 decimal places will be truncated.
+	 */
 	public void setLatitude(float latitude) {
 		this.latitude = latitude;
 	}
 
+	/**
+	 *
+	 * @return The longitude whose valid range is -180 to 180. Anything more than 6 decimal places will be truncated.
+	 */
 	public float getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 *
+	 * @param longitude - The longitude whose valid range is -180 to 180. Anything more than 6 decimal places will be truncated.
+	 */
 	public void setLongitude(float longitude) {
 		this.longitude = longitude;
 	}

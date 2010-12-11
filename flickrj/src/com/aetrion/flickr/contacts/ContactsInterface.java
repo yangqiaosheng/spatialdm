@@ -145,8 +145,9 @@ public class ContactsInterface {
 	 * Get the collection of public contacts for the specified user ID.
 	 *
 	 * This method does not require authentication.
-	 *
-	 * @param userId The user ID
+	 * @param userId userId The user ID
+	 * @param perPage Number of photos to return per page. If this argument is omitted, it defaults to 1000. The maximum allowed value is 1000.
+	 * @param page The page of results to return. If this argument is omitted, it defaults to 1.
 	 * @return The Collection of Contact objects
 	 * @throws IOException
 	 * @throws SAXException

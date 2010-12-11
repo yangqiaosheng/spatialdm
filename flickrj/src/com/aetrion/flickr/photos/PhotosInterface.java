@@ -30,6 +30,7 @@ import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.Response;
 import com.aetrion.flickr.Transport;
 import com.aetrion.flickr.auth.AuthUtilities;
+import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.people.User;
 import com.aetrion.flickr.photos.geo.GeoInterface;
 import com.aetrion.flickr.util.IOUtilities;
@@ -134,9 +135,9 @@ public class PhotosInterface {
 	 * This method requires authentication with 'delete' permission.
 	 *
 	 * @param photoId
-	 * @throws SAXException 
-	 * @throws IOException 
-	 * @throws FlickrException 
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws FlickrException
 	 */
 	public void delete(String photoId) throws IOException, SAXException, FlickrException {
 		List parameters = new ArrayList();
@@ -365,7 +366,7 @@ public class PhotosInterface {
 	 *
 	 * @param dates An array of dates, denoting the periods to return counts for.
 	 * They should be specified smallest first.
-	 * @param takenDates An array of dates, denoting the periods to return 
+	 * @param takenDates An array of dates, denoting the periods to return
 	 * counts for. They should be specified smallest first.
 	 * @return A Collection of Photocount objects
 	 */
@@ -414,7 +415,7 @@ public class PhotosInterface {
 
 	/**
 	 * Get the Exif data for the photo.
-	 * 
+	 *
 	 * The calling user must have permission to view the photo.
 	 *
 	 * This method does not require authentication.
@@ -671,9 +672,9 @@ public class PhotosInterface {
 
 	/**
 	 * Get the available sizes of a Photo.
-	 * 
+	 *
 	 * The boolean toggle allows to (api-)sign the call.
-	 * 
+	 *
 	 * This way the calling user can retrieve sizes for <b>his own</b> private photos.
 	 *
 	 * @param photoId The photo ID
@@ -889,7 +890,7 @@ public class PhotosInterface {
 	}
 
 	/**
-	 * Return a list of your photos that have been recently created or which have been recently modified. 
+	 * Return a list of your photos that have been recently created or which have been recently modified.
 	 * Recently modified may mean that the photo's metadata (title, description, tags) may have been changed or a comment has been added (or just modified somehow :-)
 	 *
 	 * This method requires authentication with 'read' permission.
@@ -900,8 +901,8 @@ public class PhotosInterface {
 	 * @param perPage Number of photos to return per page. If this argument is 0, it defaults to 100. The maximum allowed value is 500.
 	 * @param page The page of results to return. If this argument is 0, it defaults to 1.
 	 * @return a list of photos
-	 * @throws SAXException 
-	 * @throws IOException 
+	 * @throws SAXException
+	 * @throws IOException
 	 * @throws FlickrException
 	 */
 	public PhotoList recentlyUpdated(Date minDate, Set extras, int perPage, int page) throws IOException, SAXException, FlickrException {
@@ -965,7 +966,6 @@ public class PhotosInterface {
 	 * @throws FlickrException
 	 */
 	public PhotoList search(SearchParameters params, int perPage, int page) throws IOException, SAXException, FlickrException {
-		PhotoList photos = new PhotoList();
 
 		List parameters = new ArrayList();
 		parameters.add(new Parameter("method", METHOD_SEARCH));
@@ -985,16 +985,7 @@ public class PhotosInterface {
 		if (response.isError())
 			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
 		Element photosElement = response.getPayload();
-		photos.setPage(photosElement.getAttribute("page"));
-		photos.setPages(photosElement.getAttribute("pages"));
-		photos.setPerPage(photosElement.getAttribute("perpage"));
-		photos.setTotal(photosElement.getAttribute("total"));
-
-		NodeList photoNodes = photosElement.getElementsByTagName("photo");
-		for (int i = 0; i < photoNodes.getLength(); i++) {
-			Element photoElement = (Element) photoNodes.item(i);
-			photos.add(PhotoUtils.createPhoto(photoElement));
-		}
+		PhotoList photos = PhotoUtils.createPhotoList(photosElement);
 		return photos;
 	}
 

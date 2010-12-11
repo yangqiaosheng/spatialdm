@@ -136,10 +136,18 @@ public class Photo {
 		this.farm = farm;
 	}
 
+	/**
+	 *
+	 * @return A Where On Earth (WOE) ID.
+	 */
 	public String getWoeId() {
 		return woeId;
 	}
 
+	/**
+	 *
+	 * @param woeId - A Where On Earth (WOE) ID. (While optional, you must pass either a valid Places ID or a WOE ID.)
+	 */
 	public void setWoeId(String woeId) {
 		this.woeId = woeId;
 	}
@@ -787,13 +795,17 @@ public class Photo {
 	}
 
 	/**
-	 * @return A placeId
+	 * @return A Flickr Places ID.
 	 * @see com.aetrion.flickr.places.PlacesInterface#resolvePlaceId(String)
 	 */
 	public String getPlaceId() {
 		return placeId;
 	}
 
+	/**
+	 *
+	 * @param placeId - A Flickr Places ID. (While optional, you must pass either a valid Places ID or a WOE ID.)
+	 */
 	public void setPlaceId(String placeId) {
 		this.placeId = placeId;
 	}
