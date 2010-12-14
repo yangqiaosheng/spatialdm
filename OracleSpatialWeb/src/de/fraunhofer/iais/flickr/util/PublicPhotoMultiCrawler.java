@@ -186,7 +186,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	private void selectPeople(int threadId, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, LAST_UPLOAD_DATE from FLICKR_PEOPLE t where t.CHECKED_PHOTO_UPDATE = 0");
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, LAST_UPLOAD_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0");
 
 		ResultSet rs = null;
 		try {
@@ -328,7 +328,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	}
 
 	private void updatePeoplesInfo(Connection conn, String userId, Date lastUploadDate, Date lastTakenDate) throws SQLException {
-		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CHECKED_PHOTO_UPDATE = 1, t.LAST_UPLOAD_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), t.LAST_TAKEN_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') where USER_ID = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.PHOTO_UPDATE_CHECKED = 1, t.LAST_UPLOAD_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), t.LAST_TAKEN_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') where USER_ID = ?");
 		try {
 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -345,7 +345,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	}
 
 	private void updatePeoplesInfo(Connection conn, String userId) throws SQLException {
-		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CHECKED_PHOTO_UPDATE = 1 where USER_ID = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.PHOTO_UPDATE_CHECKED = 1 where USER_ID = ?");
 		try {
 			System.out.println("update user: " + userId);
 			pstmt.setString(1, userId);
