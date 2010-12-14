@@ -165,7 +165,7 @@ public class PeopleMultiCrawler extends Thread {
 
 	private void selectPeople(int threadId, ContactsInterface contactsInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CHECKED_CONTACT_UPDATE = 0");
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = 0");
 
 		ResultSet rs = null;
 		try {
@@ -218,7 +218,7 @@ public class PeopleMultiCrawler extends Thread {
 
 	private void insertPeople(String userId, MembersList memberslist) {
 		Connection conn = db.getConn();
-		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CHECKED_CONTACT_UPDATE = 1 where t.USER_ID = ?");
+		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CONTACT_UPDATE_CHECKED = 1 where t.USER_ID = ?");
 
 		try {
 			conn.setAutoCommit(false);

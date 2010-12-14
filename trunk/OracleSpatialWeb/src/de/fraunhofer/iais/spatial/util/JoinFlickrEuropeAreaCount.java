@@ -27,13 +27,14 @@ public class JoinFlickrEuropeAreaCount {
 		JoinFlickrEuropeAreaCount t = new JoinFlickrEuropeAreaCount();
 
 		ArrayList<String> radiusList = new ArrayList<String>();
-//		radiusList.add("5000");
-//		radiusList.add("10000");
-//		radiusList.add("20000");
-//		radiusList.add("40000");
-//		radiusList.add("80000");
-//		radiusList.add("160000");
-//		radiusList.add("320000");
+		radiusList.add("5000");
+		radiusList.add("10000");
+		radiusList.add("20000");
+		radiusList.add("40000");
+		radiusList.add("80000");
+		radiusList.add("160000");
+		radiusList.add("320000");
+		t.groupPhotos(radiusList);
 //		for (String radius : radiusList) {
 //			t.count(QueryLevel.HOUR, radius);
 //			t.count(QueryLevel.DAY, radius);
@@ -46,10 +47,10 @@ public class JoinFlickrEuropeAreaCount {
 //		t.countPeople("5000");
 //		t.countTotal();
 
-				t.countDay();
-				t.countMonth();
-				t.countYear();
-				t.countTotal();
+//				t.countDay();
+//				t.countMonth();
+//				t.countYear();
+//				t.countTotal();
 		//
 		//		t.countPerson("80000");
 		//		t.countPerson("40000");
@@ -499,7 +500,7 @@ public class JoinFlickrEuropeAreaCount {
 		int i = 0;
 
 		Connection conn = db.getConn();
-		PreparedStatement pstmt1 = db.getPstmt(conn, "select e.PHOTO_ID, LONGITUDE, LATITUDE from DAY_FLICKR_EUROPE_PHOTO p where p.region_5000_id is NULL");
+		PreparedStatement pstmt1 = db.getPstmt(conn, "select p.PHOTO_ID, LONGITUDE, LATITUDE from FLICKR_EUROPE p where p.REGION_CHECKED = 0");
 		ResultSet rs1 = db.getRs(pstmt1);
 		while (rs1.next()) {
 			double x = rs1.getDouble("LONGITUDE");
@@ -511,7 +512,7 @@ public class JoinFlickrEuropeAreaCount {
 				pstmt2.setDouble(2, y);
 				ResultSet rs2 = db.getRs(pstmt2);
 				if (rs2.next()) {
-					PreparedStatement pstmt3 = db.getPstmt(conn, "update DAY_FLICKR_EUROPE_PHOTO set REGION_" + radius + "_ID = ? where PHOTO_ID = ?");
+					PreparedStatement pstmt3 = db.getPstmt(conn, "update FLICKR_EUROPE p set p.REGION_CHECKED = 1 , p.REGION_" + radius + "_ID = ? where p.PHOTO_ID = ?");
 					pstmt3.setString(1, rs2.getString("ID"));
 					pstmt3.setString(2, rs1.getString("PHOTO_ID"));
 					pstmt3.executeUpdate();
