@@ -265,11 +265,11 @@ public class REST extends Transport {
 				throw new RuntimeException(e); // TODO: Replace with a better exception
 			} finally {
 				IOUtilities.close(in);
-				conn.disconnect();
 			}
 		} finally {
 			if (conn != null) {
 				conn.disconnect();
+				conn = null;
 			}
 		}
 	}
