@@ -19,6 +19,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -26,7 +27,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.Day;
-import org.jfree.data.time.MovingAverage;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
@@ -67,16 +67,57 @@ public class ChartUtil {
 						2000), //year
 						e.getValue()); //value
 			}
-			//			timeseriescollection.addSeries(timeseries);
+						timeseriescollection.addSeries(timeseries);
 
-			TimeSeries avgtimeseries = MovingAverage.createMovingAverage(timeseries, String.valueOf(year), 5, 0);
-			timeseriescollection.addSeries(avgtimeseries);
+//			TimeSeries avgtimeseries = MovingAverage.createMovingAverage(timeseries, String.valueOf(year), 5, 0);
+//			timeseriescollection.addSeries(avgtimeseries);
 		}
 
 		return timeseriescollection;
 	}
 
 	private static JFreeChart createXYChart(XYDataset xydataset) {
+
+		JFreeChart jfreechart = ChartFactory.createXYLineChart("#Photos Distribution", // Title
+				"Time", // X Label
+				"#photos", // Y Label
+				xydataset, // dataset
+				PlotOrientation.HORIZONTAL, // orientation
+				true, // show Legend
+				false, // generate Tooltips
+				false // generate Urls
+				);
+
+		jfreechart.setBackgroundPaint(Color.WHITE);
+		jfreechart.setBorderPaint(Color.BLACK);
+		// jfreechart.setBackgroundPaint(Color.LIGHT_GRAY);
+
+		XYPlot xyplot = (XYPlot) jfreechart.getPlot();
+		xyplot.setBackgroundPaint(Color.LIGHT_GRAY);
+		xyplot.setDomainGridlinePaint(Color.WHITE);
+		xyplot.setRangeGridlinePaint(Color.WHITE);
+		xyplot.setAxisOffset(new RectangleInsets(5D, 5D, 5D, 5D));
+		xyplot.setDomainCrosshairVisible(true);
+		xyplot.setRangeCrosshairVisible(true);
+
+		LegendTitle legend = jfreechart.getLegend();
+		legend.setBackgroundPaint(Color.LIGHT_GRAY);
+		legend.setPosition(RectangleEdge.RIGHT);
+		legend.setVerticalAlignment(VerticalAlignment.CENTER);
+		legend.setMargin(10, 0, 10, 10);
+
+		XYItemRenderer xyitemrenderer = xyplot.getRenderer();
+		XYLineAndShapeRenderer xylineandshaperenderer = (XYLineAndShapeRenderer) xyitemrenderer;
+		xylineandshaperenderer.setBaseShapesVisible(false);
+
+		NumberAxis dateaxis = (NumberAxis) xyplot.getDomainAxis();
+		dateaxis.setAutoRangeIncludesZero(false);
+//		dateaxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
+//		dateaxis.setDateFormatOverride(new SimpleDateFormat("MMM", Locale.ENGLISH));
+		return jfreechart;
+	}
+
+	private static JFreeChart createTimeSeriesChart(XYDataset xydataset) {
 
 		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("#Photos Distribution", // Title
 				"Time", // X Label

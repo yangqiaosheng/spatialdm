@@ -40,19 +40,18 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		if (areaid == null || "".equals(areaid))
 			return;
 
-
-		FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
-		if(areaDto != null){
-			try {
-
+		try {
+			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+			if (areaDto != null) {
 				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
 				if (area != null) {
 					areaMgr.createTimeSeriesChart(area, areaDto.getYears4Chart(), sos);
 				}
-			} catch (Exception e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-				sos.close();
 			}
+		} catch (Exception e) {
+			logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+		} finally{
+			sos.close();
 		}
 
 	}

@@ -1,18 +1,16 @@
 package de.fraunhofer.iais.flickr.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
@@ -20,6 +18,8 @@ import java.util.TreeSet;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.Flickr;
@@ -53,6 +53,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static final double MAX_LATITUDE = 72.09216;
 
 	static Calendar beginDateLimit;
+	static Collection<String> radiusList;
 	static int numReTry = 0;
 	static long numPeople = 0;
 	static long numPhoto = 0;
@@ -212,7 +213,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
-	private void retrievePeoplesPhotos(PeopleInterface peopleInterface, String userId, Date lastUploadDate) throws IOException, SAXException, FlickrException, SQLException {
+	private void retrievePeoplesPhotos(PeopleInterface peopleInterface, String userId, Date lastUploadDate) throws IOException, SAXException, FlickrException {
 
 		Set<String> extras = new HashSet<String>();
 		extras.add(Extras.DATE_TAKEN);
@@ -260,7 +261,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		insertPhotos(insertPhotos, userId);
 	}
 
-	private void insertPhotos(PhotoList photos, String userId) throws SQLException {
+	private void insertPhotos(PhotoList photos, String userId) {
 		Connection conn = db.getConn();
 		TreeSet<Date> uploadDates = new TreeSet<Date>();
 		TreeSet<Date> takenDates = new TreeSet<Date>();
@@ -270,6 +271,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			for (int i = 0; i < photos.size(); i++) {
 				Photo p = (Photo) photos.get(i);
 				insertPhoto(conn, p);
+				updatePhotoRegionInfo(conn, p, radiusList);
 				uploadDates.add(p.getDatePosted());
 				takenDates.add(p.getDateTaken());
 			}
@@ -327,6 +329,47 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
+	private void updatePhotoRegionInfo(Connection conn, Photo photo, Collection<String> radiuses) throws SQLException {
+
+		double x = photo.getGeoData().getLongitude();
+		double y = photo.getGeoData().getLatitude();
+
+		for (String radius : radiuses) {
+			PreparedStatement selectPstmt = null;
+			ResultSet selectRs = null;
+			try {
+				selectPstmt = db.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_EUROPE_AREA_" + radius
+						+ "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
+				selectPstmt.setDouble(1, x);
+				selectPstmt.setDouble(2, y);
+				selectRs = db.getRs(selectPstmt);
+				if (selectRs.next()) {
+					PreparedStatement updateRegionPstmt = null;
+					try {
+						updateRegionPstmt = db.getPstmt(conn, "update FLICKR_EUROPE p set p.REGION_" + radius + "_ID = ? where p.PHOTO_ID = ?");
+						updateRegionPstmt.setString(1, selectRs.getString("ID"));
+						updateRegionPstmt.setString(2, photo.getId());
+						updateRegionPstmt.executeUpdate();
+					} finally {
+						db.close(updateRegionPstmt);
+					}
+				}
+			} finally {
+				db.close(selectPstmt);
+				db.close(selectRs);
+			}
+		}
+
+		PreparedStatement updateCheckedPstmt = null;
+		try {
+			updateCheckedPstmt = db.getPstmt(conn, "update FLICKR_EUROPE p set p.REGION_CHECKED = 1 where p.PHOTO_ID = ?");
+			updateCheckedPstmt.setString(1, photo.getId());
+			updateCheckedPstmt.executeUpdate();
+		} finally {
+			db.close(updateCheckedPstmt);
+		}
+	}
+
 	private void updatePeoplesInfo(Connection conn, String userId, Date lastUploadDate, Date lastTakenDate) throws SQLException {
 		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.PHOTO_UPDATE_CHECKED = 1, t.LAST_UPLOAD_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), t.LAST_TAKEN_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') where USER_ID = ?");
 		try {
@@ -360,6 +403,15 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 		beginDateLimit = Calendar.getInstance();
 		beginDateLimit.set(2005, 00, 01);
+
+		radiusList = new LinkedHashSet<String>();
+		radiusList.add("5000");
+		radiusList.add("10000");
+		radiusList.add("20000");
+		radiusList.add("40000");
+		radiusList.add("80000");
+		radiusList.add("160000");
+		radiusList.add("320000");
 
 		for (int i = 0; i < NUM_THREAD; i++) {
 			PublicPhotoMultiCrawler crawler = new PublicPhotoMultiCrawler();

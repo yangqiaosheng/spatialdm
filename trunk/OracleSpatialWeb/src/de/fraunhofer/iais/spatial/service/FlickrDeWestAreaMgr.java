@@ -474,6 +474,41 @@ public class FlickrDeWestAreaMgr {
 		ChartUtil.createTimeSeriesChart(countsMap, os);
 	}
 
+//	public void createTimeSeriesChart(FlickrDeWestArea a, QueryLevel queryLevel, FlickrDeWestAreaDto areaDto, OutputStream os) throws ParseException, IOException {
+//		if ( a != null && areaDto.getQueryStrs().size() > 0 && queryLevel != null) {
+//			Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
+//			switch (queryLevel) {
+//			case HOUR:
+//					int num = 0;
+//					for (Map.Entry<String, Integer> e : a.getHoursCount().entrySet()) {
+//						if (hours.contains(e.getKey())) {
+//							num += e.getValue();
+//						}
+//					}
+//					a.setSelectCount(num);
+//
+//				break;
+//			case DAY:
+//
+//
+//				break;
+//			case MONTH:
+//
+//
+//				break;
+//			case YEAR:
+//				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//				for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
+//					if (years.contains(e.getKey().substring(0, 7))) {
+//						countsMap.put(sdf.parse(e.getKey()), e.getValue());
+//					}
+//				}
+//				break;
+//			}
+//			ChartUtil.createTimeSeriesChart(countsMap, os);
+//		}
+//	}
+
 	public String createXml(List<FlickrDeWestArea> as, String filenamePrefix, Radius radius) throws UnsupportedEncodingException {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");

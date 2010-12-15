@@ -77,13 +77,14 @@ public class ZoomKmlServlet extends HttpServlet {
 //			bw.write(xml);
 //			bw.close();
 
-			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
-			if("true".equals(persist)){
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true" );
-				areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
-			}
-
 			try {
+
+				FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+				if ("true".equals(persist)) {
+					logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
+					areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+				}
+
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
@@ -110,7 +111,7 @@ public class ZoomKmlServlet extends HttpServlet {
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
-				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 			}
 		}
 
