@@ -3,13 +3,18 @@ package de.fraunhofer.iais.spatial.test;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -462,6 +467,19 @@ public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
 
 		System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
 		System.out.println(coordinates + "\n");
+	}
+
+	@Test
+	public void testTimeSeriesChart() throws ParseException, IOException {
+		Set<String> years = new HashSet<String>();
+		years.add("2005");
+		years.add("2009");
+		years.add("2007");
+		years.add("2001");
+		years.add("2008");
+		FileOutputStream fos = new FileOutputStream("temp/80000.jpg");
+		FlickrDeWestArea a = areaMgr.getAreaDao().getAreaById(3, FlickrDeWestArea.Radius.R80000);
+		areaMgr.createTimeSeriesChart(a, years, fos);
 	}
 
 //	@Test

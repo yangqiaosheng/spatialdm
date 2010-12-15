@@ -6,15 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -373,7 +368,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> hoursCount = new TreeMap<String, Integer>();
 		a.setHoursCount(hoursCount);
 
 		try {
@@ -384,10 +379,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("HOUR");
 				if (count != null) {
-					Matcher m = hourRegExPattern.matcher(count);
-					while (m.find()) {
-						hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}
+					parseCounts(count, hoursCount, hourRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -404,7 +396,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> daysCount = new TreeMap<String, Integer>();
 		a.setDaysCount(daysCount);
 
 		try {
@@ -415,10 +407,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("DAY");
 				if (count != null) {
-					Matcher m = dayRegExPattern.matcher(count);
-					while (m.find()) {
-						daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}
+					parseCounts(count, daysCount, dayRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -435,7 +424,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> monthsCount = new TreeMap<String, Integer>();
 		a.setMonthsCount(monthsCount);
 
 		try {
@@ -446,10 +435,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("MONTH");
 				if (count != null) {
-					Matcher m = monthRegExPattern.matcher(count);
-					while (m.find()) {
-						monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}
+					parseCounts(count, monthsCount, monthRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -466,7 +452,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> yearsCount = new TreeMap<String, Integer>();
 		a.setYearsCount(yearsCount);
 
 		try {
@@ -477,10 +463,7 @@ public class FlickrDeWestAreaDaoJdbc extends FlickrDeWestAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("YEAR");
 				if (count != null) {
-					Matcher m = yearRegExPattern.matcher(count);
-					while (m.find()) {
-						yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
-					}
+					parseCounts(count, yearsCount, yearRegExPattern);
 				}
 			}
 		} catch (SQLException e) {

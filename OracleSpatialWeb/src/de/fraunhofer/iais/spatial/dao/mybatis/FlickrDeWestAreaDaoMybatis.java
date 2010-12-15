@@ -1,22 +1,16 @@
 package de.fraunhofer.iais.spatial.dao.mybatis;
 
 import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.mybatis.spring.SqlSessionTemplate;
 
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
@@ -72,16 +66,12 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		if (a.getHoursCount() != null)
 			return; // cached
 
-		Map<String, Integer> hoursCount = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> hoursCount = new TreeMap<String, Integer>();
 		a.setHoursCount(hoursCount);
 
 		String count = (String) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".hourCount", a);
 		if (count != null) {
-			Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
-			Matcher m = p.matcher(count);
-			while (m.find()) {
-				hoursCount.put(m.group(1), Integer.parseInt(m.group(2)));
-			}
+			parseCounts(count, hoursCount, hourRegExPattern);
 		}
 	}
 
@@ -89,16 +79,12 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		if (a.getDaysCount() != null)
 			return; // cached
 
-		Map<String, Integer> daysCount = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> daysCount = new TreeMap<String, Integer>();
 		a.setDaysCount(daysCount);
 
 		String count = (String) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".dayCount", a);
 		if (count != null) {
-			Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
-			Matcher m = p.matcher(count);
-			while (m.find()) {
-				daysCount.put(m.group(1), Integer.parseInt(m.group(2)));
-			}
+			parseCounts(count, daysCount, dayRegExPattern);
 		}
 	}
 
@@ -106,16 +92,12 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		if (a.getMonthsCount() != null)
 			return; // cached
 
-		Map<String, Integer> monthsCount = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> monthsCount = new TreeMap<String, Integer>();
 		a.setMonthsCount(monthsCount);
 
 		String count = (String) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".monthCount", a);
 		if (count != null) {
-			Pattern p = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
-			Matcher m = p.matcher(count);
-			while (m.find()) {
-				monthsCount.put(m.group(1), Integer.parseInt(m.group(2)));
-			}
+			parseCounts(count, monthsCount, monthRegExPattern);
 		}
 	}
 
@@ -123,16 +105,12 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		if (a.getYearsCount() != null)
 			return; // cached
 
-		Map<String, Integer> yearsCount = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> yearsCount = new TreeMap<String, Integer>();
 		a.setYearsCount(yearsCount);
 
 		String count = (String) sessionTemplate.selectOne(FlickrDeWestArea.class.getName() + ".yearCount", a);
 		if (count != null) {
-			Pattern p = Pattern.compile("(\\d{4}):(\\d{1,});");
-			Matcher m = p.matcher(count);
-			while (m.find()) {
-				yearsCount.put(m.group(1), Integer.parseInt(m.group(2)));
-			}
+			parseCounts(count, yearsCount, yearRegExPattern);
 		}
 	}
 

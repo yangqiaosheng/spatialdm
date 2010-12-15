@@ -25,7 +25,6 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
-
 public class SmallPhotoUrlServlet extends HttpServlet {
 	/**
 	* Logger for this class
@@ -36,7 +35,6 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 	private static final int MAX_PAGE_SIZE = 200;
 	private static FlickrDeWestAreaMgr areaMgr = null;
-
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -73,23 +71,29 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		if (areaid == null || areaid.equals("") || page == null || Integer.parseInt(page) < 1 || pageSize == null || Integer.parseInt(pageSize) < 0 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
 			messageElement.setText("ERROR: wrong input parameter!");
 		} else {
+			try {
 
-			FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 
-			if(areaDto == null){
-				logger.error("doGet(HttpServletRequest, HttpServletResponse) - no areaDto in the session"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				messageElement.setText("ERROR: Please make a query first.");
-			} else {
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				if (areaDto == null) {
+					logger.error("doGet(HttpServletRequest, HttpServletResponse) - no areaDto in the session"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					messageElement.setText("ERROR: Please make a query first.");
+				} else {
+					logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), Integer.parseInt(page), Integer.parseInt(pageSize));
-				messageElement.setText("SUCCESS");
+					photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), Integer.parseInt(page), Integer.parseInt(pageSize));
+					messageElement.setText("SUCCESS");
+				}
+			} catch (Exception e) {
+				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+				messageElement.setText("ERROR: wrong input parameter!");
+//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 			}
 		}
 
 		out.print(XmlUtil.xml2String(document, true));
 
-		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - " + XmlUtil.xml2String(document, false)); //$NON-NLS-1$
+//		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - " + XmlUtil.xml2String(document, false)); //$NON-NLS-1$
 
 		out.flush();
 		out.close();
@@ -103,7 +107,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 //
 //	}
 
-	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize ) {
+	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize) {
 		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

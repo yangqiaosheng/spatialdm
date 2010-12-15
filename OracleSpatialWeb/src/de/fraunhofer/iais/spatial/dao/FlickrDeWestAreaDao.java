@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
@@ -177,5 +178,23 @@ public abstract class FlickrDeWestAreaDao {
 			return null;
 		}
 
+	}
+
+	protected static void parseCounts(String count, Map<String, Integer> counts, Pattern dateRegExPattern) {
+		Matcher m = dateRegExPattern.matcher(count);
+		while (m.find()) {
+			counts.put(m.group(1), Integer.parseInt(m.group(2)));
+		}
+	}
+
+	public static String createCountsDbString(Map<String, Integer> counts){
+		StringBuffer strBuffer = new StringBuffer();
+		for (Map.Entry<String, Integer> e : counts.entrySet()) {
+			strBuffer.append(e.getKey())
+					 .append(":")
+					 .append(e.getValue())
+					 .append(";");
+		}
+		return strBuffer.toString();
 	}
 }
