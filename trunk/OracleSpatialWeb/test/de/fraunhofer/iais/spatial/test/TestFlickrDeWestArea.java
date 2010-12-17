@@ -3,7 +3,6 @@ package de.fraunhofer.iais.spatial.test;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,7 +19,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
+import javax.naming.NamingException;
 
 import junit.framework.Assert;
 
@@ -29,8 +28,9 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
@@ -40,16 +40,22 @@ import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
-@ContextConfiguration("classpath:beans.xml")
-public class TestFlickrDeWestArea extends AbstractJUnit4SpringContextTests {
+//@ContextConfiguration("classpath:beans.xml")
+public class TestFlickrDeWestArea{
 
-	@Resource(name = "flickrDeWestAreaMgr")
-	private FlickrDeWestAreaMgr areaMgr = null;
+//	@Resource(name = "flickrDeWestAreaMgr")
+	private static FlickrDeWestAreaMgr areaMgr = null;
 
 	@BeforeClass
-	public static void initClass() {
+	public static void initClass() throws NamingException {
 		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir") + "/");
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
+
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"classpath:beans.xml"});
+		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
+		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
+
+		areaMgr = (FlickrDeWestAreaMgr) context.getBean("flickrDeWestAreaMgr");
 	}
 
 	@Test

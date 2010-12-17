@@ -80,7 +80,7 @@
 
 	<!-- DataSource Selector -->
 	<bean id="db" class="de.fraunhofer.iais.spatial.dao.jdbc.DB">
-		<property name="dataSource" ref="oracleIccDataSource" />
+		<property name="dataSource" ref="jndiDataSource" />
 	</bean>
 
 	<!-- Mybatis configuration -->
