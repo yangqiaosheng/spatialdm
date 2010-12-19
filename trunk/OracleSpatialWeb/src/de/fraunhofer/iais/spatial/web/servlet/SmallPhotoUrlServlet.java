@@ -1,25 +1,24 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
@@ -68,22 +67,19 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		if (areaid == null || areaid.equals("") || page == null || Integer.parseInt(page) < 1 || pageSize == null || Integer.parseInt(pageSize) < 0 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
+		if (!StringUtils.isNumeric(areaid) || !StringUtils.isNumeric(page) || Integer.parseInt(page) < 1 || !StringUtils.isNumeric(pageSize) || Integer.parseInt(pageSize) < 1 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
 			messageElement.setText("ERROR: wrong input parameter!");
+		} else if (request.getSession().getAttribute("areaDto") == null) {
+			messageElement.setText("ERROR: please perform a query first!");
 		} else {
 			try {
-
 				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 
-				if (areaDto == null) {
-					logger.error("doGet(HttpServletRequest, HttpServletResponse) - no areaDto in the session"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					messageElement.setText("ERROR: Please make a query first.");
-				} else {
-					logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-					photosResponseXml(document, Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()), areaDto.getQueryStrs(), Integer.parseInt(page), Integer.parseInt(pageSize));
-					messageElement.setText("SUCCESS");
-				}
+				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()));
+				photosResponseXml(document, area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
+				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
@@ -99,16 +95,9 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		out.close();
 	}
 
-//	private Set<String> createQueryStrs(FlickrDeWestAreaDto areaDto){
-//
-//	}
-//
-//	private Set<String> createQueryStr(FlickrDeWestAreaDto areaDto){
-//
-//	}
+	private String photosResponseXml(Document document, FlickrDeWestArea area, FlickrDeWestAreaDto areaDto, int page, int pageSize) {
 
-	private String photosResponseXml(Document document, int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize) {
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(areaid, radius, queryStrs, page, pageSize);
+		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		Element rootElement = document.getRootElement();

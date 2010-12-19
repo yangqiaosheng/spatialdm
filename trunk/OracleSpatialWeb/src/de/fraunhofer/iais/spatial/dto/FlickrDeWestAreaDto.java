@@ -19,7 +19,7 @@ public class FlickrDeWestAreaDto {
 	private SortedSet<String> hours = new TreeSet<String>();
 	private SortedSet<String> weekdays = new TreeSet<String>();
 	private SortedSet<String> queryStrs;
-	private QueryLevel queryLevel;
+	private Level queryLevel;
 	private int areaid;
 	private Radius radius;
 	private int zoom;
@@ -32,7 +32,7 @@ public class FlickrDeWestAreaDto {
 	private SortedSet<String> years4Chart;
 	JGeometry queryGeom;
 
-	public enum QueryLevel {
+	public enum Level {
 		HOUR, DAY, MONTH, YEAR;
 	}
 
@@ -124,11 +124,11 @@ public class FlickrDeWestAreaDto {
 		this.queryStrs = queryStrs;
 	}
 
-	public QueryLevel getQueryLevel() {
+	public Level getQueryLevel() {
 		return queryLevel;
 	}
 
-	public void setQueryLevel(QueryLevel queryLevel) {
+	public void setQueryLevel(Level queryLevel) {
 		this.queryLevel = queryLevel;
 	}
 

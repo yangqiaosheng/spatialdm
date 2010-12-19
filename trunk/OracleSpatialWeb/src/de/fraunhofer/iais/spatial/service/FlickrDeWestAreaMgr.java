@@ -10,6 +10,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -33,10 +35,11 @@ import org.jdom.input.SAXBuilder;
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
+import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -52,105 +55,74 @@ public class FlickrDeWestAreaMgr {
 		this.flickrDeWestAreaDao = areaDao;
 	}
 
-	public void fillCache() {
-		this.flickrDeWestAreaDao.getAllAreas(Radius.R80000);
-		this.flickrDeWestAreaDao.getAllAreas(Radius.R40000);
-//		this.flickrDeWestAreaDao.getAllAreas(Radius.R20000);
-//		this.flickrDeWestAreaDao.getAllAreas(Radius.R10000);
-//		this.flickrDeWestAreaDao.getAllAreas(Radius.R5000);
-	}
-
-	public void countHours(List<FlickrDeWestArea> as, Set<String> hours) {
-		for (FlickrDeWestArea a : as) {
+	public void countHours(List<FlickrDeWestArea> areas, Set<String> hours) {
+		for (FlickrDeWestArea area : areas) {
 			int num = 0;
-			for (Map.Entry<String, Integer> e : a.getHoursCount().entrySet()) {
+			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (hours.contains(e.getKey())) {
 					num += e.getValue();
 				}
 			}
-			a.setSelectCount(num);
+			area.setSelectCount(num);
 		}
 	}
 
-	public void countDays(List<FlickrDeWestArea> as, Set<String> days) {
-		for (FlickrDeWestArea a : as) {
+	public void countDays(List<FlickrDeWestArea> areas, Set<String> days) {
+		for (FlickrDeWestArea area : areas) {
 			int num = 0;
-			for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
+			for (Map.Entry<String, Integer> e : area.getDaysCount().entrySet()) {
 				if (days.contains(e.getKey())) {
 					num += e.getValue();
 				}
 			}
-			a.setSelectCount(num);
+			area.setSelectCount(num);
 		}
 	}
 
-	public void countMonths(List<FlickrDeWestArea> as, Set<String> months) {
-		for (FlickrDeWestArea a : as) {
+	public void countMonths(List<FlickrDeWestArea> areas, Set<String> months) {
+		for (FlickrDeWestArea area : areas) {
 			int num = 0;
-			for (Map.Entry<String, Integer> e : a.getMonthsCount().entrySet()) {
+			for (Map.Entry<String, Integer> e : area.getMonthsCount().entrySet()) {
 				if (months.contains(e.getKey())) {
 					num += e.getValue();
 				}
 			}
-			a.setSelectCount(num);
+			area.setSelectCount(num);
 		}
 	}
 
-	public void countYears(List<FlickrDeWestArea> as, Set<String> years) {
-		for (FlickrDeWestArea a : as) {
+	public void countYears(List<FlickrDeWestArea> areas, Set<String> years) {
+		for (FlickrDeWestArea area : areas) {
 			int num = 0;
-			for (Map.Entry<String, Integer> e : a.getYearsCount().entrySet()) {
+			for (Map.Entry<String, Integer> e : area.getYearsCount().entrySet()) {
 				if (years.contains(e.getKey())) {
 					num += e.getValue();
 				}
 			}
-			a.setSelectCount(num);
+			area.setSelectCount(num);
 		}
 	}
 
-	private void allYears(Set<String> years) {
-		for (int i = 2005; i <= 2009; i++) {
-			years.add(String.format("%04d", i));
-		}
-	}
 
-	private void allMonths(Set<String> months) {
-		for (int i = 1; i <= 12; i++) {
-			months.add(String.format("%02d", i));
-		}
-	}
-
-	private void allDays(Set<String> days) {
-		for (int i = 1; i <= 31; i++) {
-			days.add(String.format("%02d", i));
-		}
-	}
-
-	private void allHours(Set<String> hours) {
-		for (int i = 0; i <= 23; i++) {
-			hours.add(String.format("%02d", i));
-		}
-	}
-
-	public void count(List<FlickrDeWestArea> as, FlickrDeWestAreaDto areaDto) throws Exception {
+	public void count(List<FlickrDeWestArea> areas, FlickrDeWestAreaDto areaDto) throws Exception {
 
 		System.out.println("#query:" + areaDto.getQueryStrs().size() * 139);
 		//		if (strs.size() > 5 * 12 * 31 * 24)
 		//			throw new Exception("excceed the maximun #queries!");
 
-		if ( areaDto.getQueryStrs().size() > 0 && areaDto.getQueryLevel() != null) {
+		if ( areaDto.getQueryStrs().size() > 0 ) {
 			switch (areaDto.getQueryLevel()) {
 			case HOUR:
-				this.countHours(as, areaDto.getQueryStrs());
+				this.countHours(areas, areaDto.getQueryStrs());
 				break;
 			case DAY:
-				this.countDays(as, areaDto.getQueryStrs());
+				this.countDays(areas, areaDto.getQueryStrs());
 				break;
 			case MONTH:
-				this.countMonths(as, areaDto.getQueryStrs());
+				this.countMonths(areas, areaDto.getQueryStrs());
 				break;
 			case YEAR:
-				this.countYears(as, areaDto.getQueryStrs());
+				this.countYears(areas, areaDto.getQueryStrs());
 				break;
 			}
 		}
@@ -242,7 +214,7 @@ public class FlickrDeWestAreaMgr {
 			areaDto.setYears4Chart(years4Chart);
 
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			areaDto.setQueryLevel(QueryLevel.DAY);
+			areaDto.setQueryLevel(Level.DAY);
 
 			if (intervalMachter.find()) {
 				Date beginDate = inputDateFormat.parse(intervalMachter.group(1));
@@ -279,7 +251,7 @@ public class FlickrDeWestAreaMgr {
 
 			// day of week in English format
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
-			areaDto.setQueryLevel(QueryLevel.DAY);
+			areaDto.setQueryLevel(Level.DAY);
 
 			while (selectedDaysMachter.find()) {
 				Date selectedDay = inputDateFormat.parse(selectedDaysMachter.group());
@@ -364,7 +336,7 @@ public class FlickrDeWestAreaMgr {
 
 	private void setCalendarQueryStrs(FlickrDeWestAreaDto areaDto) {
 
-		areaDto.setQueryLevel(QueryLevel.HOUR);
+		areaDto.setQueryLevel(Level.HOUR);
 
 		// construct the Query Strings
 		SortedSet<String> queryStrs = new TreeSet<String>();
@@ -380,16 +352,16 @@ public class FlickrDeWestAreaMgr {
 
 		// complete the options when they are not selected
 		if (tempYears.size() == 0) {
-			this.allYears(tempYears);
+			DateUtil.allYearStrs(tempYears);
 		}
 		if (tempMonths.size() == 0) {
-			this.allMonths(tempMonths);
+			DateUtil.allMonthStrs(tempMonths);
 		}
 		if (tempDays.size() == 0) {
-			this.allDays(tempDays);
+			DateUtil.allDayStrs(tempDays);
 		}
 		if (tempHours.size() == 0) {
-			this.allHours(tempHours);
+			DateUtil.allHourStrs(tempHours);
 		}
 
 		// day of week in English format
@@ -423,13 +395,13 @@ public class FlickrDeWestAreaMgr {
 	}
 
 
-	public String createMarkersXml(List<FlickrDeWestArea> as, String file) {
+	public String createMarkersXml(List<FlickrDeWestArea> areas, String file) {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
-		for (FlickrDeWestArea a : as) {
+		for (FlickrDeWestArea area : areas) {
 			String polyColor = "#0000";
-			int color = a.getTotalCount() / 30;
+			int color = area.getTotalCount() / 30;
 			if (color > 255) {
 				color = 255;
 			}
@@ -445,7 +417,7 @@ public class FlickrDeWestAreaMgr {
 			lineElement.setAttribute("width", "2");
 			lineElement.setAttribute("opacity", "1");
 
-			JGeometry shape = a.getGeom();
+			JGeometry shape = area.getGeom();
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
@@ -461,71 +433,121 @@ public class FlickrDeWestAreaMgr {
 		ChartUtil.createBarChart(cs, "temp/bar.jpg");
 	}
 
-	public void createTimeSeriesChart(FlickrDeWestArea a, Set<String> years, OutputStream os) throws ParseException, IOException {
+	public void createTimeSeriesChartOld(FlickrDeWestArea area, Set<String> years, OutputStream os) throws ParseException, IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
-		for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
+		for (Map.Entry<String, Integer> e : area.getDaysCount().entrySet()) {
 			if (years.contains(e.getKey().substring(0, 4))) {
 				countsMap.put(sdf.parse(e.getKey()), e.getValue());
 			}
 		}
 
-		ChartUtil.createTimeSeriesChart(countsMap, os);
+		ChartUtil.createTimeSeriesChartOld(countsMap, os);
 	}
 
-//	public void createTimeSeriesChart(FlickrDeWestArea a, QueryLevel queryLevel, FlickrDeWestAreaDto areaDto, OutputStream os) throws ParseException, IOException {
-//		if ( a != null && areaDto.getQueryStrs().size() > 0 && queryLevel != null) {
-//			Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
-//			switch (queryLevel) {
-//			case HOUR:
-//					int num = 0;
-//					for (Map.Entry<String, Integer> e : a.getHoursCount().entrySet()) {
-//						if (hours.contains(e.getKey())) {
-//							num += e.getValue();
-//						}
-//					}
-//					a.setSelectCount(num);
-//
-//				break;
-//			case DAY:
-//
-//
-//				break;
-//			case MONTH:
-//
-//
-//				break;
-//			case YEAR:
-//				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//				for (Map.Entry<String, Integer> e : a.getDaysCount().entrySet()) {
-//					if (years.contains(e.getKey().substring(0, 7))) {
-//						countsMap.put(sdf.parse(e.getKey()), e.getValue());
-//					}
-//				}
-//				break;
-//			}
-//			ChartUtil.createTimeSeriesChart(countsMap, os);
-//		}
-//	}
+	public void createTimeSeriesChart(List<FlickrDeWestArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, OutputStream os) throws ParseException, IOException {
 
-	public String createXml(List<FlickrDeWestArea> as, String filenamePrefix, Radius radius) throws UnsupportedEncodingException {
+		Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
+
+		int queryStrsLength = areaDto.getQueryStrs().first().length();
+
+		for (FlickrDeWestArea area : areas) {
+			Map<Integer, Integer> displayCounts = new TreeMap<Integer, Integer>();
+			switch (displayLevel) {
+			case HOUR:
+				// init
+				for (int hour : DateUtil.allHourInts) {
+					displayCounts.put(hour, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int hour = Integer.parseInt(e.getKey().substring(11, 13));
+						displayCounts.put(hour, e.getValue() + displayCounts.get(hour));
+					}
+				}
+				break;
+
+			case DAY:
+				// init
+				for (int day : DateUtil.allDayInts) {
+					displayCounts.put(day, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int day = Integer.parseInt(e.getKey().substring(8, 10));
+						displayCounts.put(day, e.getValue() + displayCounts.get(day));
+					}
+				}
+				break;
+
+			case MONTH:
+				// init
+				for (int month : DateUtil.allMonthInts) {
+					displayCounts.put(month, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int month = Integer.parseInt(e.getKey().substring(5, 7));
+						displayCounts.put(month, e.getValue() + displayCounts.get(month));
+					}
+				}
+				break;
+
+			case YEAR:
+				// init
+				for (int year : DateUtil.allYearInts) {
+					displayCounts.put(year, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int year = Integer.parseInt(e.getKey().substring(0, 4));
+						displayCounts.put(year, e.getValue() + displayCounts.get(year));
+					}
+				}
+				break;
+			}
+			displayCountsMap.put("Area ID: " + area.getRadius() + "-" + area.getId(), displayCounts);
+		}
+
+//		Map<Integer, Integer> cumulativeCounts = new TreeMap<Integer, Integer>();
+//		int cumulativeValue = 0;
+//		for (Map.Entry<Integer, Integer> e : displayCounts.entrySet()) {
+//			System.out.println(e.getKey() + ":" + e.getValue());
+//			cumulativeValue += e.getValue();
+//			cumulativeCounts.put(e.getKey(), cumulativeValue);
+//		}
+//		displayCountsMap.put("cumulative", cumulativeCounts);
+
+		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, os);
+	}
+
+
+	public String createXml(List<FlickrDeWestArea> areas, String filenamePrefix, Radius radius) throws UnsupportedEncodingException {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
 
-		for (FlickrDeWestArea a : as) {
+		for (FlickrDeWestArea area : areas) {
 			Element polygonElement = new Element("polygon");
 			rootElement.addContent(polygonElement);
-			polygonElement.setAttribute("id", String.valueOf(a.getId()));
-			polygonElement.setAttribute("total", String.valueOf(a.getTotalCount()));
-			polygonElement.setAttribute("select", String.valueOf(a.getSelectCount()));
+			polygonElement.setAttribute("id", String.valueOf(area.getId()));
+			polygonElement.setAttribute("total", String.valueOf(area.getTotalCount()));
+			polygonElement.setAttribute("select", String.valueOf(area.getSelectCount()));
 
 			Element lineElement = new Element("line");
 			polygonElement.addContent(lineElement);
 			lineElement.setAttribute("width", "1");
 
-			JGeometry shape = a.getGeom();
+			JGeometry shape = area.getGeom();
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
@@ -537,8 +559,8 @@ public class FlickrDeWestAreaMgr {
 			polygonElement.addContent(centerElement);
 			Element pointElement = new Element("point");
 			centerElement.addContent(pointElement);
-			pointElement.setAttribute("lng", String.valueOf(a.getCenter().getX()));
-			pointElement.setAttribute("lat", String.valueOf(a.getCenter().getY()));
+			pointElement.setAttribute("lng", String.valueOf(area.getCenter().getX()));
+			pointElement.setAttribute("lat", String.valueOf(area.getCenter().getY()));
 		}
 
 		if(filenamePrefix != null){
@@ -548,7 +570,7 @@ public class FlickrDeWestAreaMgr {
 		return XmlUtil.xml2String(document, false);
 	}
 
-	public String createKml(List<FlickrDeWestArea> as, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
+	public String createKml(List<FlickrDeWestArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = System.getProperty("oraclespatialweb.root");
 		if (remoteBasePath == null || "".equals(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
@@ -567,13 +589,13 @@ public class FlickrDeWestAreaMgr {
 		rootElement.addContent(documentElement);
 
 		// GroundOverlay
-		for (FlickrDeWestArea a : as) {
-			if (a.getTotalCount() != 0) {
+		for (FlickrDeWestArea area : areas) {
+			if (area.getTotalCount() != 0) {
 				String name = "";
 				//			String description = "count: " + String.valueOf(a.getTotalCount());
-				String description = "areaid=" + a.getId()
-									+ "&total=" + a.getTotalCount()
-									+ "&selected=" + a.getSelectCount();
+				String description = "areaid=" + area.getId()
+									+ "&total=" + area.getTotalCount()
+									+ "&selected=" + area.getSelectCount();
 
 				String groundOverlayColor = "bbffffff"; //transparency
 
@@ -595,13 +617,13 @@ public class FlickrDeWestAreaMgr {
 				double r = 0;
 				String icon = "";
 
-				if (a.getSelectCount() < 100) {
+				if (area.getSelectCount() < 100) {
 //					r = (double) Math.log10(a.getSelectCount() + 1) / 85.0 * scale;
 					icon = remoteBasePath + "images/circle_bl.ico";
-				} else if (a.getSelectCount() < 1000) {
+				} else if (area.getSelectCount() < 1000) {
 //					r = (double) Math.log10(a.getSelectCount() + 1) / 80.0 * scale;
 					icon = remoteBasePath + "images/circle_gr.ico";
-				} else if (a.getSelectCount() < 10000) {
+				} else if (area.getSelectCount() < 10000) {
 //					r = (double) Math.log10(a.getSelectCount() + 1) / 70.0 * scale;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
@@ -609,7 +631,7 @@ public class FlickrDeWestAreaMgr {
 					icon = remoteBasePath + "images/circle_or.ico";
 				}
 
-				r = (double) Math.log10(a.getSelectCount() + 1) / 80.0 * scale;
+				r = (double) Math.log10(area.getSelectCount() + 1) / 80.0 * scale;
 				if (r > 0.1) {
 					r = 0.1;
 				}
@@ -627,24 +649,24 @@ public class FlickrDeWestAreaMgr {
 				latLonBoxElement.addContent(eastElement);
 				latLonBoxElement.addContent(westElement);
 
-				northElement.addContent(Double.toString(a.getCenter().getY() + r * 0.55));
-				southElement.addContent(Double.toString(a.getCenter().getY() - r * 0.55));
-				eastElement.addContent(Double.toString(a.getCenter().getX() + r));
-				westElement.addContent(Double.toString(a.getCenter().getX() - r));
-				if (Double.isInfinite(a.getCenter().getY() + r * 0.55)) {
+				northElement.addContent(Double.toString(area.getCenter().getY() + r * 0.55));
+				southElement.addContent(Double.toString(area.getCenter().getY() - r * 0.55));
+				eastElement.addContent(Double.toString(area.getCenter().getX() + r));
+				westElement.addContent(Double.toString(area.getCenter().getX() - r));
+				if (Double.isInfinite(area.getCenter().getY() + r * 0.55)) {
 					System.exit(0);
 				}
 			}
 		}
 
 		// Polygon
-		for (FlickrDeWestArea a : as) {
+		for (FlickrDeWestArea area : areas) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "";
 			//			String description = "count: " + String.valueOf(a.getTotalCount());
-			String description = "areaid=" + a.getId()
-								+ "&total=" + a.getTotalCount()
-								+ "&selected=" + a.getSelectCount();
+			String description = "areaid=" + area.getId()
+								+ "&total=" + area.getTotalCount()
+								+ "&selected=" + area.getSelectCount();
 
 //			String polyStyleColor = "330000"; //not transparent
 			String polyStyleColor = "000000"; //transparent
@@ -654,7 +676,7 @@ public class FlickrDeWestAreaMgr {
 			String lineStyleColor = "88ff0000";
 			String coordinates = "\n";
 
-			JGeometry shape = a.getGeom();
+			JGeometry shape = area.getGeom();
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				coordinates += shape.getOrdinatesArray()[i] + ", ";
 				if (i % 2 == 1) {
@@ -672,7 +694,7 @@ public class FlickrDeWestAreaMgr {
 			descriptionElement.addContent(new CDATA(description));
 
 			Element styleElement = new Element("Style", namespace);
-			placemarkElement.setAttribute("id", String.valueOf(a.getId()));
+			placemarkElement.setAttribute("id", String.valueOf(area.getId()));
 			placemarkElement.addContent(nameElement);
 			placemarkElement.addContent(descriptionElement);
 			placemarkElement.addContent(styleElement);
@@ -681,7 +703,7 @@ public class FlickrDeWestAreaMgr {
 			styleElement.addContent(polyStyleElement);
 
 			Element polyColorElement = new Element("color", namespace);
-			int color = a.getTotalCount() / 30;
+			int color = area.getTotalCount() / 30;
 			if (color > 255) {
 				color = 255;
 			}

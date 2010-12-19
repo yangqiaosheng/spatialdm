@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 
 public class JoinFlickrEuropeAreaCount {
 	static long start = System.currentTimeMillis();
@@ -71,7 +71,7 @@ public class JoinFlickrEuropeAreaCount {
 		//				t.insert("Haolin",  "FLICKR_DE_WEST_TABLE_COUNT", "PERSON", "115", radiusString);
 	}
 
-	private void count(QueryLevel queryLevel, String radiusString) throws Exception {
+	private void count(Level queryLevel, String radiusString) throws Exception {
 		String oracleDatePatternStr = judgeOracleDatePatternStr(queryLevel);
 		Connection conn = db.getConn();
 		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from day_flickr_europe e, day_flickr_europe_geom t" + " where e.photo_id = t.photo_id");
@@ -116,7 +116,7 @@ public class JoinFlickrEuropeAreaCount {
 				joinStmt.close();
 			}
 			System.out.println(count);
-			if (queryLevel == QueryLevel.HOUR) {
+			if (queryLevel == Level.HOUR) {
 				insert(count.toString(), "DAY_FLICKR_EUROPE_COUNT", queryLevel.toString(), areaId, radiusString);
 			} else {
 				update(count.toString(), "DAY_FLICKR_EUROPE_COUNT", queryLevel.toString(), areaId, radiusString);
@@ -564,7 +564,7 @@ public class JoinFlickrEuropeAreaCount {
 		}
 	}
 
-	protected static String judgeOracleDatePatternStr(QueryLevel queryLevel) {
+	protected static String judgeOracleDatePatternStr(Level queryLevel) {
 		String oracleDatePatternStr = null;
 
 		switch (queryLevel) {

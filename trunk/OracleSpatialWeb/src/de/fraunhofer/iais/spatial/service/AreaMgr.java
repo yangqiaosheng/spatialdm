@@ -530,7 +530,7 @@ public class AreaMgr {
 			}
 		}
 
-		ChartUtil.createTimeSeriesChart(countsMap, os);
+		ChartUtil.createTimeSeriesChartOld(countsMap, os);
 	}
 
 	private static String xml2String(Document document) {
