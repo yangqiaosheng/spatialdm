@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
@@ -65,19 +66,14 @@ public class ZoomKmlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		if (xml == null || xml.equals("")) {
-			messageElement.setText("ERROR: wrong input parameter!");
+		if (StringUtils.isEmpty(xml)) {
+			messageElement.setText("ERROR: 'xml' parameter is missing!");
 		} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
-			messageElement.setText("ERROR: please do a query first!");
+			messageElement.setText("ERROR: please perform a query first!");
 		} else {
 
-			String filenamePrefix = StringUtil.genFilename(new Date());
-
-//			BufferedWriter bw = new BufferedWriter(new FileWriter(localBasePath + kmlPath + filenamePrefix + ".xml"));
-//			bw.write(xml);
-//			bw.close();
-
 			try {
+				String filenamePrefix = StringUtil.genFilename(new Date());
 
 				FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 				if ("true".equals(persist)) {

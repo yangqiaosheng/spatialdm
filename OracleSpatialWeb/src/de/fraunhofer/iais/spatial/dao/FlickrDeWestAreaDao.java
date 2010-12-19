@@ -10,7 +10,8 @@ import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
@@ -80,6 +81,8 @@ public abstract class FlickrDeWestAreaDao {
 	public abstract int getTotalCount(int areaid, Radius radius);
 
 
+	protected abstract List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, String queryStr, int num);
+
 	/**
 	 * Returns a List of FlickrDeWestPhoto instances within the area
 	 * @param areaid
@@ -89,14 +92,12 @@ public abstract class FlickrDeWestAreaDao {
 	 * @param pageSize
 	 * @return
 	 */
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int page, int pageSize) {
+	public List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, FlickrDeWestAreaDto areaDto, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		FlickrDeWestArea area = this.getAreaById(areaid, radius);
-		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStrs.first());
 		Map<String, Integer> count = null;
 
-		switch (queryLevel) {
+		switch (areaDto.getQueryLevel()) {
 		case YEAR:
 			count = area.getYearsCount();
 			break;
@@ -114,7 +115,7 @@ public abstract class FlickrDeWestAreaDao {
 		int idx = 1;
 		int pos = 0;
 
-		List<String> tempQueryStrs = new ArrayList<String>(queryStrs);
+		List<String> tempQueryStrs = new ArrayList<String>(areaDto.getQueryStrs());
 		for (int i = tempQueryStrs.size() - 1; i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
 				if(pos + count.get(tempQueryStrs.get(i)) <= start){
@@ -142,10 +143,7 @@ public abstract class FlickrDeWestAreaDao {
 		return photos;
 	}
 
-	protected abstract List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, String queryStr, int num);
-
-
-	protected static String judgeOracleDatePatternStr(QueryLevel queryLevel){
+	protected static String judgeOracleDatePatternStr(Level queryLevel){
 		String oracleDatePatternStr = null;
 
 		switch (queryLevel) {
@@ -165,15 +163,15 @@ public abstract class FlickrDeWestAreaDao {
 		return oracleDatePatternStr;
 	}
 
-	protected static QueryLevel judgeQueryLevel(String QueryStr){
+	protected static Level judgeQueryLevel(String QueryStr){
 		if(QueryStr.matches(FlickrDeWestAreaDao.hourRegExPattern.pattern().split(":")[0])){
-			return QueryLevel.HOUR;
+			return Level.HOUR;
 		}else if(QueryStr.matches(FlickrDeWestAreaDao.dayRegExPattern.pattern().split(":")[0])){
-			return QueryLevel.DAY;
+			return Level.DAY;
 		}else if(QueryStr.matches(FlickrDeWestAreaDao.monthRegExPattern.pattern().split(":")[0])){
-			return QueryLevel.MONTH;
+			return Level.MONTH;
 		}else if(QueryStr.matches(FlickrDeWestAreaDao.yearRegExPattern.pattern().split(":")[0])){
-			return QueryLevel.YEAR;
+			return Level.YEAR;
 		}else{
 			return null;
 		}

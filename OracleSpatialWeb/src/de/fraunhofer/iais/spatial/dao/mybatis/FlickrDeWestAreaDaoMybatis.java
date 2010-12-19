@@ -15,7 +15,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 
 import de.fraunhofer.iais.spatial.dao.FlickrDeWestAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.QueryLevel;
+import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
@@ -231,7 +231,7 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 	@SuppressWarnings("unchecked")
 	protected List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, String queryStr, int num) {
 
-		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStr);
+		Level queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStr);
 		String oracleDatePatternStr = FlickrDeWestAreaDao.judgeOracleDatePatternStr(queryLevel);
 		Map parameters = new HashMap();
 		parameters.put("areaid", area.getId());

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
@@ -57,18 +58,19 @@ public class PolygonXmlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		if (xml == null || xml.equals("")) {
-			messageElement.setText("ERROR: wrong input parameter!");
-			responseStr = XmlUtil.xml2String(document, true);
+		if (StringUtils.isEmpty(xml)) {
+			messageElement.setText("ERROR: 'xml' parameter is missing!");
+		} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
+			messageElement.setText("ERROR: please perform a query first!");
 		} else {
 
-			FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
-			if("true".equals(persist) && request.getSession().getAttribute("areaDto") != null){
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true" );
-				areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
-			}
-
 			try {
+				FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+				if ("true".equals(persist)) {
+					logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
+					areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+				}
+
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
@@ -90,12 +92,11 @@ public class PolygonXmlServlet extends HttpServlet {
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
-				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				responseStr = XmlUtil.xml2String(document, true);
+//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 			}
 		}
 
-
+		responseStr = XmlUtil.xml2String(document, true);
 		out.print(responseStr);
 		out.flush();
 		out.close();

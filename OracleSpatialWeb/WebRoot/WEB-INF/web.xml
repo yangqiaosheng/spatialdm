@@ -139,13 +139,13 @@
 
 	<servlet>
 		<description>Retrieve the data to create a kml with different zoom levels</description>
-		<display-name>SpatialXml</display-name>
-		<servlet-name>SpatialXml</servlet-name>
+		<display-name>PolygonXml</display-name>
+		<servlet-name>PolygonXml</servlet-name>
 		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.PolygonXmlServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>SpatialXml</servlet-name>
+		<servlet-name>PolygonXml</servlet-name>
 		<url-pattern>/SpatialXml</url-pattern>
 	</servlet-mapping>
 
@@ -157,9 +157,8 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>TimeSeriesChart</servlet-name>
-		<url-pattern>/TimeSeriesChart</url-pattern>
+		<url-pattern>/TimeSeriesChart.png</url-pattern>
 	</servlet-mapping>
-
 
 	<servlet>
 		<description>return the url for SmallPhoto</description>
