@@ -85,11 +85,11 @@
 
 	<!-- Mybatis configuration -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="oracleIccDataSource" />
+		<property name="dataSource" ref="jndiDataSource" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	<bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
 	<!-- FlickrDeWest -->
