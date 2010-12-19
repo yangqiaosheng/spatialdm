@@ -2,12 +2,9 @@ package de.fraunhofer.iais.spatial.dao.mybatis;
 
 import java.awt.geom.Point2D;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -22,7 +19,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 
 public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 
-	private final static String resource = "mybatis-config.xml";
+//	private final static String resource = "mybatis-config.xml";
 	private SqlSessionTemplate sessionTemplate;
 
 	public void setSessionTemplate(SqlSessionTemplate sessionTemplate) {
@@ -119,7 +116,7 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
 		areaDto.setRadius(radius);
 
-		List<FlickrDeWestArea> as = sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectAll", areaDto);
+		List<FlickrDeWestArea> as = (List<FlickrDeWestArea>) sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectAll", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -144,7 +141,7 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrDeWestArea> as = sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrDeWestArea> as = (List<FlickrDeWestArea>) sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -160,7 +157,7 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrDeWestArea> as = sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrDeWestArea> as = (List<FlickrDeWestArea>) sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -183,49 +180,11 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrDeWestArea> as = sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrDeWestArea> as = (List<FlickrDeWestArea>) sessionTemplate.selectList(FlickrDeWestArea.class.getName() + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
 	}
-
-	/*
-	@Override
-	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
-		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
-		FlickrDeWestArea area = this.getAreaById(areaid, radius);
-		QueryLevel queryLevel = FlickrDeWestAreaDao.judgeQueryLevel(queryStrs.first());
-		Map<String, Integer> count = null;
-
-		switch (queryLevel) {
-		case YEAR:
-			count = area.getYearsCount();
-			break;
-		case MONTH:
-			count = area.getMonthsCount();
-			break;
-		case DAY:
-			count = area.getDaysCount();
-			break;
-		case HOUR:
-			count = area.getHoursCount();
-			break;
-		}
-
-		List<String> tempQueryStrs = new ArrayList<String>(queryStrs);
-		for (int i = tempQueryStrs.size() - 1; photos.size() < num && i >= 0; i--) {
-			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
-				photos.addAll(this.getPhotos(area, tempQueryStrs.get(i), num - photos.size()));
-			}
-		}
-		return photos;
-	}
-	*/
-
-	//	@Override
-	//	public List<FlickrDeWestPhoto> getPhotos(int areaid, Radius radius, SortedSet<String> queryStrs, int num) {
-	//		return this.getPhotos(areaid, radius, queryStrs, 1, num);
-	//	}
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -241,7 +200,7 @@ public class FlickrDeWestAreaDaoMybatis extends FlickrDeWestAreaDao {
 		parameters.put("oracleDatePatternStr", oracleDatePatternStr);
 		parameters.put("num", num);
 
-		List<FlickrDeWestPhoto> photos = sessionTemplate.selectList(FlickrDeWestPhoto.class.getName() + ".selectByDateQuery", parameters);
+		List<FlickrDeWestPhoto> photos = (List<FlickrDeWestPhoto>) sessionTemplate.selectList(FlickrDeWestPhoto.class.getName() + ".selectByDateQuery", parameters);
 		this.initPhotos(photos, area);
 
 		return photos;
