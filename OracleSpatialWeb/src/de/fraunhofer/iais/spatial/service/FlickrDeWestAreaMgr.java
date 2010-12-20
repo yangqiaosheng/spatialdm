@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -142,7 +143,7 @@ public class FlickrDeWestAreaMgr {
 		if (screenElement != null) {
 			// <screen><bounds>((51.02339744960504, 5.565434570312502), (52.14626715707633, 8.377934570312501))</bounds>
 			String boundsStr = screenElement.getChildText("bounds");
-			if (boundsStr != null && !"".equals(boundsStr.trim())) {
+			if (StringUtils.isNotBlank(boundsStr)) {
 				Pattern boundsPattern = Pattern.compile("\\(\\(([-0-9.]*), ([-0-9.]*)\\), \\(([-0-9.]*), ([-0-9.]*)\\)\\)");
 				Matcher boundsMatcher = boundsPattern.matcher(boundsStr);
 				if (boundsMatcher.find()) {
@@ -158,7 +159,7 @@ public class FlickrDeWestAreaMgr {
 
 			// <screen><center>(51.58830123054393, 6.971684570312502)</center>
 			String centerStr = screenElement.getChildText("center");
-			if (centerStr != null && !"".equals(centerStr.trim())) {
+			if (StringUtils.isNotBlank(centerStr)) {
 				Pattern centerPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
 				Matcher centerMachter = centerPattern.matcher(centerStr);
 				if (centerMachter.find()) {
@@ -170,7 +171,7 @@ public class FlickrDeWestAreaMgr {
 
 			// <screen><zoom>9</zoom>
 			String zoomStr = screenElement.getChildText("zoom");
-			if (zoomStr != null && !"".equals(zoomStr.trim())) {
+			if (StringUtils.isNotBlank(zoomStr)) {
 				int zoom = Integer.parseInt(zoomStr);
 				if (zoom <= 7) {
 					areaDto.setRadius(Radius.R80000);
@@ -189,7 +190,7 @@ public class FlickrDeWestAreaMgr {
 
 		// <polygon>(51.58830123054393, 6.971684570312502)(51.67184146523792, 7.647343750000002)(51.44644311790073, 7.298527832031252)</polygon>
 		String polygonStr = rootElement.getChildText("polygon");
-		if (polygonStr != null && !"".equals(polygonStr.trim())) {
+		if (StringUtils.isNotBlank(polygonStr)) {
 			Pattern polygonPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
 			Matcher polygonMachter = polygonPattern.matcher(polygonStr);
 			List<Point2D> polygon = new LinkedList<Point2D>();
@@ -205,7 +206,7 @@ public class FlickrDeWestAreaMgr {
 
 		// <interval>15/09/2010 - 19/10/2010</interval>
 		String intervalStr = rootElement.getChildText("interval");
-		if (intervalStr != null && !"".equals(intervalStr.trim())) {
+		if (StringUtils.isNotBlank(intervalStr)) {
 			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
 			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
 
@@ -239,7 +240,7 @@ public class FlickrDeWestAreaMgr {
 
 		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 		String selectedDaysStr = rootElement.getChildText("selected_days");
-		if (selectedDaysStr != null && !"".equals(selectedDaysStr.trim())) {
+		if (StringUtils.isNotBlank(selectedDaysStr)) {
 			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
 			SortedSet<Date> selectedDays = new TreeSet<Date>();
@@ -276,7 +277,7 @@ public class FlickrDeWestAreaMgr {
 				List<Element> yearElements = yearsElement.getChildren("year");
 				for (Element yearElement : yearElements) {
 					String year = yearElement.getText();
-					if (year != null && !year.trim().equals("")) {
+					if (StringUtils.isNotBlank(year)) {
 						areaDto.getYears().add(year.trim());
 					}
 				}
@@ -288,7 +289,7 @@ public class FlickrDeWestAreaMgr {
 				List<Element> monthElements = monthsElement.getChildren("month");
 				for (Element monthElement : monthElements) {
 					String month = monthElement.getText();
-					if (month != null && !month.trim().equals("")) {
+					if (StringUtils.isNotBlank(month)) {
 						areaDto.getMonths().add(month.trim());
 					}
 				}
@@ -300,7 +301,7 @@ public class FlickrDeWestAreaMgr {
 				List<Element> dayElements = daysElement.getChildren("day");
 				for (Element dayElement : dayElements) {
 					String day = dayElement.getText();
-					if (day != null && !day.trim().equals("")) {
+					if (StringUtils.isNotBlank(day)) {
 						areaDto.getDays().add(day.trim());
 					}
 				}
@@ -312,7 +313,7 @@ public class FlickrDeWestAreaMgr {
 				List<Element> hourElements = hoursElement.getChildren("hour");
 				for (Element hourElement : hourElements) {
 					String hour = hourElement.getText();
-					if (hour != null && !hour.trim().equals("")) {
+					if (StringUtils.isNotBlank(hour)) {
 						areaDto.getHours().add(hour.trim());
 					}
 				}
@@ -324,7 +325,7 @@ public class FlickrDeWestAreaMgr {
 				List<Element> weekdayElements = weekdaysElement.getChildren("weekday");
 				for (Element weekdayElement : weekdayElements) {
 					String weekday = weekdayElement.getText();
-					if (weekday != null && !weekday.trim().equals("")) {
+					if (StringUtils.isNotBlank(weekday)) {
 						areaDto.getWeekdays().add(weekday.trim());
 					}
 				}
@@ -696,7 +697,7 @@ public class FlickrDeWestAreaMgr {
 
 	public String createKml(List<FlickrDeWestArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = this.getClass().getResource("/../../").getPath();
-		if (remoteBasePath == null || "".equals(remoteBasePath)) {
+		if (StringUtils.isEmpty(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
 
@@ -863,7 +864,7 @@ public class FlickrDeWestAreaMgr {
 			linearRingElement.addContent(coordinatesElement);
 			coordinatesElement.addContent(coordinates);
 		}
-		
+
 		if(compress == true){
 			XmlUtil.xml2Kmz(document, localBasePath + filenamePrefix, true);
 		}else {
