@@ -3,6 +3,7 @@ package de.fraunhofer.iais.spatial.service;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -694,7 +695,7 @@ public class FlickrDeWestAreaMgr {
 	}
 
 	public String createKml(List<FlickrDeWestArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
-		String localBasePath = System.getProperty("oraclespatialweb.root");
+		String localBasePath = this.getClass().getResource("/../../").getPath();
 		if (remoteBasePath == null || "".equals(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
@@ -862,6 +863,7 @@ public class FlickrDeWestAreaMgr {
 			linearRingElement.addContent(coordinatesElement);
 			coordinatesElement.addContent(coordinates);
 		}
+		
 		if(compress == true){
 			XmlUtil.xml2Kmz(document, localBasePath + filenamePrefix, true);
 		}else {

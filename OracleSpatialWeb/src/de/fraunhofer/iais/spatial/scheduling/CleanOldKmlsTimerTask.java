@@ -31,8 +31,8 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 		logger.debug("run() - start"); //$NON-NLS-1$
 
 		//		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
-		//		File kmlPath = new File(this.getClass().getResource("/../../" + RequestKml.kmlPath).getPath());
-		File kmlPath = new File(System.getProperty("oraclespatialweb.root") + RequestKmlServlet.kmlPath);
+//		File kmlPath = new File(System.getProperty("oraclespatialweb.root") + RequestKmlServlet.kmlPath);
+		File kmlPath = new File(this.getClass().getResource("/../../" + RequestKmlServlet.kmlPath).getPath());
 		File files[] = kmlPath.listFiles();
 		logger.debug("run() - kmlPath:" + kmlPath.getAbsolutePath()); //$NON-NLS-1$
 		long currentDate = Long.parseLong(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));

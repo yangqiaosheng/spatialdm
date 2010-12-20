@@ -359,7 +359,7 @@ public class AreaMgr {
 	}
 
 	public String createKml(List<Area> as, String file, String remoteBasePath) throws UnsupportedEncodingException {
-		String localBasePath = System.getProperty("oraclespatialweb.root");
+		String localBasePath = this.getClass().getResource("/../../").getPath();
 		if (remoteBasePath == null || "".equals(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
