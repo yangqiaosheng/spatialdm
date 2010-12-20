@@ -33,7 +33,7 @@ public class FlickrDeWestAreaDto {
 	JGeometry queryGeom;
 
 	public enum Level {
-		HOUR, DAY, MONTH, YEAR;
+		HOUR, DAY, MONTH, YEAR, WEEKDAY;
 	}
 
 	public SortedSet<String> getYears() {

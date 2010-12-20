@@ -378,6 +378,8 @@ public class FlickrDeWestAreaMgr {
 						calendar.set(Calendar.MONTH, Integer.parseInt(m) - 1);
 						calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(d));
 						calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(h));
+						calendar.set(Calendar.MINUTE, 0);
+						calendar.set(Calendar.SECOND, 0);
 
 						try {
 							// filter out the selected weekdays
@@ -448,11 +450,132 @@ public class FlickrDeWestAreaMgr {
 
 	public void createTimeSeriesChart(List<FlickrDeWestArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, OutputStream os) throws ParseException, IOException {
 
+		Map<String, Map<Date, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Date, Integer>>();
+
+		int queryStrsLength = areaDto.getQueryStrs().first().length();
+
+		for (FlickrDeWestArea area : areas) {
+
+			Map<Integer, Integer> intCounts = new TreeMap<Integer, Integer>();
+			Map<Date, Integer> dateCounts = new TreeMap<Date, Integer>();
+			switch (displayLevel) {
+			case HOUR:
+				// init
+				for (int hour : DateUtil.allHourInts) {
+					intCounts.put(hour, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int hour = Integer.parseInt(e.getKey().substring(11, 13));
+						intCounts.put(hour, e.getValue() + intCounts.get(hour));
+					}
+				}
+
+				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+					dateCounts.put(DateUtil.createHour(e.getKey()), e.getValue());
+				}
+				break;
+
+			case DAY:
+				// init
+				for (int day : DateUtil.allDayInts) {
+					intCounts.put(day, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int day = Integer.parseInt(e.getKey().substring(8, 10));
+						intCounts.put(day, e.getValue() + intCounts.get(day));
+					}
+				}
+
+				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+					dateCounts.put(DateUtil.createDay(e.getKey()), e.getValue());
+				}
+				break;
+
+			case MONTH:
+				// init
+				for (int month : DateUtil.allMonthInts) {
+					intCounts.put(month, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int month = Integer.parseInt(e.getKey().substring(5, 7));
+						intCounts.put(month, e.getValue() + intCounts.get(month));
+					}
+				}
+
+				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+					dateCounts.put(DateUtil.createMonth(e.getKey()), e.getValue());
+				}
+				break;
+
+			case YEAR:
+				// init
+				for (int year : DateUtil.allYearInts) {
+					intCounts.put(year, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int year = Integer.parseInt(e.getKey().substring(0, 4));
+						intCounts.put(year, e.getValue() + intCounts.get(year));
+					}
+				}
+
+				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+					dateCounts.put(DateUtil.createYear(e.getKey()), e.getValue());
+				}
+				break;
+
+			case WEEKDAY:
+				// init
+				for (int weekday : DateUtil.allWeekdayInts) {
+					intCounts.put(weekday, 0);
+				}
+
+				SimpleDateFormat sdf = new SimpleDateFormat("D", Locale.ENGLISH);
+				Calendar calendar = DateUtil.createReferenceCalendar();
+				calendar.setLenient(false);
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
+						calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
+						calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
+						int weekday = DateUtil.getWeekday(calendar);
+						intCounts.put(weekday, e.getValue() + intCounts.get(weekday));
+					}
+				}
+
+				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+					dateCounts.put(DateUtil.createWeekday(e.getKey()), e.getValue());
+				}
+				break;
+			}
+			displayCountsMap.put("Area ID: " + area.getRadius() + "-" + area.getId(), dateCounts);
+		}
+
+
+		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, os);
+	}
+
+	public void createXYLineChart(List<FlickrDeWestArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, OutputStream os) throws ParseException, IOException {
+
 		Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
 
 		int queryStrsLength = areaDto.getQueryStrs().first().length();
 
 		for (FlickrDeWestArea area : areas) {
+
 			Map<Integer, Integer> displayCounts = new TreeMap<Integer, Integer>();
 			switch (displayLevel) {
 			case HOUR:
@@ -527,7 +650,7 @@ public class FlickrDeWestAreaMgr {
 //		}
 //		displayCountsMap.put("cumulative", cumulativeCounts);
 
-		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, os);
+		ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, os);
 	}
 
 

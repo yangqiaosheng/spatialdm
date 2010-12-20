@@ -2,6 +2,8 @@ package de.fraunhofer.iais.spatial.entity;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * Entity mapped to the table FLICKR_DE_WEST_TABLE and FLICKR_DE_WEST_TABLE_GEOM
  * @author zhi
@@ -21,21 +23,38 @@ public class FlickrDeWestPhoto {
 	private String rawTags;
 	private String smallUrl;
 
+//	@Override
+//	public String toString() {
+//		return super.toString()
+//				+ "\tindex:" + this.getIndex()
+//				+ "\tPHOTO_ID:" + this.getId()
+//				+ "\tAreaid:" + this.getArea().getId()
+//				+ "\tRadius:" + this.getArea().getRadius()
+//				+ "\tDT:" + this.getDate()
+//				+ "\tLATITUDE:" + this.getLatitude()
+//				+ "\tLONGITUDE:" + this.getLongitude()
+//				+ "\tPERSON:" + this.getPersonId()
+//				+ "\tRAWTAGS:" + this.getRawTags()
+//				+ "\tTITLE:" + this.getTitle()
+//				+ "\tSMALLURL:" + this.getSmallUrl()
+//				+ "\tVIEWED:" + this.getViewed();
+//	}
+
 	@Override
 	public String toString() {
-		return super.toString()
-				+ "\tindex:" + this.getIndex()
-				+ "\tPHOTO_ID:" + this.getId()
-				+ "\tAreaid:" + this.getArea().getId()
-				+ "\tRadius:" + this.getArea().getRadius()
-				+ "\tDT:" + this.getDate()
-				+ "\tLATITUDE:" + this.getLatitude()
-				+ "\tLONGITUDE:" + this.getLongitude()
-				+ "\tPERSON:" + this.getPersonId()
-				+ "\tRAWTAGS:" + this.getRawTags()
-				+ "\tTITLE:" + this.getTitle()
-				+ "\tSMALLURL:" + this.getSmallUrl()
-				+ "\tVIEWED:" + this.getViewed();
+		return new ToStringBuilder(this).
+	       append("index", index).
+	       append("id", id).
+	       append("area", area).
+	       append("longitude", longitude).
+	       append("latitude", latitude).
+	       append("date", date).
+	       append("personId", personId).
+	       append("viewed", viewed).
+	       append("title", title).
+	       append("smallUrl", smallUrl).
+	       append("rawTags", rawTags).
+	       toString();
 	}
 
 	public int getIndex() {
