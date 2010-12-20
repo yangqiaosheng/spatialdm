@@ -6,9 +6,9 @@
 <mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrDeWestArea">
 
 	<!-- cache: flushInterval: 24hours -->
-<!--   	<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>-->
+   	<cache eviction="LRU" size="256" readOnly="true" flushInterval="86400000"></cache>
 
-	<select id="selectAll" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto">
+	<select id="selectAll" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto" useCache="false">
 		select
 			ID,
 			NAME,
@@ -30,7 +30,7 @@
 		where d.table_name = 'FLICKR_DE_WEST_TABLE_${radius}' and m.ID = #{areaid}
 	</select>
 
-	<select id="selectByIdGeom" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto">
+	<select id="selectByIdGeom" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto" useCache="false">
 		select
 			ID,
 			NAME,

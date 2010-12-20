@@ -26,10 +26,10 @@ import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
 
 public class TimeSeriesChartServlet extends HttpServlet {
 	private static final int DEFAULT_HEIGHT = 300;
-	private static final int DEFAULT_WIDTH = 600;
+	private static final int DEFAULT_WIDTH = 800;
 	private static final int MAX_NUM_DATASETS = 5;
-	private static final int MAX_WIDTH = 1200;
-	private static final int MAX_HEIGHT = 800;
+	private static final int MAX_WIDTH = 2000;
+	private static final int MAX_HEIGHT = 1500;
 
 	/**
 	* Logger for this class
@@ -44,7 +44,6 @@ public class TimeSeriesChartServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String webAppPath = getServletContext().getRealPath("/");
-		logger.debug("requestUrl:" + request.getRequestURL()); //$NON-NLS-1$
 		response.setContentType("image/png");
 		response.setHeader("Cache-Control", "no-cache");
 		ServletOutputStream sos = response.getOutputStream();
@@ -53,6 +52,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		String level = request.getParameter("level");
 		int width = NumberUtils.toInt(request.getParameter("width"), DEFAULT_WIDTH);
 		int height = NumberUtils.toInt(request.getParameter("height"), DEFAULT_HEIGHT);
+
 
 		if(width > MAX_WIDTH){
 			width = MAX_WIDTH;
@@ -67,7 +67,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
-
+			logger.debug("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level); //$NON-NLS-1$
 			try {
 				List<FlickrDeWestArea> areas = new ArrayList<FlickrDeWestArea>();
 				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
@@ -82,6 +82,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				}
 
 				areaMgr.createTimeSeriesChart(areas, Level.valueOf(level.toUpperCase()), areaDto, width, height, displayLegend, sos);
+
 			} catch (Exception e) {
 				IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$

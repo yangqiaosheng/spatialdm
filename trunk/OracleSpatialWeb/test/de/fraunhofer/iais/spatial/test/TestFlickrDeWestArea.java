@@ -37,6 +37,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -58,6 +59,16 @@ public class TestFlickrDeWestArea{
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
 
 		areaMgr = (FlickrDeWestAreaMgr) context.getBean("flickrDeWestAreaMgr");
+	}
+
+	@Test
+	public void testCalendar() throws ParseException {
+
+		System.out.println("allWeekday:" + DateUtil.allWeekdayDates);
+		System.out.println("allHour:" + DateUtil.allHourDates);
+		System.out.println("allDay:" + DateUtil.allDayDates);
+		System.out.println("allMonth:" + DateUtil.allMonthDates);
+		System.out.println("allYear:" + DateUtil.allYearDates);
 	}
 
 	@Test
@@ -511,13 +522,23 @@ public class TestFlickrDeWestArea{
 //		years.add("2007");
 //		years.add("2001");
 //		years.add("2005-01");
-		FileOutputStream fos = new FileOutputStream("temp/80001.png");
+		FileOutputStream fos1 = new FileOutputStream("temp/xyChart.png");
+		FileOutputStream fos2 = new FileOutputStream("temp/tsCharth.png");
+		FileOutputStream fos3 = new FileOutputStream("temp/tsChartd.png");
+		FileOutputStream fos4 = new FileOutputStream("temp/tsChartm.png");
+		FileOutputStream fos5 = new FileOutputStream("temp/tsCharty.png");
+		FileOutputStream fos6 = new FileOutputStream("temp/tsChartw.png");
 		List<FlickrDeWestArea> areas = new ArrayList<FlickrDeWestArea>();
 		FlickrDeWestArea area1 = areaMgr.getAreaDao().getAreaById(1, FlickrDeWestArea.Radius.R80000);
 		FlickrDeWestArea area3 = areaMgr.getAreaDao().getAreaById(3, FlickrDeWestArea.Radius.R80000);
 		areas.add(area1);
 		areas.add(area3);
-		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 600, 300, true, fos);
+		areaMgr.createXYLineChart(areas, Level.MONTH, areaDto, 800, 300, true, fos1);
+		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, fos2);
+		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, fos3);
+		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, fos4);
+		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto, 800, 300, true, fos5);
+		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 800, 300, true, fos6);
 	}
 
 //	@Test

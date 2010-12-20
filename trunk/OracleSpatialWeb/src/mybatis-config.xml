@@ -5,6 +5,9 @@
 
 <configuration>
 	<properties resource="jdbc.properties" />
+	<settings>
+		<setting name="cacheEnabled" value="true"/>
+	</settings>
 	<typeAliases>
 		<typeAlias type="de.fraunhofer.iais.spatial.entity.Milanpoly" alias="Milanpoly" />
 		<typeAlias type="de.fraunhofer.iais.spatial.entity.Area" alias="Area" />
