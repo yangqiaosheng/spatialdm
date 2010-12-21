@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		String level = request.getParameter("level");
 		int width = NumberUtils.toInt(request.getParameter("width"), DEFAULT_WIDTH);
 		int height = NumberUtils.toInt(request.getParameter("height"), DEFAULT_HEIGHT);
-
+		boolean smooth = BooleanUtils.toBoolean(request.getParameter("smooth"));
 
 		if(width > MAX_WIDTH){
 			width = MAX_WIDTH;
@@ -67,7 +68,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
-			logger.debug("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level); //$NON-NLS-1$
+			logger.debug("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level+ " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				List<FlickrDeWestArea> areas = new ArrayList<FlickrDeWestArea>();
 				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
@@ -81,7 +82,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 					displayLegend = true;
 				}
 
-				areaMgr.createTimeSeriesChart(areas, Level.valueOf(level.toUpperCase()), areaDto, width, height, displayLegend, sos);
+				areaMgr.createTimeSeriesChart(areas, Level.valueOf(level.toUpperCase()), areaDto, width, height, displayLegend, smooth, sos);
 
 			} catch (Exception e) {
 				IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
