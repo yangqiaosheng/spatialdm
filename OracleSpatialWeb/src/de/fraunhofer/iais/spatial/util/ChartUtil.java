@@ -51,15 +51,15 @@ public class ChartUtil {
 		ChartUtilities.writeChartAsPNG(os, jfreechart, 600, 300);
 	}
 
-	public static void createXYLineChart(Map<String, Map<Integer, Integer>> countsMap, Level displayLevel, int width, int height, boolean displayLegend, OutputStream os) throws IOException {
+	public static void createXYLineChart(Map<String, Map<Integer, Integer>> countsMap, Level displayLevel, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws IOException {
 		XYDataset xySeriesDataset = createXYSeriesDataset(countsMap);
-		JFreeChart jfreechart = buildXYLineChart(xySeriesDataset, displayLevel, displayLegend);
+		JFreeChart jfreechart = buildXYLineChart(xySeriesDataset, displayLevel, displayLegend, smooth);
 		ChartUtilities.writeChartAsPNG(os, jfreechart, width, height);
 	}
 
-	public static void createTimeSeriesChart(Map<String, Map<Date, Integer>> countsMap, Level displayLevel, int width, int height, boolean displayLegend, OutputStream os) throws IOException {
+	public static void createTimeSeriesChart(Map<String, Map<Date, Integer>> countsMap, Level displayLevel, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws IOException {
 		XYDataset xySeriesDataset = createTimeSeriesDataset(countsMap);
-		JFreeChart jfreechart = buildTimeSeriesChart(xySeriesDataset, displayLevel, displayLegend);
+		JFreeChart jfreechart = buildTimeSeriesChart(xySeriesDataset, displayLevel, displayLegend, smooth);
 		ChartUtilities.writeChartAsPNG(os, jfreechart, width, height);
 	}
 
@@ -107,8 +107,7 @@ public class ChartUtil {
 		for (String key : countsMap.keySet()) {
 			TimeSeries timeSeries = new TimeSeries(key);
 			for (Map.Entry<Date, Integer> e : countsMap.get(key).entrySet()) {
-				timeSeries.add(new Hour(
-						Integer.parseInt(hsdf.format(e.getKey())), //hour
+				timeSeries.add(new Hour(Integer.parseInt(hsdf.format(e.getKey())), //hour
 						Integer.parseInt(dsdf.format(e.getKey())), //day
 						Integer.parseInt(msdf.format(e.getKey())), //month
 						Integer.parseInt(ysdf.format(e.getKey()))), //year
@@ -180,7 +179,7 @@ public class ChartUtil {
 		return jfreechart;
 	}
 
-	private static JFreeChart buildXYLineChart(XYDataset xydataset, Level displayLevel, boolean displayLegend) {
+	private static JFreeChart buildXYLineChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth) {
 
 		JFreeChart jfreechart = ChartFactory.createXYLineChart("#Photos Distribution", // Title
 				displayLevel.toString(), // X Label
@@ -204,7 +203,9 @@ public class ChartUtil {
 		xyPlot.setRangeCrosshairVisible(true);
 		xyPlot.getRangeAxis().setUpperMargin(0.10);
 
-		xyPlot.setRenderer(new XYSplineRenderer());
+		if (smooth) {
+			xyPlot.setRenderer(new XYSplineRenderer());
+		}
 		XYLineAndShapeRenderer xyLineAndShapeRenderer = (XYLineAndShapeRenderer) xyPlot.getRenderer();
 		xyLineAndShapeRenderer.setBaseShapesVisible(true);
 		xyLineAndShapeRenderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator());
@@ -246,7 +247,7 @@ public class ChartUtil {
 		return jfreechart;
 	}
 
-	private static JFreeChart buildTimeSeriesChart(XYDataset xydataset, Level displayLevel, boolean displayLegend) {
+	private static JFreeChart buildTimeSeriesChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth) {
 
 		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("#Photos Distribution", // Title
 				displayLevel.toString(), // X Label
@@ -269,7 +270,9 @@ public class ChartUtil {
 		xyPlot.setRangeCrosshairVisible(true);
 		xyPlot.getRangeAxis().setUpperMargin(0.10);
 
-		xyPlot.setRenderer(new XYSplineRenderer());
+		if (smooth) {
+			xyPlot.setRenderer(new XYSplineRenderer());
+		}
 		XYLineAndShapeRenderer xyLineAndShapeRenderer = (XYLineAndShapeRenderer) xyPlot.getRenderer();
 		xyLineAndShapeRenderer.setBaseShapesVisible(true);
 		xyLineAndShapeRenderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator());

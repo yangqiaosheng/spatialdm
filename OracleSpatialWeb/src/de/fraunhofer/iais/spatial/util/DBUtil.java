@@ -37,6 +37,7 @@ public class DBUtil {
 		pros = new Properties();
 		try {
 //			String propertieLocation = "/jdbc_marin.properties";
+//			String propertieLocation = "/jdbc_pg.properties";
 			String propertieLocation = "/jdbc.properties";
 			pros.load(new FileReader(DBUtil.class.getResource(propertieLocation).getFile()));
 		} catch (IOException e) {

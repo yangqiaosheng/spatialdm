@@ -533,12 +533,14 @@ public class TestFlickrDeWestArea{
 		FlickrDeWestArea area3 = areaMgr.getAreaDao().getAreaById(3, FlickrDeWestArea.Radius.R80000);
 		areas.add(area1);
 		areas.add(area3);
-		areaMgr.createXYLineChart(areas, Level.MONTH, areaDto, 800, 300, true, fos1);
-		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, fos2);
-		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, fos3);
-		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, fos4);
-		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto, 800, 300, true, fos5);
-		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 800, 300, true, fos6);
+
+		boolean smmoth = true;
+		areaMgr.createXYLineChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, fos1);
+		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, smmoth, fos2);
+		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, smmoth, fos3);
+		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, fos4);
+		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto, 800, 300, true, smmoth, fos5);
+		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 800, 300, true, smmoth, fos6);
 	}
 
 //	@Test

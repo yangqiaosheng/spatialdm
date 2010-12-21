@@ -450,7 +450,7 @@ public class FlickrDeWestAreaMgr {
 		ChartUtil.createTimeSeriesChartOld(countsMap, os);
 	}
 
-	public void createTimeSeriesChart(List<FlickrDeWestArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, OutputStream os) throws ParseException, IOException {
+	public void createTimeSeriesChart(List<FlickrDeWestArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
 
 		Map<String, Map<Date, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Date, Integer>>();
 
@@ -567,10 +567,10 @@ public class FlickrDeWestAreaMgr {
 		}
 
 
-		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, os);
+		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
 	}
 
-	public void createXYLineChart(List<FlickrDeWestArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, OutputStream os) throws ParseException, IOException {
+	public void createXYLineChart(List<FlickrDeWestArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
 
 		Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
 
@@ -652,7 +652,7 @@ public class FlickrDeWestAreaMgr {
 //		}
 //		displayCountsMap.put("cumulative", cumulativeCounts);
 
-		ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, os);
+		ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
 	}
 
 

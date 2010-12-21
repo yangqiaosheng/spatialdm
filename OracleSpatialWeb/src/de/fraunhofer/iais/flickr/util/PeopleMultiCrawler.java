@@ -53,7 +53,7 @@ public class PeopleMultiCrawler extends Thread {
 	static final int pageSize = 1000;
 	static final int NUM_THREAD = 6;
 	static final int MAX_NUM_RETRY = 500;
-	static final int MAX_USERNAME_LENGTH = 20;
+	static final int MAX_USERNAME_LENGTH = 200;
 
 	static Calendar beginDateLimit = Calendar.getInstance();
 	static int numReTry = 0;
@@ -218,7 +218,7 @@ public class PeopleMultiCrawler extends Thread {
 
 	private void insertPeople(String userId, MembersList memberslist) {
 		Connection conn = db.getConn();
-		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set t.CONTACT_UPDATE_CHECKED = 1 where t.USER_ID = ?");
+		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set CONTACT_UPDATE_CHECKED = 1 where t.USER_ID = ?");
 
 		try {
 			conn.setAutoCommit(false);
