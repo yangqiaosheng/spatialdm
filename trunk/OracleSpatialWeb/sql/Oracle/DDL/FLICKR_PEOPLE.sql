@@ -10,3 +10,5 @@
     );
 
     create unique index "GENNADY_FLICKR"."FLICKR_PEOPLE_PK" on "GENNADY_FLICKR"."FLICKR_PEOPLE"("USER_ID");
+
+    INSERT INTO flickr_people (user_id, username) VALUES ('49596882@N02', 'haolin_zhi');
