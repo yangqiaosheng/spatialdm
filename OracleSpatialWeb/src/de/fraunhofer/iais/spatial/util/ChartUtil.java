@@ -183,7 +183,7 @@ public class ChartUtil {
 
 		JFreeChart jfreechart = ChartFactory.createXYLineChart("#Photos Distribution", // Title
 				displayLevel.toString(), // X Label
-				"#photos", // Y Label
+				"#PHOTOS", // Y Label
 				xydataset, // dataset
 				PlotOrientation.VERTICAL, // orientation
 				displayLegend, // show Legend
@@ -251,7 +251,7 @@ public class ChartUtil {
 
 		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("#Photos Distribution", // Title
 				displayLevel.toString(), // X Label
-				"#photos", // Y Label
+				"#PHOTOS", // Y Label
 				xydataset, // dataset
 				displayLegend, // show Legend
 				false, // generate Tooltips

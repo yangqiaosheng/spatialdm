@@ -5,8 +5,11 @@
 
 <mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrDeWestArea">
 
-	<!-- cache: flushInterval: 24hours -->
-   	<cache eviction="LRU" size="256" readOnly="true" flushInterval="86400000"></cache>
+	<!-- local cache: flushInterval: 24hours -->
+<!--   	<cache eviction="LRU" size="256" readOnly="true" flushInterval="86400000"></cache>-->
+
+	<!-- Ehcache: configurated in classpath:ehcache.xml -->
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
 
 	<select id="selectAll" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto" useCache="false">
 		select
@@ -19,7 +22,7 @@
 		where d.table_name = 'FLICKR_DE_WEST_TABLE_${radius}'
 	</select>
 
-	<select id="selectById" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto">
+	<select id="selectById" resultType="FlickrDeWestArea" parameterType="FlickrDeWestAreaDto" useCache="false">
 		select
 			ID,
 			NAME,

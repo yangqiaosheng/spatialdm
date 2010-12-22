@@ -99,6 +99,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat weekdayFormat = new SimpleDateFormat("EEE");
 
 		Element rootElement = document.getRootElement();
 
@@ -115,6 +116,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			photoElement.addContent(new Element("polygonId").setText(String.valueOf(p.getArea().getId())));
 			photoElement.addContent(new Element("polygonRadius").setText(String.valueOf(p.getArea().getRadius())));
 			photoElement.addContent(new Element("date").setText(dateFormat.format(p.getDate())));
+			photoElement.addContent(new Element("weekday").setText(weekdayFormat.format(p.getDate())));
 			photoElement.addContent(new Element("latitude").setText(String.valueOf(p.getLatitude())));
 			photoElement.addContent(new Element("longitude").setText(String.valueOf(p.getLongitude())));
 			photoElement.addContent(new Element("personId").setText(String.valueOf(p.getPersonId())));
