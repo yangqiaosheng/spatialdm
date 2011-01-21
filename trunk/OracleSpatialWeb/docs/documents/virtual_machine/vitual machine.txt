@@ -1,8 +1,13 @@
+kd-photomap:~ # uname -a
+Linux kd-photomap 2.6.31.12-0.2-desktop #1 SMP PREEMPT 2010-03-16 21:25:39 +0100 i686 athlon i386 GNU/Linux
+
+
 kd-photomap.iais.fraunhofer.de
 iulian
 1+2=3
 su (root)
 h!!dli112
+
 
 oracle XE
 sys, system : .oracle.
@@ -12,6 +17,14 @@ export ORACLE_SID=XE
 export PATH=$PATH:ORACLE_HOME/bin
 ./sqlplus
 
+Web Admin: 		http://localhost:8081/apex
+sqldeveloper:	/opt/sqldeveloper
+
+PostgreSql: /opt/PostgreSQL/9.0
+postgres
+654321
+
+jdk: 	/usr/java/
 
 
 kd-photomap:/usr/share/tomcat6/bin # cat /proc/cpuinfo
@@ -114,5 +127,11 @@ Warning: Cannot convert string "nil2" to type FontStruct
 xterm: cannot load font -misc-fixed-medium-r-semicondensed-*-13-120-75-75-c-60-iso10646-1
 
 firefox
+
+----------------
+
+GUI Software Manager: Yast (equivalent to apt-get in Ubuntu)
+
+
 
 

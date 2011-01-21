@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -99,7 +100,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		SimpleDateFormat weekdayFormat = new SimpleDateFormat("EEE");
+		SimpleDateFormat weekdayFormat = new SimpleDateFormat("EEE", Locale.ENGLISH);
 
 		Element rootElement = document.getRootElement();
 

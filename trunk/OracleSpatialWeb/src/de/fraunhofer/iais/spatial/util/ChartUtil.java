@@ -1,6 +1,7 @@
 package de.fraunhofer.iais.spatial.util;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
@@ -140,7 +142,8 @@ public class ChartUtil {
 
 	private static JFreeChart buildTimeSeriesChartOld(XYDataset xydataset) {
 
-		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("#Photos Distribution", // Title
+		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
+				"#Photos Distribution", // Title
 				"Time", // X Label
 				"#photos", // Y Label
 				xydataset, // dataset
@@ -181,7 +184,8 @@ public class ChartUtil {
 
 	private static JFreeChart buildXYLineChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth) {
 
-		JFreeChart jfreechart = ChartFactory.createXYLineChart("#Photos Distribution", // Title
+		JFreeChart jfreechart = ChartFactory.createXYLineChart(
+				"#Photos Distribution", // Title
 				displayLevel.toString(), // X Label
 				"#PHOTOS", // Y Label
 				xydataset, // dataset
@@ -230,6 +234,9 @@ public class ChartUtil {
 		case YEAR:
 			domainAxis.setRange(DateUtil.allYearInts.first() - 0.5, DateUtil.allYearInts.last() + 0.5);
 			break;
+
+		case WEEKDAY:
+			break;
 		}
 
 		if (displayLegend) {
@@ -249,7 +256,8 @@ public class ChartUtil {
 
 	private static JFreeChart buildTimeSeriesChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth) {
 
-		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("#Photos Distribution", // Title
+		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
+				"", // Title
 				displayLevel.toString(), // X Label
 				"#PHOTOS", // Y Label
 				xydataset, // dataset
@@ -260,6 +268,7 @@ public class ChartUtil {
 
 		jfreechart.setBackgroundPaint(Color.WHITE);
 		jfreechart.setBorderPaint(Color.BLACK);
+		jfreechart.setTitle(new TextTitle("#Photos Distribution", new Font("Helvetica", Font.BOLD, 14)));
 
 		XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
 		xyPlot.setBackgroundPaint(Color.LIGHT_GRAY);

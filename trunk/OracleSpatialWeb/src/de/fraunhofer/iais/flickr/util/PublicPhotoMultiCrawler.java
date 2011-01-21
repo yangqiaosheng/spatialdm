@@ -213,7 +213,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
-	private void retrievePeoplesPhotos(PeopleInterface peopleInterface, String userId, Date lastUploadDate) throws IOException, SAXException, FlickrException {
+	private void retrievePeoplesPhotos(PeopleInterface peopleInterface, String userId, Date lastUploadDate) throws IOException, SAXException, FlickrException  {
 
 		Set<String> extras = new HashSet<String>();
 		extras.add(Extras.DATE_TAKEN);
