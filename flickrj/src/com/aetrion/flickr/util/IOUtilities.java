@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
 
 /**
  * Common IO utilities.
@@ -18,6 +20,16 @@ public class IOUtilities {
 
 	private IOUtilities() {
 
+	}
+
+	public static void close(HttpURLConnection conn) {
+		if (conn != null) {
+			try {
+				conn.disconnect();
+			} finally {
+				conn = null;
+			}
+		}
 	}
 
 	public static void close(InputStream s) {

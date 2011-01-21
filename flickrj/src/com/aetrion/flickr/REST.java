@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
@@ -115,6 +117,8 @@ public class REST extends Transport {
 	 * @param parameters The parameters (collection of Parameter objects)
 	 * @return The Response
 	 * @throws IOException
+	 * @throws IOException
+	 * @throws SAXException
 	 * @throws SAXException
 	 */
 	@Override
@@ -123,15 +127,17 @@ public class REST extends Transport {
 		if (Flickr.debugRequest) {
 			System.out.println("GET: " + url);
 		}
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		if (proxyAuth) {
-			conn.setRequestProperty("Proxy-Authorization", "Basic " + getProxyCredentials());
-		}
-		conn.connect();
-
+		HttpURLConnection conn = null;
 		InputStream in = null;
 		try {
+			conn = (HttpURLConnection) url.openConnection();
+
+			conn.setRequestMethod("GET");
+			if (proxyAuth) {
+				conn.setRequestProperty("Proxy-Authorization", "Basic " + getProxyCredentials());
+			}
+			conn.connect();
+
 			if (Flickr.debugStream) {
 				in = new DebugInputStream(conn.getInputStream(), System.out);
 			} else {
@@ -151,7 +157,7 @@ public class REST extends Transport {
 			throw new RuntimeException(e); // TODO: Replace with a better exception
 		} finally {
 			IOUtilities.close(in);
-			conn.disconnect();
+			IOUtilities.close(conn);
 		}
 	}
 
@@ -243,6 +249,7 @@ public class REST extends Transport {
 				out.flush();
 			} finally {
 				IOUtilities.close(out);
+				IOUtilities.close(conn);
 			}
 
 			InputStream in = null;
