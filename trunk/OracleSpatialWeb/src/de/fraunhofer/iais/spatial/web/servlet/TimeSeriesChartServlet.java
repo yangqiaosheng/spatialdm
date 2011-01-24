@@ -85,7 +85,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				areaMgr.createTimeSeriesChart(areas, Level.valueOf(level.toUpperCase()), areaDto, width, height, displayLegend, smooth, sos);
 
 			} catch (Exception e) {
-				IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
+//				IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 			}
 		}
