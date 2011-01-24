@@ -16,19 +16,16 @@
 			LATITUDE,
 			LONGITUDE,
 			PERSON as "personId",
-			RAWTAGS,
 			SMALLURL,
 			TITLE,
 			VIEWED
  		from (
- 			select t.* from
- 					FLICKR_DE_WEST_TABLE t,
- 					FLICKR_DE_WEST_TABLE_GEOM g
-			where t.PHOTO_ID = g.PHOTO_ID
-			 		and g.CLUSTER_R${radius}_ID = #{areaid}
-			 		and t.dt >= to_date(#{queryStr}, #{oracleDatePatternStr})
-			 		and t.dt <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
-			 order by t.dt desc
+ 			select p.* from
+ 					SAMPLE_FLICKR_EUROPE_PHOTO P
+			where p.REGION_${radius}_ID = #{areaid}
+			 		and p.dt >= to_date(#{queryStr}, #{oracleDatePatternStr})
+			 		and p.dt <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
+			 order by p.dt desc
 			 )
 		where rownum <= #{num}
 		]]>

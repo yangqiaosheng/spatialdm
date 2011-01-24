@@ -171,9 +171,13 @@ public class FlickrDeWestAreaMgr {
 
 			// <screen><zoom>9</zoom>
 			String zoomStr = screenElement.getChildText("zoom");
-			if (StringUtils.isNotBlank(zoomStr)) {
+			if (zoomStr != null && !"".equals(zoomStr.trim())) {
 				int zoom = Integer.parseInt(zoomStr);
-				if (zoom <= 7) {
+				if (zoom <= 5) {
+					areaDto.setRadius(Radius.R320000);
+				} else if (zoom <= 6) {
+					areaDto.setRadius(Radius.R160000);
+				} else if (zoom <= 7) {
 					areaDto.setRadius(Radius.R80000);
 				} else if (zoom <= 8) {
 					areaDto.setRadius(Radius.R40000);
