@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.util.AreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class SmallPhotoUrlServlet extends HttpServlet {
@@ -75,10 +77,12 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		} else {
 			try {
 				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
+				Radius radius = AreaUtil.getRadius(zoom);
 
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + areaDto.getRadius() + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + areaDto.getRadius()));
+				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 				photosResponseXml(document, area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {

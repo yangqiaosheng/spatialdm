@@ -23,7 +23,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
+import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.util.AreaUtil;
 
 public class TimeSeriesChartServlet extends HttpServlet {
 	private static final int DEFAULT_HEIGHT = 300;
@@ -73,8 +75,10 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				List<FlickrDeWestArea> areas = new ArrayList<FlickrDeWestArea>();
 				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 
+				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
+				Radius radius = AreaUtil.getRadius(zoom);
 				for (String areaid : areaids) {
-					areas.add(areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius()));
+					areas.add(areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), radius));
 				}
 
 				boolean displayLegend = false;

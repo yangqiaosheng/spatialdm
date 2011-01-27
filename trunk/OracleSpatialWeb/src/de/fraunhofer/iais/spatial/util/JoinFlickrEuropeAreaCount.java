@@ -580,6 +580,8 @@ public class JoinFlickrEuropeAreaCount {
 		case HOUR:
 			oracleDatePatternStr = FlickrDeWestAreaDao.oracleHourPatternStr;
 			break;
+		case WEEKDAY:
+			break;
 		}
 		return oracleDatePatternStr;
 	}
