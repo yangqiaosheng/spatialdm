@@ -10,7 +10,7 @@ import oracle.spatial.geometry.JGeometry;
  * @author zhi
  */
 
-public class FlickrPolygon {
+public class FlickrArea {
 	private int id;
 	private Radius radius;
 	private String name;

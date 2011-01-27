@@ -32,7 +32,7 @@
 
 
 		Request Parameters:
-		<% FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto)session.getAttribute("areaDto"); %>
+		<% FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto)session.getAttribute("areaDto"); %>
 		<% if(areaDto != null) { %>
 		<table border="1">
 			<tr>
