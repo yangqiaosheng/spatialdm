@@ -10,14 +10,14 @@ import oracle.spatial.geometry.JGeometry;
 
 import org.mybatis.spring.SqlSessionTemplate;
 
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeDao;
+import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeDao {
+public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 
 //	private final static String resource = "mybatis-config.xml";
 	private SqlSessionTemplate sessionTemplate;
@@ -190,8 +190,8 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeDao {
 	@SuppressWarnings("unchecked")
 	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
-		Level queryLevel = FlickrEuropeDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrEuropeDao.judgeOracleDatePatternStr(queryLevel);
+		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
+		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel);
 		Map parameters = new HashMap();
 		parameters.put("areaid", area.getId());
 		parameters.put("radius", area.getRadius());

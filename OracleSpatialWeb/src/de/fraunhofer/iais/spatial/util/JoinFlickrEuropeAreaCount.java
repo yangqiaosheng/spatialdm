@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeDao;
+import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 
 public class JoinFlickrEuropeAreaCount {
@@ -569,16 +569,16 @@ public class JoinFlickrEuropeAreaCount {
 
 		switch (queryLevel) {
 		case YEAR:
-			oracleDatePatternStr = FlickrEuropeDao.oracleYearPatternStr;
+			oracleDatePatternStr = FlickrEuropeAreaDao.oracleYearPatternStr;
 			break;
 		case MONTH:
-			oracleDatePatternStr = FlickrEuropeDao.oracleMonthPatternStr;
+			oracleDatePatternStr = FlickrEuropeAreaDao.oracleMonthPatternStr;
 			break;
 		case DAY:
-			oracleDatePatternStr = FlickrEuropeDao.oracleDayPatternStr;
+			oracleDatePatternStr = FlickrEuropeAreaDao.oracleDayPatternStr;
 			break;
 		case HOUR:
-			oracleDatePatternStr = FlickrEuropeDao.oracleHourPatternStr;
+			oracleDatePatternStr = FlickrEuropeAreaDao.oracleHourPatternStr;
 			break;
 		case WEEKDAY:
 			break;

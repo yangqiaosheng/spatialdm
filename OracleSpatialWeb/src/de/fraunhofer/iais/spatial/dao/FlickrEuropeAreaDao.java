@@ -16,7 +16,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public abstract class FlickrEuropeDao {
+public abstract class FlickrEuropeAreaDao {
 
 	public static String oracleHourPatternStr = "YYYY-MM-DD@HH24";
 	public static String oracleDayPatternStr = "YYYY-MM-DD";
@@ -148,29 +148,29 @@ public abstract class FlickrEuropeDao {
 
 		switch (queryLevel) {
 		case YEAR:
-			oracleDatePatternStr = FlickrEuropeDao.oracleYearPatternStr;
+			oracleDatePatternStr = FlickrEuropeAreaDao.oracleYearPatternStr;
 			break;
 		case MONTH:
-			oracleDatePatternStr = FlickrEuropeDao.oracleMonthPatternStr;
+			oracleDatePatternStr = FlickrEuropeAreaDao.oracleMonthPatternStr;
 			break;
 		case DAY:
-			oracleDatePatternStr = FlickrEuropeDao.oracleDayPatternStr;
+			oracleDatePatternStr = FlickrEuropeAreaDao.oracleDayPatternStr;
 			break;
 		case HOUR:
-			oracleDatePatternStr = FlickrEuropeDao.oracleHourPatternStr;
+			oracleDatePatternStr = FlickrEuropeAreaDao.oracleHourPatternStr;
 			break;
 		}
 		return oracleDatePatternStr;
 	}
 
 	protected static Level judgeQueryLevel(String QueryStr){
-		if(QueryStr.matches(FlickrEuropeDao.hourRegExPattern.pattern().split(":")[0])){
+		if(QueryStr.matches(FlickrEuropeAreaDao.hourRegExPattern.pattern().split(":")[0])){
 			return Level.HOUR;
-		}else if(QueryStr.matches(FlickrEuropeDao.dayRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeAreaDao.dayRegExPattern.pattern().split(":")[0])){
 			return Level.DAY;
-		}else if(QueryStr.matches(FlickrEuropeDao.monthRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeAreaDao.monthRegExPattern.pattern().split(":")[0])){
 			return Level.MONTH;
-		}else if(QueryStr.matches(FlickrEuropeDao.yearRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeAreaDao.yearRegExPattern.pattern().split(":")[0])){
 			return Level.YEAR;
 		}else{
 			return null;

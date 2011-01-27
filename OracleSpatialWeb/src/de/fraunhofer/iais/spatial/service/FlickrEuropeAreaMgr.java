@@ -34,8 +34,8 @@ import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeDao;
-import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropetAreaDaoJdbc;
+import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
+import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
@@ -48,13 +48,13 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class FlickrEuropeAreaMgr {
 
-	private FlickrEuropeDao flickrDeWestAreaDao = new FlickrEuropetAreaDaoJdbc();
+	private FlickrEuropeAreaDao flickrDeWestAreaDao = new FlickrEuropeAreaDaoJdbc();
 
-	public FlickrEuropeDao getAreaDao() {
+	public FlickrEuropeAreaDao getAreaDao() {
 		return flickrDeWestAreaDao;
 	}
 
-	public void setAreaDao(FlickrEuropeDao areaDao) {
+	public void setAreaDao(FlickrEuropeAreaDao areaDao) {
 		this.flickrDeWestAreaDao = areaDao;
 	}
 
@@ -221,11 +221,11 @@ public class FlickrEuropeAreaMgr {
 				Calendar end = Calendar.getInstance();
 				end.setTime(endDate);
 				while (calendar.getTime().before(end.getTime())) {
-					queryStrs.add(FlickrEuropeDao.dayDateFormat.format(calendar.getTime()));
+					queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(calendar.getTime()));
 					calendar.add(Calendar.DATE, 1);
 
 					// for TimeSeriesChart
-					areaDto.getYears4Chart().add(FlickrEuropeDao.yearDateFormat.format(calendar.getTime()));
+					areaDto.getYears4Chart().add(FlickrEuropeAreaDao.yearDateFormat.format(calendar.getTime()));
 				}
 			}
 		}
@@ -251,10 +251,10 @@ public class FlickrEuropeAreaMgr {
 				Date selectedDay = inputDateFormat.parse(selectedDaysMachter.group());
 				selectedDays.add(selectedDay);
 
-				queryStrs.add(FlickrEuropeDao.dayDateFormat.format(selectedDay));
+				queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(selectedDay));
 
 				// for TimeSeriesChart
-				areaDto.getYears4Chart().add(FlickrEuropeDao.yearDateFormat.format(selectedDay));
+				areaDto.getYears4Chart().add(FlickrEuropeAreaDao.yearDateFormat.format(selectedDay));
 			}
 		}
 
@@ -379,7 +379,7 @@ public class FlickrEuropeAreaMgr {
 							// filter out the selected weekdays
 							if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
 								//queryStrs.add(y + "-" + m + "-" + d + "@" + h);
-								queryStrs.add(FlickrEuropeDao.hourDateFormat.format(calendar.getTime()));
+								queryStrs.add(FlickrEuropeAreaDao.hourDateFormat.format(calendar.getTime()));
 							}
 						} catch (IllegalArgumentException e) {
 							// omit the wrong date
