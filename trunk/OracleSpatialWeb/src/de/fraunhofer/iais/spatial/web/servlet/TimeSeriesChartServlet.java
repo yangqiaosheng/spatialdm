@@ -22,9 +22,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
-import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.AreaUtil;
 
 public class TimeSeriesChartServlet extends HttpServlet {
@@ -41,7 +41,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4033923021316859791L;
 
-	private static FlickrDeWestAreaMgr areaMgr = null;
+	private static FlickrEuropeAreaMgr areaMgr = null;
 
 
 	@Override
@@ -72,7 +72,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		} else {
 			logger.debug("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level+ " |smooth:" + smooth); //$NON-NLS-1$
 			try {
-				List<FlickrDeWestArea> areas = new ArrayList<FlickrDeWestArea>();
+				List<FlickrArea> areas = new ArrayList<FlickrArea>();
 				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
@@ -106,6 +106,6 @@ public class TimeSeriesChartServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrEuropeAreaMgr.class);
 	}
 }

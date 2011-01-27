@@ -12,11 +12,11 @@ import java.util.regex.Pattern;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public abstract class FlickrDeWestAreaDao {
+public abstract class FlickrEuropeDao {
 
 	public static String oracleHourPatternStr = "YYYY-MM-DD@HH24";
 	public static String oracleDayPatternStr = "YYYY-MM-DD";
@@ -38,14 +38,14 @@ public abstract class FlickrDeWestAreaDao {
 	 * Returns a List of all the FlickrDeWestArea instances
 	 * @return List<FlickrDeWestArea>
 	 */
-	public abstract List<FlickrDeWestArea> getAllAreas(Radius radius);
+	public abstract List<FlickrArea> getAllAreas(Radius radius);
 
 	/**
 	 * Returns the instance of FlickrDeWestArea related to that areaid
 	 * @param areaid
 	 * @return FlickrDeWestArea
 	 */
-	public abstract FlickrDeWestArea getAreaById(int areaid, Radius radius);
+	public abstract FlickrArea getAreaById(int areaid, Radius radius);
 
 	/**
 	 * Returns a List of FlickrDeWestArea instances which interact to this point
@@ -53,7 +53,7 @@ public abstract class FlickrDeWestAreaDao {
 	 * @param y
 	 * @return List<FlickrDeWestArea>
 	 */
-	public abstract List<FlickrDeWestArea> getAreasByPoint(double x, double y, Radius radius);
+	public abstract List<FlickrArea> getAreasByPoint(double x, double y, Radius radius);
 
 	/**
 	 * Returns a List of FlickrDeWestArea instances which interact to this rectangle
@@ -63,7 +63,7 @@ public abstract class FlickrDeWestAreaDao {
 	 * @param y2
 	 * @return List<FlickrDeWestArea>
 	 */
-	public abstract List<FlickrDeWestArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius);
+	public abstract List<FlickrArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius);
 
 	/**
 	 * Returns a List of FlickrDeWestArea instances which interact to this polygon
@@ -71,7 +71,7 @@ public abstract class FlickrDeWestAreaDao {
 	 * @param radius
 	 * @return
 	 */
-	public abstract List<FlickrDeWestArea> getAreasByPolygon(List<Point2D> polygon, Radius radius);
+	public abstract List<FlickrArea> getAreasByPolygon(List<Point2D> polygon, Radius radius);
 
 	/**
 	 * get the total amount of photos uploaded within this area
@@ -81,7 +81,7 @@ public abstract class FlickrDeWestAreaDao {
 	public abstract int getTotalCount(int areaid, Radius radius);
 
 
-	protected abstract List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, String queryStr, int num);
+	protected abstract List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num);
 
 	/**
 	 * Returns a List of FlickrDeWestPhoto instances within the area
@@ -92,9 +92,9 @@ public abstract class FlickrDeWestAreaDao {
 	 * @param pageSize
 	 * @return
 	 */
-	public List<FlickrDeWestPhoto> getPhotos(FlickrDeWestArea area, FlickrDeWestAreaDto areaDto, int page, int pageSize) {
+	public List<FlickrPhoto> getPhotos(FlickrArea area, FlickrDeWestAreaDto areaDto, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
-		List<FlickrDeWestPhoto> photos = new ArrayList<FlickrDeWestPhoto>();
+		List<FlickrPhoto> photos = new ArrayList<FlickrPhoto>();
 		Map<String, Integer> count = null;
 
 		switch (areaDto.getQueryLevel()) {
@@ -129,14 +129,14 @@ public abstract class FlickrDeWestAreaDao {
 
 		for (int i = tempQueryStrs.size() - idx; photos.size() < pageSize && i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
-				List<FlickrDeWestPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), pageSize - photos.size() + (start - pos));
+				List<FlickrPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), pageSize - photos.size() + (start - pos));
 				photos.addAll(tempPhotos.subList(start - pos, tempPhotos.size()));
 				pos = start;
 			}
 		}
 
 		int i = 1;
-		for (FlickrDeWestPhoto photo : photos){
+		for (FlickrPhoto photo : photos){
 			photo.setIndex((i++) + (page - 1) * pageSize);
 		}
 
@@ -148,29 +148,29 @@ public abstract class FlickrDeWestAreaDao {
 
 		switch (queryLevel) {
 		case YEAR:
-			oracleDatePatternStr = FlickrDeWestAreaDao.oracleYearPatternStr;
+			oracleDatePatternStr = FlickrEuropeDao.oracleYearPatternStr;
 			break;
 		case MONTH:
-			oracleDatePatternStr = FlickrDeWestAreaDao.oracleMonthPatternStr;
+			oracleDatePatternStr = FlickrEuropeDao.oracleMonthPatternStr;
 			break;
 		case DAY:
-			oracleDatePatternStr = FlickrDeWestAreaDao.oracleDayPatternStr;
+			oracleDatePatternStr = FlickrEuropeDao.oracleDayPatternStr;
 			break;
 		case HOUR:
-			oracleDatePatternStr = FlickrDeWestAreaDao.oracleHourPatternStr;
+			oracleDatePatternStr = FlickrEuropeDao.oracleHourPatternStr;
 			break;
 		}
 		return oracleDatePatternStr;
 	}
 
 	protected static Level judgeQueryLevel(String QueryStr){
-		if(QueryStr.matches(FlickrDeWestAreaDao.hourRegExPattern.pattern().split(":")[0])){
+		if(QueryStr.matches(FlickrEuropeDao.hourRegExPattern.pattern().split(":")[0])){
 			return Level.HOUR;
-		}else if(QueryStr.matches(FlickrDeWestAreaDao.dayRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeDao.dayRegExPattern.pattern().split(":")[0])){
 			return Level.DAY;
-		}else if(QueryStr.matches(FlickrDeWestAreaDao.monthRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeDao.monthRegExPattern.pattern().split(":")[0])){
 			return Level.MONTH;
-		}else if(QueryStr.matches(FlickrDeWestAreaDao.yearRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeDao.yearRegExPattern.pattern().split(":")[0])){
 			return Level.YEAR;
 		}else{
 			return null;

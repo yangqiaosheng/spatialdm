@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 import oracle.spatial.geometry.JGeometry;
 
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
 public class FlickrDeWestAreaDto {
 
