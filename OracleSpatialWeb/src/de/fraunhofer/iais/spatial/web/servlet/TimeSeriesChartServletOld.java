@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
@@ -46,7 +46,7 @@ public class TimeSeriesChartServletOld extends HttpServlet {
 			try {
 				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
 				if (areaDto != null) {
-					FlickrPolygon area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
+					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
 					if (area != null) {
 						areaMgr.createTimeSeriesChartOld(area, areaDto.getYears4Chart(), sos);
 					}

@@ -22,8 +22,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.AreaUtil;
 
@@ -72,7 +72,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		} else {
 			logger.debug("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level+ " |smooth:" + smooth); //$NON-NLS-1$
 			try {
-				List<FlickrPolygon> areas = new ArrayList<FlickrPolygon>();
+				List<FlickrArea> areas = new ArrayList<FlickrArea>();
 				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());

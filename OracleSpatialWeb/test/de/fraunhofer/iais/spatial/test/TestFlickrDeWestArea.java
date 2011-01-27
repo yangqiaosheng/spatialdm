@@ -33,9 +33,9 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
@@ -99,7 +99,7 @@ public class TestFlickrDeWestArea{
 
 	@Test
 	public void testJdbcDao1() {
-		FlickrPolygon a = areaMgr.getAreaDao().getAreaById(1, FlickrPolygon.Radius.R160000);
+		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R160000);
 
 		String coordinates = "\t";
 		if (a != null && a.getGeom().getOrdinatesArray() != null) {
@@ -124,8 +124,8 @@ public class TestFlickrDeWestArea{
 	public void testJdbcDao2() {
 		//		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(Radius._10000);
 		// 		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByPoint(8.83, 50.58, Radius._5000);
-		List<FlickrPolygon> as = areaMgr.getAreaDao().getAreasByRect(1, 1, 96.5, 95.4, Radius.R320000);
-		for (FlickrPolygon a : as) {
+		List<FlickrArea> as = areaMgr.getAreaDao().getAreasByRect(1, 1, 96.5, 95.4, Radius.R320000);
+		for (FlickrArea a : as) {
 			String coordinates = "\t";
 			if (a.getGeom().getOrdinatesArray() != null) {
 				for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
@@ -288,7 +288,7 @@ public class TestFlickrDeWestArea{
 		//			System.out.println(p);
 		//		}
 
-		FlickrPolygon area = areaMgr.getAreaDao().getAreaById(4, Radius.R320000);
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(4, Radius.R320000);
 		List<FlickrPhoto> photos3 = areaMgr.getAreaDao().getPhotos(area, areaDto, 1, 90);
 		for (int i = 0; i < photos3.size(); i++) {
 			FlickrPhoto p = photos3.get(i);
@@ -352,7 +352,7 @@ public class TestFlickrDeWestArea{
 	}
 
 	private String photosResponseXml(int areaid, Radius radius, FlickrEuropeAreaDto areaDto, int num) {
-		FlickrPolygon area = areaMgr.getAreaDao().getAreaById(areaid, radius);
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(areaid, radius);
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, 1, num);
 
 		Document document = new Document();
@@ -459,7 +459,7 @@ public class TestFlickrDeWestArea{
 			xml.append(thisLine);
 		}
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
-		List<FlickrPolygon> as = null;
+		List<FlickrArea> as = null;
 		if (areaDto.getBoundaryRect() == null) {
 			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 		} else {
@@ -489,8 +489,8 @@ public class TestFlickrDeWestArea{
 
 	@Test
 	public void testSelectAll() {
-		List<FlickrPolygon> as = areaMgr.getAreaDao().getAllAreas(Radius.R80000);
-		for (FlickrPolygon a : as) {
+		List<FlickrArea> as = areaMgr.getAreaDao().getAllAreas(Radius.R80000);
+		for (FlickrArea a : as) {
 			String coordinates = "\t";
 			if (a.getGeom().getOrdinatesArray() != null) {
 				for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
@@ -508,7 +508,7 @@ public class TestFlickrDeWestArea{
 
 	@Test
 	public void testSelectById() {
-		FlickrPolygon a = areaMgr.getAreaDao().getAreaById(1, Radius.R80000);
+		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, Radius.R80000);
 		String coordinates = "\t";
 		if (a.getGeom().getOrdinatesArray() != null) {
 			for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
@@ -538,9 +538,9 @@ public class TestFlickrDeWestArea{
 		FileOutputStream fos4 = new FileOutputStream("temp/tsChartm.png");
 		FileOutputStream fos5 = new FileOutputStream("temp/tsCharty.png");
 		FileOutputStream fos6 = new FileOutputStream("temp/tsChartw.png");
-		List<FlickrPolygon> areas = new ArrayList<FlickrPolygon>();
-		FlickrPolygon area1 = areaMgr.getAreaDao().getAreaById(1, FlickrPolygon.Radius.R80000);
-		FlickrPolygon area3 = areaMgr.getAreaDao().getAreaById(3, FlickrPolygon.Radius.R80000);
+		List<FlickrArea> areas = new ArrayList<FlickrArea>();
+		FlickrArea area1 = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R80000);
+		FlickrArea area3 = areaMgr.getAreaDao().getAreaById(3, FlickrArea.Radius.R80000);
 		areas.add(area1);
 		areas.add(area3);
 

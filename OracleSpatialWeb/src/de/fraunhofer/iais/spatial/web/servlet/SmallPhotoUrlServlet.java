@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.AreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -82,7 +82,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				FlickrPolygon area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
+				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 				photosResponseXml(document, area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
@@ -100,7 +100,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		out.close();
 	}
 
-	private String photosResponseXml(Document document, FlickrPolygon area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {
+	private String photosResponseXml(Document document, FlickrArea area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {
 
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -13,7 +13,7 @@ public class FlickrPhoto {
 
 	private int index;
 	private long id;
-	private FlickrPolygon area;
+	private FlickrArea area;
 	private double longitude;
 	private double latitude;
 	private Date date;
@@ -73,11 +73,11 @@ public class FlickrPhoto {
 		this.id = id;
 	}
 
-	public FlickrPolygon getArea() {
+	public FlickrArea getArea() {
 		return area;
 	}
 
-	public void setArea(FlickrPolygon area) {
+	public void setArea(FlickrArea area) {
 		this.area = area;
 	}
 

@@ -13,9 +13,9 @@ import org.mybatis.spring.SqlSessionTemplate;
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
-import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
 public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 
@@ -35,7 +35,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 //		}
 //	}
 
-	private void initArea(FlickrPolygon a, Radius radius) {
+	private void initArea(FlickrArea a, Radius radius) {
 		if (a != null) {
 			a.setRadius(radius);
 			a.setSelectCount(0);
@@ -47,108 +47,108 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		}
 	}
 
-	private void initAreas(List<FlickrPolygon> as, Radius radius) {
-		for (FlickrPolygon a : as) {
+	private void initAreas(List<FlickrArea> as, Radius radius) {
+		for (FlickrArea a : as) {
 			initArea(a, radius);
 		}
 	}
 
-	private void initPhotos(List<FlickrPhoto> photos, FlickrPolygon area) {
+	private void initPhotos(List<FlickrPhoto> photos, FlickrArea area) {
 		for (FlickrPhoto photo : photos) {
 			photo.setArea(area);
 		}
 	}
 
-	private void loadHoursCount(FlickrPolygon a) {
+	private void loadHoursCount(FlickrArea a) {
 		if (a.getHoursCount() != null)
 			return; // cached
 
 		Map<String, Integer> hoursCount = new TreeMap<String, Integer>();
 		a.setHoursCount(hoursCount);
 
-		String count = (String) sessionTemplate.selectOne(FlickrPolygon.class.getName() + ".hourCount", a);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".hourCount", a);
 		if (count != null) {
 			parseCounts(count, hoursCount, hourRegExPattern);
 		}
 	}
 
-	private void loadDaysCount(FlickrPolygon a) {
+	private void loadDaysCount(FlickrArea a) {
 		if (a.getDaysCount() != null)
 			return; // cached
 
 		Map<String, Integer> daysCount = new TreeMap<String, Integer>();
 		a.setDaysCount(daysCount);
 
-		String count = (String) sessionTemplate.selectOne(FlickrPolygon.class.getName() + ".dayCount", a);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".dayCount", a);
 		if (count != null) {
 			parseCounts(count, daysCount, dayRegExPattern);
 		}
 	}
 
-	private void loadMonthsCount(FlickrPolygon a) {
+	private void loadMonthsCount(FlickrArea a) {
 		if (a.getMonthsCount() != null)
 			return; // cached
 
 		Map<String, Integer> monthsCount = new TreeMap<String, Integer>();
 		a.setMonthsCount(monthsCount);
 
-		String count = (String) sessionTemplate.selectOne(FlickrPolygon.class.getName() + ".monthCount", a);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".monthCount", a);
 		if (count != null) {
 			parseCounts(count, monthsCount, monthRegExPattern);
 		}
 	}
 
-	private void loadYearsCount(FlickrPolygon a) {
+	private void loadYearsCount(FlickrArea a) {
 		if (a.getYearsCount() != null)
 			return; // cached
 
 		Map<String, Integer> yearsCount = new TreeMap<String, Integer>();
 		a.setYearsCount(yearsCount);
 
-		String count = (String) sessionTemplate.selectOne(FlickrPolygon.class.getName() + ".yearCount", a);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".yearCount", a);
 		if (count != null) {
 			parseCounts(count, yearsCount, yearRegExPattern);
 		}
 	}
 
 	@Override
-	public List<FlickrPolygon> getAllAreas(Radius radius) {
+	public List<FlickrArea> getAllAreas(Radius radius) {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setRadius(radius);
 
-		List<FlickrPolygon> as = (List<FlickrPolygon>) sessionTemplate.selectList(FlickrPolygon.class.getName() + ".selectAll", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + ".selectAll", areaDto);
 		initAreas(as, radius);
 
 		return as;
 	}
 
 	@Override
-	public FlickrPolygon getAreaById(int areaid, Radius radius) {
+	public FlickrArea getAreaById(int areaid, Radius radius) {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		FlickrPolygon a = (FlickrPolygon) sessionTemplate.selectOne(FlickrPolygon.class.getName() + ".selectById", areaDto);
+		FlickrArea a = (FlickrArea) sessionTemplate.selectOne(FlickrArea.class.getName() + ".selectById", areaDto);
 		initArea(a, radius);
 
 		return a;
 	}
 
 	@Override
-	public List<FlickrPolygon> getAreasByPoint(double x, double y, Radius radius) {
+	public List<FlickrArea> getAreasByPoint(double x, double y, Radius radius) {
 		JGeometry queryGeom = new JGeometry(2001, 8307, x, y, 0, null, null);
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrPolygon> as = (List<FlickrPolygon>) sessionTemplate.selectList(FlickrPolygon.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
 	}
 
 	@Override
-	public List<FlickrPolygon> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
+	public List<FlickrArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
 
 		int[] elemInfo = { 1, 1003, 3 };
 		double[] ordinates = { x1, y1, x2, y2 };
@@ -157,14 +157,14 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrPolygon> as = (List<FlickrPolygon>) sessionTemplate.selectList(FlickrPolygon.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
 	}
 
 	@Override
-	public List<FlickrPolygon> getAreasByPolygon(List<Point2D> polygon, Radius radius) {
+	public List<FlickrArea> getAreasByPolygon(List<Point2D> polygon, Radius radius) {
 
 		int[] elemInfo = { 1, 1003, 1 };
 		double[] ordinates = new double[polygon.size() * 2];
@@ -180,7 +180,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrPolygon> as = (List<FlickrPolygon>) sessionTemplate.selectList(FlickrPolygon.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -188,7 +188,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected List<FlickrPhoto> getPhotos(FlickrPolygon area, String queryStr, int num) {
+	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
 		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
 		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel);
@@ -212,7 +212,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		Object numObj = sessionTemplate.selectOne(FlickrPolygon.class.getName() + ".totalCount", areaDto);
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + ".totalCount", areaDto);
 		int num = 0;
 		if(numObj != null){
 			num = (Integer)numObj;
