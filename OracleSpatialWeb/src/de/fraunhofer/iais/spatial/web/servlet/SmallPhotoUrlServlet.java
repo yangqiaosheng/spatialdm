@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
-import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.AreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -36,7 +36,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 	private static final long serialVersionUID = 289355222687198395L;
 
 	private static final int MAX_PAGE_SIZE = 200;
-	private static FlickrDeWestAreaMgr areaMgr = null;
+	private static FlickrEuropeAreaMgr areaMgr = null;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -82,7 +82,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
+				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 				photosResponseXml(document, area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
@@ -100,9 +100,9 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		out.close();
 	}
 
-	private String photosResponseXml(Document document, FlickrDeWestArea area, FlickrDeWestAreaDto areaDto, int page, int pageSize) {
+	private String photosResponseXml(Document document, FlickrArea area, FlickrDeWestAreaDto areaDto, int page, int pageSize) {
 
-		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleDateFormat weekdayFormat = new SimpleDateFormat("EEE", Locale.ENGLISH);
 
@@ -112,7 +112,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		rootElement.addContent(photosElement);
 		photosElement.setAttribute("size", String.valueOf(photos.size()));
 
-		for (FlickrDeWestPhoto p : photos) {
+		for (FlickrPhoto p : photos) {
 			Element photoElement = new Element("photo");
 			photosElement.addContent(photoElement);
 			photoElement.setAttribute("index", String.valueOf(p.getIndex()));
@@ -142,6 +142,6 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrEuropeAreaMgr.class);
 	}
 }

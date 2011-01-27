@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
 public class TimeSeriesChartServletOld extends HttpServlet {
@@ -28,7 +28,7 @@ public class TimeSeriesChartServletOld extends HttpServlet {
 
 	private static final long serialVersionUID = -4033923021316859791L;
 
-	private static FlickrDeWestAreaMgr areaMgr = null;
+	private static FlickrEuropeAreaMgr areaMgr = null;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -46,7 +46,7 @@ public class TimeSeriesChartServletOld extends HttpServlet {
 			try {
 				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
 				if (areaDto != null) {
-					FlickrDeWestArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
+					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), areaDto.getRadius());
 					if (area != null) {
 						areaMgr.createTimeSeriesChartOld(area, areaDto.getYears4Chart(), sos);
 					}
@@ -68,6 +68,6 @@ public class TimeSeriesChartServletOld extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrEuropeAreaMgr.class);
 	}
 }

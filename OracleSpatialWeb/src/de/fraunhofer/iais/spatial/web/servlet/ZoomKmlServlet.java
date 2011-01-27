@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
-import de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr;
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -36,7 +36,7 @@ public class ZoomKmlServlet extends HttpServlet {
 	// "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
 	public static final String kmlPath = "kml/";
 
-	private static FlickrDeWestAreaMgr areaMgr = null;
+	private static FlickrEuropeAreaMgr areaMgr = null;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -87,7 +87,7 @@ public class ZoomKmlServlet extends HttpServlet {
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
-				List<FlickrDeWestArea> as = null;
+				List<FlickrArea> as = null;
 
 				if (areaDto.getPolygon() != null) {
 					as = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
@@ -129,7 +129,7 @@ public class ZoomKmlServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrDeWestAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrDeWestAreaMgr", FlickrEuropeAreaMgr.class);
 //		areaMgr.fillCache();
 	}
 

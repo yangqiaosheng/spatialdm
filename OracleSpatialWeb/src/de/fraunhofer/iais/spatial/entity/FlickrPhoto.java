@@ -9,11 +9,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author zhi
  */
 
-public class FlickrDeWestPhoto {
+public class FlickrPhoto {
 
 	private int index;
 	private long id;
-	private FlickrDeWestArea area;
+	private FlickrArea area;
 	private double longitude;
 	private double latitude;
 	private Date date;
@@ -73,11 +73,11 @@ public class FlickrDeWestPhoto {
 		this.id = id;
 	}
 
-	public FlickrDeWestArea getArea() {
+	public FlickrArea getArea() {
 		return area;
 	}
 
-	public void setArea(FlickrDeWestArea area) {
+	public void setArea(FlickrArea area) {
 		this.area = area;
 	}
 
