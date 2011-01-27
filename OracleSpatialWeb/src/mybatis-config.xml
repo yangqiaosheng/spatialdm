@@ -9,11 +9,9 @@
 		<setting name="cacheEnabled" value="true"/>
 	</settings>
 	<typeAliases>
-		<typeAlias type="de.fraunhofer.iais.spatial.entity.Milanpoly" alias="Milanpoly" />
-		<typeAlias type="de.fraunhofer.iais.spatial.entity.Area" alias="Area" />
-		<typeAlias type="de.fraunhofer.iais.spatial.entity.FlickrDeWestArea" alias="FlickrDeWestArea" />
-		<typeAlias type="de.fraunhofer.iais.spatial.entity.FlickrDeWestPhoto" alias="FlickrDeWestPhoto" />
-		<typeAlias type="de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto" alias="FlickrDeWestAreaDto" />
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.FlickrArea" alias="FlickrArea" />
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.FlickrPhoto" alias="FlickrPhoto" />
+		<typeAlias type="de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto" alias="FlickrEuropeAreaDto" />
 	</typeAliases>
 	<typeHandlers>
 		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.SdoGeometryTypeHandler" javaType="oracle.spatial.geometry.JGeometry" />
@@ -39,9 +37,7 @@
 	</environments>
 
 	<mappers>
-		<!--		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Milanpoly.xml" />-->
-		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/Area.xml" />
-		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrDeWestArea.xml" />
-		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrDeWestPhoto.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrEuropeArea.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrEuropePhoto.xml" />
 	</mappers>
 </configuration>

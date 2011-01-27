@@ -1,6 +1,6 @@
 package de.fraunhofer.iais.spatial.util;
 
-import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
 
 public class AreaUtil {
 

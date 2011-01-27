@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -75,10 +75,10 @@ public class ZoomKmlServlet extends HttpServlet {
 			try {
 				String filenamePrefix = StringUtil.genFilename(new Date());
 
-				FlickrDeWestAreaDto areaDto = new FlickrDeWestAreaDto();
+				FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 				if ("true".equals(persist)) {
 					logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
-					areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+					areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
 				}
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
@@ -87,7 +87,7 @@ public class ZoomKmlServlet extends HttpServlet {
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
-				List<FlickrArea> as = null;
+				List<FlickrPolygon> as = null;
 
 				if (areaDto.getPolygon() != null) {
 					as = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());

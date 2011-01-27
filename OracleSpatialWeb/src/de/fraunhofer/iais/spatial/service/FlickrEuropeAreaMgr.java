@@ -36,10 +36,10 @@ import org.jdom.input.SAXBuilder;
 
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoJdbc;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
-import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.AreaUtil;
 import de.fraunhofer.iais.spatial.util.DateUtil;
@@ -58,8 +58,8 @@ public class FlickrEuropeAreaMgr {
 		this.flickrDeWestAreaDao = areaDao;
 	}
 
-	public void countHours(List<FlickrArea> areas, Set<String> hours) {
-		for (FlickrArea area : areas) {
+	public void countHours(List<FlickrPolygon> areas, Set<String> hours) {
+		for (FlickrPolygon area : areas) {
 			int num = 0;
 			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (hours.contains(e.getKey())) {
@@ -70,8 +70,8 @@ public class FlickrEuropeAreaMgr {
 		}
 	}
 
-	public void countDays(List<FlickrArea> areas, Set<String> days) {
-		for (FlickrArea area : areas) {
+	public void countDays(List<FlickrPolygon> areas, Set<String> days) {
+		for (FlickrPolygon area : areas) {
 			int num = 0;
 			for (Map.Entry<String, Integer> e : area.getDaysCount().entrySet()) {
 				if (days.contains(e.getKey())) {
@@ -82,8 +82,8 @@ public class FlickrEuropeAreaMgr {
 		}
 	}
 
-	public void countMonths(List<FlickrArea> areas, Set<String> months) {
-		for (FlickrArea area : areas) {
+	public void countMonths(List<FlickrPolygon> areas, Set<String> months) {
+		for (FlickrPolygon area : areas) {
 			int num = 0;
 			for (Map.Entry<String, Integer> e : area.getMonthsCount().entrySet()) {
 				if (months.contains(e.getKey())) {
@@ -94,8 +94,8 @@ public class FlickrEuropeAreaMgr {
 		}
 	}
 
-	public void countYears(List<FlickrArea> areas, Set<String> years) {
-		for (FlickrArea area : areas) {
+	public void countYears(List<FlickrPolygon> areas, Set<String> years) {
+		for (FlickrPolygon area : areas) {
 			int num = 0;
 			for (Map.Entry<String, Integer> e : area.getYearsCount().entrySet()) {
 				if (years.contains(e.getKey())) {
@@ -107,7 +107,7 @@ public class FlickrEuropeAreaMgr {
 	}
 
 
-	public void count(List<FlickrArea> areas, FlickrDeWestAreaDto areaDto) throws Exception {
+	public void count(List<FlickrPolygon> areas, FlickrEuropeAreaDto areaDto) throws Exception {
 
 		System.out.println("#query:" + areaDto.getQueryStrs().size() * 139);
 		//		if (strs.size() > 5 * 12 * 31 * 24)
@@ -132,7 +132,7 @@ public class FlickrEuropeAreaMgr {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void parseXmlRequest(String xml, FlickrDeWestAreaDto areaDto) throws JDOMException, IOException, ParseException {
+	public void parseXmlRequest(String xml, FlickrEuropeAreaDto areaDto) throws JDOMException, IOException, ParseException {
 		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
@@ -328,7 +328,7 @@ public class FlickrEuropeAreaMgr {
 
 	}
 
-	private void setCalendarQueryStrs(FlickrDeWestAreaDto areaDto) {
+	private void setCalendarQueryStrs(FlickrEuropeAreaDto areaDto) {
 
 		areaDto.setQueryLevel(Level.HOUR);
 
@@ -391,11 +391,11 @@ public class FlickrEuropeAreaMgr {
 	}
 
 
-	public String createMarkersXml(List<FlickrArea> areas, String file) {
+	public String createMarkersXml(List<FlickrPolygon> areas, String file) {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
-		for (FlickrArea area : areas) {
+		for (FlickrPolygon area : areas) {
 			String polyColor = "#0000";
 			int color = area.getTotalCount() / 30;
 			if (color > 255) {
@@ -429,7 +429,7 @@ public class FlickrEuropeAreaMgr {
 		ChartUtil.createBarChart(cs, "temp/bar.jpg");
 	}
 
-	public void createTimeSeriesChartOld(FlickrArea area, Set<String> years, OutputStream os) throws ParseException, IOException {
+	public void createTimeSeriesChartOld(FlickrPolygon area, Set<String> years, OutputStream os) throws ParseException, IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
@@ -442,13 +442,13 @@ public class FlickrEuropeAreaMgr {
 		ChartUtil.createTimeSeriesChartOld(countsMap, os);
 	}
 
-	public void createTimeSeriesChart(List<FlickrArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
+	public void createTimeSeriesChart(List<FlickrPolygon> areas, Level displayLevel, FlickrEuropeAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
 
 		Map<String, Map<Date, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Date, Integer>>();
 
 		int queryStrsLength = areaDto.getQueryStrs().first().length();
 
-		for (FlickrArea area : areas) {
+		for (FlickrPolygon area : areas) {
 
 			Map<Integer, Integer> intCounts = new TreeMap<Integer, Integer>();
 			Map<Date, Integer> dateCounts = new TreeMap<Date, Integer>();
@@ -562,13 +562,13 @@ public class FlickrEuropeAreaMgr {
 		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
 	}
 
-	public void createXYLineChart(List<FlickrArea> areas, Level displayLevel, FlickrDeWestAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
+	public void createXYLineChart(List<FlickrPolygon> areas, Level displayLevel, FlickrEuropeAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
 
 		Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
 
 		int queryStrsLength = areaDto.getQueryStrs().first().length();
 
-		for (FlickrArea area : areas) {
+		for (FlickrPolygon area : areas) {
 
 			Map<Integer, Integer> displayCounts = new TreeMap<Integer, Integer>();
 			switch (displayLevel) {
@@ -648,12 +648,12 @@ public class FlickrEuropeAreaMgr {
 	}
 
 
-	public String createXml(List<FlickrArea> areas, String filenamePrefix, Radius radius) throws UnsupportedEncodingException {
+	public String createXml(List<FlickrPolygon> areas, String filenamePrefix, Radius radius) throws UnsupportedEncodingException {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
 
-		for (FlickrArea area : areas) {
+		for (FlickrPolygon area : areas) {
 			Element polygonElement = new Element("polygon");
 			rootElement.addContent(polygonElement);
 			polygonElement.setAttribute("id", String.valueOf(area.getId()));
@@ -687,7 +687,7 @@ public class FlickrEuropeAreaMgr {
 		return XmlUtil.xml2String(document, false);
 	}
 
-	public String createKml(List<FlickrArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
+	public String createKml(List<FlickrPolygon> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = this.getClass().getResource("/../../").getPath();
 		if (StringUtils.isEmpty(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
@@ -706,7 +706,7 @@ public class FlickrEuropeAreaMgr {
 		rootElement.addContent(documentElement);
 
 		// GroundOverlay
-		for (FlickrArea area : areas) {
+		for (FlickrPolygon area : areas) {
 			if (area.getTotalCount() != 0) {
 				String name = "";
 				//			String description = "count: " + String.valueOf(a.getTotalCount());
@@ -777,7 +777,7 @@ public class FlickrEuropeAreaMgr {
 		}
 
 		// Polygon
-		for (FlickrArea area : areas) {
+		for (FlickrPolygon area : areas) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
 			String name = "";
 			//			String description = "count: " + String.valueOf(a.getTotalCount());

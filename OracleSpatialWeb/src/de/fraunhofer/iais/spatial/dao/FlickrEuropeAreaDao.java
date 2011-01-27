@@ -10,11 +10,11 @@ import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
-import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
-import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
 
 public abstract class FlickrEuropeAreaDao {
 
@@ -38,14 +38,14 @@ public abstract class FlickrEuropeAreaDao {
 	 * Returns a List of all the FlickrDeWestArea instances
 	 * @return List<FlickrDeWestArea>
 	 */
-	public abstract List<FlickrArea> getAllAreas(Radius radius);
+	public abstract List<FlickrPolygon> getAllAreas(Radius radius);
 
 	/**
 	 * Returns the instance of FlickrDeWestArea related to that areaid
 	 * @param areaid
 	 * @return FlickrDeWestArea
 	 */
-	public abstract FlickrArea getAreaById(int areaid, Radius radius);
+	public abstract FlickrPolygon getAreaById(int areaid, Radius radius);
 
 	/**
 	 * Returns a List of FlickrDeWestArea instances which interact to this point
@@ -53,7 +53,7 @@ public abstract class FlickrEuropeAreaDao {
 	 * @param y
 	 * @return List<FlickrDeWestArea>
 	 */
-	public abstract List<FlickrArea> getAreasByPoint(double x, double y, Radius radius);
+	public abstract List<FlickrPolygon> getAreasByPoint(double x, double y, Radius radius);
 
 	/**
 	 * Returns a List of FlickrDeWestArea instances which interact to this rectangle
@@ -63,7 +63,7 @@ public abstract class FlickrEuropeAreaDao {
 	 * @param y2
 	 * @return List<FlickrDeWestArea>
 	 */
-	public abstract List<FlickrArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius);
+	public abstract List<FlickrPolygon> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius);
 
 	/**
 	 * Returns a List of FlickrDeWestArea instances which interact to this polygon
@@ -71,7 +71,7 @@ public abstract class FlickrEuropeAreaDao {
 	 * @param radius
 	 * @return
 	 */
-	public abstract List<FlickrArea> getAreasByPolygon(List<Point2D> polygon, Radius radius);
+	public abstract List<FlickrPolygon> getAreasByPolygon(List<Point2D> polygon, Radius radius);
 
 	/**
 	 * get the total amount of photos uploaded within this area
@@ -81,7 +81,7 @@ public abstract class FlickrEuropeAreaDao {
 	public abstract int getTotalCount(int areaid, Radius radius);
 
 
-	protected abstract List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num);
+	protected abstract List<FlickrPhoto> getPhotos(FlickrPolygon area, String queryStr, int num);
 
 	/**
 	 * Returns a List of FlickrDeWestPhoto instances within the area
@@ -92,7 +92,7 @@ public abstract class FlickrEuropeAreaDao {
 	 * @param pageSize
 	 * @return
 	 */
-	public List<FlickrPhoto> getPhotos(FlickrArea area, FlickrDeWestAreaDto areaDto, int page, int pageSize) {
+	public List<FlickrPhoto> getPhotos(FlickrPolygon area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<FlickrPhoto> photos = new ArrayList<FlickrPhoto>();
 		Map<String, Integer> count = null;

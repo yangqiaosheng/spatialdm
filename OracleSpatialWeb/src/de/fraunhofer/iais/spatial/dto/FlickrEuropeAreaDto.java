@@ -9,9 +9,9 @@ import java.util.TreeSet;
 
 import oracle.spatial.geometry.JGeometry;
 
-import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
 
-public class FlickrDeWestAreaDto {
+public class FlickrEuropeAreaDto {
 
 	private SortedSet<String> years = new TreeSet<String>();
 	private SortedSet<String> months = new TreeSet<String>();

@@ -19,10 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto;
-import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
-import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrPolygon.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.AreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -76,13 +76,13 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			messageElement.setText("ERROR: please perform a query first!");
 		} else {
 			try {
-				FlickrDeWestAreaDto areaDto = (FlickrDeWestAreaDto) request.getSession().getAttribute("areaDto");
+				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = AreaUtil.getRadius(zoom);
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
+				FlickrPolygon area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 				photosResponseXml(document, area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
@@ -100,7 +100,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		out.close();
 	}
 
-	private String photosResponseXml(Document document, FlickrArea area, FlickrDeWestAreaDto areaDto, int page, int pageSize) {
+	private String photosResponseXml(Document document, FlickrPolygon area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {
 
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
