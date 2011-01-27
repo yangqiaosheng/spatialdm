@@ -41,6 +41,7 @@ import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea;
 import de.fraunhofer.iais.spatial.entity.FlickrDeWestArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
+import de.fraunhofer.iais.spatial.util.AreaUtil;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -173,21 +174,8 @@ public class FlickrDeWestAreaMgr {
 			String zoomStr = screenElement.getChildText("zoom");
 			if (zoomStr != null && !"".equals(zoomStr.trim())) {
 				int zoom = Integer.parseInt(zoomStr);
-				if (zoom <= 5) {
-					areaDto.setRadius(Radius.R320000);
-				} else if (zoom <= 6) {
-					areaDto.setRadius(Radius.R160000);
-				} else if (zoom <= 7) {
-					areaDto.setRadius(Radius.R80000);
-				} else if (zoom <= 8) {
-					areaDto.setRadius(Radius.R40000);
-				} else if (zoom <= 9) {
-					areaDto.setRadius(Radius.R20000);
-				} else if (zoom <= 10) {
-					areaDto.setRadius(Radius.R10000);
-				} else if (zoom >= 11) {
-					areaDto.setRadius(Radius.R5000);
-				}
+				Radius radius = AreaUtil.getRadius(zoom);
+				areaDto.setRadius(radius);
 				areaDto.setZoom(zoom);
 			}
 		}
