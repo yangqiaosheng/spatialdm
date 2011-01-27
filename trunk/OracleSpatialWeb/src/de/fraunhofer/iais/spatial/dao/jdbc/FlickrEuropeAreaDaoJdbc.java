@@ -15,13 +15,13 @@ import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeDao;
+import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class FlickrEuropetAreaDaoJdbc extends FlickrEuropeDao {
+public class FlickrEuropeAreaDaoJdbc extends FlickrEuropeAreaDao {
 
 	private DB db;
 
@@ -237,8 +237,8 @@ public class FlickrEuropetAreaDaoJdbc extends FlickrEuropeDao {
 	protected FlickrPhoto getPhoto(FlickrArea area, String queryStr, int idx) {
 
 		FlickrPhoto photo = null;
-		Level queryLevel = FlickrEuropeDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrEuropeDao.judgeOracleDatePatternStr(queryLevel);
+		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
+		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel);
 
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
@@ -272,8 +272,8 @@ public class FlickrEuropetAreaDaoJdbc extends FlickrEuropeDao {
 	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
 		List<FlickrPhoto> photos = new ArrayList<FlickrPhoto>();
-		Level queryLevel = FlickrEuropeDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrEuropeDao.judgeOracleDatePatternStr(queryLevel);
+		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
+		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel);
 		String oracleToDateStr = "to_date('" + queryStr + "', '" + oracleDatePatternStr + "')";
 
 		Connection conn = db.getConn();
