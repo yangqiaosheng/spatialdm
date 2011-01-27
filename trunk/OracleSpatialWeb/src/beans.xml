@@ -92,15 +92,15 @@
 		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
-	<!-- FlickrDeWest -->
-	<bean id="flickrDeWestAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDaoJdbc">
+	<!-- FlickrEurope -->
+	<bean id="flickrEuropeAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoJdbc">
 		<property name="db" ref="db" />
 	</bean>
-	<bean id="flickrDeWestAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrDeWestAreaDaoMybatis">
+	<bean id="flickrEuropeAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrEuropeAreaDaoMybatis">
 		<property name="sessionTemplate" ref="sessionTemplate" />
 	</bean>
-	<bean id="flickrDeWestAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrDeWestAreaMgr">
-		<property name="areaDao" ref="flickrDeWestAreaDaoMybatisImpl" />
+	<bean id="flickrEuropeAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr">
+		<property name="areaDao" ref="flickrEuropeAreaDaoMybatisImpl" />
 	</bean>
 
 </beans>

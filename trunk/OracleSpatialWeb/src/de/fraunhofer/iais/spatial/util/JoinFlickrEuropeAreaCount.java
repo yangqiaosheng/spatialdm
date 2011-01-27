@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
-import de.fraunhofer.iais.spatial.dto.FlickrDeWestAreaDto.Level;
+import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 
 public class JoinFlickrEuropeAreaCount {
 	static long start = System.currentTimeMillis();
