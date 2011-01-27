@@ -42,9 +42,9 @@ import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 //@ContextConfiguration("classpath:beans.xml")
-public class TestFlickrDeWestArea{
+public class TestFlickrEuropeArea{
 
-//	@Resource(name = "flickrDeWestAreaMgr")
+//	@Resource(name = "flickrEuropeAreaMgr")
 	private static FlickrEuropeAreaMgr areaMgr = null;
 
 	private FlickrEuropeAreaDto areaDto = null;
@@ -58,7 +58,7 @@ public class TestFlickrDeWestArea{
 		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
 
-		areaMgr = (FlickrEuropeAreaMgr) context.getBean("flickrDeWestAreaMgr");
+		areaMgr = (FlickrEuropeAreaMgr) context.getBean("flickrEuropeAreaMgr");
 	}
 
 	@Test
@@ -122,8 +122,8 @@ public class TestFlickrDeWestArea{
 
 	@Test
 	public void testJdbcDao2() {
-		//		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAllAreas(Radius._10000);
-		// 		List<FlickrDeWestArea> as = areaMgr.getAreaDao().getAreasByPoint(8.83, 50.58, Radius._5000);
+		//		List<FlickrEuropeArea> as = areaMgr.getAreaDao().getAllAreas(Radius._10000);
+		// 		List<FlickrEuropeArea> as = areaMgr.getAreaDao().getAreasByPoint(8.83, 50.58, Radius._5000);
 		List<FlickrArea> as = areaMgr.getAreaDao().getAreasByRect(1, 1, 96.5, 95.4, Radius.R320000);
 		for (FlickrArea a : as) {
 			String coordinates = "\t";
@@ -278,13 +278,13 @@ public class TestFlickrDeWestArea{
 			}
 		}
 		//
-		//		List<FlickrDeWestPhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
-		//		for (FlickrDeWestPhoto p : photos) {
+		//		List<FlickrEuropePhoto> photos = areaMgr.getAreaDao().getPhotos(1, Radius.R80000, hours, 20);
+		//		for (FlickrEuropePhoto p : photos) {
 		//			System.out.println(p);
 		//		}
 		//
-		//		List<FlickrDeWestPhoto> photos2 = areaMgr.getAreaDao().getPhotos(1, Radius.R40000, hours, 20);
-		//		for (FlickrDeWestPhoto p : photos2) {
+		//		List<FlickrEuropePhoto> photos2 = areaMgr.getAreaDao().getPhotos(1, Radius.R40000, hours, 20);
+		//		for (FlickrEuropePhoto p : photos2) {
 		//			System.out.println(p);
 		//		}
 
@@ -304,13 +304,13 @@ public class TestFlickrDeWestArea{
 			Assert.assertEquals(photos3.get((page - 1) * pageSize + i).getId(), p.getId());
 		}
 
-		//		List<FlickrDeWestPhoto> photos4 = areaMgr.getAreaDao().getPhotos(1, Radius.R10000, hours, 20);
-		//		for (FlickrDeWestPhoto p : photos4) {
+		//		List<FlickrEuropePhoto> photos4 = areaMgr.getAreaDao().getPhotos(1, Radius.R10000, hours, 20);
+		//		for (FlickrEuropePhoto p : photos4) {
 		//			System.out.println(p);
 		//		}
 		//
-		//		List<FlickrDeWestPhoto> photos5 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, hours, 20);
-		//		for (FlickrDeWestPhoto p : photos5) {
+		//		List<FlickrEuropePhoto> photos5 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, hours, 20);
+		//		for (FlickrEuropePhoto p : photos5) {
 		//			System.out.println(p);
 		//		}
 
@@ -318,8 +318,8 @@ public class TestFlickrDeWestArea{
 		//		years.add("2007");
 		//		years.add("2009");
 		//		years.add("2006");
-		//		List<FlickrDeWestPhoto> photos6 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, years, 20);
-		//		for (FlickrDeWestPhoto p : photos6) {
+		//		List<FlickrEuropePhoto> photos6 = areaMgr.getAreaDao().getPhotos(1, Radius.R5000, years, 20);
+		//		for (FlickrEuropePhoto p : photos6) {
 		//			System.out.println(p);
 		//		}
 
@@ -378,7 +378,7 @@ public class TestFlickrDeWestArea{
 //			photoElement.addContent(new Element("viewed").setText(String.valueOf(p.getViewed())));
 //			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
 		}
-		XmlUtil.xml2File(document, "temp/FlickrDeWestPhoto_" + radius + ".xml", false);
+		XmlUtil.xml2File(document, "temp/FlickrEuropePhoto_" + radius + ".xml", false);
 		return XmlUtil.xml2String(document, false);
 	}
 
@@ -401,14 +401,14 @@ public class TestFlickrDeWestArea{
 	@Test
 	public void testRequestXml() throws Exception {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
-//		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest2.xml"));
-//		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
+//		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest2.xml"));
+//		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
 //		StringBuffer xml = new StringBuffer();
 //		String thisLine;
 //		while ((thisLine = br.readLine()) != null) {
 //			xml.append(thisLine);
 //		}
-		String xml = IOUtils.toString(new FileReader("FlickrDeWestKmlRequest1.xml"));
+		String xml = IOUtils.toString(new FileReader("FlickrEuropeKmlRequest1.xml"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml), areaDto);
 
 		System.out.println("radius:" + areaDto.getRadius());
@@ -437,7 +437,7 @@ public class TestFlickrDeWestArea{
 		System.out.println("hours:" + areaDto.getHours());
 		System.out.println("weekdays:" + areaDto.getWeekdays());
 		System.out.println("queryStringsSize:" + areaDto.getQueryStrs().size() + " |queryStrings:" + areaDto.getQueryStrs());
-//		List<FlickrDeWestArea> as = null;
+//		List<FlickrEuropeArea> as = null;
 //		if (areaDto.getBoundaryRect() == null) {
 //			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 //		} else {
@@ -452,7 +452,7 @@ public class TestFlickrDeWestArea{
 	public void testKml1() throws Exception {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
+		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
 		while ((thisLine = br.readLine()) != null) {
@@ -467,14 +467,14 @@ public class TestFlickrDeWestArea{
 		}
 		areaMgr.count(as, areaDto);
 
-//		System.out.println(areaMgr.createKml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius(), null, true));
-		System.out.println(areaMgr.createXml(as, "temp/FlickrDeWestArea" + areaDto.getRadius(), areaDto.getRadius()));
+//		System.out.println(areaMgr.createKml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius(), null, true));
+		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
 
 	}
 
 	@Test
 	public void testXmlGeneration() throws Exception {
-		BufferedReader br = new BufferedReader(new FileReader("FlickrDeWestKmlRequest1.xml"));
+		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
 		while ((thisLine = br.readLine()) != null) {
@@ -556,14 +556,14 @@ public class TestFlickrDeWestArea{
 //	@Test
 //	public void testQueryLevel() {
 //		String hour = "2009-07-07@13";
-//		System.out.println(FlickrDeWestAreaDao.judgeQueryLevel(hour));
-//		System.out.println(FlickrDeWestAreaDao.oracleDataPatternStr(FlickrDeWestAreaDao.judgeQueryLevel(hour)));
+//		System.out.println(FlickrEuropeAreaDao.judgeQueryLevel(hour));
+//		System.out.println(FlickrEuropeAreaDao.oracleDataPatternStr(FlickrEuropeAreaDao.judgeQueryLevel(hour)));
 //		String day = "2009-07-07";
-//		System.out.println(FlickrDeWestAreaDao.judgeQueryLevel(day));
+//		System.out.println(FlickrEuropeAreaDao.judgeQueryLevel(day));
 //		String month = "2009-07";
-//		System.out.println(FlickrDeWestAreaDao.judgeQueryLevel(month));
+//		System.out.println(FlickrEuropeAreaDao.judgeQueryLevel(month));
 //		String year = "2009";
-//		System.out.println(FlickrDeWestAreaDao.judgeQueryLevel(year));
+//		System.out.println(FlickrEuropeAreaDao.judgeQueryLevel(year));
 //	}
 
 }
