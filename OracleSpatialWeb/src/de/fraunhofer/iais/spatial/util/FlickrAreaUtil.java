@@ -2,9 +2,9 @@ package de.fraunhofer.iais.spatial.util;
 
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class AreaUtil {
+public class FlickrAreaUtil {
 
-	public static int getZoom(Radius radius) {
+	public static int judgeZoom(Radius radius) {
 		int zoom = 0;
 		switch (radius) {
 		case R5000:
@@ -33,7 +33,7 @@ public class AreaUtil {
 	}
 
 
-	public static Radius getRadius(int zoom) {
+	public static Radius judgeRadius(int zoom) {
 		Radius radius = null;
 		if (zoom <= 5) {
 			radius = Radius.R320000;

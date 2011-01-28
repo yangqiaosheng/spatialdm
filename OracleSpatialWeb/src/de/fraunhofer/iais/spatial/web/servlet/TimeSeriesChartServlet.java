@@ -25,7 +25,7 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
-import de.fraunhofer.iais.spatial.util.AreaUtil;
+import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 
 public class TimeSeriesChartServlet extends HttpServlet {
 	private static final int DEFAULT_HEIGHT = 300;
@@ -76,7 +76,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
-				Radius radius = AreaUtil.getRadius(zoom);
+				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				for (String areaid : areaids) {
 					areas.add(areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), radius));
 				}

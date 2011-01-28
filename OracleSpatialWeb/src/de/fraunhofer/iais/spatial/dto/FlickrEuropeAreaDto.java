@@ -18,7 +18,7 @@ public class FlickrEuropeAreaDto {
 	private SortedSet<String> days = new TreeSet<String>();
 	private SortedSet<String> hours = new TreeSet<String>();
 	private SortedSet<String> weekdays = new TreeSet<String>();
-	private SortedSet<String> queryStrs;
+	private SortedSet<String> queryStrs = new TreeSet<String>();
 	private Level queryLevel;
 	private int areaid;
 	private Radius radius;
@@ -28,8 +28,6 @@ public class FlickrEuropeAreaDto {
 	private List<Point2D> polygon;
 	private Date beginDate;
 	private Date endDate;
-	private SortedSet<Date> selectedDays;
-	private SortedSet<String> years4Chart;
 	JGeometry queryGeom;
 
 	public enum Level {
@@ -40,40 +38,20 @@ public class FlickrEuropeAreaDto {
 		return years;
 	}
 
-	public void setYears(SortedSet<String> years) {
-		this.years = years;
-	}
-
 	public SortedSet<String> getMonths() {
 		return months;
-	}
-
-	public void setMonths(SortedSet<String> months) {
-		this.months = months;
 	}
 
 	public SortedSet<String> getDays() {
 		return days;
 	}
 
-	public void setDays(SortedSet<String> days) {
-		this.days = days;
-	}
-
 	public SortedSet<String> getHours() {
 		return hours;
 	}
 
-	public void setHours(SortedSet<String> hours) {
-		this.hours = hours;
-	}
-
 	public SortedSet<String> getWeekdays() {
 		return weekdays;
-	}
-
-	public void setWeekdays(SortedSet<String> weekdays) {
-		this.weekdays = weekdays;
 	}
 
 	public int getAreaid() {
@@ -120,10 +98,6 @@ public class FlickrEuropeAreaDto {
 		return queryStrs;
 	}
 
-	public void setQueryStrs(SortedSet<String> queryStrs) {
-		this.queryStrs = queryStrs;
-	}
-
 	public Level getQueryLevel() {
 		return queryLevel;
 	}
@@ -154,22 +128,6 @@ public class FlickrEuropeAreaDto {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-	}
-
-	public SortedSet<Date> getSelectedDays() {
-		return selectedDays;
-	}
-
-	public void setSelectedDays(SortedSet<Date> selectedDays) {
-		this.selectedDays = selectedDays;
-	}
-
-	public SortedSet<String> getYears4Chart() {
-		return years4Chart;
-	}
-
-	public void setYears4Chart(SortedSet<String> years4Chart) {
-		this.years4Chart = years4Chart;
 	}
 
 	public JGeometry getQueryGeom() {

@@ -24,7 +24,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
-import de.fraunhofer.iais.spatial.util.AreaUtil;
+import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class SmallPhotoUrlServlet extends HttpServlet {
@@ -78,7 +78,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			try {
 				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
-				Radius radius = AreaUtil.getRadius(zoom);
+				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
