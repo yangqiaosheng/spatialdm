@@ -441,7 +441,7 @@ public class TestFlickrEuropeArea{
 	public void testKml1() throws Exception {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
+		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest2.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
 		while ((thisLine = br.readLine()) != null) {
@@ -454,10 +454,12 @@ public class TestFlickrEuropeArea{
 		} else {
 			as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
-		areaMgr.countSelected(as, areaDto);
 
+		long start = System.currentTimeMillis();
+		areaMgr.countSelected(as, areaDto);
+		System.out.println(System.currentTimeMillis() - start);
 //		System.out.println(areaMgr.createKml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius(), null, true));
-		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
+//		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
 	}
 
 	@Test

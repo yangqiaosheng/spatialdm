@@ -77,7 +77,7 @@ public class ZoomKmlServlet extends HttpServlet {
 
 				FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 				if ("true".equals(persist)) {
-					logger.debug("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
+					logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
 					areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
 				}
 
@@ -85,19 +85,19 @@ public class ZoomKmlServlet extends HttpServlet {
 
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
+				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
-				List<FlickrArea> as = null;
+				List<FlickrArea> areas = null;
 
 				if (areaDto.getPolygon() != null) {
-					as = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
+					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
 				} else if (areaDto.getBoundaryRect() != null) {
-					as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+					areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 				} else {
-					as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
-				areaMgr.countSelected(as, areaDto);
-				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, true);
+				areaMgr.countSelected(areas, areaDto);
+				areaMgr.createKml(areas, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, true);
 
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);

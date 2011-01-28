@@ -91,6 +91,7 @@ public class FlickrEuropeAreaMgr {
 					num += counts.get(queryStr);
 				}
 			}
+
 			area.setSelectedCount(num);
 		}
 	}
