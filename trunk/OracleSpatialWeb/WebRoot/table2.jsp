@@ -71,30 +71,30 @@
 	<div class="blocTime" align="center">	
     <span id="controltime_header4" class="style1_header"><a class="turn-red" href="#" onclick="javascript:selectbuttonHeader('4');"><b><i>hours:</i></b></a></span>	
 	<br/>
-    <span id="controltime50" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('50');"><b><i>12:00AM</i></b></a></span><span id="controltime51" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('51');"><b><i>
-	1:00AM</i></b></a></span><span id="controltime52" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('52');"><b><i>
-	2:00AM</i></b></a></span><span id="controltime53" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('53');"><b><i>
-	3:00AM</i></b></a></span><span id="controltime54" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('54');"><b><i>
-	4:00AM</i></b></a></span><span id="controltime55" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('55');"><b><i>
-	5:00AM</i></b></a></span><span id="controltime56" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('56');"><b><i>
-	6:00AM</i></b></a></span><span id="controltime57" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('57');"><b><i>
-	7:00AM</i></b></a></span><span id="controltime58" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('58');"><b><i>
-	8:00AM</i></b></a></span><span id="controltime59" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('59');"><b><i>
-	9:00AM</i></b></a></span><span id="controltime60" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('60');"><b><i>
-	10:00AM</i></b></a></span><span id="controltime61" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('61');"><b><i>
-	11:00AM</i></b></a></span><span id="controltime62" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('62');"><b><i>
-	12:00PM</i></b></a></span><span id="controltime63" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('63');"><b><i>
-	1:00PM</i></b></a></span><span id="controltime64" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('64');"><b><i>
-	2:00PM</i></b></a></span><span id="controltime65" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('65');"><b><i>
-	3:00PM</i></b></a></span><span id="controltime66" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('66');"><b><i>
-	4:00PM</i></b></a></span><span id="controltime67" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('67');"><b><i>
-	5:00PM</i></b></a></span><span id="controltime68" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('68');"><b><i>
-	6:00PM</i></b></a></span><span id="controltime69" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('69');"><b><i>
-	7:00PM</i></b></a></span><span id="controltime70" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('70');"><b><i>
-	8:00PM</i></b></a></span><span id="controltime71" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('71');"><b><i>
-	9:00PM</i></b></a></span><span id="controltime72" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('72');"><b><i>
-	10:00PM</i></b></a></span><span id="controltime73" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('73');"><b><i>
-	11:00PM</i></b></a></span>   
+    <span id="controltime50" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('50');"><b><i>0</i></b></a></span><span id="controltime51" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('51');"><b><i>
+	1</i></b></a></span><span id="controltime52" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('52');"><b><i>
+	2</i></b></a></span><span id="controltime53" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('53');"><b><i>
+	3</i></b></a></span><span id="controltime54" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('54');"><b><i>
+	4</i></b></a></span><span id="controltime55" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('55');"><b><i>
+	5</i></b></a></span><span id="controltime56" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('56');"><b><i>
+	6</i></b></a></span><span id="controltime57" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('57');"><b><i>
+	7</i></b></a></span><span id="controltime58" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('58');"><b><i>
+	8</i></b></a></span><span id="controltime59" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('59');"><b><i>
+	9</i></b></a></span><span id="controltime60" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('60');"><b><i>
+	10</i></b></a></span><span id="controltime61" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('61');"><b><i>
+	11</i></b></a></span><span id="controltime62" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('62');"><b><i>
+	12</i></b></a></span><span id="controltime63" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('63');"><b><i>
+	13</i></b></a></span><span id="controltime64" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('64');"><b><i>
+	14</i></b></a></span><span id="controltime65" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('65');"><b><i>
+	15</i></b></a></span><span id="controltime66" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('66');"><b><i>
+	16</i></b></a></span><span id="controltime67" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('67');"><b><i>
+	17</i></b></a></span><span id="controltime68" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('68');"><b><i>
+	18</i></b></a></span><span id="controltime69" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('69');"><b><i>
+	19</i></b></a></span><span id="controltime70" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('70');"><b><i>
+	20</i></b></a></span><span id="controltime71" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('71');"><b><i>
+	21</i></b></a></span><span id="controltime72" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('72');"><b><i>
+	22</i></b></a></span><span id="controltime73" class="style1"><a class="turn-red" href="#" onclick="javascript:selectbutton('73');"><b><i>
+	23</i></b></a></span>   
     </div>
 	
 	

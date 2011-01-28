@@ -2,21 +2,18 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 pageEncoding="ISO-8859-1"%>
 <html>
-    <head>
-        <script type="text/javascript">
-	   	   var g_kml_layer = [];
-           var g_kml_counter = 0;
-        </script>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <head>        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
         <title>Spatial Data Visualization</title>
 
         <link rel="stylesheet" type="text/css" href="css/fonts.css" />
 
               <!-- key for http://kd-photomap.iais.fraunhofer.de -->
-	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
-
-	<script type="text/javascript" src="script/GoogleMapsFeatures.js"></script>        
+	<%-- <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script> --%>
+	<script type="text/javascript" src="http://www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:'sensor=false'}]}"></script> 
+ 
+	 <script type="text/javascript" src="script/GoogleMapsFeatures.js"></script>         
 
         <link type="text/css" rel="stylesheet" href="css/tableStyle.css" />
         <link type="text/css" rel="stylesheet" href="css/controllerTimeStyle.css" />
@@ -44,31 +41,29 @@ pageEncoding="ISO-8859-1"%>
 	</script>
 	<script type="text/javascript" src="script/jquery.datepick.validation.js">
 	</script>
-	<script type="text/javascript" src="script/DragnDrop.js">
-	</script>
-	<script type="text/javascript" src="script/Resizeble.js">
-	</script>
-        <script type="text/javascript" src="script/jCarousel.js">
-        </script>
-        <script type="text/javascript" src="script/Legend.js">
-        </script>
-  	<script type="text/javascript" src="script/Validate.js">
-        </script>
-        <script type="text/javascript" src="script/CalendarJ.js">
-        </script>
-	<script type="text/javascript" src="script/Aggregation.js">
-	</script>
-	<script type="text/javascript" src="script/IndividualPolygon.js">
-	</script>
-	<script type="text/javascript" src="script/displaySmallPhotos.js">
-	</script>
-
-
+		
     	<link type="text/css" rel="stylesheet" href="css/general.css" />
 	<link type="text/css" rel="stylesheet" href="css/carousel.css" />
     	<link type="text/css" rel="stylesheet" href="css/calendar.css" />
 	<link type="text/css" rel="stylesheet" href="css/legend.css" />
 	<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
+
+
+ <!-- Core + Skin CSS --> 
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/carousel/assets/skins/sam/carousel.css">
+ 
+     <!-- Dependencies --> 
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/element/element-min.js"></script>
+ 
+    <!-- Optional: Animation library for animating the scrolling of items --> 
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/animation/animation-min.js"></script>
+    <!-- Optional: Connection library for dynamically loading items --> 
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/connection/connection-min.js"></script>
+ 
+    <!-- Source file --> 
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/carousel/carousel-min.js"></script>
+
 
 
     </head>
@@ -83,20 +78,48 @@ pageEncoding="ISO-8859-1"%>
         <div id="move">
 			<jsp:include page="table1.jsp"/>		
 			<jsp:include page="table2.jsp"/>
-			<jsp:include page="table3.jsp"/>	  	
-		</div>
+			<jsp:include page="table3.jsp"/>
+			<jsp:include page="table4.jsp"/>
+			<jsp:include page="table5.jsp"/>
+			
+	</div>
 		<jsp:include page="carousel.jsp"/>
 		<jsp:include page="legend.jsp"/>
 		
 		<div class="photoWindow timeCstar" id="photoWindow">
 			<div class="photoWindowDesc" id="photoWindowDesc"></div>
 			<div class="photoWindowImg" id="photoWindowImg"></div>
-		</div>
-
+		</div>		
 		<script type="text/javascript" src="script/TimeController.js"> </script>
 		<script type="text/javascript" src="script/traffic.js"></script>
 		<script type="text/javascript" src="script/sendToServer.js"> </script>
 		<script type="text/javascript" src="script/prepareXMLforServer.js"> </script>
 		<script type="text/javascript" src="script/VerticalMenu.js"></script>
+		<script type="text/javascript" src="script/LoadResultsFromServer.js"></script>
+		<script type="text/javascript" src="script/Search.js"></script>
+		<script type="text/javascript" src="script/circles.js"></script>
+		<script type="text/javascript" src="script/charts.js"></script>
+		<script type="text/javascript" src="script/LoadPolygons.js"></script>  
+		<script type="text/javascript" src="script/contextMenu.js"></script>
+	<script type="text/javascript" src="script/DragnDrop.js">
+	</script>
+	<script type="text/javascript" src="script/Resizeble.js">
+	</script>
+        <script type="text/javascript" src="script/jCarousel.js">
+        </script>
+        <script type="text/javascript" src="script/Legend.js">
+        </script>
+  	<script type="text/javascript" src="script/Validate.js">
+        </script>
+        <script type="text/javascript" src="script/CalendarJ.js">
+        </script>
+	<script type="text/javascript" src="script/Aggregation.js">
+	</script> 
+	<script type="text/javascript" src="script/IndividualPolygon.js">
+	</script>
+	<script type="text/javascript" src="script/displaySmallPhotos.js">
+	</script>
+	<script type="text/javascript" src="script/XmlOverlay.js">
+	</script>	      				
      </body>
 </html>
