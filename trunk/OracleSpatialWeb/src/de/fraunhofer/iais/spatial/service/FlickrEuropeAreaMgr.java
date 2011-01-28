@@ -80,17 +80,17 @@ public class FlickrEuropeAreaMgr {
 				break;
 			}
 
-//			for (Map.Entry<String, Integer> e : counts.entrySet()) {
-//				if (areaDto.getQueryStrs().contains(e.getKey())) {
-//					num += e.getValue();
-//				}
-//			}
-
-			for (String queryStr : areaDto.getQueryStrs()) {
-				if (counts.containsKey(queryStr)) {
-					num += counts.get(queryStr);
+			for (Map.Entry<String, Integer> e : counts.entrySet()) {
+				if (areaDto.getQueryStrs().contains(e.getKey())) {
+					num += e.getValue();
 				}
 			}
+
+//			for (String queryStr : areaDto.getQueryStrs()) {
+//				if (counts.containsKey(queryStr)) {
+//					num += counts.get(queryStr);
+//				}
+//			}
 			area.setSelectedCount(num);
 		}
 	}
