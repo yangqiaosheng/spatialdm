@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,7 +90,7 @@ public abstract class FlickrEuropeAreaDao {
 	 * @param pageSize
 	 * @return
 	 */
-	public List<FlickrPhoto> getPhotos(FlickrArea area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {
+	public final List<FlickrPhoto> getPhotos(FlickrArea area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<FlickrPhoto> photos = new ArrayList<FlickrPhoto>();
 		Map<String, Integer> count = null;
@@ -143,7 +141,7 @@ public abstract class FlickrEuropeAreaDao {
 		return photos;
 	}
 
-	protected static String judgeOracleDatePatternStr(Level queryLevel){
+	protected final static String judgeOracleDatePatternStr(Level queryLevel){
 		String oracleDatePatternStr = null;
 
 		switch (queryLevel) {
@@ -163,7 +161,7 @@ public abstract class FlickrEuropeAreaDao {
 		return oracleDatePatternStr;
 	}
 
-	protected static Level judgeQueryLevel(String QueryStr){
+	protected final static Level judgeQueryLevel(String QueryStr){
 		if(QueryStr.matches(FlickrEuropeAreaDao.hourRegExPattern.pattern().split(":")[0])){
 			return Level.HOUR;
 		}else if(QueryStr.matches(FlickrEuropeAreaDao.dayRegExPattern.pattern().split(":")[0])){
@@ -178,14 +176,14 @@ public abstract class FlickrEuropeAreaDao {
 
 	}
 
-	protected static void parseCounts(String count, Map<String, Integer> counts, Pattern dateRegExPattern) {
+	public final static void parseCounts(String count, Map<String, Integer> counts, Pattern dateRegExPattern) {
 		Matcher m = dateRegExPattern.matcher(count);
 		while (m.find()) {
 			counts.put(m.group(1), Integer.parseInt(m.group(2)));
 		}
 	}
 
-	public static String createCountsDbString(Map<String, Integer> counts){
+	public final static String createCountsDbString(Map<String, Integer> counts){
 		StringBuffer strBuffer = new StringBuffer();
 		for (Map.Entry<String, Integer> e : counts.entrySet()) {
 			strBuffer.append(e.getKey())

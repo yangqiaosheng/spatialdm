@@ -3,7 +3,6 @@ package de.fraunhofer.iais.spatial.service;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -11,7 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,8 +38,8 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
-import de.fraunhofer.iais.spatial.util.AreaUtil;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -58,76 +56,42 @@ public class FlickrEuropeAreaMgr {
 		this.flickrDeWestAreaDao = areaDao;
 	}
 
-	public void countHours(List<FlickrArea> areas, Set<String> hours) {
-		for (FlickrArea area : areas) {
-			int num = 0;
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
-				if (hours.contains(e.getKey())) {
-					num += e.getValue();
-				}
-			}
-			area.setSelectCount(num);
-		}
-	}
+	public void countSelected(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws Exception {
 
-	public void countDays(List<FlickrArea> areas, Set<String> days) {
-		for (FlickrArea area : areas) {
-			int num = 0;
-			for (Map.Entry<String, Integer> e : area.getDaysCount().entrySet()) {
-				if (days.contains(e.getKey())) {
-					num += e.getValue();
-				}
-			}
-			area.setSelectCount(num);
-		}
-	}
-
-	public void countMonths(List<FlickrArea> areas, Set<String> months) {
-		for (FlickrArea area : areas) {
-			int num = 0;
-			for (Map.Entry<String, Integer> e : area.getMonthsCount().entrySet()) {
-				if (months.contains(e.getKey())) {
-					num += e.getValue();
-				}
-			}
-			area.setSelectCount(num);
-		}
-	}
-
-	public void countYears(List<FlickrArea> areas, Set<String> years) {
-		for (FlickrArea area : areas) {
-			int num = 0;
-			for (Map.Entry<String, Integer> e : area.getYearsCount().entrySet()) {
-				if (years.contains(e.getKey())) {
-					num += e.getValue();
-				}
-			}
-			area.setSelectCount(num);
-		}
-	}
-
-
-	public void count(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws Exception {
-
-		System.out.println("#query:" + areaDto.getQueryStrs().size() * 139);
 		//		if (strs.size() > 5 * 12 * 31 * 24)
 		//			throw new Exception("excceed the maximun #queries!");
 
-		if ( areaDto.getQueryStrs().size() > 0 ) {
+		for (FlickrArea area : areas) {
+			int num = 0;
+			Map<String, Integer> counts = null;
+
 			switch (areaDto.getQueryLevel()) {
 			case HOUR:
-				this.countHours(areas, areaDto.getQueryStrs());
+				counts = area.getHoursCount();
 				break;
 			case DAY:
-				this.countDays(areas, areaDto.getQueryStrs());
+				counts = area.getDaysCount();
 				break;
 			case MONTH:
-				this.countMonths(areas, areaDto.getQueryStrs());
+				counts = area.getMonthsCount();
 				break;
 			case YEAR:
-				this.countYears(areas, areaDto.getQueryStrs());
+				counts = area.getYearsCount();
 				break;
 			}
+
+//			for (Map.Entry<String, Integer> e : counts.entrySet()) {
+//				if (areaDto.getQueryStrs().contains(e.getKey())) {
+//					num += e.getValue();
+//				}
+//			}
+
+			for (String queryStr : areaDto.getQueryStrs()) {
+				if (counts.containsKey(queryStr)) {
+					num += counts.get(queryStr);
+				}
+			}
+			area.setSelectedCount(num);
 		}
 	}
 
@@ -174,7 +138,7 @@ public class FlickrEuropeAreaMgr {
 			String zoomStr = screenElement.getChildText("zoom");
 			if (zoomStr != null && !"".equals(zoomStr.trim())) {
 				int zoom = Integer.parseInt(zoomStr);
-				Radius radius = AreaUtil.getRadius(zoom);
+				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				areaDto.setRadius(radius);
 				areaDto.setZoom(zoom);
 			}
@@ -202,10 +166,7 @@ public class FlickrEuropeAreaMgr {
 			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
 			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
 
-			SortedSet<String> queryStrs = new TreeSet<String>();
-			areaDto.setQueryStrs(queryStrs);
-			SortedSet<String> years4Chart = new TreeSet<String>();
-			areaDto.setYears4Chart(years4Chart);
+			SortedSet<String> queryStrs = areaDto.getQueryStrs();
 
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			areaDto.setQueryLevel(Level.DAY);
@@ -223,9 +184,6 @@ public class FlickrEuropeAreaMgr {
 				while (calendar.getTime().before(end.getTime())) {
 					queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(calendar.getTime()));
 					calendar.add(Calendar.DATE, 1);
-
-					// for TimeSeriesChart
-					areaDto.getYears4Chart().add(FlickrEuropeAreaDao.yearDateFormat.format(calendar.getTime()));
 				}
 			}
 		}
@@ -236,12 +194,7 @@ public class FlickrEuropeAreaMgr {
 			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
 			SortedSet<Date> selectedDays = new TreeSet<Date>();
-			areaDto.setSelectedDays(selectedDays);
-
-			SortedSet<String> queryStrs = new TreeSet<String>();
-			areaDto.setQueryStrs(queryStrs);
-			SortedSet<String> years4Chart = new TreeSet<String>();
-			areaDto.setYears4Chart(years4Chart);
+			SortedSet<String> queryStrs = areaDto.getQueryStrs();
 
 			// day of week in English format
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
@@ -252,9 +205,6 @@ public class FlickrEuropeAreaMgr {
 				selectedDays.add(selectedDay);
 
 				queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(selectedDay));
-
-				// for TimeSeriesChart
-				areaDto.getYears4Chart().add(FlickrEuropeAreaDao.yearDateFormat.format(selectedDay));
 			}
 		}
 
@@ -333,16 +283,12 @@ public class FlickrEuropeAreaMgr {
 		areaDto.setQueryLevel(Level.HOUR);
 
 		// construct the Query Strings
-		SortedSet<String> queryStrs = new TreeSet<String>();
-		areaDto.setQueryStrs(queryStrs);
+		SortedSet<String> queryStrs = areaDto.getQueryStrs();
 
 		SortedSet<String> tempYears = new TreeSet<String>(areaDto.getYears());
 		SortedSet<String> tempMonths = new TreeSet<String>(areaDto.getMonths());
 		SortedSet<String> tempDays = new TreeSet<String>(areaDto.getDays());
 		SortedSet<String> tempHours = new TreeSet<String>(areaDto.getHours());
-
-		// for TimeSeriesChart
-		areaDto.setYears4Chart(tempYears);
 
 		// complete the options when they are not selected
 		if (tempYears.size() == 0) {
@@ -535,7 +481,6 @@ public class FlickrEuropeAreaMgr {
 					intCounts.put(weekday, 0);
 				}
 
-				SimpleDateFormat sdf = new SimpleDateFormat("D", Locale.ENGLISH);
 				Calendar calendar = DateUtil.createReferenceCalendar();
 				calendar.setLenient(false);
 

@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -38,7 +37,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 	private void initArea(FlickrArea a, Radius radius) {
 		if (a != null) {
 			a.setRadius(radius);
-			a.setSelectCount(0);
+			a.setSelectedCount(0);
 			a.setTotalCount(getTotalCount(a.getId(), a.getRadius()));
 			loadYearsCount(a);
 			loadMonthsCount(a);
@@ -59,55 +58,43 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		}
 	}
 
-	private void loadHoursCount(FlickrArea a) {
-		if (a.getHoursCount() != null)
+	private void loadHoursCount(FlickrArea area) {
+		if (area.getHoursCount() != null)
 			return; // cached
 
-		Map<String, Integer> hoursCount = new TreeMap<String, Integer>();
-		a.setHoursCount(hoursCount);
-
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".hourCount", a);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".hourCount", area);
 		if (count != null) {
-			parseCounts(count, hoursCount, hourRegExPattern);
+			parseCounts(count, area.getHoursCount(), hourRegExPattern);
 		}
 	}
 
-	private void loadDaysCount(FlickrArea a) {
-		if (a.getDaysCount() != null)
+	private void loadDaysCount(FlickrArea area) {
+		if (area.getDaysCount() != null)
 			return; // cached
 
-		Map<String, Integer> daysCount = new TreeMap<String, Integer>();
-		a.setDaysCount(daysCount);
-
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".dayCount", a);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".dayCount", area);
 		if (count != null) {
-			parseCounts(count, daysCount, dayRegExPattern);
+			parseCounts(count, area.getDaysCount(), dayRegExPattern);
 		}
 	}
 
-	private void loadMonthsCount(FlickrArea a) {
-		if (a.getMonthsCount() != null)
+	private void loadMonthsCount(FlickrArea area) {
+		if (area.getMonthsCount() != null)
 			return; // cached
 
-		Map<String, Integer> monthsCount = new TreeMap<String, Integer>();
-		a.setMonthsCount(monthsCount);
-
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".monthCount", a);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".monthCount", area);
 		if (count != null) {
-			parseCounts(count, monthsCount, monthRegExPattern);
+			parseCounts(count, area.getMonthsCount(), monthRegExPattern);
 		}
 	}
 
-	private void loadYearsCount(FlickrArea a) {
-		if (a.getYearsCount() != null)
+	private void loadYearsCount(FlickrArea area) {
+		if (area.getYearsCount() != null)
 			return; // cached
 
-		Map<String, Integer> yearsCount = new TreeMap<String, Integer>();
-		a.setYearsCount(yearsCount);
-
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".yearCount", a);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".yearCount", area);
 		if (count != null) {
-			parseCounts(count, yearsCount, yearRegExPattern);
+			parseCounts(count, area.getYearsCount(), yearRegExPattern);
 		}
 	}
 

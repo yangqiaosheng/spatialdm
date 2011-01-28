@@ -85,7 +85,7 @@ public class PolygonXmlServlet extends HttpServlet {
 				} else {
 					as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
-				areaMgr.count(as, areaDto);
+				areaMgr.countSelected(as, areaDto);
 				responseStr = areaMgr.createXml(as, null, areaDto.getRadius());
 				request.getSession().setAttribute("areaDto", areaDto);
 			} catch (Exception e) {

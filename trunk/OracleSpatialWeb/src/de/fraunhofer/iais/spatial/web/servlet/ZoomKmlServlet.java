@@ -96,7 +96,7 @@ public class ZoomKmlServlet extends HttpServlet {
 				} else {
 					as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
-				areaMgr.count(as, areaDto);
+				areaMgr.countSelected(as, areaDto);
 				areaMgr.createKml(as, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, true);
 
 				Element urlElement = new Element("url");

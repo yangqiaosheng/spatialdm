@@ -6,12 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
@@ -363,23 +359,20 @@ public class FlickrEuropeAreaDaoJdbc extends FlickrEuropeAreaDao {
 		photo.setViewed(rs.getInt("VIEWED"));
 	}
 
-	private void loadHoursCount(FlickrArea a) {
+	private void loadHoursCount(FlickrArea area) {
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> hoursCount = new TreeMap<String, Integer>();
-		a.setHoursCount(hoursCount);
-
 		try {
 			selectStmt = db.getPstmt(conn, "select HOUR from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, a.getId());
-			selectStmt.setInt(2, Integer.parseInt(a.getRadius().toString()));
+			selectStmt.setInt(1, area.getId());
+			selectStmt.setInt(2, Integer.parseInt(area.getRadius().toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("HOUR");
 				if (count != null) {
-					parseCounts(count, hoursCount, hourRegExPattern);
+					parseCounts(count, area.getHoursCount(), hourRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -391,23 +384,20 @@ public class FlickrEuropeAreaDaoJdbc extends FlickrEuropeAreaDao {
 		}
 	}
 
-	private void loadDaysCount(FlickrArea a) {
+	private void loadDaysCount(FlickrArea area) {
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> daysCount = new TreeMap<String, Integer>();
-		a.setDaysCount(daysCount);
-
 		try {
 			selectStmt = db.getPstmt(conn, "select DAY from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, a.getId());
-			selectStmt.setInt(2, Integer.parseInt(a.getRadius().toString()));
+			selectStmt.setInt(1, area.getId());
+			selectStmt.setInt(2, Integer.parseInt(area.getRadius().toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("DAY");
 				if (count != null) {
-					parseCounts(count, daysCount, dayRegExPattern);
+					parseCounts(count, area.getDaysCount(), dayRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -419,23 +409,20 @@ public class FlickrEuropeAreaDaoJdbc extends FlickrEuropeAreaDao {
 		}
 	}
 
-	private void loadMonthsCount(FlickrArea a) {
+	private void loadMonthsCount(FlickrArea area) {
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> monthsCount = new TreeMap<String, Integer>();
-		a.setMonthsCount(monthsCount);
-
 		try {
 			selectStmt = db.getPstmt(conn, "select MONTH from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, a.getId());
-			selectStmt.setInt(2, Integer.parseInt(a.getRadius().toString()));
+			selectStmt.setInt(1, area.getId());
+			selectStmt.setInt(2, Integer.parseInt(area.getRadius().toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("MONTH");
 				if (count != null) {
-					parseCounts(count, monthsCount, monthRegExPattern);
+					parseCounts(count, area.getMonthsCount(), monthRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -447,23 +434,20 @@ public class FlickrEuropeAreaDaoJdbc extends FlickrEuropeAreaDao {
 		}
 	}
 
-	private void loadYearsCount(FlickrArea a) {
+	private void loadYearsCount(FlickrArea area) {
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 
-		Map<String, Integer> yearsCount = new TreeMap<String, Integer>();
-		a.setYearsCount(yearsCount);
-
 		try {
 			selectStmt = db.getPstmt(conn, "select YEAR from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, a.getId());
-			selectStmt.setInt(2, Integer.parseInt(a.getRadius().toString()));
+			selectStmt.setInt(1, area.getId());
+			selectStmt.setInt(2, Integer.parseInt(area.getRadius().toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				String count = rs.getString("YEAR");
 				if (count != null) {
-					parseCounts(count, yearsCount, yearRegExPattern);
+					parseCounts(count, area.getYearsCount(), yearRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -483,7 +467,7 @@ public class FlickrEuropeAreaDaoJdbc extends FlickrEuropeAreaDao {
 
 	private void initArea(FlickrArea a) {
 		if (a != null) {
-			a.setSelectCount(0);
+			a.setSelectedCount(0);
 			a.setTotalCount(getTotalCount(a.getId(), a.getRadius()));
 			loadYearsCount(a);
 			loadMonthsCount(a);

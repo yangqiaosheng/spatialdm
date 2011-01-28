@@ -2,6 +2,7 @@ package de.fraunhofer.iais.spatial.entity;
 
 import java.awt.geom.Point2D;
 import java.util.Map;
+import java.util.TreeMap;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -18,12 +19,12 @@ public class FlickrArea {
 	private float area;
 	private Point2D center;
 
-	private Map<String, Integer> yearsCount;
-	private Map<String, Integer> monthsCount;
-	private Map<String, Integer> daysCount;
-	private Map<String, Integer> hoursCount;
+	private Map<String, Integer> yearsCount = new TreeMap<String, Integer>();
+	private Map<String, Integer> monthsCount = new TreeMap<String, Integer>();
+	private Map<String, Integer> daysCount = new TreeMap<String, Integer>();
+	private Map<String, Integer> hoursCount = new TreeMap<String, Integer>();
 	private int totalCount;
-	private int selectCount;
+	private int selectedCount;
 
 	public enum Radius {
 		R5000, R10000, R20000, R40000, R80000, R160000, R320000;
@@ -87,40 +88,24 @@ public class FlickrArea {
 		return yearsCount;
 	}
 
-	public void setYearsCount(Map<String, Integer> yearsCount) {
-		this.yearsCount = yearsCount;
-	}
-
 	public Map<String, Integer> getMonthsCount() {
 		return monthsCount;
-	}
-
-	public void setMonthsCount(Map<String, Integer> monthsCount) {
-		this.monthsCount = monthsCount;
 	}
 
 	public Map<String, Integer> getDaysCount() {
 		return daysCount;
 	}
 
-	public void setDaysCount(Map<String, Integer> daysCount) {
-		this.daysCount = daysCount;
-	}
-
 	public Map<String, Integer> getHoursCount() {
 		return hoursCount;
 	}
 
-	public void setHoursCount(Map<String, Integer> hoursCount) {
-		this.hoursCount = hoursCount;
-	}
-
 	public int getSelectCount() {
-		return selectCount;
+		return selectedCount;
 	}
 
-	public void setSelectCount(int selectCount) {
-		this.selectCount = selectCount;
+	public void setSelectedCount(int selectCount) {
+		this.selectedCount = selectCount;
 	}
 
 	public Radius getRadius() {

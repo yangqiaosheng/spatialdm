@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -148,11 +149,10 @@ public class TestFlickrEuropeArea{
 	public void testPhoto2() {
 		long start = System.currentTimeMillis();
 
-		TreeSet<String> hours = new TreeSet<String>();
+		Set<String> hours = areaDto.getHours();
 		hours.add("2007-08-11@13");
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
-		areaDto.setQueryStrs(hours);
 
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(1, Radius.R80000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
@@ -166,13 +166,12 @@ public class TestFlickrEuropeArea{
 	public void testPhoto3() {
 		long start = System.currentTimeMillis();
 
-		TreeSet<String> hours = new TreeSet<String>();
+		Set<String> hours = areaDto.getHours();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
-		areaDto.setQueryStrs(hours);
 
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(1, Radius.R80000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
@@ -186,13 +185,12 @@ public class TestFlickrEuropeArea{
 	public void testPhoto4() {
 		long start = System.currentTimeMillis();
 
-		TreeSet<String> hours = new TreeSet<String>();
+		Set<String> hours = areaDto.getHours();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
-		areaDto.setQueryStrs(hours);
 
 		for (int i = 2005; i < 2010; i++) {
 			for (int j = 10; j <= 12; j++) {
@@ -239,14 +237,13 @@ public class TestFlickrEuropeArea{
 			System.out.println(p);
 		}
 
-		TreeSet<String> years = new TreeSet<String>();
+		Set<String> years = areaDto.getYears();
 		years.add("2007");
 		years.add("2009");
 		years.add("2006");
 
 		FlickrEuropeAreaDto areaDto2 = new FlickrEuropeAreaDto();
 		areaDto2.setQueryLevel(Level.YEAR);
-		areaDto2.setQueryStrs(years);
 		List<FlickrPhoto> photos6 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(1, Radius.R5000), areaDto2, 1, 20);
 		for (FlickrPhoto p : photos6) {
 			System.out.println(p);
@@ -259,14 +256,13 @@ public class TestFlickrEuropeArea{
 	public void testPhoto5() {
 		long start = System.currentTimeMillis();
 
-		TreeSet<String> hours = new TreeSet<String>();
+		Set<String> hours = areaDto.getHours();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
 
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
-		areaDto.setQueryStrs(hours);
 
 		for (int i = 2005; i < 2010; i++) {
 			for (int j = 10; j <= 12; j++) {
@@ -330,13 +326,12 @@ public class TestFlickrEuropeArea{
 	public void testPhotoXml() {
 		long start = System.currentTimeMillis();
 
-		TreeSet<String> hours = new TreeSet<String>();
+		Set<String> hours = areaDto.getHours();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
-		areaDto.setQueryStrs(hours);
 
 
 		for (int i = 2005; i < 2010; i++) {
@@ -424,13 +419,7 @@ public class TestFlickrEuropeArea{
 		}
 		System.out.println("queryLevel:" + areaDto.getQueryLevel());
 		System.out.println("beginDate:" + areaDto.getBeginDate() + ", endDate" + areaDto.getEndDate());
-		if (areaDto.getSelectedDays() != null) {
-			System.out.print("Select_days:" + areaDto.getSelectedDays());
-			for (Date d : areaDto.getSelectedDays()) {
-				System.out.print(d + "|");
-			}
-			System.out.println("");
-		}
+
 		System.out.println("years:" + areaDto.getYears());
 		System.out.println("months:" + areaDto.getMonths());
 		System.out.println("days:" + areaDto.getDays());
@@ -465,7 +454,7 @@ public class TestFlickrEuropeArea{
 		} else {
 			as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
-		areaMgr.count(as, areaDto);
+		areaMgr.countSelected(as, areaDto);
 
 //		System.out.println(areaMgr.createKml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius(), null, true));
 		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
