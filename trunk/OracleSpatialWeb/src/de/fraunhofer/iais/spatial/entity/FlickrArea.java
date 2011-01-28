@@ -1,8 +1,8 @@
 package de.fraunhofer.iais.spatial.entity;
 
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -19,10 +19,10 @@ public class FlickrArea {
 	private float area;
 	private Point2D center;
 
-	private Map<String, Integer> yearsCount = new TreeMap<String, Integer>();
-	private Map<String, Integer> monthsCount = new TreeMap<String, Integer>();
-	private Map<String, Integer> daysCount = new TreeMap<String, Integer>();
-	private Map<String, Integer> hoursCount = new TreeMap<String, Integer>();
+	private Map<String, Integer> yearsCount = new HashMap<String, Integer>();
+	private Map<String, Integer> monthsCount = new HashMap<String, Integer>();
+	private Map<String, Integer> daysCount = new HashMap<String, Integer>();
+	private Map<String, Integer> hoursCount = new HashMap<String, Integer>();
 	private int totalCount;
 	private transient int selectedCount;
 

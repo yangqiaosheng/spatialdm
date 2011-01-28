@@ -7,6 +7,7 @@ import java.util.Map;
 
 import oracle.spatial.geometry.JGeometry;
 
+import org.apache.commons.collections.MapUtils;
 import org.mybatis.spring.SqlSessionTemplate;
 
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
@@ -59,7 +60,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 	}
 
 	private void loadHoursCount(FlickrArea area) {
-		if (area.getHoursCount() != null)
+		if (MapUtils.isNotEmpty(area.getHoursCount()))
 			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".hourCount", area);
@@ -69,7 +70,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 	}
 
 	private void loadDaysCount(FlickrArea area) {
-		if (area.getDaysCount() != null)
+		if (MapUtils.isNotEmpty(area.getDaysCount()))
 			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".dayCount", area);
@@ -79,7 +80,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 	}
 
 	private void loadMonthsCount(FlickrArea area) {
-		if (area.getMonthsCount() != null)
+		if (MapUtils.isNotEmpty(area.getMonthsCount()))
 			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".monthCount", area);
@@ -89,7 +90,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 	}
 
 	private void loadYearsCount(FlickrArea area) {
-		if (area.getYearsCount() != null)
+		if (MapUtils.isNotEmpty(area.getYearsCount()))
 			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".yearCount", area);

@@ -68,7 +68,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		if (!StringUtils.isNumeric(areaid) || !StringUtils.isNumeric(page) || Integer.parseInt(page) < 1 || !StringUtils.isNumeric(pageSize) || Integer.parseInt(pageSize) < 1 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
 			messageElement.setText("ERROR: wrong input parameter!");

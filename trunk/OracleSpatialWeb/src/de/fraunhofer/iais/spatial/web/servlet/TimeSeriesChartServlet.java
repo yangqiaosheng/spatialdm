@@ -70,7 +70,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
-			logger.debug("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level+ " |smooth:" + smooth); //$NON-NLS-1$
+			logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level+ " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				List<FlickrArea> areas = new ArrayList<FlickrArea>();
 				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
