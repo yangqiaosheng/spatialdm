@@ -1,9 +1,9 @@
-#container {
-	/* font-size: 13px; */
+ /*#container {
+	 font-size: 13px; 
 
 	/*width:70%; margin-left:30%; margin-right:0%;
 				margin-top:400px;				*/
-	margin-left:1%;
+/*	margin-left:1%;
 	margin-top:1%;
 	position: absolute;
 
@@ -17,7 +17,7 @@
 	z-index: 11;
 	opacity: 0.9;
 }
-
+/*
 #container a {
 	text-decoration: none;
 }
@@ -43,7 +43,7 @@
 }
 
 /*authimg is for catching exactly 3 */
-#container .item .authimg {
+/* #container .item .authimg {
 	bottom: 2px;
 	margin-left: 61px;
 	position: absolute;
@@ -107,3 +107,5 @@ a[role=button]:focus {
 	margin-bottom: 0px;
 	text-align: center;
 }
+
+*/

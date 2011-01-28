@@ -43,14 +43,15 @@
 }
 
 .tabcontent {
-    background-color: #A7BDF7; 
+    	background-color: #A7BDF7; 
 	font-family: sans-serif;
 	font-size: 13px;
-	width:auto;
-	height:auto;
+/*	width:auto;
+	height:auto; */
 	border-style: solid;
 	border-color: #8AA8F3; /*blue border*/
 	border-width: 1px;
+	position:relative;
 	opacity: 0.9;
 }
 
@@ -84,9 +85,8 @@ html,body,#map_canvas {
 	height:auto;
 }
 #table1{
-	/*position: absolute; */
-	width:auto;
-	/*height:10%;	*/
+	
+	width:auto;	
 	height:auto;
 	
 }
@@ -95,6 +95,16 @@ html,body,#map_canvas {
 	height:auto;		
 }
 #table3{
+	
+	width:auto;
+	height:auto;		
+}
+#table4{
+	
+	width:auto;
+	height:auto;		
+}
+#table5{
 	
 	width:auto;
 	height:auto;		
@@ -110,4 +120,32 @@ html,body,#map_canvas {
 #headline{
 	width:auto;
 }
-
+#chart1{
+  height: auto;
+  width: auto;
+ /* position:absolute; */
+}
+#IntChartID_1{
+  width:30%; 
+  height:60px;
+  opacity: 1;
+  border-width:0.31em;
+  border-style:solid; 
+  border-color:#8AA8F3; 
+}
+#IntChartID_2{
+  width:30%; 
+  height:60px;
+  opacity: 1;
+  border-width:0.31em;
+  border-style:solid; 
+  border-color:#8AA8F3; 
+}
+#IntChartID_3{
+  width:30%; 
+  height:60px;
+  opacity: 1;
+  border-width:0.31em;
+  border-style:solid; 
+  border-color:#8AA8F3; 
+}

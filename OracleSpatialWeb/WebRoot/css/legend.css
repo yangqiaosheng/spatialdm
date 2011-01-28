@@ -12,7 +12,7 @@ label.error {
   width: 20%;
   height: auto;
   left: 80%;
-  top: 80%;
+/*   top: 80%; */
 }
 .legendContainer1 {
   position: absolute;
@@ -20,18 +20,29 @@ label.error {
 }
 #legendInfo {
   width: 100%;
-  height: auto;
+  height: 300px;
   border-width: .1em;
   border-style: solid;
   border-color: #06A8FA;
+  overflow:scroll;
 }
 #idlegendContainer{
   border-width: .1em;
   border-style: solid;
   border-color: #06A8FA;
   left: 80%;
-  top: 80%;
+  top: 60%;
 }
 
-
+.pictureContainer {
+  position: absolute;
+  width: auto;
+  height: auto;
+  left: 75%;
+  top: 40%;
+}
+.pictureMouseOver{
+  width: auto;
+  height: auto;
+}
 

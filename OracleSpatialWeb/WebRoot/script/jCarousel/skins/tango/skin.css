@@ -9,7 +9,7 @@
 }
 
 .jcarousel-skin-tango .jcarousel-container-horizontal {
-    width:auto;
+    width:auto;	
 	height:auto;
     padding: 20px 40px;
 }
@@ -36,7 +36,7 @@
 
 .jcarousel-skin-tango .jcarousel-item-placeholder {
     background: #fff;
-    color: #000;
+    color: #000; 
 }
 
 /**

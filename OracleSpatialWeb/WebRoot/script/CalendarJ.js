@@ -36,14 +36,14 @@ function selectedCalendarDays(){
   var selectedResult="";
   for(var i=0;i<selectedDays.length;i++){
     selectedCalendarDays=selectedCalendarDays+""+selectedDays[i];
-  }  
-  //using regex
+  } 
   var patt1=/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ ](0[1-9]|1[0-9]|2[0-9]|3[0-1])[ ](20[0-1][0-9])/g;
   selectedResult = selectedCalendarDays.match(patt1);     
   bodyXML = selectedDaysXML(selectedResult); 
   sendToServerCalendarData(headerXML, bodyXML);   
 }
 function refreshCalendar(){
+	deleteHistory();
 	$('#inlineDatepicker').datepick('clear'); // Close a popup datepicker and clear its field 
 	$('#inlineDatepicker').datepick('destroy'); // Remove datepicker functionality 
 	  $('#inlineDatepicker').datepick({
