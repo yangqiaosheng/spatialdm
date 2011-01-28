@@ -145,7 +145,7 @@ public abstract class FlickrEuropeAreaDao {
 		return photos;
 	}
 
-	protected final static String judgeOracleDatePatternStr(Level queryLevel){
+	public final static String judgeOracleDatePatternStr(Level queryLevel){
 		String oracleDatePatternStr = null;
 
 		switch (queryLevel) {
@@ -163,6 +163,26 @@ public abstract class FlickrEuropeAreaDao {
 			break;
 		}
 		return oracleDatePatternStr;
+	}
+
+	public final static Pattern judgeOracleRegExPattern(Level queryLevel){
+		Pattern oracleRegExPatter = null;
+
+		switch (queryLevel) {
+		case YEAR:
+			oracleRegExPatter = FlickrEuropeAreaDao.yearRegExPattern;
+			break;
+		case MONTH:
+			oracleRegExPatter = FlickrEuropeAreaDao.monthRegExPattern;
+			break;
+		case DAY:
+			oracleRegExPatter = FlickrEuropeAreaDao.dayRegExPattern;
+			break;
+		case HOUR:
+			oracleRegExPatter = FlickrEuropeAreaDao.hourRegExPattern;
+			break;
+		}
+		return oracleRegExPatter;
 	}
 
 	protected final static Level judgeQueryLevel(String QueryStr){

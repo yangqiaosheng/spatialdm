@@ -441,7 +441,7 @@ public class TestFlickrEuropeArea{
 	public void testKml1() throws Exception {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest2.xml"));
+		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
 		StringBuffer xml = new StringBuffer();
 		String thisLine;
 		while ((thisLine = br.readLine()) != null) {
