@@ -24,7 +24,7 @@ public class FlickrArea {
 	private Map<String, Integer> daysCount = new TreeMap<String, Integer>();
 	private Map<String, Integer> hoursCount = new TreeMap<String, Integer>();
 	private int totalCount;
-	private int selectedCount;
+	private transient int selectedCount;
 
 	public enum Radius {
 		R5000, R10000, R20000, R40000, R80000, R160000, R320000;

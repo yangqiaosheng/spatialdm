@@ -48,7 +48,7 @@ public class TestFlickrEuropeArea{
 //	@Resource(name = "flickrEuropeAreaMgr")
 	private static FlickrEuropeAreaMgr areaMgr = null;
 
-	private FlickrEuropeAreaDto areaDto = null;
+	private FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 
 	@BeforeClass
 	public static void initClass() throws NamingException {
@@ -454,11 +454,12 @@ public class TestFlickrEuropeArea{
 		} else {
 			as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
+		long start = System.currentTimeMillis();
 		areaMgr.countSelected(as, areaDto);
 
 //		System.out.println(areaMgr.createKml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius(), null, true));
 		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
-
+		System.out.println("timd:" + (System.currentTimeMillis()-start));
 	}
 
 	@Test

@@ -5,8 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.hamcrest.core.IsInstanceOf;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
@@ -185,6 +189,10 @@ public abstract class FlickrEuropeAreaDao {
 
 	public final static String createCountsDbString(Map<String, Integer> counts){
 		StringBuffer strBuffer = new StringBuffer();
+		if(!(counts instanceof SortedMap<?, ?>)){
+			counts = new TreeMap<String, Integer>(counts);
+		}
+
 		for (Map.Entry<String, Integer> e : counts.entrySet()) {
 			strBuffer.append(e.getKey())
 					 .append(":")
