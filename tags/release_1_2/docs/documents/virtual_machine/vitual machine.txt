@@ -1,0 +1,137 @@
+kd-photomap:~ # uname -a
+Linux kd-photomap 2.6.31.12-0.2-desktop #1 SMP PREEMPT 2010-03-16 21:25:39 +0100 i686 athlon i386 GNU/Linux
+
+
+kd-photomap.iais.fraunhofer.de
+iulian
+1+2=3
+su (root)
+h!!dli112
+
+
+oracle XE
+sys, system : .oracle.
+
+export ORACLE_HOME=/usr/lib/oracle/xe/app/oracle/product/10.2.0/server
+export ORACLE_SID=XE
+export PATH=$PATH:ORACLE_HOME/bin
+./sqlplus
+
+Web Admin: 		http://localhost:8081/apex
+sqldeveloper:	/opt/sqldeveloper
+
+PostgreSql: /opt/PostgreSQL/9.0
+postgres
+654321
+
+jdk: 	/usr/java/
+
+
+kd-photomap:/usr/share/tomcat6/bin # cat /proc/cpuinfo
+processor       : 0
+vendor_id       : AuthenticAMD
+cpu family      : 16
+model           : 2
+model name      : Quad-Core AMD Opteron(tm) Processor 2360 SE
+stepping        : 3
+cpu MHz         : 2500.100
+cache size      : 512 KB
+fdiv_bug        : no
+hlt_bug         : no
+f00f_bug        : no
+coma_bug        : no
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 5
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext fxsr_opt rdtscp lm 3dnowext 3dnow constant_tsc up tsc_reliable nonstop_tsc extd_apicid pni cx16 popcnt lahf_lm extapic abm sse4a misalignsse 3dnowprefetch
+bogomips        : 5000.20
+clflush size    : 64
+power management: ts ttp tm stc 100mhzsteps hwpstate
+
+
+kd-photomap:/usr/share/tomcat6/bin # cat /proc/meminfo
+MemTotal:        1017956 kB
+MemFree:           79944 kB
+Buffers:           55796 kB
+Cached:           679976 kB
+SwapCached:        11444 kB
+Active:           490288 kB
+Inactive:         399944 kB
+Active(anon):     225812 kB
+Inactive(anon):   176768 kB
+Active(file):     264476 kB
+Inactive(file):   223176 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+HighTotal:        137160 kB
+HighFree:            268 kB
+LowTotal:         880796 kB
+LowFree:           79676 kB
+SwapTotal:       4200956 kB
+SwapFree:        4048900 kB
+Dirty:                44 kB
+Writeback:             0 kB
+AnonPages:        145332 kB
+Mapped:           266380 kB
+Slab:              25720 kB
+SReclaimable:      17256 kB
+SUnreclaim:         8464 kB
+PageTables:        10660 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     4709932 kB
+Committed_AS:     912436 kB
+VmallocTotal:     122880 kB
+VmallocUsed:        4240 kB
+VmallocChunk:     115820 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:       10232 kB
+DirectMap2M:      890880 kB
+
+kd-photomap:~ # df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda2              20G   11G  8.6G  55% /
+udev                  498M  120K  497M   1% /dev
+/dev/sda4             5.9G  506M  5.2G   9% /var
+/dev/sda3             9.9G  872M  8.5G  10% /files1
+
+tomcat/logs:
+
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda2              20G   11G  8.6G  55% /
+udev                  498M  120K  497M   1% /dev
+/dev/sda4             5.9G  5.9G     0 100% /var
+/dev/sda3             9.9G  872M  8.5G  10% /files1
+
+
+Remote putty GUI access:
+1. install Xming X Server for Windows
+2. enable the "X11 forwarding" putty.exe SSH -> X11
+3. as follow:
+
+iulian@kd-photomap:~> xauth list
+kd-photomap/unix:15  MIT-MAGIC-COOKIE-1  201d08e2d7de75806d38d08bba0c7748
+kd-photomap/unix:10  MIT-MAGIC-COOKIE-1  d6d958e330c91012ac6776cc886997b7
+kd-photomap/unix:11  MIT-MAGIC-COOKIE-1  c59ac6bfaced36a2aae446d94e024d2d
+kd-photomap/unix:12  MIT-MAGIC-COOKIE-1  5f52d3dd8ceb6e83072867ae8c53c25c
+kd-photomap/unix:13  MIT-MAGIC-COOKIE-1  c8832a48019931c96bc26b500fc8e62e
+
+iulian@kd-photomap:~> xterm
+Warning: Cannot convert string "nil2" to type FontStruct
+xterm: cannot load font -misc-fixed-medium-r-semicondensed-*-13-120-75-75-c-60-iso10646-1
+
+firefox
+
+----------------
+
+GUI Software Manager: Yast (equivalent to apt-get in Ubuntu)
+
+
+
+

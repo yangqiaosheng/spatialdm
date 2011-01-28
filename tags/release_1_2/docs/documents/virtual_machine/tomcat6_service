@@ -1,0 +1,26 @@
+    # Tomcat auto-start
+    # description: Auto-starts tomcat
+    # processname: tomcat
+    # path: /etc/init.d/tomcat6
+
+	export JAVA_HOME=/usr/java/jdk1.6.0_23
+	export PATH=$PATH:$JAVA_HOME/bin
+	export TOMCAT_HOME=/usr/tomcat6
+	export CATALINA_HOME=$TOMCAT_HOME
+
+	export CATALINA_OPTS="-Djava.awt.headless=true"
+	export JAVA_OPTS="-Djava.awt.headless=true"
+
+	case $1 in
+    start)
+            sh $TOMCAT_HOME/bin/startup.sh
+            ;;
+    stop)
+            sh $TOMCAT_HOME/bin/shutdown.sh
+            ;;
+    restart)
+            sh $TOMCAT_HOME/bin/shutdown.sh
+            sh $TOMCAT_HOME/bin/startup.sh
+            ;;
+    esac
+    exit 0

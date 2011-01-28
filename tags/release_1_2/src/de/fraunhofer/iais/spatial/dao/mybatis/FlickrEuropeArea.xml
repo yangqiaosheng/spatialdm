@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="FlickrArea">
+
+	<!-- local cache: flushInterval: 24hours -->
+<!--   	<cache eviction="LRU" size="256" readOnly="true" flushInterval="86400000"></cache>-->
+
+	<!-- Ehcache: configurated in classpath:ehcache.xml -->
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+
+	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
+		select
+			ID,
+			NAME,
+			GEOM,
+			SDO_GEOM.SDO_AREA(m.geom, 0.005) as "area",
+			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "center"
+		from FLICKR_EUROPE_AREA_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}'
+	</select>
+
+	<select id="selectById" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
+		select
+			ID,
+			NAME,
+			GEOM,
+			SDO_GEOM.SDO_AREA(m.geom, 0.005) as "area",
+			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "center"
+		from FLICKR_EUROPE_AREA_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}' and m.ID = #{areaid}
+	</select>
+
+	<select id="selectByIdGeom" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
+		select
+			ID,
+			NAME,
+			GEOM,
+			SDO_GEOM.SDO_AREA(m.geom, 0.005) as "area",
+			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "center"
+		from FLICKR_EUROPE_AREA_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}' and sdo_relate(m.geom, #{queryGeom},'mask=anyinteract') = 'TRUE'
+	</select>
+
+	<select id="hourCount" resultType="String" parameterType="FlickrArea">
+		select hour
+		from SAMPLE_FLICKR_EUROPE_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="dayCount" resultType="String" parameterType="FlickrArea">
+		select day
+		from SAMPLE_FLICKR_EUROPE_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="monthCount" resultType="String" parameterType="FlickrArea">
+		select month
+		from SAMPLE_FLICKR_EUROPE_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="yearCount" resultType="String" parameterType="FlickrArea">
+		select year
+		from SAMPLE_FLICKR_EUROPE_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="totalCount" resultType="int" parameterType="FlickrEuropeAreaDto">
+		select total
+		from SAMPLE_FLICKR_EUROPE_COUNT
+		where ID = #{areaid} and RADIUS = #{radius}
+	</select>
+</mapper>

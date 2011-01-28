@@ -1,0 +1,4 @@
+configuration of log4j as the standard logging in tomcat:
+1. 	delete conf/logging.properties
+2. 	set the sdout level to INFO at log4j.properties of all the webapps.
+	otherwise, the logs/catalina.out will grow very fast!
