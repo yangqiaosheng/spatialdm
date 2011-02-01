@@ -28,7 +28,7 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 
 	@Override
 	public void run() {
-		logger.debug("run() - start"); //$NON-NLS-1$
+		logger.info("run() - start"); //$NON-NLS-1$
 
 		//		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
 //		File kmlPath = new File(System.getProperty("oraclespatialweb.root") + RequestKmlServlet.kmlPath);
