@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,6 +32,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoJdbc;
@@ -639,10 +641,32 @@ public class FlickrEuropeAreaMgr {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
 
+		Document document = bulidKmlDoc(areas, radius, remoteBasePath);
+
+		if(filenamePrefix != null){
+			if(StringUtils.isNotEmpty(filenamePrefix)){
+				if(compress == true){
+					XmlUtil.xml2Kmz(document, localBasePath + filenamePrefix, true);
+				}else {
+					XmlUtil.xml2File(document, localBasePath + filenamePrefix + ".kml", false);
+				}
+			}
+		}
+
+		return XmlUtil.xml2String(document, false);
+	}
+
+	public String createKml(List<FlickrArea> areas, Radius radius, String remoteBasePath, Writer out) throws IOException {
+		Document document = bulidKmlDoc(areas, radius, remoteBasePath);
+		new XMLOutputter().output(document, out);
+
+		return XmlUtil.xml2String(document, false);
+	}
+
+	private Document bulidKmlDoc(List<FlickrArea> areas, Radius radius, String remoteBasePath) {
 		Document document = new Document();
 
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
-//		Namespace namespace = Namespace.getNamespace(null);
 		Element rootElement = new Element("kml", namespace);
 
 		float scale = (float) (Integer.parseInt(radius.toString()) / 30000.0);
@@ -654,13 +678,13 @@ public class FlickrEuropeAreaMgr {
 		// GroundOverlay
 		for (FlickrArea area : areas) {
 			if (area.getTotalCount() != 0) {
-				String name = "";
+				String name = String.valueOf(area.getId());
 				//			String description = "count: " + String.valueOf(a.getTotalCount());
 				String description = "areaid=" + area.getId()
 									+ "&total=" + area.getTotalCount()
 									+ "&selected=" + area.getSelectCount();
 
-				String groundOverlayColor = "bbffffff"; //transparency
+				String groundOverlayColor = "eeffffff"; //transparency
 
 				Element groundOverlayElement = new Element("GroundOverlay", namespace);
 				documentElement.addContent(groundOverlayElement);
@@ -681,26 +705,27 @@ public class FlickrEuropeAreaMgr {
 				String icon = "";
 
 				if (area.getSelectCount() < 100) {
-//					r = (double) Math.log10(a.getSelectCount() + 1) / 85.0 * scale;
+//					r = (double) Math.log10(area.getSelectCount() + 1) / 85.0 * scale;
 					icon = remoteBasePath + "images/circle_bl.ico";
 				} else if (area.getSelectCount() < 1000) {
-//					r = (double) Math.log10(a.getSelectCount() + 1) / 80.0 * scale;
+//					r = (double) Math.log10(area.getSelectCount() + 1) / 80.0 * scale;
 					icon = remoteBasePath + "images/circle_gr.ico";
 				} else if (area.getSelectCount() < 10000) {
-//					r = (double) Math.log10(a.getSelectCount() + 1) / 70.0 * scale;
+//					r = (double) Math.log10(area.getSelectCount() + 1) / 70.0 * scale;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
-//					r = (double) Math.log10(a.getSelectCount() + 1) / 60.0 * scale;
+//					r = (double) Math.log10(area.getSelectCount() + 1) / 60.0 * scale;
 					icon = remoteBasePath + "images/circle_or.ico";
 				}
 
 				r = (double) Math.log10(area.getSelectCount() + 1) / 80.0 * scale;
-				if (r > 0.1) {
-					r = 0.1;
-				}
 
 				hrefElement.addContent(icon);
 
+				Element altitudeElement = new Element("altitude", namespace).addContent(String.valueOf(area.getTotalCount()*100));
+				groundOverlayElement.addContent(altitudeElement);
+				Element altitudeModeElement = new Element("altitudeMode", namespace).addContent("absolute");
+				groundOverlayElement.addContent(altitudeModeElement);
 				Element latLonBoxElement = new Element("LatLonBox", namespace);
 				groundOverlayElement.addContent(latLonBoxElement);
 				Element northElement = new Element("north", namespace);
@@ -725,14 +750,14 @@ public class FlickrEuropeAreaMgr {
 		// Polygon
 		for (FlickrArea area : areas) {
 			// if(a.getCount()==0||!a.getName().equals("100")) continue;
-			String name = "";
+			String name = String.valueOf(area.getId());
 			//			String description = "count: " + String.valueOf(a.getTotalCount());
 			String description = "areaid=" + area.getId()
 								+ "&total=" + area.getTotalCount()
 								+ "&selected=" + area.getSelectCount();
 
-//			String polyStyleColor = "330000"; //not transparent
-			String polyStyleColor = "000000"; //transparent
+			String polyStyleColor = "330000"; //not transparent
+//			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
 			String lineStyleWidth = "1";
@@ -743,7 +768,9 @@ public class FlickrEuropeAreaMgr {
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				coordinates += shape.getOrdinatesArray()[i] + ", ";
 				if (i % 2 == 1) {
-					coordinates += "0\n";
+//					coordinates += "0\n";
+					coordinates += area.getTotalCount()*100;
+					coordinates += "\n";
 				}
 			}
 
@@ -792,24 +819,21 @@ public class FlickrEuropeAreaMgr {
 
 			Element multiGeometryElement = new Element("MultiGeometry", namespace);
 			Element polygonElement = new Element("Polygon", namespace);
+			Element extrudeElement = new Element("extrude", namespace).addContent("1");
+			Element altitudeModeElement = new Element("altitudeMode", namespace).addContent("absolute");
 			Element outerBoundaryIsElement = new Element("outerBoundaryIs", namespace);
 			Element linearRingElement = new Element("LinearRing", namespace);
 			Element coordinatesElement = new Element("coordinates", namespace);
 			placemarkElement.addContent(multiGeometryElement);
 			multiGeometryElement.addContent(polygonElement);
 			polygonElement.addContent(outerBoundaryIsElement);
+			polygonElement.addContent(extrudeElement);
+			polygonElement.addContent(altitudeModeElement);
 			outerBoundaryIsElement.addContent(linearRingElement);
 			linearRingElement.addContent(coordinatesElement);
 			coordinatesElement.addContent(coordinates);
 		}
-
-		if(compress == true){
-			XmlUtil.xml2Kmz(document, localBasePath + filenamePrefix, true);
-		}else {
-			XmlUtil.xml2File(document, localBasePath + filenamePrefix + ".kml", false);
-		}
-		return XmlUtil.xml2String(document, false);
-		// return xml2String(document).replaceAll("\r\n", " ");
+		return document;
 	}
 
 

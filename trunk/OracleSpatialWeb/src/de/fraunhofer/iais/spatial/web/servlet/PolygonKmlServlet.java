@@ -25,29 +25,24 @@ import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
-public class ZoomKmlServlet extends HttpServlet {
+public class PolygonKmlServlet extends HttpServlet {
 	/**
 	* Logger for this class
 	*/
-	private static final Logger logger = LoggerFactory.getLogger(ZoomKmlServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(PolygonKmlServlet.class);
 
 	private static final long serialVersionUID = -6814809670117597713L;
-
-	// "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
-	public static final String kmlPath = "kml/";
 
 	private static FlickrEuropeAreaMgr areaMgr = null;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		// web base path for local operation
-		String localBasePath = getServletContext().getRealPath("/");
 		// web base path for remote access
 		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 		//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
-		response.setContentType("text/xml");
-		// response.setContentType("application/vnd.google-earth.kml+xml");
+//		response.setContentType("text/xml");
+		response.setContentType("application/vnd.google-earth.kml+xml");
 
 		// Prevents caching
 		response.setHeader("Cache-Control", "no-store"); // HTTP1.1
@@ -55,30 +50,16 @@ public class ZoomKmlServlet extends HttpServlet {
 		response.setDateHeader("Expires", 0); // proxy server
 
 		String xml = request.getParameter("xml");
-		String persist = request.getParameter("persist");
 
 		PrintWriter out = response.getWriter();
 
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
-		Element messageElement = new Element("message");
-		rootElement.addContent(messageElement);
-
-		if (StringUtils.isEmpty(xml)) {
-			messageElement.setText("ERROR: 'xml' parameter is missing!");
-		} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
-			messageElement.setText("ERROR: please perform a query first!");
-		} else {
+		String kmlStr = "error";
+		if (StringUtils.isNotEmpty(xml)) {
 
 			try {
 				String filenamePrefix = StringUtil.genFilename(new Date());
 
 				FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
-				if ("true".equals(persist)) {
-					logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
-					areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
-				}
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
@@ -96,21 +77,14 @@ public class ZoomKmlServlet extends HttpServlet {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
 				areaMgr.countSelected(areas, areaDto);
-				areaMgr.createKml(areas, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, true);
+				kmlStr = areaMgr.createKml(areas, null, areaDto.getRadius(), remoteBasePath, false);
 
-				Element urlElement = new Element("url");
-				rootElement.addContent(urlElement);
-				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
-				request.getSession().setAttribute("areaDto", areaDto);
-				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-				messageElement.setText("ERROR: wrong input parameter!");
-//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 			}
 		}
 
-		out.print(XmlUtil.xml2String(document, true));
+		out.print(kmlStr);
 		out.flush();
 		out.close();
 	}
