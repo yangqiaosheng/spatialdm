@@ -113,18 +113,18 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-
 	<servlet>
-		<description>Servlet for testing</description>
-		<display-name>TestServlet</display-name>
-		<servlet-name>TestServlet</servlet-name>
-		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.TestServlet</servlet-class>
+		<description>Retrieve the data to create a kml with different zoom levels</description>
+		<display-name>PolygonKml</display-name>
+		<servlet-name>PolygonKml</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.PolygonKmlServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>TestServlet</servlet-name>
-		<url-pattern>/TestServlet</url-pattern>
+		<servlet-name>PolygonKml</servlet-name>
+		<url-pattern>/PolygonKml</url-pattern>
 	</servlet-mapping>
-
+	
 	<servlet>
 		<description>Retrieve the data to create a kml with different zoom levels</description>
 		<display-name>ZoomedKml</display-name>
