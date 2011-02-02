@@ -53,8 +53,8 @@ public class DBUtil {
 			cpds.setJdbcUrl(pros.getProperty("url"));
 			cpds.setUser(pros.getProperty("username"));
 			cpds.setPassword(pros.getProperty("password"));
-			cpds.setMaxPoolSize(3);
-			cpds.setMinPoolSize(1);
+			cpds.setMaxPoolSize(18);
+			cpds.setMinPoolSize(6);
 			ds = cpds;
 		} catch (PropertyVetoException e) {
 			logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$

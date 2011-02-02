@@ -34,6 +34,25 @@ import com.aetrion.flickr.util.XMLUtilities;
  */
 public class PeopleInterface {
 
+	/**
+	 * Bounding Box or the area that will be search
+	 * @author haolin
+	 *
+	 */
+	public class Bbox{
+		double minLongitude;
+		double minLatitude;
+		double maxLongitude;
+		double maxLatitude;
+		public Bbox(double minLongitude, double minLatitude, double maxLongitude, double maxLatitude) {
+			this.minLongitude = minLongitude;
+			this.minLatitude = minLatitude;
+			this.maxLongitude = maxLongitude;
+			this.maxLatitude = maxLatitude;
+		}
+
+	}
+
 	public static final String METHOD_FIND_BY_EMAIL = "flickr.people.findByEmail";
 	public static final String METHOD_FIND_BY_USERNAME = "flickr.people.findByUsername";
 	public static final String METHOD_GET_INFO = "flickr.people.getInfo";
@@ -330,7 +349,7 @@ public class PeopleInterface {
 	 * @throws SAXException
 	 * @throws FlickrException
 	 */
-	public PhotoList getSearchWithGeoPhoto(String userId, Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, double minLongitude, double minLatitude, double maxLongitude, double maxLatitude, Set<String> extras, int perPage, int page) throws IOException, SAXException, FlickrException {
+	public PhotoList getSearchWithGeoPhoto(String userId, Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, Bbox bbox, Set<String> extras, int perPage, int page) throws IOException, SAXException, FlickrException {
 
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter("method", METHOD_SEARCH));
@@ -359,7 +378,12 @@ public class PeopleInterface {
 		if (extras != null) {
 			parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
 		}
-		parameters.add(new Parameter("bbox", "" + minLongitude + "," + minLatitude + "," + maxLongitude + "," + maxLatitude + ","));
+		parameters.add(new Parameter("has_geo", 1));
+		parameters.add(new Parameter("accuracy", 15));
+		if(bbox != null){
+			parameters.add(new Parameter("bbox", "" + bbox.minLongitude + "," + bbox.minLatitude + "," + bbox.maxLongitude + "," + bbox.maxLatitude + ","));
+		}
+
 		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
 
 		Response response = transport.get(transport.getPath(), parameters);
