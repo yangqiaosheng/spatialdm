@@ -239,8 +239,13 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 		PhotoList insertPhotos = new PhotoList();
 		do {
-			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
-//			photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE, extras, pageSize, page++);
+			//get all the photo with and without GEO info
+//			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
+
+			//there is bugs in the Search method with bbox option, which will only return the result of accuracy=16
+//			photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), peopleInterface.new Bbox(MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE), extras, pageSize, page++);
+
+			photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), null, extras, pageSize, page++);
 			total = photos.getTotal();
 			pages = photos.getPages();
 			increaseNumTotalQuery();
