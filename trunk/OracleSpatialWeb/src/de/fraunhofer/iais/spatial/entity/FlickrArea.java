@@ -26,7 +26,7 @@ public class FlickrArea {
 	private Map<String, Integer> hoursCount = new HashMap<String, Integer>();
 	private transient int totalCount;
 	private transient int selectedCount;
-	private transient ChartData chartData = new ChartData();
+	private transient ChartData chartsData = new ChartData();
 
 	public enum Radius {
 		R5000, R10000, R20000, R40000, R80000, R160000, R320000;
@@ -141,8 +141,8 @@ public class FlickrArea {
 		this.radius = radius;
 	}
 
-	public ChartData getChartData() {
-		return chartData;
+	public ChartData getChartsData() {
+		return chartsData;
 	}
 
 }

@@ -282,6 +282,15 @@ public class FlickrEuropeAreaMgr {
 
 		areaDto.setQueryLevel(Level.HOUR);
 
+		SortedSet<String> allYears = new TreeSet<String>();
+		SortedSet<String> allMonths = new TreeSet<String>();
+		SortedSet<String> allDays = new TreeSet<String>();
+		SortedSet<String> allHours = new TreeSet<String>();
+		DateUtil.allYearStrs(allYears);
+		DateUtil.allMonthStrs(allMonths);
+		DateUtil.allDayStrs(allDays);
+		DateUtil.allHourStrs(allHours);
+
 		// construct the Query Strings
 		SortedSet<String> queryStrs = areaDto.getQueryStrs();
 
@@ -289,6 +298,12 @@ public class FlickrEuropeAreaMgr {
 		SortedSet<String> tempMonths = new TreeSet<String>(areaDto.getMonths());
 		SortedSet<String> tempDays = new TreeSet<String>(areaDto.getDays());
 		SortedSet<String> tempHours = new TreeSet<String>(areaDto.getHours());
+
+		// remove the invalid input data
+		tempYears.retainAll(allYears);
+		tempMonths.retainAll(allMonths);
+		tempDays.retainAll(allDays);
+		tempHours.retainAll(allHours);
 
 		// complete the options when they are not selected
 		if (tempYears.size() == 0) {
@@ -596,11 +611,11 @@ public class FlickrEuropeAreaMgr {
 
 		int queryStrsLength = areaDto.getQueryStrs().first().length();
 		for (FlickrArea area : areas) {
-			Map<Integer, Integer> yearData = area.getChartData().getYears();
-			Map<Integer, Integer> monthData = area.getChartData().getMonths();
-			Map<Integer, Integer> dayData = area.getChartData().getDays();
-			Map<Integer, Integer> hourData = area.getChartData().getHours();
-			Map<Integer, Integer> weekdayData = area.getChartData().getWeekdays();
+			Map<Integer, Integer> yearData = area.getChartsData().getYears();
+			Map<Integer, Integer> monthData = area.getChartsData().getMonths();
+			Map<Integer, Integer> dayData = area.getChartsData().getDays();
+			Map<Integer, Integer> hourData = area.getChartsData().getHours();
+			Map<Integer, Integer> weekdayData = area.getChartsData().getWeekdays();
 
 			// init
 			for (int year : DateUtil.allYearInts) {
@@ -751,13 +766,12 @@ public class FlickrEuropeAreaMgr {
 			if (area.getTotalCount() != 0) {
 				String name = String.valueOf(area.getId());
 				String description = "";
-				String groundOverlayColor = "eeffffff"; //transparency
 
 				Element groundOverlayElement = new Element("GroundOverlay", namespace);
 				documentElement.addContent(groundOverlayElement);
 				groundOverlayElement.addContent(new Element("name", namespace).addContent(name));
 				groundOverlayElement.addContent(new Element("description", namespace).addContent(new CDATA(description)));
-				groundOverlayElement.addContent(new Element("color", namespace).addContent(groundOverlayColor));
+//				groundOverlayElement.addContent(new Element("color", namespace).addContent("eeffffff"));
 				Element iconElement = new Element("Icon", namespace);
 				groundOverlayElement.addContent(iconElement);
 				double r = 0;
@@ -797,19 +811,19 @@ public class FlickrEuropeAreaMgr {
 				latLonBoxElement.addContent(eastElement);
 				latLonBoxElement.addContent(westElement);
 
-//				if (Double.isInfinite(area.getCenter().getY() + r * 0.55)) {
-//					System.exit(0);
-//				}
+				if (Double.isInfinite(area.getCenter().getY() + r * 0.55)) {
+					System.exit(0);
+				}
 			}
 		}
 
 		// Polygon
 		for (FlickrArea area : areas) {
-			String name = String.valueOf(area.getId());
+			String name = area.getSelectCount() + " / " + area.getTotalCount();
 			String description = buildDescription(area);
 
-			String polyStyleColor = "440000"; //not transparent
-//			String polyStyleColor = "000000"; //transparent
+//			String polyStyleColor = "440000"; //not transparent
+			String polyStyleColor = "000000"; //transparent
 			String polyStyleFill = "1";
 			String polyStyleOutline = "1";
 			String lineStyleWidth = "2";
@@ -820,9 +834,9 @@ public class FlickrEuropeAreaMgr {
 			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
 				coordinates += shape.getOrdinatesArray()[i] + ", ";
 				if (i % 2 == 1) {
-//					coordinates += "0\n";						//longitude and latitude
-					coordinates += area.getTotalCount() * 0;	//altitude
-					coordinates += "\n";
+					coordinates += "0\n";						//longitude and latitude
+//					coordinates += area.getTotalCount() * 0;	//altitude
+//					coordinates += "\n";
 				}
 			}
 
@@ -870,30 +884,44 @@ public class FlickrEuropeAreaMgr {
 	}
 
 	private String buildDescription(FlickrArea area) {
+		int width = 640;
+		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getChartsData().getWeekdays(), Level.WEEKDAY);
+		String yearChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getChartsData().getYears(), Level.YEAR);
+		String monthChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getChartsData().getMonths(), Level.MONTH);
+		String dayChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getChartsData().getDays(), Level.DAY);
+		String hourChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getChartsData().getHours(), Level.HOUR);
 
+		String description = weekdayChartImg + yearChartImg + "<BR>" + monthChartImg + "<BR>" + dayChartImg + "<BR>" + hourChartImg;
+		return description;
+	}
+
+	private String createGoogleChartImg(String title, int width, int height, Map<Integer, Integer> chartData, Level displayLevel) {
 		String values = "";
-		String keys = "";
+		String labels = "";
 		int maxValue = 0;
-		for(Map.Entry<Integer, Integer> e : area.getChartData().getWeekdays().entrySet()){
-			keys += "|" + DateUtil.getWeekdayStr(e.getKey());
+		int barWithd = (int) (width / chartData.size() / 1.3);
+		for(Map.Entry<Integer, Integer> e : chartData.entrySet()){
+			labels += "|" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
 			values += "," + e.getValue();
 			if(e.getValue()> maxValue){
 				maxValue = e.getValue();
 			}
 		}
 
-		String description = "<img src='http://chart.apis.google.com/chart" +
-		"?chtt=Photos Distribution" +		//chart title
-		"&cht=bvs" +						//chart type
-		"&chs=300x200" +					//chart size(pixel)
-		"&chd=t:" + values.substring(1) + 	//values
-		"&chxt=x,y" +						//display axises
-		"&chxl=0:" + keys +					//labels in x axis
-		"&chm=N,444444,-1,,12" +			//data marker chm= <marker_type>,<color>,<series_index>,<which_points>,<size>,<z_order>,<placement>
-		"&chds=1," + maxValue * 1.2 +				//scale of y axis (default 1-100)
+		String img = "<img src='" +
+		"http://chart.apis.google.com/chart" + 	//chart engine
+		"?chtt=" + displayLevel +				//chart title
+		"&cht=bvs" +							//chart type
+		"&chs=" + width + "x" + height +		//chart size(pixel)
+		"&chd=t:" + values.substring(1) + 		//values
+		"&chxt=x,y" +							//display axises
+		"&chxl=0:" + labels +					//labels in x axis
+		"&chbh=" + barWithd +					//chbh=<bar_width_or_scale>,<space_between_bars>,<space_between_groups>
+		"&chm=N,444444,-1,,12" +				//data marker chm= <marker_type>,<color>,<series_index>,<which_points>,<size>,<z_order>,<placement>
+		"&chds=1," + maxValue * 1.2 +			//scale of y axis (default 1-100)
 		"&chxr=1,0," + maxValue * 1.2 +			//scale in value (default 1-100)
 		"'/>";
 
-		return description;
+		return img;
 	}
 }
