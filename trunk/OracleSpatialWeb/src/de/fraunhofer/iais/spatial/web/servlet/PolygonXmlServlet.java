@@ -91,7 +91,8 @@ public class PolygonXmlServlet extends HttpServlet {
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
-				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+				rootElement.addContent(new Element("exceptions").setText(e.getMessage()));
 				responseStr = XmlUtil.xml2String(document, true);
 			}
 		}

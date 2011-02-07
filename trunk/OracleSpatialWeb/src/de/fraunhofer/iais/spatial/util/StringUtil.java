@@ -73,7 +73,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * generate a random file name 
+	 * generate a random file name
 	 * format: yyMMddHHmmss-UUID(first 8 bit)
 	 * @param d - current Date
 	 * @return random file name
@@ -92,12 +92,12 @@ public class StringUtil {
 	 *	    if (length(key) < blocksize) then
 	 *	        key = key + zeroes(blocksize - length(key)) // keys shorter than blocksize are zero-padded
 	 *	    end if
-	 *	    
+	 *
 	 *	    o_key_pad = [0x5c * blocksize] ^ key // Where blocksize is that of the underlying hash function
 	 *	    i_key_pad = [0x36 * blocksize] ^ key // Where ^ is exclusive or (XOR)
-	 *	    
+	 *
 	 *	    return hash(o_key_pad + hash(i_key_pad + message)) // Where + is concatenation
-	 *	end function 
+	 *	end function
 	 * @param message - input byte array
 	 * @param keyString - key
 	 * @return hmac byte array

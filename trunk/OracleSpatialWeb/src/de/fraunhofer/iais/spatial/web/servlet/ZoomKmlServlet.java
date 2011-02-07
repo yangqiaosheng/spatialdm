@@ -96,7 +96,8 @@ public class ZoomKmlServlet extends HttpServlet {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
 				areaMgr.countSelected(areas, areaDto);
-				areaMgr.createKml(areas, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, true);
+				areaMgr.generateChartData(areas, areaDto);
+				areaMgr.createKml(areas, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, false);
 
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);
@@ -107,6 +108,7 @@ public class ZoomKmlServlet extends HttpServlet {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
 //				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+				rootElement.addContent(new Element("exceptions").setText(e.getMessage()));
 			}
 		}
 

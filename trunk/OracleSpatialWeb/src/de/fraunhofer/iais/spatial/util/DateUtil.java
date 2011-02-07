@@ -202,13 +202,55 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static int getWeekday(Calendar calendar) {
-		return getWeekday(calendar.getTime());
+	/**
+	 * return the weekday in String format given a Calendar Object
+	 * eg. Sun, Mon, Wed
+	 * @param calendar
+	 * @return
+	 */
+	public static String getWeekdayStr(Calendar calendar) {
+		return getWeekdayStr(calendar.getTime());
 	}
 
-	public static int getWeekday(Date date) {
+	/**
+	 * return the weekday in String format given a Date Object
+	 * eg. Sun, Mon, Wed
+	 * @param date
+	 * @return
+	 */
+	public static String getWeekdayStr(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.ENGLISH);
-		String weekdayStr = sdf.format(date);
+		return sdf.format(date);
+	}
+
+	/**
+	 * return the weekday in String format given a int value
+	 * 1->Sun, 2->Mon, 7->Sat
+	 * @param weekday
+	 * @return
+	 */
+	public static String getWeekdayStr(int weekday) {
+		return getWeekdayStr(createWeekday(weekday));
+	}
+
+	/**
+	 * return the weekday in int format given a Calendar Object
+	 * Sun -> 1, Mon -> 2, Sat ->7
+	 * @param calendar
+	 * @return
+	 */
+	public static int getWeekdayInt(Calendar calendar) {
+		return getWeekdayInt(calendar.getTime());
+	}
+
+	/**
+	 * return the weekday in int format given a Date Object
+	 * Sun -> 1, Mon -> 2, Sat ->7
+	 * @param date
+	 * @return
+	 */
+	public static int getWeekdayInt(Date date) {
+		String weekdayStr = getWeekdayStr(date);
 		int weekday = -1;
 
 		if("Sun".equals(weekdayStr)){
@@ -229,5 +271,4 @@ public class DateUtil {
 
 		return weekday;
 	}
-
 }
