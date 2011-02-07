@@ -3,6 +3,7 @@ package de.fraunhofer.iais.spatial.entity;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -23,8 +24,9 @@ public class FlickrArea {
 	private Map<String, Integer> monthsCount = new HashMap<String, Integer>();
 	private Map<String, Integer> daysCount = new HashMap<String, Integer>();
 	private Map<String, Integer> hoursCount = new HashMap<String, Integer>();
-	private int totalCount;
+	private transient int totalCount;
 	private transient int selectedCount;
+	private transient ChartData chartData = new ChartData();
 
 	public enum Radius {
 		R5000, R10000, R20000, R40000, R80000, R160000, R320000;
@@ -33,7 +35,30 @@ public class FlickrArea {
 		public String toString() {
 			return this.name().substring(1);
 		}
+	}
 
+	public class ChartData{
+		private Map<Integer, Integer> years = new TreeMap<Integer, Integer>();
+		private Map<Integer, Integer> months = new TreeMap<Integer, Integer>();
+		private Map<Integer, Integer> days = new TreeMap<Integer, Integer>();
+		private Map<Integer, Integer> hours = new TreeMap<Integer, Integer>();
+		private Map<Integer, Integer> weekdays = new TreeMap<Integer, Integer>();
+
+		public Map<Integer, Integer> getYears() {
+			return years;
+		}
+		public Map<Integer, Integer> getMonths() {
+			return months;
+		}
+		public Map<Integer, Integer> getDays() {
+			return days;
+		}
+		public Map<Integer, Integer> getHours() {
+			return hours;
+		}
+		public Map<Integer, Integer> getWeekdays() {
+			return weekdays;
+		}
 	}
 
 	public int getId() {
@@ -114,6 +139,10 @@ public class FlickrArea {
 
 	public void setRadius(Radius radius) {
 		this.radius = radius;
+	}
+
+	public ChartData getChartData() {
+		return chartData;
 	}
 
 }

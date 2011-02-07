@@ -69,8 +69,8 @@ used with JMX monitors.
 
     -->
     <diskStore path="java.io.tmpdir"/>
-    
-    <!-- 
+
+    <!--
     TransactionManagerLookup configuration
     ======================================
     This class is used by ehcache to lookup the JTA TransactionManager use in the application
@@ -82,14 +82,14 @@ used with JMX monitors.
      *Websphere
      *Bitronix
      *Atomikos
-    
+
     You can provide you own lookup class that implements the
-    net.sf.ehcache.transaction.manager.TransactionManagerLookup interface. 
+    net.sf.ehcache.transaction.manager.TransactionManagerLookup interface.
     -->
 
     <transactionManagerLookup class="net.sf.ehcache.transaction.manager.DefaultTransactionManagerLookup"
                               properties="jndiName=java:/TransactionManager" propertySeparator=";"/>
- 
+
 
     <!--
     CacheManagerEventListener
@@ -257,6 +257,8 @@ used with JMX monitors.
     * acknowledgementMode - the JMS Acknowledgement mode for both publisher and subscriber. The available choices are
                             AUTO_ACKNOWLEDGE, DUPS_OK_ACKNOWLEDGE and SESSION_TRANSACTED. The default is AUTO_ACKNOWLEDGE.
     -->
+
+    <!--
     <cacheManagerPeerProviderFactory
             class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
             properties="peerDiscovery=automatic,
@@ -264,7 +266,7 @@ used with JMX monitors.
                         multicastGroupPort=4446, timeToLive=1"
             propertySeparator=","
             />
-
+	-->
 
     <!--
     CacheManagerPeerListener
@@ -390,7 +392,7 @@ used with JMX monitors.
     When set to true, enables the cache to utilize off-heap memory
     storage to improve performance. Off-heap memory is not subject to Java
     GC. The default value is false.
-    
+
     maxMemoryOffHeap:
     (string) This feature is available only in enterprise versions of Ehcache.
     Sets the amount of off-heap memory available to the cache.
@@ -642,7 +644,7 @@ used with JMX monitors.
     ++++++++
 
     To enable an ehcache as a participant in the JTA Transaction, just have the following attribute
-    
+
     transactionalMode="xa", otherwise the default is transactionalMode="off"
 
     Cache Writer
@@ -741,37 +743,37 @@ used with JMX monitors.
       identity of the keys and values across the cluster.  In this case, all users of a value retrieved from
       the cache are using the same clustered value and must provide appropriate locking for any changes
       made to the value (or objects referred to by the value).
-      
+
     * copyOnRead=true|false - indicates whether cache values are deserialized on every read or if the
       materialized cache value can be re-used between get() calls. This setting is useful if a cache
       is being shared by callers with disparate classloaders or to prevent local drift if keys/values
       are mutated locally w/o putting back to the cache. NOTE: This setting is only relevant for caches
       with valueMode=serialization
 
-    * coherent=true|false - indicates whether this cache should have coherent reads and writes with guaranteed 
-      consistency across the cluster.  By default, its value is true.  If this attribute is set to false 
-      (or "incoherent" mode), values from the cache are read without locking, possibly yielding stale data. 
-      Writes to a cache in incoherent mode are batched and applied without acquiring cluster-wide locks, 
-      possibly creating inconsistent values across cluster. Incoherent mode is a performance optimization 
-      with weaker concurrency guarantees and should generally be used for bulk-loading caches, for loading 
-      a read-only cache, or where the application that can tolerate reading stale data. This setting overrides 
+    * coherent=true|false - indicates whether this cache should have coherent reads and writes with guaranteed
+      consistency across the cluster.  By default, its value is true.  If this attribute is set to false
+      (or "incoherent" mode), values from the cache are read without locking, possibly yielding stale data.
+      Writes to a cache in incoherent mode are batched and applied without acquiring cluster-wide locks,
+      possibly creating inconsistent values across cluster. Incoherent mode is a performance optimization
+      with weaker concurrency guarantees and should generally be used for bulk-loading caches, for loading
+      a read-only cache, or where the application that can tolerate reading stale data. This setting overrides
       coherentReads, which is deprecated.
 
     * synchronousWrites=true|false - When set to true, clustered caches use
-      Terracotta SYNCHRONOUS WRITE locks. Asynchronous writes (synchronousWrites="false") maximize performance by 
-      allowing clients to proceed without waiting for a "transaction received" acknowledgement from the server. 
-      Synchronous writes (synchronousWrites="true")  maximize data safety by requiring that a client receive server 
-      acknowledgement of a transaction before that client can proceed. If coherence mode is disabled using 
-      configuration (coherent="false") or through the coherence API, only asynchronous writes can occur 
+      Terracotta SYNCHRONOUS WRITE locks. Asynchronous writes (synchronousWrites="false") maximize performance by
+      allowing clients to proceed without waiting for a "transaction received" acknowledgement from the server.
+      Synchronous writes (synchronousWrites="true")  maximize data safety by requiring that a client receive server
+      acknowledgement of a transaction before that client can proceed. If coherence mode is disabled using
+      configuration (coherent="false") or through the coherence API, only asynchronous writes can occur
       (synchronousWrites="true" is ignored). By default this value is false (i.e. clustered caches use normal
        Terracotta WRITE locks).
-    
+
     * storageStrategy=classic|DCV2 - Can be used to configure how the key/values of the cache are stored. The key/values
-      can be stored locally in the vm or stored in the Terracotta Server Array. "classic" value for the attribute stores 
-      the key/values in the local vm and using "DCV2" stores it in the Terracotta Server Array. This attribute is 
+      can be stored locally in the vm or stored in the Terracotta Server Array. "classic" value for the attribute stores
+      the key/values in the local vm and using "DCV2" stores it in the Terracotta Server Array. This attribute is
       optional and default value is "classic"
-      
-    * concurrency - A non-negative integer that can be used to specify the number of segments that will be used by the map 
+
+    * concurrency - A non-negative integer that can be used to specify the number of segments that will be used by the map
       underneath the Terracotta Store. Its optional and has default value of 0, which means will use default values based
       on the internal Map being used underneath the store. This value cannot be changed programmatically once cache is initialized.
 
@@ -783,16 +785,16 @@ used with JMX monitors.
 
     To indicate the cache should be clustered using identity mode:
         <terracotta clustered="true" valueMode="identity"/>
-        
+
     To indicate the cache should be clustered using incoherent mode for bulk load:
         <terracotta clustered="true" coherent="false"/>
-    
+
     To indicate the cache should be clustered using synchronous-write locking level:
         <terracotta clustered="true" synchronousWrites="true"/>
-        
+
     To indicate the key/values should be stored in the Terracotta Server Array:
         <terracotta clustered="true" storageStrategy="DCV2"/>
-        
+
     -->
 
     <!--
@@ -985,5 +987,5 @@ used with JMX monitors.
            diskPersistent="false"
            diskExpiryThreadIntervalSeconds="1"
      </cache>
---> 
+-->
 </ehcache>
