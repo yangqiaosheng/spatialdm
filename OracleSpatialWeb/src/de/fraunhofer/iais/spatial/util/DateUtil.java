@@ -10,6 +10,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.time.DateUtils;
 
+import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+
 public class DateUtil {
 
 	public static Calendar today = Calendar.getInstance();
@@ -270,5 +272,75 @@ public class DateUtil {
 		}
 
 		return weekday;
+	}
+
+	/**
+	 * return the month in String format given a Calendar Object
+	 * eg. Jan <- 1, Feb <- 2, Jul <- 7
+	 * @param calendar
+	 * @return
+	 */
+	public static String getMonthStr(Calendar calendar) {
+		return getMonthStr(calendar.getTime());
+	}
+
+	/**
+	 * return the month in String format given a Date Object
+	 * eg. Jan <- 1, Feb <- 2, Jul <- 7
+	 * @param date
+	 * @return
+	 */
+	public static String getMonthStr(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM", Locale.ENGLISH);
+		return sdf.format(date);
+	}
+
+	/**
+	 * return the month in String format given a int value
+	 * eg. Jan <- 1, Feb <- 2, Jul <- 7
+	 * @param month
+	 * @return
+	 */
+	public static String getMonthStr(int month) {
+		return getMonthStr(createMonth(month));
+	}
+
+	/**
+	 * return the Chart DataLabel in String format given a int value
+	 * eg. 	WEEKDAY:SUN <- 1, MON <- 2, SAT <- 7
+	 * 		YEAR: 	2007 <- 2007
+	 * 		MONTH: 	Jan <- 1, Feb <- 2, Jul <- 7
+	 * 		DAY: 	1 <- 1, 2 <- 2, 7 <- 7
+	 * 		HOUR: 	1 <- 1, 2 <- 2, 7 <- 7
+	 * @param date
+	 * @param displayLevel
+	 * @return
+	 */
+	public static String getChartLabelStr(int date, Level displayLevel) {
+		String str = "";
+
+		switch (displayLevel) {
+		case WEEKDAY:
+			str = getWeekdayStr(createWeekday(date));
+			break;
+
+		case YEAR:
+			str = date + "";
+			break;
+
+		case MONTH:
+			str = getMonthStr(createMonth(date));
+			break;
+
+		case DAY:
+			str = date + "";
+			break;
+
+		case HOUR:
+			str = date + "";
+			break;
+		}
+
+		return str;
 	}
 }
