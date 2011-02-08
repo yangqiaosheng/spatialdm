@@ -26,7 +26,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  		--></script>
 	</head><body>
 		<h1>Request Kml Demo</h1>
-		<p style="color: rgb(170, 0, 0);">Recommended web browsers: Firefox, Chrome</p>
+		<p style="color: rgb(170, 0, 0);">Recommended web browsers: Firefox</p>
 
 		<table style="width: 1200px;" border="1">
 			<tbody><tr>
