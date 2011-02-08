@@ -289,11 +289,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			conn.commit();
 		} catch (SQLException e) {
-			logger.error("insertPeople()", e); //$NON-NLS-1$
+			logger.error("insertPhotos()", e); //$NON-NLS-1$
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {
-				logger.error("insertPeople()", e); //$NON-NLS-1$
+				logger.error("insertPhotos()", e); //$NON-NLS-1$
 			}
 		} finally {
 			db.close(conn);

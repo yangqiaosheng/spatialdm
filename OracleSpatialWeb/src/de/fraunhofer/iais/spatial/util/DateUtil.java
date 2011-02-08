@@ -14,29 +14,37 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 
 public class DateUtil {
 
-	public static Calendar today = Calendar.getInstance();
-	public static SortedSet<String> allYearStrs = new TreeSet<String>();
-	public static SortedSet<String> allMonthStrs = new TreeSet<String>();
-	public static SortedSet<String> allDayStrs = new TreeSet<String>();
-	public static SortedSet<String> allHourStrs = new TreeSet<String>();
+	public final static Calendar today = Calendar.getInstance();
+	public final static SortedSet<String> allYearIntStrs = new TreeSet<String>();
+	public final static SortedSet<String> allMonthIntStrs = new TreeSet<String>();
+	public final static SortedSet<String> allMonthShortStrs = new TreeSet<String>();
+	public final static SortedSet<String> allMonthFullStrs = new TreeSet<String>();
+	public final static SortedSet<String> allDayIntStrs = new TreeSet<String>();
+	public final static SortedSet<String> allHourIntStrs = new TreeSet<String>();
+	public final static SortedSet<String> allWeekdayShortStrs = new TreeSet<String>();
+	public final static SortedSet<String> allWeekdayFullStrs = new TreeSet<String>();
 
-	public static SortedSet<Integer> allYearInts = new TreeSet<Integer>();
-	public static SortedSet<Integer> allMonthInts = new TreeSet<Integer>();
-	public static SortedSet<Integer> allDayInts = new TreeSet<Integer>();
-	public static SortedSet<Integer> allHourInts = new TreeSet<Integer>();
-	public static SortedSet<Integer> allWeekdayInts = new TreeSet<Integer>();
+	public final static SortedSet<Integer> allYearInts = new TreeSet<Integer>();
+	public final static SortedSet<Integer> allMonthInts = new TreeSet<Integer>();
+	public final static SortedSet<Integer> allDayInts = new TreeSet<Integer>();
+	public final static SortedSet<Integer> allHourInts = new TreeSet<Integer>();
+	public final static SortedSet<Integer> allWeekdayInts = new TreeSet<Integer>();
 
-	public static SortedSet<Date> allYearDates = new TreeSet<Date>();
-	public static SortedSet<Date> allMonthDates = new TreeSet<Date>();
-	public static SortedSet<Date> allDayDates = new TreeSet<Date>();
-	public static SortedSet<Date> allHourDates = new TreeSet<Date>();
-	public static SortedSet<Date> allWeekdayDates = new TreeSet<Date>();
+	public final static SortedSet<Date> allYearDates = new TreeSet<Date>();
+	public final static SortedSet<Date> allMonthDates = new TreeSet<Date>();
+	public final static SortedSet<Date> allDayDates = new TreeSet<Date>();
+	public final static SortedSet<Date> allHourDates = new TreeSet<Date>();
+	public final static SortedSet<Date> allWeekdayDates = new TreeSet<Date>();
 
 	static {
-		allYearStrs(allYearStrs);
-		allMonthStrs(allMonthStrs);
-		allDayStrs(allDayStrs);
-		allHourStrs(allHourStrs);
+		allYearIntStrs(allYearIntStrs);
+		allMonthIntStrs(allMonthIntStrs);
+		allDayIntStrs(allDayIntStrs);
+		allHourIntStrs(allHourIntStrs);
+		allMonthShortStrs(allMonthShortStrs);
+		allMonthFullStrs(allMonthFullStrs);
+		allWeekdayShortStrs(allWeekdayShortStrs);
+		allWeekdayFullStrs(allWeekdayFullStrs);
 
 		allYearInts(allYearInts);
 		allMonthInts(allMonthInts);
@@ -52,57 +60,111 @@ public class DateUtil {
 	}
 
 
-	public static void allYearStrs(Set<String> years) {
+	private static void allYearIntStrs(Set<String> years) {
 		for (int i = 2005; i <= today.get(Calendar.YEAR); i++) {
 			years.add(String.format("%04d", i));
 		}
 	}
 
-	public static void allMonthStrs(Set<String> months) {
+	private static void allMonthIntStrs(Set<String> months) {
 		for (int i = 1; i <= 12; i++) {
 			months.add(String.format("%02d", i));
 		}
 	}
 
-	public static void allDayStrs(Set<String> days) {
+	private static void allMonthShortStrs(Set<String> months) {
+		for (int i = 1; i <= 12; i++) {
+			months.add(getShortMonthStr(i));
+		}
+	}
+
+	private static void allMonthFullStrs(Set<String> months) {
+		for (int i = 1; i <= 12; i++) {
+			months.add(getFullMonthStr(i));
+		}
+	}
+
+	private static void allDayIntStrs(Set<String> days) {
 		for (int i = 1; i <= 31; i++) {
 			days.add(String.format("%02d", i));
 		}
 	}
 
-	public static void allHourStrs(Set<String> hours) {
+	private static void allHourIntStrs(Set<String> hours) {
 		for (int i = 0; i <= 23; i++) {
 			hours.add(String.format("%02d", i));
 		}
 	}
 
-	public static void allYearInts(Set<Integer> years) {
+	private static void allWeekdayShortStrs(Set<String> weekdays) {
+		for (int i = 1; i <= 7; i++) {
+			weekdays.add(getWeekdayShortStr(i));
+		}
+	}
+
+	private static void allWeekdayFullStrs(Set<String> weekdays) {
+		for (int i = 1; i <= 31; i++) {
+			weekdays.add(getWeekdayFullStr(i));
+		}
+	}
+
+	private static void allYearInts(Set<Integer> years) {
 		for (int i = 2005; i <= today.get(Calendar.YEAR); i++) {
 			years.add(i);
 		}
 	}
 
-	public static void allMonthInts(Set<Integer> months) {
+	private static void allMonthInts(Set<Integer> months) {
 		for (int i = 1; i <= 12; i++) {
 			months.add(i);
 		}
 	}
 
-	public static void allDayInts(Set<Integer> days) {
+	private static void allDayInts(Set<Integer> days) {
 		for (int i = 1; i <= 31; i++) {
 			days.add(i);
 		}
 	}
 
-	public static void allHourInts(Set<Integer> hours) {
+	private static void allHourInts(Set<Integer> hours) {
 		for (int i = 0; i <= 23; i++) {
 			hours.add(i);
 		}
 	}
 
-	public static void allWeekdayInts(Set<Integer> weekdays) {
+	private static void allWeekdayInts(Set<Integer> weekdays) {
 		for (int i = 1; i <= 7; i++) {
 			weekdays.add(i);
+		}
+	}
+
+	private static void allYearDates(Set<Date> years) {
+		for (int i = 2005; i <= today.get(Calendar.YEAR); i++) {
+			years.add(createYear(i));
+		}
+	}
+
+	private static void allMonthDates(Set<Date> months) {
+		for (int i = 1; i <= 12; i++) {
+			months.add(createMonth(i));
+		}
+	}
+
+	private static void allDayDates(Set<Date> days) {
+		for (int i = 1; i <= 31; i++) {
+			days.add(createDay(i));
+		}
+	}
+
+	private static void allHourDates(Set<Date> hours) {
+		for (int i = 0; i <= 23; i++) {
+			hours.add(createHour(i));
+		}
+	}
+
+	private static void allWeekdayDates(Set<Date> weekdays) {
+		for (int i = 1; i <= 7; i++) {
+			weekdays.add(createWeekday(i));
 		}
 	}
 
@@ -116,36 +178,6 @@ public class DateUtil {
 		calendar.set(2006, 0, 1, 0, 0, 0);
 		DateUtils.ceiling(calendar, Calendar.SECOND);
 		return calendar;
-	}
-
-	public static void allYearDates(Set<Date> years) {
-		for (int i = 2005; i <= today.get(Calendar.YEAR); i++) {
-			years.add(createYear(i));
-		}
-	}
-
-	public static void allMonthDates(Set<Date> months) {
-		for (int i = 1; i <= 12; i++) {
-			months.add(createMonth(i));
-		}
-	}
-
-	public static void allDayDates(Set<Date> days) {
-		for (int i = 1; i <= 31; i++) {
-			days.add(createDay(i));
-		}
-	}
-
-	public static void allHourDates(Set<Date> hours) {
-		for (int i = 0; i <= 23; i++) {
-			hours.add(createHour(i));
-		}
-	}
-
-	public static void allWeekdayDates(Set<Date> weekdays) {
-		for (int i = 1; i <= 7; i++) {
-			weekdays.add(createWeekday(i));
-		}
 	}
 
 	/**
@@ -205,44 +237,45 @@ public class DateUtil {
 	}
 
 	/**
-	 * return the weekday in String format given a Calendar Object
-	 * eg. Sun, Mon, Wed
-	 * @param calendar
-	 * @return
-	 */
-	public static String getWeekdayStr(Calendar calendar) {
-		return getWeekdayStr(calendar.getTime());
-	}
-
-	/**
-	 * return the weekday in String format given a Date Object
+	 * return the weekday in Short String format given a Date Object
 	 * eg. Sun, Mon, Wed
 	 * @param date
 	 * @return
 	 */
-	public static String getWeekdayStr(Date date) {
+	public static String getWeekdayShortStr(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.ENGLISH);
 		return sdf.format(date);
 	}
 
 	/**
-	 * return the weekday in String format given a int value
+	 * return the weekday in Short String format given a int value
 	 * 1->Sun, 2->Mon, 7->Sat
 	 * @param weekday
 	 * @return
 	 */
-	public static String getWeekdayStr(int weekday) {
-		return getWeekdayStr(createWeekday(weekday));
+	public static String getWeekdayShortStr(int weekday) {
+		return getWeekdayShortStr(createWeekday(weekday));
 	}
 
 	/**
-	 * return the weekday in int format given a Calendar Object
-	 * Sun -> 1, Mon -> 2, Sat ->7
-	 * @param calendar
+	 * return the weekday in Full String format given a Date Object
+	 * eg. Sunday, Monday, Wednesday
+	 * @param date
 	 * @return
 	 */
-	public static int getWeekdayInt(Calendar calendar) {
-		return getWeekdayInt(calendar.getTime());
+	public static String getWeekdayFullStr(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEEE", Locale.ENGLISH);
+		return sdf.format(date);
+	}
+
+	/**
+	 * return the weekday in Full String format given a int value
+	 * 1->Sunday, 2->Monday, 7->Saturday
+	 * @param weekday
+	 * @return
+	 */
+	public static String getWeekdayFullStr(int weekday) {
+		return getWeekdayFullStr(createWeekday(weekday));
 	}
 
 	/**
@@ -252,7 +285,7 @@ public class DateUtil {
 	 * @return
 	 */
 	public static int getWeekdayInt(Date date) {
-		String weekdayStr = getWeekdayStr(date);
+		String weekdayStr = getWeekdayShortStr(date);
 		int weekday = -1;
 
 		if("Sun".equals(weekdayStr)){
@@ -275,39 +308,50 @@ public class DateUtil {
 	}
 
 	/**
-	 * return the month in String format given a Calendar Object
-	 * eg. Jan <- 1, Feb <- 2, Jul <- 7
-	 * @param calendar
-	 * @return
-	 */
-	public static String getMonthStr(Calendar calendar) {
-		return getMonthStr(calendar.getTime());
-	}
-
-	/**
-	 * return the month in String format given a Date Object
+	 * return the month in Short String format given a Date Object
 	 * eg. Jan <- 1, Feb <- 2, Jul <- 7
 	 * @param date
 	 * @return
 	 */
-	public static String getMonthStr(Date date) {
+	public static String getShortMonthStr(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM", Locale.ENGLISH);
 		return sdf.format(date);
 	}
 
 	/**
-	 * return the month in String format given a int value
+	 * return the month in Short String format given a int value
 	 * eg. Jan <- 1, Feb <- 2, Jul <- 7
 	 * @param month
 	 * @return
 	 */
-	public static String getMonthStr(int month) {
-		return getMonthStr(createMonth(month));
+	public static String getShortMonthStr(int month) {
+		return getShortMonthStr(createMonth(month));
+	}
+
+	/**
+	 * return the month in Full String format given a Date Object
+	 * eg. January <- 1, February <- 2, July <- 7
+	 * @param date
+	 * @return
+	 */
+	public static String getFullMonthStr(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM", Locale.ENGLISH);
+		return sdf.format(date);
+	}
+
+	/**
+	 * return the month in Full String format given a int value
+	 * eg. January <- 1, February <- 2, July <- 7
+	 * @param month
+	 * @return
+	 */
+	public static String getFullMonthStr(int month) {
+		return getFullMonthStr(createMonth(month));
 	}
 
 	/**
 	 * return the Chart DataLabel in String format given a int value
-	 * eg. 	WEEKDAY:SUN <- 1, MON <- 2, SAT <- 7
+	 * eg. 	WEEKDAY:Sun <- 1, Mon <- 2, Sat <- 7
 	 * 		YEAR: 	2007 <- 2007
 	 * 		MONTH: 	Jan <- 1, Feb <- 2, Jul <- 7
 	 * 		DAY: 	1 <- 1, 2 <- 2, 7 <- 7
@@ -321,7 +365,7 @@ public class DateUtil {
 
 		switch (displayLevel) {
 		case WEEKDAY:
-			str = getWeekdayStr(createWeekday(date));
+			str = getWeekdayShortStr(createWeekday(date));
 			break;
 
 		case YEAR:
@@ -329,7 +373,7 @@ public class DateUtil {
 			break;
 
 		case MONTH:
-			str = getMonthStr(createMonth(date));
+			str = getShortMonthStr(createMonth(date));
 			break;
 
 		case DAY:
@@ -343,4 +387,5 @@ public class DateUtil {
 
 		return str;
 	}
+
 }
