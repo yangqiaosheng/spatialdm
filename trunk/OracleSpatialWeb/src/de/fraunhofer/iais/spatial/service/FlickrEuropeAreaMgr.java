@@ -218,9 +218,12 @@ public class FlickrEuropeAreaMgr {
 			if (yearsElement != null) {
 				List<Element> yearElements = yearsElement.getChildren("year");
 				for (Element yearElement : yearElements) {
-					String year = yearElement.getText();
+					String year = yearElement.getText().trim();
 					if (StringUtils.isNotBlank(year)) {
-						areaDto.getYears().add(year.trim());
+						if(!DateUtil.allYearIntStrs.contains(year)){
+							throw new RuntimeException("wrong string of year:" + year);
+						}
+						areaDto.getYears().add(year);
 					}
 				}
 			}
@@ -230,9 +233,12 @@ public class FlickrEuropeAreaMgr {
 			if (monthsElement != null) {
 				List<Element> monthElements = monthsElement.getChildren("month");
 				for (Element monthElement : monthElements) {
-					String month = monthElement.getText();
+					String month = monthElement.getText().trim();
 					if (StringUtils.isNotBlank(month)) {
-						areaDto.getMonths().add(month.trim());
+						if(!DateUtil.allMonthIntStrs.contains(month)){
+							throw new RuntimeException("wrong string of month:" + month);
+						}
+						areaDto.getMonths().add(month);
 					}
 				}
 			}
@@ -242,9 +248,12 @@ public class FlickrEuropeAreaMgr {
 			if (daysElement != null) {
 				List<Element> dayElements = daysElement.getChildren("day");
 				for (Element dayElement : dayElements) {
-					String day = dayElement.getText();
+					String day = dayElement.getText().trim();
 					if (StringUtils.isNotBlank(day)) {
-						areaDto.getDays().add(day.trim());
+						if(!DateUtil.allDayIntStrs.contains(day)){
+							throw new RuntimeException("wrong string of day:" + day);
+						}
+						areaDto.getDays().add(day);
 					}
 				}
 			}
@@ -254,9 +263,12 @@ public class FlickrEuropeAreaMgr {
 			if (hoursElement != null) {
 				List<Element> hourElements = hoursElement.getChildren("hour");
 				for (Element hourElement : hourElements) {
-					String hour = hourElement.getText();
+					String hour = hourElement.getText().trim();
 					if (StringUtils.isNotBlank(hour)) {
-						areaDto.getHours().add(hour.trim());
+						if(!DateUtil.allHourIntStrs.contains(hour)){
+							throw new RuntimeException("wrong string of hour:" + hour);
+						}
+						areaDto.getHours().add(hour);
 					}
 				}
 			}
@@ -266,9 +278,12 @@ public class FlickrEuropeAreaMgr {
 			if (weekdaysElement != null) {
 				List<Element> weekdayElements = weekdaysElement.getChildren("weekday");
 				for (Element weekdayElement : weekdayElements) {
-					String weekday = weekdayElement.getText();
+					String weekday = weekdayElement.getText().trim();
 					if (StringUtils.isNotBlank(weekday)) {
-						areaDto.getWeekdays().add(weekday.trim());
+						if(!DateUtil.allWeekdayFullStrs.contains(weekday)){
+							throw new RuntimeException("wrong string of weekday:" + weekday);
+						}
+						areaDto.getWeekdays().add(weekday);
 					}
 				}
 			}
@@ -282,15 +297,6 @@ public class FlickrEuropeAreaMgr {
 
 		areaDto.setQueryLevel(Level.HOUR);
 
-		SortedSet<String> allYears = new TreeSet<String>();
-		SortedSet<String> allMonths = new TreeSet<String>();
-		SortedSet<String> allDays = new TreeSet<String>();
-		SortedSet<String> allHours = new TreeSet<String>();
-		DateUtil.allYearStrs(allYears);
-		DateUtil.allMonthStrs(allMonths);
-		DateUtil.allDayStrs(allDays);
-		DateUtil.allHourStrs(allHours);
-
 		// construct the Query Strings
 		SortedSet<String> queryStrs = areaDto.getQueryStrs();
 
@@ -299,24 +305,18 @@ public class FlickrEuropeAreaMgr {
 		SortedSet<String> tempDays = new TreeSet<String>(areaDto.getDays());
 		SortedSet<String> tempHours = new TreeSet<String>(areaDto.getHours());
 
-		// remove the invalid input data
-		tempYears.retainAll(allYears);
-		tempMonths.retainAll(allMonths);
-		tempDays.retainAll(allDays);
-		tempHours.retainAll(allHours);
-
 		// complete the options when they are not selected
 		if (tempYears.size() == 0) {
-			DateUtil.allYearStrs(tempYears);
+			tempYears = new TreeSet<String>(DateUtil.allYearIntStrs);
 		}
 		if (tempMonths.size() == 0) {
-			DateUtil.allMonthStrs(tempMonths);
+			tempMonths = new TreeSet<String>(DateUtil.allMonthIntStrs);
 		}
 		if (tempDays.size() == 0) {
-			DateUtil.allDayStrs(tempDays);
+			tempDays = new TreeSet<String>(DateUtil.allDayIntStrs);
 		}
 		if (tempHours.size() == 0) {
-			DateUtil.allHourStrs(tempHours);
+			tempHours = new TreeSet<String>(DateUtil.allHourIntStrs);
 		}
 
 		// day of week in English format
@@ -505,7 +505,7 @@ public class FlickrEuropeAreaMgr {
 						calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
 						calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
 						calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
-						int weekday = DateUtil.getWeekdayInt(calendar);
+						int weekday = DateUtil.getWeekdayInt(calendar.getTime());
 						intCounts.put(weekday, e.getValue() + intCounts.get(weekday));
 					}
 				}
@@ -675,7 +675,7 @@ public class FlickrEuropeAreaMgr {
 					calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
 					calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
 					calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
-					int weekday = DateUtil.getWeekdayInt(calendar);
+					int weekday = DateUtil.getWeekdayInt(calendar.getTime());
 					weekdayData.put(weekday, e.getValue() + weekdayData.get(weekday));
 				}
 			}
@@ -791,7 +791,7 @@ public class FlickrEuropeAreaMgr {
 					icon = remoteBasePath + "images/circle_or.ico";
 				}
 
-				r = (double) Math.log10(area.getSelectCount() + 1) / 100.0 * scale;
+				r = (double) Math.log10(area.getSelectCount() + 1) / 50.0 * scale;
 
 				Element hrefElement = new Element("href", namespace).addContent(icon);
 				iconElement.addContent(hrefElement);
@@ -811,9 +811,9 @@ public class FlickrEuropeAreaMgr {
 				latLonBoxElement.addContent(eastElement);
 				latLonBoxElement.addContent(westElement);
 
-				if (Double.isInfinite(area.getCenter().getY() + r * 0.55)) {
-					System.exit(0);
-				}
+//				if (Double.isInfinite(area.getCenter().getY() + r * 0.55)) {
+//					System.exit(0);
+//				}
 			}
 		}
 
@@ -879,8 +879,26 @@ public class FlickrEuropeAreaMgr {
 //			polygonElement.addContent(new Element("extrude", namespace).addContent("1"));
 //			polygonElement.addContent(new Element("altitudeMode", namespace).addContent("absolute"));
 			outerBoundaryIsElement.addContent(linearRingElement);
+
+			Element extendedDataElement = new Element("ExtendedData", namespace);
+			placemarkElement.addContent(extendedDataElement);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getWeekdays(), Level.WEEKDAY);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getYears(), Level.YEAR);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getMonths(), Level.MONTH);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getDays(), Level.DAY);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getHours(), Level.HOUR);
 		}
 		return document;
+	}
+
+	private void addKmlExtendedElement(Element extendedDataElement, Namespace namespace, Map<Integer, Integer> chartData, Level displayLevel) {
+		for(Map.Entry<Integer, Integer> e : chartData.entrySet()){
+			String dataName = displayLevel + "_" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
+			Element dataElement = new Element("Data", namespace).setAttribute("name", dataName);
+			dataElement.addContent(new Element("displayName", namespace).addContent(DateUtil.getChartLabelStr(e.getKey(), displayLevel)));
+			dataElement.addContent(new Element("value", namespace).addContent(e.getValue() + ""));
+			extendedDataElement.addContent(dataElement);
+		}
 	}
 
 	private String buildDescription(FlickrArea area) {
@@ -898,15 +916,18 @@ public class FlickrEuropeAreaMgr {
 	private String createGoogleChartImg(String title, int width, int height, Map<Integer, Integer> chartData, Level displayLevel) {
 		String values = "";
 		String labels = "";
-		int maxValue = 0;
+		int maxValue = new TreeSet<Integer>(chartData.values()).last();
 		int barWithd = (int) (width / chartData.size() / 1.3);
 		for(Map.Entry<Integer, Integer> e : chartData.entrySet()){
 			labels += "|" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
 			values += "," + e.getValue();
-			if(e.getValue()> maxValue){
-				maxValue = e.getValue();
-			}
 		}
+
+//		for(Map.Entry<Integer, Integer> e : chartData.entrySet()){
+//			String dataName = displayLevel + "_" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
+//			labels += "|$[" + dataName + "/displayName]";
+//			values += ",$[" + dataName + "]";
+//		}
 
 		String img = "<img src='" +
 		"http://chart.apis.google.com/chart" + 	//chart engine
