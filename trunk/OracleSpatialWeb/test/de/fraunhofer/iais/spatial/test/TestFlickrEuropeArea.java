@@ -125,7 +125,10 @@ public class TestFlickrEuropeArea{
 	public void testJdbcDao2() {
 		//		List<FlickrEuropeArea> as = areaMgr.getAreaDao().getAllAreas(Radius._10000);
 		// 		List<FlickrEuropeArea> as = areaMgr.getAreaDao().getAreasByPoint(8.83, 50.58, Radius._5000);
+		int size = areaMgr.getAreaDao().getAreasByRectSize(1, 1, 96.5, 95.4, Radius.R320000);
 		List<FlickrArea> as = areaMgr.getAreaDao().getAreasByRect(1, 1, 96.5, 95.4, Radius.R320000);
+		Assert.assertEquals(size, as.size());
+
 		for (FlickrArea a : as) {
 			String coordinates = "\t";
 			if (a.getGeom().getOrdinatesArray() != null) {

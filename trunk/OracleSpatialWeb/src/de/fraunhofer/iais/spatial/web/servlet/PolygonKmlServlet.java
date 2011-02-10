@@ -72,10 +72,16 @@ public class PolygonKmlServlet extends HttpServlet {
 				if (areaDto.getPolygon() != null) {
 					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
 				} else if (areaDto.getBoundaryRect() != null) {
+					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+					if(size > 2000){
+						throw new RuntimeException("The maximun number of return polygons is exceeded! \n" +
+								" Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+					}
 					areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 				} else {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
+
 				areaMgr.countSelected(areas, areaDto);
 				kmlStr = areaMgr.createKml(areas, null, areaDto.getRadius(), remoteBasePath, false);
 

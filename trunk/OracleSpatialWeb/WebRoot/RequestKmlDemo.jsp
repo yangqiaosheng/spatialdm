@@ -26,11 +26,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  		--></script>
 	</head><body>
 		<h1>Request Kml Demo</h1>
-		<p style="color: rgb(170, 0, 0);">Recommended web browsers: Firefox</p>
+		<p style="color: rgb(170, 0, 0);">Recommended web browsers: IE8, Firefox, Chorme(with <a href='https://chrome.google.com/extensions/detail/gbammbheopgpmaagmckhpjbfgdfkpadb'>XMLTree</a> extension)</p>
 
 		<table style="width: 1200px;" border="1">
 			<tbody><tr>
-				<td>
+				<td style="width:10%;">
 					Parameters:
 				</td>
 				<td>
@@ -62,6 +62,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<form>
 			<table style="width: 1200px;" border="1">
 				<tr>
+					<td rowspan="3" style="width:10%">
+						URL:
+					</td>
 					<td>
 						<div id="urlprefix"></div>
 					</td>
@@ -172,7 +175,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</tr>
 				<tr>
 					<td>
-						<input value="Generate Request Url" onclick="genUrl(xmlstr.value)" type="button">
+						<p style="color:#880000">
+							XML Schema: <a href='<%=basePath%>KmlRequest.xsd'><%=basePath%>KmlRequest.xsd</a>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input value="Submit Request" onclick="genUrl(xmlstr.value)" type="button">
 					</td>
 				</tr>
 			</table>

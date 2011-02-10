@@ -136,6 +136,23 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 	}
 
 	@Override
+	public int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius) {
+		int[] elemInfo = { 1, 1003, 3 };
+		double[] ordinates = { x1, y1, x2, y2 };
+		JGeometry queryGeom = new JGeometry(2003, 8307, elemInfo, ordinates);
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		areaDto.setRadius(radius);
+		areaDto.setQueryGeom(queryGeom);
+
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + ".selectByIdGeomSize", areaDto);
+		int num = 0;
+		if(numObj != null){
+			num = (Integer)numObj;
+		}
+		return num;
+	}
+
+	@Override
 	public List<FlickrArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
 
 		int[] elemInfo = { 1, 1003, 3 };

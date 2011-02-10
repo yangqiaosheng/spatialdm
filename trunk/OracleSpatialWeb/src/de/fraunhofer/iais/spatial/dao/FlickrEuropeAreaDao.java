@@ -65,6 +65,16 @@ public abstract class FlickrEuropeAreaDao {
 	 * @param y2
 	 * @return List<FlickrDeWestArea>
 	 */
+	public abstract int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius);
+
+	/**
+	 * Returns a List of FlickrDeWestArea instances which interact to this rectangle
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return List<FlickrDeWestArea>
+	 */
 	public abstract List<FlickrArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius);
 
 	/**

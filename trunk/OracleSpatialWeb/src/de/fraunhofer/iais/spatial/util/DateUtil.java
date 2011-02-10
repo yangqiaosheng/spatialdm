@@ -62,13 +62,13 @@ public class DateUtil {
 
 	private static void allYearIntStrs(Set<String> years) {
 		for (int i = 2005; i <= today.get(Calendar.YEAR); i++) {
-			years.add(String.format("%04d", i));
+			years.add(getYearIntStr(i));
 		}
 	}
 
 	private static void allMonthIntStrs(Set<String> months) {
 		for (int i = 1; i <= 12; i++) {
-			months.add(String.format("%02d", i));
+			months.add(getMonthDayHourIntStr(i));
 		}
 	}
 
@@ -86,13 +86,13 @@ public class DateUtil {
 
 	private static void allDayIntStrs(Set<String> days) {
 		for (int i = 1; i <= 31; i++) {
-			days.add(String.format("%02d", i));
+			days.add(getMonthDayHourIntStr(i));
 		}
 	}
 
 	private static void allHourIntStrs(Set<String> hours) {
 		for (int i = 0; i <= 23; i++) {
-			hours.add(String.format("%02d", i));
+			hours.add(getMonthDayHourIntStr(i));
 		}
 	}
 
@@ -236,6 +236,14 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
+	public static String getYearIntStr(int i) {
+		return String.format("%04d", i);
+	}
+
+	public static String getMonthDayHourIntStr(int i) {
+		return String.format("%02d", i);
+	}
+
 	/**
 	 * return the weekday in Short String format given a Date Object
 	 * eg. Sun, Mon, Wed
@@ -365,7 +373,7 @@ public class DateUtil {
 
 		switch (displayLevel) {
 		case WEEKDAY:
-			str = getWeekdayShortStr(createWeekday(date));
+			str = getWeekdayShortStr(date);
 			break;
 
 		case YEAR:
@@ -373,7 +381,7 @@ public class DateUtil {
 			break;
 
 		case MONTH:
-			str = getShortMonthStr(createMonth(date));
+			str = getShortMonthStr(date);
 			break;
 
 		case DAY:
