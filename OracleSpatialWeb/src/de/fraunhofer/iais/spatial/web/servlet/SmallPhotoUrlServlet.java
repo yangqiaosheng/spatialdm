@@ -89,12 +89,11 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
 //				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			}
 		}
 
 		out.print(XmlUtil.xml2String(document, true));
-
-//		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - " + XmlUtil.xml2String(document, false)); //$NON-NLS-1$
 
 		out.flush();
 		out.close();

@@ -499,4 +499,10 @@ public class FlickrEuropeAreaDaoJdbc extends FlickrEuropeAreaDao {
 		}
 	}
 
+	@Override
+	public int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

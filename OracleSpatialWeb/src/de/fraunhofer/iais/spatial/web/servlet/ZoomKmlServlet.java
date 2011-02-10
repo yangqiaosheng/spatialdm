@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -40,6 +41,11 @@ public class ZoomKmlServlet extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		if(MapUtils.isEmpty(request.getParameterMap())){
+			response.sendRedirect("RequestKmlDemo.jsp");
+			return;
+		}
 
 		// web base path for local operation
 		String localBasePath = getServletContext().getRealPath("/");
@@ -91,6 +97,11 @@ public class ZoomKmlServlet extends HttpServlet {
 				if (areaDto.getPolygon() != null) {
 					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
 				} else if (areaDto.getBoundaryRect() != null) {
+					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+					if(size > 2000){
+						throw new RuntimeException("The maximun number of return polygons is exceeded! \n" +
+								" Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+					}
 					areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 				} else {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
@@ -108,7 +119,7 @@ public class ZoomKmlServlet extends HttpServlet {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
 //				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				rootElement.addContent(new Element("exceptions").setText(e.getMessage()));
+				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			}
 		}
 
