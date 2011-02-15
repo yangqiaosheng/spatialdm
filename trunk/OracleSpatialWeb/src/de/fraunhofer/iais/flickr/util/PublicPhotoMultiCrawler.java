@@ -269,17 +269,26 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	private void insertPhotos(PhotoList photos, String userId) {
 		Connection conn = db.getConn();
+
+
 		TreeSet<Date> uploadDates = new TreeSet<Date>();
 		TreeSet<Date> takenDates = new TreeSet<Date>();
 		try {
 			conn.setAutoCommit(false);
 
-			for (int i = 0; i < photos.size(); i++) {
-				Photo p = (Photo) photos.get(i);
-				insertPhoto(conn, p);
-				updatePhotoRegionInfo(conn, p, radiusList);
-				uploadDates.add(p.getDatePosted());
-				takenDates.add(p.getDateTaken());
+			//remove duplicate insertPhotos
+			HashSet<String> insertedPhotosId = new HashSet<String>();
+
+			for (Photo photo : photos) {
+				if (!insertedPhotosId.contains(photo.getId())) {
+					insertPhoto(conn, photo);
+					updatePhotoRegionInfo(conn, photo, radiusList);
+					uploadDates.add(photo.getDatePosted());
+					takenDates.add(photo.getDateTaken());
+					insertedPhotosId.add(photo.getId());
+				}else{
+					logger.error("Duplicate Photo:" + photo.toString());
+				}
 			}
 
 			if (photos.size() > 0) {
@@ -329,7 +338,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setInt(i++, photo.getGeoData().getAccuracy());
 			pstmt.executeUpdate();
 			System.out.println("numPhoto:" + increaseNumPhoto());
-		} catch (SQLIntegrityConstraintViolationException e){
+		} catch (SQLException e){
 			logger.error("Wrong input Photo:" + photo.toString());
 			throw e;
 		} finally {
