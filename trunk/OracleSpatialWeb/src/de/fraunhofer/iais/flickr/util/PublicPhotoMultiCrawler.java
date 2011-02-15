@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -327,8 +328,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setString(i++, photo.getWoeId());
 			pstmt.setInt(i++, photo.getGeoData().getAccuracy());
 			pstmt.executeUpdate();
-
 			System.out.println("numPhoto:" + increaseNumPhoto());
+		} catch (SQLIntegrityConstraintViolationException e){
+			logger.error("Wrong input Photo:" + photo.toString());
+			throw e;
 		} finally {
 			db.close(pstmt);
 		}

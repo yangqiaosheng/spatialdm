@@ -38,6 +38,13 @@ import com.aetrion.flickr.util.StringUtilities;
  * @version $Id: Photo.java,v 1.28 2009/07/23 21:49:35 x-mago Exp $
  */
 public class Photo {
+	@Override
+	public String toString() {
+		return "|id:" + this.getId()
+		+ "|owner:" + this.getOwner().getId()
+		+ "|url:" + this.getUrl();
+	}
+
 	private static final long serialVersionUID = 12L;
 
 	private static final ThreadLocal DATE_FORMATS = new ThreadLocal() {
