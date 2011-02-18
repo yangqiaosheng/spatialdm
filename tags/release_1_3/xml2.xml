@@ -1,0 +1,23 @@
+<request>
+	<screen>
+		<bounds>((43.97419997652232, -2.828120117187498), (52.89329742707595, 19.6718798828125))</bounds>
+		<center>(48.63033281119904, 8.421879882812501)</center>
+		<zoom>6</zoom>
+	</screen>
+	<calendar>
+		<years>
+			<year>2006</year>
+			<year>2007</year>
+			<year>2008</year>
+		</years>
+		<months></months>
+		<days></days>
+		<hours></hours>
+		<weekdays>
+			<weekday>Monday</weekday>
+			<weekday>Tuesday</weekday>
+			<weekday>Wednesday</weekday>
+			<weekday>Saturday</weekday>
+		</weekdays>
+	</calendar>
+</request>

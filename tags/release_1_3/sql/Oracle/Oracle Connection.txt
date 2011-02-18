@@ -1,0 +1,27 @@
+
+username: Gennady_Milanh
+password: gennady
+table:    milanpoly
+
+D:\app\haolin\product\11.1.0\client_1\network\admin: "tnsnames.ora"
+
+FAUST =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = faust.iais.fraunhofer.de)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = faust.iais.fraunhofer.de)
+    )
+  )
+
+
+username: Gennady_flickr
+password: gennady
+PLANB =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = plan-b.iais.fraunhofer.de)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SID = PLANB)
+    )
+  )

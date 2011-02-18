@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrPhoto">
+
+	<!-- cache: flushInterval: 24hours -->
+<!--   	<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>-->
+
+	<select id="selectByDateQuery" resultType="FlickrPhoto" parameterType="map" useCache="false">
+		<![CDATA[
+		select
+			PHOTO_ID as "id",
+			DT as "date",
+			LATITUDE,
+			LONGITUDE,
+			PERSON as "personId",
+			SMALLURL,
+			TITLE,
+			VIEWED
+ 		from (
+ 			select p.* from
+ 					SAMPLE_FLICKR_EUROPE_PHOTO P
+			where p.REGION_${radius}_ID = #{areaid}
+			 		and p.dt >= to_date(#{queryStr}, #{oracleDatePatternStr})
+			 		and p.dt <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
+			 order by p.dt desc
+			 )
+		where rownum <= #{num}
+		]]>
+	</select>
+
+</mapper>
