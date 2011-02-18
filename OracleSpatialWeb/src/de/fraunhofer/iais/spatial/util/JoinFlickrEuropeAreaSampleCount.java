@@ -17,21 +17,21 @@ import java.util.regex.Pattern;
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 
-public class JoinFlickrEuropeAreaCount {
+public class JoinFlickrEuropeAreaSampleCount {
 	/**
 	* Logger for this class
 	*/
-	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrEuropeAreaCount.class);
+	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrEuropeAreaSampleCount.class);
 
-	final static String PHOTOS_TABLE_NAME = "FLICKR_EUROPE";
-	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
+	final static String PHOTOS_TABLE_NAME = "flickr_europe";
+	final static String COUNTS_TABLE_NAME = "flickr_europe_count";
 
 	DBUtil db = new DBUtil();
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 
-		JoinFlickrEuropeAreaCount t = new JoinFlickrEuropeAreaCount();
+		JoinFlickrEuropeAreaSampleCount t = new JoinFlickrEuropeAreaSampleCount();
 		t.begin();
 
 		logger.debug("main(String[]) - escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
@@ -93,7 +93,7 @@ public class JoinFlickrEuropeAreaCount {
 
 			PreparedStatement selectFlickrStmt = db.getPstmt(conn,
 					"select date_str, count(*) as num from ("
-					+ " select t.photo_id, to_char(t.TAKEN_DATE,?) as date_str"
+					+ " select t.photo_id, to_char(t.dt,?) as date_str"
 					+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?)"
 					+ "group by date_str");
 
@@ -133,8 +133,8 @@ public class JoinFlickrEuropeAreaCount {
 			StringBuffer count = new StringBuffer();
 			areaId = selectAreaRs.getInt("id");
 
-			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select p.USER_ID person, count(*) num  from " + PHOTOS_TABLE_NAME + " p"
-					+ " where p.region_" + radiusString	+ "_id = ? " + " group by person");
+			PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select p.person person, count(*) num  from " + PHOTOS_TABLE_NAME + " p"
+					+ " where p.region_" + radiusString	+ "_id = ? " + " group by p.person");
 			selectFlickrStmt.setInt(1, areaId);
 
 			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
@@ -162,7 +162,7 @@ public class JoinFlickrEuropeAreaCount {
 
 	private void countTotal(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select * from " + COUNTS_TABLE_NAME + " t where t.REGION_CHECKED = -1");
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from " + COUNTS_TABLE_NAME + " t");
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {

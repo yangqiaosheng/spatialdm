@@ -17,7 +17,7 @@ public class InitCountTable {
 	 * @param args
 	 */
 	final static String AREA_TABLE_NAME = "FLICKR_EUROPE_AREA_";
-	final static String COUNTS_TABLE_NAME = "sample_flickr_europe_count2";
+	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT2";
 	static DBUtil db = new DBUtil();
 
 	public static void main(String[] args) throws SQLException {
