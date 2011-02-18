@@ -299,6 +299,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			conn.commit();
 		} catch (SQLException e) {
+			logger.error("User:" + userId + "|size:" + photos.size());
 			logger.error("insertPhotos()", e); //$NON-NLS-1$
 			try {
 				conn.rollback();
