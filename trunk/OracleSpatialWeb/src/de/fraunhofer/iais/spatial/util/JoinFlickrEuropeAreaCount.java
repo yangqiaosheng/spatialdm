@@ -46,8 +46,8 @@ public class JoinFlickrEuropeAreaCount {
 		Calendar endDate = Calendar.getInstance();
 		endDate.setTimeInMillis(end);
 
-		logger.info("start time:" + startDate); //$NON-NLS-1$
-		logger.info("end time:" + endDate); //$NON-NLS-1$
+		logger.info("start time:" + startDate.getTime()); //$NON-NLS-1$
+		logger.info("end time:" + endDate.getTime()); //$NON-NLS-1$
 		logger.info("main(String[]) - escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
 	}
 
@@ -154,12 +154,12 @@ public class JoinFlickrEuropeAreaCount {
 
 			logger.debug("radius:" + radiusString + "|level:" + queryLevel + "|already checked:" + checkedSize++);
 			logger.debug("rownum to:" + rownum);
-			logger.debug("start time:" + startDate);
+			logger.debug("start time:" + startDate.getTime());
 		}
 
 		logger.info("radius:" + radiusString + "|level:" + queryLevel + "|already checked:" + checkedSize);
 		logger.info("rownum to:" + rownum);
-		logger.info("start time:" + startDate);
+		logger.info("start time:" + startDate.getTime());
 
 		db.close(selectFlickrStmt);
 		db.close(selectAreaRs);
