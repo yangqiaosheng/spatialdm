@@ -26,7 +26,7 @@ public class JoinFlickrEuropeAreaSampleCount {
 	final static String PHOTOS_TABLE_NAME = "flickr_europe";
 	final static String COUNTS_TABLE_NAME = "flickr_europe_count";
 
-	DBUtil db = new DBUtil();
+	static DBUtil db = new DBUtil("/jdbc.properties", 3, 1);
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();

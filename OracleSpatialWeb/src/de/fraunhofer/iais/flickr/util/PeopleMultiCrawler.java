@@ -61,7 +61,7 @@ public class PeopleMultiCrawler extends Thread {
 	static long numCheckedPeople = 0;
 	static long numTotalQuery = 0;
 
-	static DBUtil db = new DBUtil();
+	static DBUtil db = new DBUtil("/jdbc.properties", 18, 6);
 
 	boolean finished = false;
 

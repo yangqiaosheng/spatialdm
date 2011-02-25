@@ -17,8 +17,8 @@ public class InitCountTable {
 	 * @param args
 	 */
 	final static String AREA_TABLE_NAME = "FLICKR_EUROPE_AREA_";
-	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT2";
-	static DBUtil db = new DBUtil();
+	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
+	static DBUtil db = new DBUtil("/jdbc.properties", 1, 1);
 
 	public static void main(String[] args) throws SQLException {
 		ArrayList<String> radiusList = new ArrayList<String>();
@@ -31,6 +31,11 @@ public class InitCountTable {
 		radiusList.add("320000");
 
 		Connection conn = db.getConn();
+
+		PreparedStatement deleteStmt = db.getPstmt(conn, "delete from " + COUNTS_TABLE_NAME);
+		deleteStmt.executeUpdate();
+		db.close(deleteStmt);
+
 
 		for (String radius : radiusList) {
 			PreparedStatement insertStmt = db.getPstmt(conn,

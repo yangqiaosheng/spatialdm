@@ -32,7 +32,7 @@ CREATE TABLE flickr_europe
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE flickr_europe OWNER TO postgres;
+ALTER TABLE flickr_europe OWNER TO gennady_flickr;
 
 -- Index: flickr_europe_lonlat_idx
 
