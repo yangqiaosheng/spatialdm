@@ -22,15 +22,15 @@ public class DBUtil {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(DBUtil.class);
 
-	private static Properties pros = null;
+	private Properties pros = null;
 	//	private static BoneCPDataSource ds = null;
-	private static ComboPooledDataSource ds = null;
+	private ComboPooledDataSource ds = null;
 
 
 	/**
 	 * initialize the c3p0 Connection Pool
 	*/
-	static {
+	public DBUtil(String propertieLocation, int maxPoolSize, int minPoolSize) {
 		// initialize the JDBC Configuration
 		logger.debug("static() - begin to setup Connection Pool");
 
@@ -38,7 +38,7 @@ public class DBUtil {
 		try {
 //			String propertieLocation = "/jdbc_marin.properties";
 //			String propertieLocation = "/jdbc_pg.properties";
-			String propertieLocation = "/jdbc.properties";
+//			String propertieLocation = "/jdbc.properties";
 			pros.load(new FileReader(DBUtil.class.getResource(propertieLocation).getFile()));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -53,8 +53,8 @@ public class DBUtil {
 			cpds.setJdbcUrl(pros.getProperty("url"));
 			cpds.setUser(pros.getProperty("username"));
 			cpds.setPassword(pros.getProperty("password"));
-			cpds.setMaxPoolSize(18);
-			cpds.setMinPoolSize(6);
+			cpds.setMaxPoolSize(maxPoolSize);
+			cpds.setMinPoolSize(minPoolSize);
 			ds = cpds;
 		} catch (PropertyVetoException e) {
 			logger.error("static() - Could not setup Connection Pool", e); //$NON-NLS-1$

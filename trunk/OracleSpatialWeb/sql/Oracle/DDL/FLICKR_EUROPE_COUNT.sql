@@ -1,5 +1,5 @@
 	create table "GENNADY_FLICKR"."FLICKR_EUROPE_COUNT"(
-        "ID" NUMBER not null,
+       "ID" NUMBER not null,
        "RADIUS" NUMBER not null,
        "PERSON" CLOB,
        "HOUR" CLOB,

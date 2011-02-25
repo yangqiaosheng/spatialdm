@@ -12,16 +12,16 @@
 		<![CDATA[
 		select
 			PHOTO_ID as "id",
-			DT as "date",
+			TAKEN_DATE as "date",
 			LATITUDE,
 			LONGITUDE,
-			PERSON as "personId",
+			USER_ID as "personId",
 			SMALLURL,
 			TITLE,
 			VIEWED
  		from (
  			select p.* from
- 					SAMPLE_FLICKR_EUROPE_PHOTO P
+ 					FLICKR_EUROPE_PHOTO P
 			where p.REGION_${radius}_ID = #{areaid}
 			 		and p.dt >= to_date(#{queryStr}, #{oracleDatePatternStr})
 			 		and p.dt <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
