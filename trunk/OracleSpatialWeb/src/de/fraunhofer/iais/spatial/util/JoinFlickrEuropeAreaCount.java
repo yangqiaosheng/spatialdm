@@ -152,10 +152,14 @@ public class JoinFlickrEuropeAreaCount {
 
 			db.close(selectFlickrRs);
 
-			logger.info("radius:" + radiusString + "|level:" + queryLevel + "|already checked:" + checkedSize);
-			logger.info("rownum to:" + rownum);
-			logger.info("start time:" + startDate);
+			logger.debug("radius:" + radiusString + "|level:" + queryLevel + "|already checked:" + checkedSize++);
+			logger.debug("rownum to:" + rownum);
+			logger.debug("start time:" + startDate);
 		}
+
+		logger.info("radius:" + radiusString + "|level:" + queryLevel + "|already checked:" + checkedSize);
+		logger.info("rownum to:" + rownum);
+		logger.info("start time:" + startDate);
 
 		db.close(selectFlickrStmt);
 		db.close(selectAreaRs);
