@@ -20,6 +20,7 @@ import java.util.TreeSet;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -242,42 +243,44 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 		PhotoList insertPhotos = new PhotoList();
 		Connection pgConn = pgDb.getConn();
-		do {
-			//get all the photo with and without GEO info
+		try {
+			do {
+				//get all the photo with and without GEO info
 //			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
 
-			//there is bugs in the Search method with bbox option, which will only return the result of accuracy=16
+				//there is bugs in the Search method with bbox option, which will only return the result of accuracy=16
 //			photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), peopleInterface.new Bbox(MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE), extras, pageSize, page++);
 
-			photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), null, extras, pageSize, page++);
-			total = photos.getTotal();
-			pages = photos.getPages();
-			increaseNumTotalQuery();
+				photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), null, extras, pageSize, page++);
+				total = photos.getTotal();
+				pages = photos.getPages();
+				increaseNumTotalQuery();
 
-			for (int i = 0; i < photos.size(); i++) {
-				Photo p = (Photo) photos.get(i);
+				for (int i = 0; i < photos.size(); i++) {
+					Photo p = (Photo) photos.get(i);
 
-				if (checkDate(p.getDateTaken(), p.getDatePosted()) && p.getGeoData() != null) {
-					try {
-						insertPhoto(pgConn, p, "FLICKR_PHOTO");
-					} catch (SQLException e) {
-						logger.error("insertPhotosToPostgreSQL", e); //$NON-NLS-1$
+					if (checkDate(p.getDateTaken(), p.getDatePosted()) && p.getGeoData() != null) {
+						try {
+							insertPhoto(pgConn, p, "FLICKR_PHOTO");
+						} catch (SQLException e) {
+							logger.error("insertPhotosToPostgreSQL", e); //$NON-NLS-1$
+						}
+					}
+
+					if (checkDate(p.getDateTaken(), p.getDatePosted()) && checkLocation(p.getGeoData())) {
+						insertPhotos.add(p);
 					}
 				}
+				num += photos.size();
 
-				if (checkDate(p.getDateTaken(), p.getDatePosted()) && checkLocation(p.getGeoData())) {
-					insertPhotos.add(p);
-				}
-			}
-			num += photos.size();
-
-			System.out.println("owner_id:" + userId);
-			System.out.println("total:" + total + " | num:" + num);
-			System.out.println("numTotalQuery:" + getNumTotalQuery());
-		} while (page <= pages);
-
-		pgDb.close(pgConn);
-		insertPhotos(insertPhotos, userId);
+				System.out.println("owner_id:" + userId);
+				System.out.println("total:" + total + " | num:" + num);
+				System.out.println("numTotalQuery:" + getNumTotalQuery());
+			} while (page <= pages);
+			insertPhotos(insertPhotos, userId);
+		} finally {
+			pgDb.close(pgConn);
+		}
 	}
 
 	private void insertPhotos(PhotoList photos, String userId) {
@@ -352,6 +355,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setInt(i++, photo.getGeoData().getAccuracy());
 			pstmt.executeUpdate();
 			System.out.println("numPhoto:" + increaseNumPhoto());
+		} catch (PSQLException e){
+			logger.debug("Wrong input Photo to PostgreSQL:" + photo.toString());
 		} catch (SQLException e){
 			logger.error("Wrong input Photo:" + photo.toString());
 			throw e;

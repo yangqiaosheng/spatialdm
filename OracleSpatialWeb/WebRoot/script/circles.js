@@ -75,7 +75,7 @@ var circles = new Array();
 	   radius: raza,
 	   fillColor: color
          })); 
-	 $("#legendInfo").append("  "+raza);
+	 //$("#legendInfo").append("  "+raza);
 	 circles[circles.length-1].setMap(map);     
        }
        RadiusWidget.prototype = new google.maps.MVCObject();  

@@ -34,8 +34,7 @@ var one_stepCarousel = 5;
 var beforeLoad = 7;
 var globalPolygonSelected = - 1;
 
- function scrollEvtHandler(obj) {      
-     $("#legendInfo").append("obj.last:"+obj.last+"<br/>")       
+ function scrollEvtHandler(obj) {          
      lastCarousel = obj.last;          
      if (obj.last > g_carouselTotalSize - beforeLoad) { 	   
         timeofUpload++;             
@@ -44,8 +43,7 @@ var globalPolygonSelected = - 1;
      }   
  }
 
-function loadTheCarousel(k, g_jcarousel, smallUrl) {
-    $('#legendInfo').append(" loadtheCarousel <br/>")
+function loadTheCarousel(k, g_jcarousel, smallUrl) {   
     for (var i = 1; i <= smallUrl.length; i++) {
         g_jcarousel.addItem(mycarousel_getItemHTML(i, k, smallUrl[i - 1]));
 	g_jcarousel.render();
@@ -56,17 +54,14 @@ function loadTheCarousel(k, g_jcarousel, smallUrl) {
 
  function assignEventsForTheCarouselItems(i, k, t) {
      var itemSubObj = $("#subitem" + t);
-     var itemObj = $("#item" + t);
-     
-     itemObj.bind('mouseover', (function () {
-         $('#legendInfo').append(t);
+     var itemObj = $("#item" + t);     
+     itemObj.bind('mouseover', (function () {        
          itemSubObj.css("background-color", "#A7BDF7");
          $("#pictureMouseOver").html("<img src='" + smallUrlTotal[t - 1] + "'/><div>"+weekdayTotal[t-1]+ " " + dateTotal[t - 1] + "</div><div>" + titlePictureTotal[t - 1] + "</div>");
          addPhotoMaker(latitudeTotal[t - 1], longitudeTotal[t - 1], titlePictureTotal[t - 1]);
      }));
      
-     itemObj.bind('mouseout', (function () {
-         $('#legendInfo').append("out:" + t + "<br>");
+     itemObj.bind('mouseout', (function () {        
          $("#pictureMouseOver").html("");
          itemSubObj.css("background-color", "#CCFFFF");
          removePhotoMaker();
@@ -93,16 +88,11 @@ function mycarousel_getItemHTML(i, k, item) {
     return "<li><div class = 'item' id = 'item" +(i + k) + "'><a href='http://www.flickr.com/photos/" + personId[i - 1] + "/" + photoId[i - 1] + "' target='_blank'><img src='" + smallUrl[i - 1] + "' height=100% /></a></div></li>";
 }
 
-function carouselLoadPictures(xml) {
-    $('#legendInfo').append(" <br/> carouselLoadPictures page: " + page);    
+function carouselLoadPictures(xml) {    
     setTheParameters();  
-    readXml(xml);
-    $('#legendInfo').append("<br/> smallUrl.length " + smallUrl.length);    
-    xmldoc = null;
-    $('#legendInfo').append(" <br/> booleanF2 " + booleanF2);
-    // correct
-    if (booleanF2 == false) {
-        $('#legendInfo').append("<br/> ONCE <br/>");	
+    readXml(xml);    
+    xmldoc = null;    
+    if (booleanF2 == false) {        
 	YAHOO.widget.Carousel.prototype.STRINGS.NEXT_BUTTON_TEXT = "<img src='right-enabled.gif'/> ";
 	YAHOO.widget.Carousel.prototype.STRINGS.PREVIOUS_BUTTON_TEXT = "<img src='left-enabled.gif'/> "; 
 
@@ -115,31 +105,20 @@ function carouselLoadPictures(xml) {
 	g_jcarousel.render();
 	g_jcarousel.show();
 	g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
-	timeofUpload++;
-	$("#legendInfo").append(" updateAnyway ");
-	$("#numberInbterval").html(" ");
-	loadTheCarousel(0, g_jcarousel, smallUrl);   
+	timeofUpload++;	
+	//$("#numberInbterval").html(" ");
+	loadTheCarousel(0, g_jcarousel, smallUrl);  	
         booleanF2 = true;
-    }
-    $('#legendInfo').append(" <br/> booleanF2 " + booleanF2);  
-        if (lastCarousel > g_carouselTotalSize - beforeLoad) {	 
-            $("#legendInfo").append("<br/> smallUrl[0]: " + smallUrl[0]);
+    } 	   
+        if (lastCarousel > g_carouselTotalSize - beforeLoad) {	             
             loadTheCarousel(g_carouselTotalSize, g_jcarousel, smallUrl);
-            g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
-            $("#legendInfo").append("g_carouselTotalSize1 " + g_carouselTotalSize);
+            g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;            
         } 
 }
 
-
-
-
 function readXml(xml) {
-    setTheParameters();
-    $('#legendInfo').append("  index ");
-    //correct
-    $(xml).find('photo').each(function () {
-        $('#legendInfo').append(" " + $(this).attr('index'));
-        //correct
+    setTheParameters();    
+    $(xml).find('photo').each(function () {       
         photoId[poz] = $(this).find('photoId').text();
         titlePicture[poz] = $(this).find('title').text();
         date[poz] = $(this).find('date').text();
@@ -171,9 +150,9 @@ function readXml(xml) {
      photoId = new Array();
      polygonId = new Array();
      polygonRadius = new Array();
-    date = new Array();
+     date = new Array();
      personId = new Array();
-    titlePicture = new Array();
+     titlePicture = new Array();
      mycarousel_itemList = new Array();
      poz = 0;
 }
@@ -194,8 +173,7 @@ function readXml(xml) {
      lastCarousel = 0;
      page = 1
      booleanF = false;   
-     ids = "";
-     //$('#legendInfo').html("<span>test</span>");
+     ids = "";    
  }
 
 function getId(){
@@ -204,8 +182,7 @@ function getId(){
 
 function setCarousel(ids) {
     $("#maxContainer").removeClass('invisible').addClass('visible');   
-    page = 1;    
-   // $('#legendInfo').append(" step1 ");
+    page = 1;       
     sendToServerFromCarousel(ids, page_size, page);
 }
 

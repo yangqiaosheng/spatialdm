@@ -23,4 +23,21 @@ var h = $("#IntChartID_3");
 	    $(this).css("height", "60px");
 	    $(this).css("width", "30%");
       });  
+var d = $("#IntChartID_4");
+  d.toggle(function(){
+	    $(this).css("height", "30%");
+	    $(this).css("width", "140%");
+      }, function(){
+	    $(this).css("height", "60px");
+	    $(this).css("width", "30%");
+      });  
+
+var wd = $("#IntChartID_5");
+  wd.toggle(function(){
+	    $(this).css("height", "30%");
+	    $(this).css("width", "140%");
+      }, function(){
+	    $(this).css("height", "60px");
+	    $(this).css("width", "30%");
+      });  
 }
