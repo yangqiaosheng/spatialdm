@@ -1,5 +1,5 @@
 <div id="table2" class="tabcontent">
-  <span><input type="checkbox" id ="selectedYMDHCheckbox"><b id="timeC1" class="timeCstar">Select time from a table</b> </input> </span>
+  <span id ="selectedYMDHCheckbox"><b id="timeC1" class="timeCstar"><a class="noLine" href="#" >Select time from a table</a></b> </span>
   <div id="selectedYMDHContent"> <!--for aggregation-->
 	
 	<div class="blocTime" align="center">

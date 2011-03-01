@@ -7,10 +7,7 @@ pageEncoding="ISO-8859-1"%>
         <title>Spatial Data Visualization</title>
 
         <link rel="stylesheet" type="text/css" href="css/fonts.css" />
-
-              <!-- key for http://kd-photomap.iais.fraunhofer.de -->
-	<%-- <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAi1SR3oqNEcC8fZw7QDGwqRQH2Rk2fdHKrd3j6ZrwVbxJK3gvzxS14-FtxSKP0KVbN4pJnaoJfQXUtg" type="text/javascript"></script>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script> --%>
+           
 	<script type="text/javascript" src="http://www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:'sensor=false'}]}"></script> 
  
 	 <script type="text/javascript" src="script/GoogleMapsFeatures.js"></script>         
@@ -28,10 +25,7 @@ pageEncoding="ISO-8859-1"%>
         </script>
         <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="script/polygon.min.js">
-	</script>
-        <script type="text/javascript" src="script/jCarousel/lib/jquery.jcarousel.min.js">
-        </script>
-        <link rel="stylesheet" type="text/css" href="script/jCarousel/skins/tango/skin.css" />
+	</script>      
         <link rel="stylesheet" type="text/css" href="css/redmond.datepick.css" />
 	<script type="text/javascript" src="script/jquery.datepick.js">
         </script>
@@ -68,19 +62,28 @@ pageEncoding="ISO-8859-1"%>
 
     </head>
     <!--if one of the functions gtom onload is not executing, then the chain is broken and the next ones will not execute as well-->
-    <body onload="start(); loadStart();";  onunload="GUnload()"; onresize="onResize();">
+    <body class="yui-skin-sam" onload="start(); loadStart();";  onunload="GUnload()"; onresize="onResize();">
         <div style="display: none;">
             <img id="calImg" src="images/calendar.gif" class="trigger" />
         </div>
         <div id="map_canvas">
         </div>
         <br/>
-        <div id="move">
+	<div id="move">
+		  <div id="QuarryHead" class="tabcontent">
+		      <span>Main table</span>
+		    <input type="button" id="QarryShowhide" value="hide">
+		  </div>
+	  <div id="move1">	  	 		  
+		  <div  id="tableQuarry">
 			<jsp:include page="table1.jsp"/>		
 			<jsp:include page="table2.jsp"/>
 			<jsp:include page="table3.jsp"/>
 			<jsp:include page="table4.jsp"/>
 			<jsp:include page="table5.jsp"/>
+			<jsp:include page="table6.jsp"/>
+		  </div>
+	   </div>
 			
 	</div>
 		<jsp:include page="carousel.jsp"/>

@@ -7,3 +7,12 @@ $(document).ready(function(){
         $("#showhide").attr('value', 'hide');
     });
 });
+$(document).ready(function(){
+    $("#QarryShowhide").toggle(function(){
+        $("#move1").hide("blind", 500);
+        $("#QarryShowhide").attr('value', 'show');
+    }, function(){
+        $("#move1").show("blind", 500);
+        $("#QarryShowhide").attr('value', 'hide');
+    });
+});

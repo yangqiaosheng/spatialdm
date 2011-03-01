@@ -25,13 +25,30 @@ function initialize1()
 	  google.maps.event.addListener(map, "click", function(event){hideContextMenu();});	 	
 	  initboolSelected();// LoadPolygons.js 
 	  agregationPolygonsAdd();
-	  $('#EnabledOrDisabled').html(" ENABLE <br/>");  	
+	  $('#EnabledOrDisabled').html(" Enabled <br/>");
+	  scaleLevelOnStart()
 }
              
 function start() {	
 	initialize1();
 }
 
-
+function scaleLevelOnStart(){
+	if (map.getZoom() < 8) {
+		$("#scaleLevel").html("1");	
+	}
+	if ((map.getZoom() < 10) && (map.getZoom() >= 8)) {				
+		$("#scaleLevel").html("2");			
+	}
+	if ((map.getZoom() < 11) && (map.getZoom() >= 10)) {
+		$("#scaleLevel").html("3");				
+	}
+	if ((map.getZoom() < 12) && (map.getZoom() >= 11)) {				
+		$("#scaleLevel").html("4");
+	}
+	if (map.getZoom() >= 12) {
+		$("#scaleLevel").html("5");
+	}	
+}
 
 

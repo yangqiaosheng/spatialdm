@@ -1,5 +1,5 @@
 <div id="table4" class="tabcontent">
-<span><input type="checkbox" id="SearchCheckBox"><b id="timeC1" class="timeCstar">Search Location</b> </input></span>
+<span><span id="SearchCheckBox"><b id="timeC1" class="timeCstar">Search Location</b> </span></span>
 
 <div id="SearchBox">
   <p>

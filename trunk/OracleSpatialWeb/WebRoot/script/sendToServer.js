@@ -38,31 +38,27 @@ function sendToServer_ScreenCenter_ScreenBounds(headerXML, bodyXML) {
 	}
 	xmlHttp.onreadystatechange = function() {
 		if (xmlHttp.readyState == 4) {
-			//alert("blaaaaaaaaaaaaa");
 			var xmlDoc = xmlHttp.responseText;
-			//alert("message: "+xmlDoc);
-			//alert("message: "+screenBounds_screenCenter)
 			if (map.getZoom() < 8) {
-				//alert(map.getZoom()+" booleanSelected "+boolSelected[number]+ " globalPolygonSelected: "+globalPolygonSelected+" polygon Id "+id[globalPolygonSelected]);
+				$("#scaleLevel").html("1");
 				loadXml(xmlDoc);
 			}
 			if ((map.getZoom() < 10) && (map.getZoom() >= 8)) {
-				//alert(map.getZoom()+" booleanSelected "+boolSelected[number]+ " globalPolygonSelected: "+globalPolygonSelected+" polygon Id "+id[globalPolygonSelected]);
+				$("#scaleLevel").html("2");
 				loadXml(xmlDoc);
 			}
 			if ((map.getZoom() < 11) && (map.getZoom() >= 10)) {
-				//alert(map.getZoom()+" booleanSelected "+boolSelected[number]+ " globalPolygonSelected: "+globalPolygonSelected+" polygon Id "+id[globalPolygonSelected]);
+				$("#scaleLevel").html("3");
 				loadXml(xmlDoc);
 			}
 			if ((map.getZoom() < 12) && (map.getZoom() >= 11)) {
-				//alert(map.getZoom()+" booleanSelected "+boolSelected[number]+ " globalPolygonSelected: "+globalPolygonSelected+" polygon Id "+id[globalPolygonSelected]);
+				$("#scaleLevel").html("4");
 				loadXml(xmlDoc);
 			}
 			if (map.getZoom() >= 12) {
-				//alert(map.getZoom()+" booleanSelected "+boolSelected[number]+ " globalPolygonSelected: "+globalPolygonSelected+" polygon Id "+id[globalPolygonSelected]);
+				$("#scaleLevel").html("5");
 				loadXml(xmlDoc);
 			}
-			$("#legendInfo").html("screenBounds:" + screenBounds_screenCenter);
 		}
 	};
 	xmlHttp.open("POST", "SpatialXml");
