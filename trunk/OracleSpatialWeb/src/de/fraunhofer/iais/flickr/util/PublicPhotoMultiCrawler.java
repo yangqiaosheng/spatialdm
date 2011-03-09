@@ -47,7 +47,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	static final int pageSize = 500;
 	static final int NUM_THREAD = 6;
-	static final int MAX_NUM_RETRY = 250;
+	static final int MAX_NUM_RETRY = 2500;
 	static final int MAX_TITLE_LENGTH = 255;
 
 	static final double MIN_LONGITUDE = -13.119622;
@@ -62,8 +62,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static long numPhoto = 0;
 	static long numTotalQuery = 0;
 
-	static DBUtil oracleDb = new DBUtil("/jdbc.properties", 18, 6);
-	static DBUtil pgDb = new DBUtil("/jdbc_pg.properties", 18, 6);
+	static DBUtil oracleDb = new DBUtil("/jdbc.properties", 7, 6);
+	static DBUtil pgDb = new DBUtil("/jdbc_pg.properties", 6, 6);
 
 	boolean finished = false;
 
@@ -191,7 +191,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	private void selectPeople(int threadId, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = oracleDb.getConn();
-		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, LAST_UPLOAD_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0");
+		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0");
 
 		ResultSet rs = null;
 		try {
@@ -199,7 +199,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			while (rs.next()) {
 
 				String userId = rs.getString("USER_ID");
-				Date lastUploadDate = rs.getTimestamp("LAST_UPLOAD_DATE");
+				Date lastUploadDate = rs.getTimestamp("PHOTO_UPDATE_CHECKED_DATE");
 
 				// assign the task to different thread
 				if (new Random(userId.hashCode()).nextInt(NUM_THREAD) == threadId) {
@@ -241,7 +241,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 		Calendar minTakenDate = beginDateLimit;
 		Calendar maxTakenDate = Calendar.getInstance();
 
-		PhotoList insertPhotos = new PhotoList();
+		PhotoList insertOraclePhotos = new PhotoList();
+		PhotoList insertPgPhotos = new PhotoList();
 		Connection pgConn = pgDb.getConn();
 		try {
 			do {
@@ -260,15 +261,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 					Photo p = (Photo) photos.get(i);
 
 					if (checkDate(p.getDateTaken(), p.getDatePosted()) && p.getGeoData() != null) {
-						try {
-							insertPhoto(pgConn, p, "FLICKR_PHOTO");
-						} catch (SQLException e) {
-							logger.error("insertPhotosToPostgreSQL", e); //$NON-NLS-1$
-						}
+						insertPgPhotos.add(p);
 					}
 
 					if (checkDate(p.getDateTaken(), p.getDatePosted()) && checkLocation(p.getGeoData())) {
-						insertPhotos.add(p);
+						insertOraclePhotos.add(p);
 					}
 				}
 				num += photos.size();
@@ -277,18 +274,19 @@ public class PublicPhotoMultiCrawler extends Thread {
 				System.out.println("total:" + total + " | num:" + num);
 				System.out.println("numTotalQuery:" + getNumTotalQuery());
 			} while (page <= pages);
-			insertPhotos(insertPhotos, userId);
+
+			insertPhotosToOracle(insertOraclePhotos, userId);
+			insertPhotosToPg(insertPgPhotos, userId);
+
 		} finally {
 			pgDb.close(pgConn);
 		}
 	}
 
-	private void insertPhotos(PhotoList photos, String userId) {
+	private void insertPhotosToOracle(PhotoList photos, String userId) {
 		Connection conn = oracleDb.getConn();
 
 
-		TreeSet<Date> uploadDates = new TreeSet<Date>();
-		TreeSet<Date> takenDates = new TreeSet<Date>();
 		try {
 			conn.setAutoCommit(false);
 
@@ -299,24 +297,22 @@ public class PublicPhotoMultiCrawler extends Thread {
 				if (!insertedPhotosId.contains(photo.getId())) {
 					insertPhoto(conn, photo, "FLICKR_EUROPE");
 					updatePhotoRegionInfo(conn, photo, radiusList);
-					uploadDates.add(photo.getDatePosted());
-					takenDates.add(photo.getDateTaken());
 					insertedPhotosId.add(photo.getId());
 				}else{
-					logger.error("Duplicate Photo:" + photo.toString());
+					logger.error("Duplicate Photo to Oracle:" + photo.toString());
 				}
 			}
 
 			if (photos.size() > 0) {
-				updatePeoplesInfo(conn, userId, uploadDates.last(), takenDates.last());
+				updatePeoplesInfo(conn, userId, 2);
 			} else {
-				updatePeoplesInfo(conn, userId);
+				updatePeoplesInfo(conn, userId, 1);
 			}
 
 			conn.commit();
 		} catch (SQLException e) {
 			logger.error("User:" + userId + "|size:" + photos.size());
-			logger.error("insertPhotos()", e); //$NON-NLS-1$
+			logger.error("insertPhotosToOracle()", e); //$NON-NLS-1$
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {
@@ -324,6 +320,30 @@ public class PublicPhotoMultiCrawler extends Thread {
 			}
 		} finally {
 			oracleDb.close(conn);
+		}
+	}
+
+	private void insertPhotosToPg(PhotoList photos, String userId) {
+		Connection conn = pgDb.getConn();
+
+		try {
+			//remove duplicate insertPhotos
+			HashSet<String> insertedPhotosId = new HashSet<String>();
+
+			for (Photo photo : photos) {
+				if (!insertedPhotosId.contains(photo.getId())) {
+					insertPhoto(conn, photo, "FLICKR_PHOTO");
+					insertedPhotosId.add(photo.getId());
+				}else{
+					logger.error("Duplicate Photo to Pg:" + photo.toString());
+				}
+			}
+
+		} catch (SQLException e) {
+			logger.error("User:" + userId + "|size:" + photos.size());
+			logger.error("insertPhotosToPg()", e); //$NON-NLS-1$
+		} finally {
+			pgDb.close(conn);
 		}
 	}
 
@@ -357,6 +377,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			System.out.println("numPhoto:" + increaseNumPhoto());
 		} catch (PSQLException e){
 			logger.debug("Wrong input Photo to PostgreSQL:" + photo.toString());
+			logger.debug("insertPhotosToPg()", e); //$NON-NLS-1$
 		} catch (SQLException e){
 			logger.error("Wrong input Photo:" + photo.toString());
 			throw e;
@@ -406,28 +427,16 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
-	private void updatePeoplesInfo(Connection conn, String userId, Date lastUploadDate, Date lastTakenDate) throws SQLException {
-		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE t set t.PHOTO_UPDATE_CHECKED = 1, t.LAST_UPLOAD_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), t.LAST_TAKEN_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') where USER_ID = ?");
+	private void updatePeoplesInfo(Connection conn, String userId, int checkedFlag) throws SQLException {
+		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE t set t.PHOTO_UPDATE_CHECKED = ?, t.PHOTO_UPDATE_CHECKED_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') where USER_ID = ?");
 		try {
 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 			int i = 1;
-			pstmt.setString(i++, formatter.format(lastUploadDate));
-			pstmt.setString(i++, formatter.format(lastTakenDate));
+			pstmt.setInt(i++, checkedFlag);
+			pstmt.setString(i++, formatter.format(new Date()));
 			pstmt.setString(i++, userId);
-			pstmt.executeUpdate();
-
-		} finally {
-			oracleDb.close(pstmt);
-		}
-	}
-
-	private void updatePeoplesInfo(Connection conn, String userId) throws SQLException {
-		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE t set t.PHOTO_UPDATE_CHECKED = 1 where USER_ID = ?");
-		try {
-			System.out.println("update user: " + userId);
-			pstmt.setString(1, userId);
 			pstmt.executeUpdate();
 
 		} finally {
