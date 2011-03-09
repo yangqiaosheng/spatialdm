@@ -35,7 +35,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
-import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoJdbc;
+import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
@@ -48,7 +48,7 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class FlickrEuropeAreaMgr {
 
-	private FlickrEuropeAreaDao flickrDeWestAreaDao = new FlickrEuropeAreaDaoJdbc();
+	private FlickrEuropeAreaDao flickrDeWestAreaDao = new FlickrEuropeAreaDaoOracleJdbc();
 
 	public FlickrEuropeAreaDao getAreaDao() {
 		return flickrDeWestAreaDao;
