@@ -17,7 +17,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
+public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 
 //	private final static String resource = "mybatis-config.xml";
 	private SqlSessionTemplate sessionTemplate;

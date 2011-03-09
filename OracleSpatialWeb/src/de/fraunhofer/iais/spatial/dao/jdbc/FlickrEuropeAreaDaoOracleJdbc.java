@@ -17,7 +17,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class FlickrEuropeAreaDaoJdbc extends FlickrEuropeAreaDao {
+public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 
 	private DB db;
 
