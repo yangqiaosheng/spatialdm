@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -351,7 +352,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		PreparedStatement pstmt = oracleDb
 				.getPstmt(
 						conn,
-						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?, ?, ?, ?, ?, ?)");
+						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		try {
 			int i = 1;
 			pstmt.setLong(i++, NumberUtils.toLong(photo.getId()));
@@ -359,10 +360,9 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setDouble(i++, photo.getGeoData().getLongitude());
 			pstmt.setDouble(i++, photo.getGeoData().getLatitude());
 
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			pstmt.setTimestamp(i++, new Timestamp(photo.getDateTaken().getTime()));
+			pstmt.setTimestamp(i++, new Timestamp(photo.getDatePosted().getTime()));
 
-			pstmt.setString(i++, formatter.format(photo.getDateTaken()));
-			pstmt.setString(i++, formatter.format(photo.getDatePosted()));
 			pstmt.setInt(i++, photo.getViews());
 			String title = photo.getTitle();
 			if (title != null && title.length() > MAX_TITLE_LENGTH) {
@@ -428,14 +428,12 @@ public class PublicPhotoMultiCrawler extends Thread {
 	}
 
 	private void updatePeoplesInfo(Connection conn, String userId, int checkedFlag) throws SQLException {
-		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE t set t.PHOTO_UPDATE_CHECKED = ?, t.PHOTO_UPDATE_CHECKED_DATE = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') where USER_ID = ?");
+		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE t set t.PHOTO_UPDATE_CHECKED = ?, t.PHOTO_UPDATE_CHECKED_DATE = ? where USER_ID = ?");
 		try {
-
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 			int i = 1;
 			pstmt.setInt(i++, checkedFlag);
-			pstmt.setString(i++, formatter.format(new Date()));
+			pstmt.setTimestamp(i++, new Timestamp(new Date().getTime()));
 			pstmt.setString(i++, userId);
 			pstmt.executeUpdate();
 
