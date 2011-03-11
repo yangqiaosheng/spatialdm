@@ -100,7 +100,7 @@ public class TestFlickrEuropeArea{
 
 	@Test
 	public void testJdbcDao1() {
-		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R160000);
+		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R5000);
 
 		String coordinates = "\t";
 		if (a != null && a.getGeom().getOrdinatesArray() != null) {
@@ -112,6 +112,7 @@ public class TestFlickrEuropeArea{
 			}
 
 			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
+			System.out.println("coordinates:" + coordinates);
 			System.out.println("hours:" + a.getHoursCount().size());
 			System.out.println("days:" + a.getDaysCount().size());
 			System.out.println("months:" + a.getMonthsCount().size());

@@ -25,7 +25,7 @@ CREATE TABLE flickr_europe
   region_160000_id integer,
   region_320000_id integer,
   CONSTRAINT flickr_euorpe_pk PRIMARY KEY (photo_id),
-  CONSTRAINT flickr_europe_fk FOREIGN KEY (user_id)
+  CONSTRAINT flickr_europe_user_fk FOREIGN KEY (user_id)
       REFERENCES flickr_people (user_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT flickr_europe_r10000_fk FOREIGN KEY (region_10000_id)
