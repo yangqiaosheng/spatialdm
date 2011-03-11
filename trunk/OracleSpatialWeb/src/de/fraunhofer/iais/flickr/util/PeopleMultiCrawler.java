@@ -205,7 +205,7 @@ public class PeopleMultiCrawler extends Thread {
 			pages = memberslist.getPages();
 			increaseNumTotalQuery();
 			if (memberslist.size() > 0) {
-				this.insertPeople(userId, memberslist);
+				this.insertPeoples(userId, memberslist);
 			}
 
 			num += memberslist.size();
@@ -216,19 +216,20 @@ public class PeopleMultiCrawler extends Thread {
 		} while (page <= pages);
 	}
 
-	private void insertPeople(String userId, MembersList memberslist) {
+	private void insertPeoples(String userId, MembersList memberslist) {
 		Connection conn = db.getConn();
 		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set CONTACT_UPDATE_CHECKED = 1 where t.USER_ID = ?");
 
 		try {
 			conn.setAutoCommit(false);
-			for (int i = 0; i < memberslist.size(); i++) {
-				PreparedStatement selectPstmt = null;
-				PreparedStatement insertPstmt = null;
-				ResultSet rs = null;
-				try {
+			PreparedStatement selectPstmt = null;
+			PreparedStatement insertPstmt = null;
+			selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");
+			insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME) values (?, ?)");
+			ResultSet rs = null;
+			try {
+				for (int i = 0; i < memberslist.size(); i++) {
 					Member m = (Member) memberslist.get(i);
-					selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");
 					selectPstmt.setString(1, m.getId());
 					rs = db.getRs(selectPstmt);
 
@@ -240,19 +241,18 @@ public class PeopleMultiCrawler extends Thread {
 							username = username.substring(0, MAX_USERNAME_LENGTH);
 						}
 
-						insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME) values (?, ?)");
 						insertPstmt.setString(1, m.getId());
 						insertPstmt.setString(2, username);
-						insertPstmt.executeUpdate();
+						insertPstmt.addBatch();
 						increaseNumInsertedPeople();
 						System.out.println(userId + " inserted");
 					}
-
-				} finally {
-					db.close(rs);
-					db.close(insertPstmt);
-					db.close(selectPstmt);
 				}
+				insertPstmt.executeBatch();
+			} finally {
+				db.close(rs);
+				db.close(insertPstmt);
+				db.close(selectPstmt);
 			}
 
 			updatePstmt.setString(1, userId);
