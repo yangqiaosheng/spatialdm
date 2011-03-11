@@ -7,7 +7,7 @@
        "TAKEN_DATE" DATE not null,
        "UPLOAD_DATE" DATE not null,
        "VIEWED" NUMBER,
-       "TITLE" VARCHAR2(255),
+       "TITLE" NVARCHAR2(255),
        "SMALLURL" VARCHAR2(100),
        "PLACE_ID" VARCHAR2(20),
        "WOE_ID" VARCHAR2(20),
