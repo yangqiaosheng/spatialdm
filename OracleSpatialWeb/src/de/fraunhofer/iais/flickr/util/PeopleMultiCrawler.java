@@ -166,8 +166,11 @@ public class PeopleMultiCrawler extends Thread {
 
 	private void selectPeople(int threadId, ContactsInterface contactsInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = 0");
-
+//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = 0");
+//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = 0 and abs(mod(ora_hash(USER_ID), ?)) = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = 0 and abs(mod(hashtext(USER_ID), ?)) = ?");
+		pstmt.setInt(1, NUM_THREAD);
+		pstmt.setInt(2, threadId);
 		ResultSet rs = null;
 		try {
 			rs = db.getRs(pstmt);
@@ -176,10 +179,10 @@ public class PeopleMultiCrawler extends Thread {
 				String userId = rs.getString("USER_ID");
 
 				// assign the task to different thread
-				if (new Random(userId.hashCode()).nextInt(NUM_THREAD) == threadId) {
+//				if (Math.abs(userId.hashCode() % NUM_THREAD) == threadId) {
 					this.retrievePeopleContacts(contactsInterface, userId);
 					System.out.println("thread_id:" + threadId + "user_id=" + userId + " |numCheckedPeople:" + getNumCheckedPeople() + " |numInsertedPeople:" + increaseNumInsertedPeople());
-				}
+//				}
 			}
 
 			// process finished

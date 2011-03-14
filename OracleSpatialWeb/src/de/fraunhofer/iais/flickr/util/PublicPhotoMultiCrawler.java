@@ -5,18 +5,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -194,8 +190,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 	private void selectPeople(int threadId, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = oracleDb.getConn();
 //		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0");
-//		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and mod(ora_hash(USER_ID), ?) = ?");
-		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and mod(hashtext(USER_ID), ?) = ?");
+//		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(ora_hash(USER_ID), ?)) = ?");
+		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(hashtext(USER_ID), ?)) = ?");
 		pstmt.setInt(1, NUM_THREAD);
 		pstmt.setInt(2, threadId);
 		ResultSet rs = null;
@@ -207,7 +203,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 				Date lastUploadDate = rs.getTimestamp("PHOTO_UPDATE_CHECKED_DATE");
 
 				// assign the task to different thread
-//				if (userId.hashCode() % NUM_THREAD == threadId) {
+//				if (Math.abs(userId.hashCode() % NUM_THREAD) == threadId) {
 					retrievePeoplesPhotos(peopleInterface, userId, lastUploadDate);
 					System.out.println("numPeople:" + increaseNumPeople());
 //				}
@@ -280,15 +276,17 @@ public class PublicPhotoMultiCrawler extends Thread {
 				System.out.println("numTotalQuery:" + getNumTotalQuery());
 			} while (page <= pages);
 
-			insertPhotosToOracle(insertOraclePhotos, userId);
-			insertPhotosToPg(insertPgPhotos, userId);
+			if(!insertPhotosToOracle(insertOraclePhotos, userId)){
+				insertPhotosToPg(insertPgPhotos, userId);
+			}
 
 		} finally {
 			pgDb.close(pgConn);
 		}
 	}
 
-	private void insertPhotosToOracle(PhotoList photos, String userId) {
+	private boolean insertPhotosToOracle(PhotoList photos, String userId) {
+		boolean hasError = false;
 		Connection conn = oracleDb.getConn();
 
 		try {
@@ -319,6 +317,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			logger.error("User:" + userId + "|size:" + photos.size());
 			logger.error("insertPhotosToOracle()", e); //$NON-NLS-1$
 			try {
+				hasError = true;
 				conn.rollback();
 			} catch (SQLException e1) {
 				logger.error("insertPhotos()", e); //$NON-NLS-1$
@@ -326,6 +325,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		} finally {
 			oracleDb.close(conn);
 		}
+		return hasError;
 	}
 
 	private void insertPhotosToPg(PhotoList photos, String userId) {
@@ -401,7 +401,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			try {
 //				selectPstmt = oracleDb.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_EUROPE_AREA_" + radius
 //						+ "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
-				selectPstmt = oracleDb.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " t where ST_Intersects(ST_GeometryFromText('SRID=4326;POINT("+x+" "+y+")'), t.geom)");
+				selectPstmt = oracleDb.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT("+x+" "+y+")'), t.geom::geometry)");
 //				selectPstmt.setDouble(1, x);
 //				selectPstmt.setDouble(2, y);
 				selectRs = oracleDb.getRs(selectPstmt);

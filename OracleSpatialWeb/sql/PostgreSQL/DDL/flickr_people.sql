@@ -1,4 +1,4 @@
-﻿-- Table: flickr_people
+-- Table: flickr_people
 
 -- DROP TABLE flickr_people;
 
