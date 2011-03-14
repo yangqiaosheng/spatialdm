@@ -1,5 +1,8 @@
 package de.fraunhofer.iais.spatial.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,15 +15,20 @@ import org.apache.commons.lang.StringUtils;
 
 public class Oracle2PgDataExport {
 
-	static DBUtil oracleDb = new DBUtil("/jdbc.properties", 7, 6);
-	static DBUtil pgDb = new DBUtil("/jdbc_pg.properties", 6, 6);
+	private static final int BATCH_SIZE = 20000;
+	static DBUtil oracleDb = new DBUtil("/jdbc_opensuse.properties", 18, 6);
+	static DBUtil pgDb = new DBUtil("/jdbc_pg.properties", 18, 6);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Date startDate = new Date();
 		long start = System.currentTimeMillis();
 
 //		copyFlickrEurope("FLICKR_PEOPLE");
 		copyFlickrEurope("FLICKR_EUROPE");
+//		copyFlickrEurope("FLICKR_EUROPE_COUNT");
+//		String tableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
+//		System.out.println("TableName:" + tableName);
+//		copyFlickrEurope(tableName);
 
 		Date endDate = new Date();
 		long end = System.currentTimeMillis();
@@ -81,14 +89,14 @@ public class Oracle2PgDataExport {
 						System.out.println(rsMetaData.getColumnLabel(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
 					}
 				}
-				pgInsertStmt.executeUpdate();
-//				pgInsertStmt.addBatch();
-//				System.out.println("inserted num:" + (insertedNum++) + "/" + totalNum);
-//				if (insertedNum % 10000 == 0) {
-//					pgInsertStmt.executeBatch();
-//				}
+//				pgInsertStmt.executeUpdate();
+				pgInsertStmt.addBatch();
+				System.out.println("inserted num:" + (insertedNum++) + "/" + totalNum);
+				if (insertedNum % BATCH_SIZE == 0) {
+					pgInsertStmt.executeBatch();
+				}
 			}
-//			pgInsertStmt.executeBatch();
+			pgInsertStmt.executeBatch();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
