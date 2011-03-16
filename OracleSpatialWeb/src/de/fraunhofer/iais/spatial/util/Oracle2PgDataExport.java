@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class Oracle2PgDataExport {
 
-	private static final int BATCH_SIZE = 20000;
+	private static final int BATCH_SIZE = 100;
 	static DBUtil oracleDb = new DBUtil("/jdbc_opensuse.properties", 18, 6);
 	static DBUtil pgDb = new DBUtil("/jdbc_pg.properties", 18, 6);
 

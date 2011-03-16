@@ -137,7 +137,7 @@ public class JoinFlickrEuropeAreaCount {
 			areaId = selectAreaRs.getInt("id");
 
 
-			selectFlickrStmt.setString(1, FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel));
+			selectFlickrStmt.setString(1, FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel));
 			selectFlickrStmt.setInt(2, areaId);
 
 			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
@@ -177,7 +177,7 @@ public class JoinFlickrEuropeAreaCount {
 			String countStr = rs.getString("countStr");
 
 			if (countStr != null) {
-				FlickrEuropeAreaDao.parseCounts(countStr, countsMap2, FlickrEuropeAreaDao.judgeOracleRegExPattern(queryLevel));
+				FlickrEuropeAreaDao.parseCounts(countStr, countsMap2, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
 			}
 		}
 

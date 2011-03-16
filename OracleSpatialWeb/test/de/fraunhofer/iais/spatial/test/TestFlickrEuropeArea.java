@@ -103,12 +103,9 @@ public class TestFlickrEuropeArea{
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R5000);
 
 		String coordinates = "\t";
-		if (a != null && a.getGeom().getOrdinatesArray() != null) {
-			for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
-				coordinates += a.getGeom().getOrdinatesArray()[i] + ", ";
-				if (i % 2 == 1) {
-					coordinates += "0\t";
-				}
+		if (a != null && a.getGeom() != null) {
+			for (Point2D point: a.getGeom()) {
+				coordinates += point.getX() + ", " + point.getY() + "0\n";
 			}
 
 			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
@@ -132,12 +129,9 @@ public class TestFlickrEuropeArea{
 
 		for (FlickrArea a : as) {
 			String coordinates = "\t";
-			if (a.getGeom().getOrdinatesArray() != null) {
-				for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
-					coordinates += a.getGeom().getOrdinatesArray()[i] + ", ";
-					if (i % 2 == 1) {
-						coordinates += "0\t";
-					}
+			if (a.getGeom() != null) {
+				for (Point2D point: a.getGeom()) {
+					coordinates += point.getX() + ", " + point.getY() + "0\n";
 				}
 			}
 
@@ -483,15 +477,12 @@ public class TestFlickrEuropeArea{
 
 	@Test
 	public void testSelectAll() {
-		List<FlickrArea> as = areaMgr.getAreaDao().getAllAreas(Radius.R80000);
+		List<FlickrArea> as = areaMgr.getAreaDao().getAllAreas(Radius.R160000);
 		for (FlickrArea a : as) {
 			String coordinates = "\t";
-			if (a.getGeom().getOrdinatesArray() != null) {
-				for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
-					coordinates += a.getGeom().getOrdinatesArray()[i] + ", ";
-					if (i % 2 == 1) {
-						coordinates += "0\t";
-					}
+			if (a.getGeom() != null) {
+				for (Point2D point: a.getGeom()) {
+					coordinates += point.getX() + ", " + point.getY() + "0\n";
 				}
 			}
 
@@ -504,12 +495,9 @@ public class TestFlickrEuropeArea{
 	public void testSelectById() {
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(23312, Radius.R80000);
 		String coordinates = "\t";
-		if (a.getGeom().getOrdinatesArray() != null) {
-			for (int i = 0; i < a.getGeom().getOrdinatesArray().length; i++) {
-				coordinates += a.getGeom().getOrdinatesArray()[i] + ", ";
-				if (i % 2 == 1) {
-					coordinates += "0\t";
-				}
+		if (a.getGeom() != null) {
+			for (Point2D point: a.getGeom()) {
+				coordinates += point.getX() + ", " + point.getY() + "0\n";
 			}
 		}
 

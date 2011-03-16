@@ -97,7 +97,7 @@ public class JoinFlickrEuropeAreaSampleCount {
 					+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?)"
 					+ "group by date_str");
 
-			selectFlickrStmt.setString(1, FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel));
+			selectFlickrStmt.setString(1, FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel));
 			selectFlickrStmt.setInt(2, areaId);
 
 			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
@@ -209,7 +209,7 @@ public class JoinFlickrEuropeAreaSampleCount {
 		if(rs.next()){
 			String countStr = rs.getString("countStr");
 			if(countStr != null){
-				FlickrEuropeAreaDao.parseCounts(countStr, countsMap2, FlickrEuropeAreaDao.judgeOracleRegExPattern(queryLevel));
+				FlickrEuropeAreaDao.parseCounts(countStr, countsMap2, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
 			}
 		}
 

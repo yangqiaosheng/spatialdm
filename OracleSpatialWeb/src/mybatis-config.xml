@@ -14,6 +14,7 @@
 		<typeAlias type="de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto" alias="FlickrEuropeAreaDto" />
 	</typeAliases>
 	<typeHandlers>
+		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.ListTypeHandler" javaType="java.util.List" />
 		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.SdoGeometryTypeHandler" javaType="oracle.spatial.geometry.JGeometry" />
 		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.Point2DTypeHandler" javaType="java.awt.geom.Point2D" />
 	</typeHandlers>
@@ -39,5 +40,7 @@
 	<mappers>
 		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrEuropeAreaOracle.xml" />
 		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrEuropePhotoOracle.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrEuropeAreaPg.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrEuropePhotoPg.xml" />
 	</mappers>
 </configuration>
