@@ -17,7 +17,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
+public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 
 //	private final static String resource = "mybatis-config.xml";
 	private SqlSessionTemplate sessionTemplate;
@@ -25,6 +25,8 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 	public void setSessionTemplate(SqlSessionTemplate sessionTemplate) {
 		this.sessionTemplate = sessionTemplate;
 	}
+
+	private String dbName = "Oracle";
 
 //	public FlickrDeWestAreaDaoMybatis() throws IOException {
 //		if (sessionTemplate == null) {
@@ -63,7 +65,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		if (MapUtils.isNotEmpty(area.getHoursCount()))
 			return; // cached
 
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".hourCount", area);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + dbName + ".hourCount", area);
 		if (count != null) {
 			parseCounts(count, area.getHoursCount(), hourRegExPattern);
 		}
@@ -73,7 +75,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		if (MapUtils.isNotEmpty(area.getDaysCount()))
 			return; // cached
 
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".dayCount", area);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + dbName + ".dayCount", area);
 		if (count != null) {
 			parseCounts(count, area.getDaysCount(), dayRegExPattern);
 		}
@@ -83,7 +85,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		if (MapUtils.isNotEmpty(area.getMonthsCount()))
 			return; // cached
 
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".monthCount", area);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + dbName + ".monthCount", area);
 		if (count != null) {
 			parseCounts(count, area.getMonthsCount(), monthRegExPattern);
 		}
@@ -93,7 +95,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		if (MapUtils.isNotEmpty(area.getYearsCount()))
 			return; // cached
 
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + ".yearCount", area);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + dbName + ".yearCount", area);
 		if (count != null) {
 			parseCounts(count, area.getYearsCount(), yearRegExPattern);
 		}
@@ -104,7 +106,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setRadius(radius);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + ".selectAll", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + dbName + ".selectAll", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -116,7 +118,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		FlickrArea a = (FlickrArea) sessionTemplate.selectOne(FlickrArea.class.getName() + ".selectById", areaDto);
+		FlickrArea a = (FlickrArea) sessionTemplate.selectOne(FlickrArea.class.getName() + dbName + ".selectById", areaDto);
 		initArea(a, radius);
 
 		return a;
@@ -129,7 +131,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + dbName + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -144,7 +146,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + ".selectByIdGeomSize", areaDto);
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + dbName + ".selectByIdGeomSize", areaDto);
 		int num = 0;
 		if(numObj != null){
 			num = (Integer)numObj;
@@ -162,7 +164,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + dbName + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -185,7 +187,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setQueryGeom(queryGeom);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + dbName + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -196,7 +198,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
 		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel);
+		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		Map parameters = new HashMap();
 		parameters.put("areaid", area.getId());
 		parameters.put("radius", area.getRadius());
@@ -205,7 +207,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		parameters.put("oracleDatePatternStr", oracleDatePatternStr);
 		parameters.put("num", num);
 
-		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(FlickrPhoto.class.getName() + ".selectByDateQuery", parameters);
+		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(FlickrPhoto.class.getName() + dbName  + ".selectByDateQuery", parameters);
 		this.initPhotos(photos, area);
 
 		return photos;
@@ -217,7 +219,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + ".totalCount", areaDto);
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + dbName  + ".totalCount", areaDto);
 		int num = 0;
 		if(numObj != null){
 			num = (Integer)numObj;

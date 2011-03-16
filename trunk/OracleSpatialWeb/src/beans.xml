@@ -10,7 +10,7 @@
 		default-lazy-init="true">
 
 	<!-- JDBC database connection configuration file -->
-	<context:property-placeholder location="classpath*:jdbc.properties" />
+	<context:property-placeholder location="classpath*:jdbc_opensuse.properties" />
 <!--	<context:property-placeholder location="classpath*:jdbc_marin.properties" />-->
 
 	<!-- JDBC DataSource configuration -->
@@ -96,7 +96,7 @@
 	<bean id="flickrEuropeAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoOracleJdbc">
 		<property name="db" ref="db" />
 	</bean>
-	<bean id="flickrEuropeAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrEuropeAreaDaoOracleMybatis">
+	<bean id="flickrEuropeAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrEuropeAreaDaoMybatis">
 		<property name="sessionTemplate" ref="sessionTemplate" />
 	</bean>
 	<bean id="flickrEuropeAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr">

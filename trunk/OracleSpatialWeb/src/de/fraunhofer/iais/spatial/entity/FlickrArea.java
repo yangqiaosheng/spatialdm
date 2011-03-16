@@ -2,6 +2,8 @@ package de.fraunhofer.iais.spatial.entity;
 
 import java.awt.geom.Point2D;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,9 +18,9 @@ public class FlickrArea {
 	private int id;
 	private Radius radius;
 	private String name;
-	private JGeometry geom;
 	private float area;
 	private Point2D center;
+	private List<Point2D> geom;
 
 	private Map<String, Integer> yearsCount = new HashMap<String, Integer>();
 	private Map<String, Integer> monthsCount = new HashMap<String, Integer>();
@@ -77,11 +79,11 @@ public class FlickrArea {
 		this.name = name;
 	}
 
-	public JGeometry getGeom() {
+	public List<Point2D> getGeom() {
 		return geom;
 	}
 
-	public void setGeom(JGeometry geom) {
+	public void setGeom(List<Point2D> geom) {
 		this.geom = geom;
 	}
 

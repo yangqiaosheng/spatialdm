@@ -62,7 +62,7 @@ public class PeopleMultiCrawler extends Thread {
 	static long numTotalQuery = 0;
 
 //	static DBUtil db = new DBUtil("/jdbc.properties", 6, 6);
-	static DBUtil db = new DBUtil("/jdbc_pg.properties", 6, 6);
+	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 6);
 
 	boolean finished = false;
 

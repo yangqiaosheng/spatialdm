@@ -6,8 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.jdom.Element;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
@@ -234,7 +239,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 
 		FlickrPhoto photo = null;
 		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel);
+		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel);
 
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
@@ -269,7 +274,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 
 		List<FlickrPhoto> photos = new ArrayList<FlickrPhoto>();
 		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeOracleDatePatternStr(queryLevel);
+		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		String oracleToDateStr = "to_date('" + queryStr + "', '" + oracleDatePatternStr + "')";
 
 		Connection conn = db.getConn();
@@ -490,7 +495,9 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 			STRUCT st = (STRUCT) rs.getObject("GEOM");
 			// convert STRUCT into geometry
 			JGeometry j_geom = JGeometry.load(st);
-			a.setGeom(j_geom);
+			List<Point2D> geom = new LinkedList<Point2D>();
+			CollectionUtils.addAll(geom, j_geom.getJavaPoints());
+			a.setGeom(geom);
 
 			a.setCenter(JGeometry.load((STRUCT) rs.getObject("center")).getJavaPoint());
 			a.setArea(rs.getFloat("area"));

@@ -374,12 +374,12 @@ public class FlickrEuropeAreaMgr {
 			lineElement.setAttribute("width", "2");
 			lineElement.setAttribute("opacity", "1");
 
-			JGeometry shape = area.getGeom();
-			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
+			List<Point2D> shape = area.getGeom();
+			for (Point2D point: shape) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
-				pointElement.setAttribute("lng", String.valueOf(shape.getOrdinatesArray()[i++]));
-				pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i]));
+				pointElement.setAttribute("lat", String.valueOf(point.getX()));
+				pointElement.setAttribute("lng", String.valueOf(point.getY()));
 			}
 		}
 		XmlUtil.xml2File(document, file, false);
@@ -698,12 +698,12 @@ public class FlickrEuropeAreaMgr {
 			polygonElement.addContent(lineElement);
 			lineElement.setAttribute("width", "1");
 
-			JGeometry shape = area.getGeom();
-			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
+			List<Point2D> shape = area.getGeom();
+			for (Point2D point: shape) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
-				pointElement.setAttribute("lng", String.valueOf(shape.getOrdinatesArray()[i++]));
-				pointElement.setAttribute("lat", String.valueOf(shape.getOrdinatesArray()[i]));
+				pointElement.setAttribute("lat", String.valueOf(point.getX()));
+				pointElement.setAttribute("lng", String.valueOf(point.getY()));
 			}
 
 			Element centerElement = new Element("center");
@@ -830,14 +830,9 @@ public class FlickrEuropeAreaMgr {
 			String lineStyleColor = "88ff0000";
 			String coordinates = "\n";
 
-			JGeometry shape = area.getGeom();
-			for (int i = 0; i < shape.getOrdinatesArray().length; i++) {
-				coordinates += shape.getOrdinatesArray()[i] + ", ";
-				if (i % 2 == 1) {
-					coordinates += "0\n";						//longitude and latitude
-//					coordinates += area.getTotalCount() * 0;	//altitude
-//					coordinates += "\n";
-				}
+			List<Point2D> shape = area.getGeom();
+			for (Point2D point: shape) {
+				coordinates += point.getX() + ", " + point.getY() + "0\n";
 			}
 
 			// create kml

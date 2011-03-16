@@ -20,10 +20,10 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
 public abstract class FlickrEuropeAreaDao {
 
-	public static String oracleHourPatternStr = "YYYY-MM-DD@HH24";
-	public static String oracleDayPatternStr = "YYYY-MM-DD";
-	public static String oracleMonthPatternStr = "YYYY-MM";
-	public static String oracleYearPatternStr = "YYYY";
+	public static String dbHourPatternStr = "YYYY-MM-DD@HH24";
+	public static String dbDayPatternStr = "YYYY-MM-DD";
+	public static String dbMonthPatternStr = "YYYY-MM";
+	public static String dbYearPatternStr = "YYYY";
 
 	public static SimpleDateFormat hourDateFormat = new SimpleDateFormat("yyyy-MM-dd@HH");
 	public static SimpleDateFormat dayDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -155,44 +155,44 @@ public abstract class FlickrEuropeAreaDao {
 		return photos;
 	}
 
-	public final static String judgeOracleDatePatternStr(Level queryLevel){
-		String oracleDatePatternStr = null;
+	public final static String judgeDbDateCountPatternStr(Level queryLevel){
+		String dbDatePatternStr = null;
 
 		switch (queryLevel) {
 		case YEAR:
-			oracleDatePatternStr = FlickrEuropeAreaDao.oracleYearPatternStr;
+			dbDatePatternStr = FlickrEuropeAreaDao.dbYearPatternStr;
 			break;
 		case MONTH:
-			oracleDatePatternStr = FlickrEuropeAreaDao.oracleMonthPatternStr;
+			dbDatePatternStr = FlickrEuropeAreaDao.dbMonthPatternStr;
 			break;
 		case DAY:
-			oracleDatePatternStr = FlickrEuropeAreaDao.oracleDayPatternStr;
+			dbDatePatternStr = FlickrEuropeAreaDao.dbDayPatternStr;
 			break;
 		case HOUR:
-			oracleDatePatternStr = FlickrEuropeAreaDao.oracleHourPatternStr;
+			dbDatePatternStr = FlickrEuropeAreaDao.dbHourPatternStr;
 			break;
 		}
-		return oracleDatePatternStr;
+		return dbDatePatternStr;
 	}
 
-	public final static Pattern judgeOracleRegExPattern(Level queryLevel){
-		Pattern oracleRegExPatter = null;
+	public final static Pattern judgeDbDateCountRegExPattern(Level queryLevel){
+		Pattern dataCountRegExPatter = null;
 
 		switch (queryLevel) {
 		case YEAR:
-			oracleRegExPatter = FlickrEuropeAreaDao.yearRegExPattern;
+			dataCountRegExPatter = FlickrEuropeAreaDao.yearRegExPattern;
 			break;
 		case MONTH:
-			oracleRegExPatter = FlickrEuropeAreaDao.monthRegExPattern;
+			dataCountRegExPatter = FlickrEuropeAreaDao.monthRegExPattern;
 			break;
 		case DAY:
-			oracleRegExPatter = FlickrEuropeAreaDao.dayRegExPattern;
+			dataCountRegExPatter = FlickrEuropeAreaDao.dayRegExPattern;
 			break;
 		case HOUR:
-			oracleRegExPatter = FlickrEuropeAreaDao.hourRegExPattern;
+			dataCountRegExPatter = FlickrEuropeAreaDao.hourRegExPattern;
 			break;
 		}
-		return oracleRegExPatter;
+		return dataCountRegExPatter;
 	}
 
 	protected final static Level judgeQueryLevel(String QueryStr){
