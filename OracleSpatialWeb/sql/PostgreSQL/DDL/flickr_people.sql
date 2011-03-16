@@ -7,7 +7,7 @@ CREATE TABLE flickr_people
   user_id character varying(20) NOT NULL,
   username character varying(200),
   contact_update_checked integer NOT NULL DEFAULT 0,
-  photo_update_checked_date date,
+  photo_update_checked_date timestamp without time zone,
   photo_update_checked integer NOT NULL DEFAULT 0,
   CONSTRAINT flickr_people_pk PRIMARY KEY (user_id)
 )
