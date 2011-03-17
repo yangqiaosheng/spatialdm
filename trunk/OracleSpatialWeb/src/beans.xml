@@ -10,7 +10,7 @@
 		default-lazy-init="true">
 
 	<!-- JDBC database connection configuration file -->
-	<context:property-placeholder location="classpath*:jdbc_opensuse.properties" />
+	<context:property-placeholder location="classpath*:jdbc.properties" />
 <!--	<context:property-placeholder location="classpath*:jdbc_marin.properties" />-->
 
 	<!-- JDBC DataSource configuration -->

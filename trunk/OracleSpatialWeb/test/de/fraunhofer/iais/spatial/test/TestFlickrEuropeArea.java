@@ -9,7 +9,6 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -27,6 +26,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -43,7 +43,7 @@ import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 //@ContextConfiguration("classpath:beans.xml")
-public class TestFlickrEuropeArea{
+public class TestFlickrEuropeArea {
 
 //	@Resource(name = "flickrEuropeAreaMgr")
 	private static FlickrEuropeAreaMgr areaMgr = null;
@@ -55,7 +55,7 @@ public class TestFlickrEuropeArea{
 		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir") + "/");
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 
-		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"classpath:beans.xml"});
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans.xml" });
 		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
 
@@ -103,8 +103,8 @@ public class TestFlickrEuropeArea{
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R5000);
 
 		String coordinates = "\t";
-		if (a != null && a.getGeom() != null) {
-			for (Point2D point: a.getGeom()) {
+		if (a != null) {
+			for (Point2D point : a.getGeom()) {
 				coordinates += point.getX() + ", " + point.getY() + "0\n";
 			}
 
@@ -129,10 +129,8 @@ public class TestFlickrEuropeArea{
 
 		for (FlickrArea a : as) {
 			String coordinates = "\t";
-			if (a.getGeom() != null) {
-				for (Point2D point: a.getGeom()) {
-					coordinates += point.getX() + ", " + point.getY() + "0\n";
-				}
+			for (Point2D point : a.getGeom()) {
+				coordinates += point.getX() + ", " + point.getY() + "0\n";
 			}
 
 			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
@@ -331,7 +329,6 @@ public class TestFlickrEuropeArea{
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
 
-
 		for (int i = 2005; i < 2010; i++) {
 			for (int j = 10; j <= 12; j++) {
 				for (int k = 10; k < 30; k++) {
@@ -476,14 +473,13 @@ public class TestFlickrEuropeArea{
 	}
 
 	@Test
+	@Ignore
 	public void testSelectAll() {
 		List<FlickrArea> as = areaMgr.getAreaDao().getAllAreas(Radius.R160000);
 		for (FlickrArea a : as) {
 			String coordinates = "\t";
-			if (a.getGeom() != null) {
-				for (Point2D point: a.getGeom()) {
-					coordinates += point.getX() + ", " + point.getY() + "0\n";
-				}
+			for (Point2D point : a.getGeom()) {
+				coordinates += point.getX() + ", " + point.getY() + "0\n";
 			}
 
 			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
@@ -495,10 +491,8 @@ public class TestFlickrEuropeArea{
 	public void testSelectById() {
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(23312, Radius.R80000);
 		String coordinates = "\t";
-		if (a.getGeom() != null) {
-			for (Point2D point: a.getGeom()) {
-				coordinates += point.getX() + ", " + point.getY() + "0\n";
-			}
+		for (Point2D point : a.getGeom()) {
+			coordinates += point.getX() + ", " + point.getY() + "0\n";
 		}
 
 		System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
