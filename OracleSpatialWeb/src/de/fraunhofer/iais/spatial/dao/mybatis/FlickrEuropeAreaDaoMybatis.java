@@ -27,6 +27,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 	}
 
 	private String dbName = "Oracle";
+//	private String dbName = "Pg";
 
 //	public FlickrDeWestAreaDaoMybatis() throws IOException {
 //		if (sessionTemplate == null) {
@@ -129,7 +130,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		JGeometry queryGeom = new JGeometry(2001, 8307, x, y, 0, null, null);
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setRadius(radius);
-		areaDto.setQueryGeom(queryGeom);
+		areaDto.setOracleQueryGeom(queryGeom);
 
 		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + dbName + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
@@ -144,7 +145,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		JGeometry queryGeom = new JGeometry(2003, 8307, elemInfo, ordinates);
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setRadius(radius);
-		areaDto.setQueryGeom(queryGeom);
+		areaDto.setOracleQueryGeom(queryGeom);
 
 		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + dbName + ".selectByIdGeomSize", areaDto);
 		int num = 0;
@@ -162,7 +163,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		JGeometry queryGeom = new JGeometry(2003, 8307, elemInfo, ordinates);
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setRadius(radius);
-		areaDto.setQueryGeom(queryGeom);
+		areaDto.setOracleQueryGeom(queryGeom);
 
 		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + dbName + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);
@@ -185,7 +186,7 @@ public class FlickrEuropeAreaDaoMybatis extends FlickrEuropeAreaDao {
 		JGeometry queryGeom = new JGeometry(2003, 8307, elemInfo, ordinates);
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setRadius(radius);
-		areaDto.setQueryGeom(queryGeom);
+		areaDto.setOracleQueryGeom(queryGeom);
 
 		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + dbName + ".selectByIdGeom", areaDto);
 		initAreas(as, radius);

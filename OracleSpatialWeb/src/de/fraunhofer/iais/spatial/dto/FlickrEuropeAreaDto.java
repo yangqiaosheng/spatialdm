@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.postgis.PGgeometry;
+
 import oracle.spatial.geometry.JGeometry;
 
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
@@ -28,7 +30,8 @@ public class FlickrEuropeAreaDto {
 	private List<Point2D> polygon;
 	private Date beginDate;
 	private Date endDate;
-	JGeometry queryGeom;
+	JGeometry oracleQueryGeom;
+	PGgeometry pgQueryGeom;
 
 	public enum Level {
 		HOUR, DAY, MONTH, YEAR, WEEKDAY;
@@ -130,12 +133,20 @@ public class FlickrEuropeAreaDto {
 		this.endDate = endDate;
 	}
 
-	public JGeometry getQueryGeom() {
-		return queryGeom;
+	public JGeometry getOracleQueryGeom() {
+		return oracleQueryGeom;
 	}
 
-	public void setQueryGeom(JGeometry queryGeom) {
-		this.queryGeom = queryGeom;
+	public void setOracleQueryGeom(JGeometry queryGeom) {
+		this.oracleQueryGeom = queryGeom;
+	}
+
+	public PGgeometry getPgQueryGeom() {
+		return pgQueryGeom;
+	}
+
+	public void setPgQueryGeom(PGgeometry pgQueryGeom) {
+		this.pgQueryGeom = pgQueryGeom;
 	}
 
 }
