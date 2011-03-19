@@ -221,7 +221,7 @@ public class FlickrEuropeAreaMgr {
 					String year = yearElement.getText().trim();
 					if (StringUtils.isNotBlank(year)) {
 						if(!DateUtil.allYearIntStrs.contains(year)){
-							throw new RuntimeException("wrong string of year:" + year);
+							throw new IllegalArgumentException("wrong string of year:" + year);
 						}
 						areaDto.getYears().add(year);
 					}
@@ -236,7 +236,7 @@ public class FlickrEuropeAreaMgr {
 					String month = monthElement.getText().trim();
 					if (StringUtils.isNotBlank(month)) {
 						if(!DateUtil.allMonthIntStrs.contains(month)){
-							throw new RuntimeException("wrong string of month:" + month);
+							throw new IllegalArgumentException("wrong string of month:" + month);
 						}
 						areaDto.getMonths().add(month);
 					}
@@ -251,7 +251,7 @@ public class FlickrEuropeAreaMgr {
 					String day = dayElement.getText().trim();
 					if (StringUtils.isNotBlank(day)) {
 						if(!DateUtil.allDayIntStrs.contains(day)){
-							throw new RuntimeException("wrong string of day:" + day);
+							throw new IllegalArgumentException("wrong string of day:" + day);
 						}
 						areaDto.getDays().add(day);
 					}
@@ -266,7 +266,7 @@ public class FlickrEuropeAreaMgr {
 					String hour = hourElement.getText().trim();
 					if (StringUtils.isNotBlank(hour)) {
 						if(!DateUtil.allHourIntStrs.contains(hour)){
-							throw new RuntimeException("wrong string of hour:" + hour);
+							throw new IllegalArgumentException("wrong string of hour:" + hour);
 						}
 						areaDto.getHours().add(hour);
 					}
@@ -281,7 +281,7 @@ public class FlickrEuropeAreaMgr {
 					String weekday = weekdayElement.getText().trim();
 					if (StringUtils.isNotBlank(weekday)) {
 						if(!DateUtil.allWeekdayFullStrs.contains(weekday)){
-							throw new RuntimeException("wrong string of weekday:" + weekday);
+							throw new IllegalArgumentException("wrong string of weekday:" + weekday);
 						}
 						areaDto.getWeekdays().add(weekday);
 					}
