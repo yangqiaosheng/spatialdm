@@ -99,6 +99,13 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
+	public void testJdbcDao0() {
+		int total = areaMgr.getAreaDao().getTotalCount(1, FlickrArea.Radius.R5000);
+
+		System.out.println("total:" + total);
+	}
+
+	@Test
 	public void testJdbcDao1() {
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R5000);
 

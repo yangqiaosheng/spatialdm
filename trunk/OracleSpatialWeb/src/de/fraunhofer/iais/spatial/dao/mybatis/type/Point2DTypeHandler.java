@@ -11,24 +11,46 @@ import oracle.sql.STRUCT;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+import org.postgis.LinearRing;
+import org.postgis.MultiPolygon;
+import org.postgis.PGgeometry;
+import org.postgis.Point;
+import org.postgresql.geometric.PGpoint;
 
 public class Point2DTypeHandler implements TypeHandler {
 
 	@Override
 	public Object getResult(ResultSet rs, String columnName) throws SQLException {
-		STRUCT st = (STRUCT) rs.getObject(columnName);
-		JGeometry j_geom = JGeometry.load(st);
-		Point2D point = j_geom.getJavaPoint();
-		return point;
+		Object resultObj = rs.getObject(columnName);
+		if (resultObj instanceof STRUCT) {
+			STRUCT st = (STRUCT) resultObj;
+			JGeometry j_geom = JGeometry.load(st);
+			Point2D point = j_geom.getJavaPoint();
+			return point;
+		} else if (resultObj instanceof PGpoint) {
+			PGpoint point = (PGpoint) resultObj;
+			return new Point2D.Double(point.x, point.y);
+		} else {
+			throw new ClassFormatError("Error in converting the column:" + columnName + " to a Point2D Object");
+		}
+
 	}
 
 	@Override
 	public Object getResult(CallableStatement cs, int columnIndex) throws SQLException {
-		STRUCT st = (STRUCT) cs.getObject(columnIndex);
-		JGeometry j_geom = JGeometry.load(st);
-		Point2D point = j_geom.getJavaPoint();
-		return point;
-	} 
+		Object resultObj = cs.getObject(columnIndex);
+		if (resultObj instanceof STRUCT) {
+			STRUCT st = (STRUCT) resultObj;
+			JGeometry j_geom = JGeometry.load(st);
+			Point2D point = j_geom.getJavaPoint();
+			return point;
+		} else if (resultObj instanceof PGpoint) {
+			PGpoint point = (PGpoint) resultObj;
+			return new Point2D.Double(point.x, point.y);
+		} else {
+			throw new ClassFormatError("Error in converting the column with Index:" + columnIndex + " to a Point2D Object");
+		}
+	}
 
 	@Override
 	public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {

@@ -31,7 +31,7 @@ public class FlickrEuropeAreaDto {
 	private Date beginDate;
 	private Date endDate;
 	JGeometry oracleQueryGeom;
-	PGgeometry pgQueryGeom;
+	String pgQueryGeom;
 
 	public enum Level {
 		HOUR, DAY, MONTH, YEAR, WEEKDAY;
@@ -141,11 +141,11 @@ public class FlickrEuropeAreaDto {
 		this.oracleQueryGeom = queryGeom;
 	}
 
-	public PGgeometry getPgQueryGeom() {
+	public String getPgQueryGeom() {
 		return pgQueryGeom;
 	}
 
-	public void setPgQueryGeom(PGgeometry pgQueryGeom) {
+	public void setPgQueryGeom(String pgQueryGeom) {
 		this.pgQueryGeom = pgQueryGeom;
 	}
 

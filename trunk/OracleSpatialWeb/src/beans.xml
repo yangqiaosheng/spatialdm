@@ -10,7 +10,7 @@
 		default-lazy-init="true">
 
 	<!-- JDBC database connection configuration file -->
-	<context:property-placeholder location="classpath*:jdbc.properties" />
+	<context:property-placeholder location="classpath*:jdbc_pg.properties" />
 <!--	<context:property-placeholder location="classpath*:jdbc_marin.properties" />-->
 
 	<!-- JDBC DataSource configuration -->
@@ -85,7 +85,7 @@
 
 	<!-- Mybatis configuration -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="jndiDataSource" />
+		<property name="dataSource" ref="c3p0DataSource" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	<bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
@@ -96,7 +96,7 @@
 	<bean id="flickrEuropeAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoOracleJdbc">
 		<property name="db" ref="db" />
 	</bean>
-	<bean id="flickrEuropeAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrEuropeAreaDaoMybatis">
+	<bean id="flickrEuropeAreaDaoMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrEuropeAreaDaoPgMybatis">
 		<property name="sessionTemplate" ref="sessionTemplate" />
 	</bean>
 	<bean id="flickrEuropeAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr">
