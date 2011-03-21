@@ -16,15 +16,16 @@ import org.apache.commons.lang.StringUtils;
 public class Oracle2PgDataExport {
 
 	private static final int BATCH_SIZE = 100;
-	static DBUtil oracleDb = new DBUtil("/jdbc_opensuse.properties", 18, 6);
+	static DBUtil oracleDb = new DBUtil("/jdbc.properties", 18, 6);
 	static DBUtil pgDb = new DBUtil("/jdbc_pg.properties", 18, 6);
 
 	public static void main(String[] args) throws IOException {
 		Date startDate = new Date();
 		long start = System.currentTimeMillis();
 
+//		copyFlickrEurope("FLICKR_EUROPE_area_320000");
 //		copyFlickrEurope("FLICKR_PEOPLE");
-		copyFlickrEurope("FLICKR_EUROPE");
+//		copyFlickrEurope("FLICKR_EUROPE");
 //		copyFlickrEurope("FLICKR_EUROPE_COUNT");
 //		String tableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
 //		System.out.println("TableName:" + tableName);
@@ -86,10 +87,10 @@ public class Oracle2PgDataExport {
 
 					} else {
 						pgInsertStmt.setString(i, oracleRs.getString(i));
-						System.out.println(rsMetaData.getColumnLabel(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
+						System.out.println(rsMetaData.getColumnLabel(i) + " | "+ rsMetaData.getColumnClassName(i) + " | " + rsMetaData.getColumnName(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
 					}
 				}
-//				pgInsertStmt.executeUpdate();
+				pgInsertStmt.executeUpdate();
 				pgInsertStmt.addBatch();
 				System.out.println("inserted num:" + (insertedNum++) + "/" + totalNum);
 				if (insertedNum % BATCH_SIZE == 0) {

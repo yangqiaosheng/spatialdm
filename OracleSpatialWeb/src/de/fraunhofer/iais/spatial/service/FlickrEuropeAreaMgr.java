@@ -702,8 +702,8 @@ public class FlickrEuropeAreaMgr {
 			for (Point2D point: shape) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
-				pointElement.setAttribute("lat", String.valueOf(point.getX()));
-				pointElement.setAttribute("lng", String.valueOf(point.getY()));
+				pointElement.setAttribute("lng", String.valueOf(point.getX()));
+				pointElement.setAttribute("lat", String.valueOf(point.getY()));
 			}
 
 			Element centerElement = new Element("center");
