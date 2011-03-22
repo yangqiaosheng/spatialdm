@@ -39,25 +39,27 @@ function sendToServer_ScreenCenter_ScreenBounds(headerXML, bodyXML) {
 	xmlHttp.onreadystatechange = function() {
 		if (xmlHttp.readyState == 4) {
 			var xmlDoc = xmlHttp.responseText;
-			if (map.getZoom() < 8) {
+			loadXml(xmlDoc);
+			if (map.getZoom() <= 5) {
 				$("#scaleLevel").html("1");
-				loadXml(xmlDoc);
 			}
-			if ((map.getZoom() < 10) && (map.getZoom() >= 8)) {
+			if (map.getZoom() == 6) {
 				$("#scaleLevel").html("2");
-				loadXml(xmlDoc);
 			}
-			if ((map.getZoom() < 11) && (map.getZoom() >= 10)) {
+			if (map.getZoom() == 7) {
 				$("#scaleLevel").html("3");
-				loadXml(xmlDoc);
 			}
-			if ((map.getZoom() < 12) && (map.getZoom() >= 11)) {
+			if (map.getZoom() == 8) {
 				$("#scaleLevel").html("4");
-				loadXml(xmlDoc);
 			}
-			if (map.getZoom() >= 12) {
+			if (map.getZoom() == 9) {
 				$("#scaleLevel").html("5");
-				loadXml(xmlDoc);
+			}
+			if (map.getZoom() == 10) {
+				$("#scaleLevel").html("6");
+			}
+			if (map.getZoom() >= 11) {
+				$("#scaleLevel").html("7");
 			}
 		}
 	};
