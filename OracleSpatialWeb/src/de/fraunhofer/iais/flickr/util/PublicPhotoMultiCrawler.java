@@ -302,7 +302,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 					updatePhotoRegionInfo(conn, photo, radiusList);
 					insertedPhotosId.add(photo.getId());
 				}else{
-					logger.error("Duplicate Photo to Oracle:" + photo.toString());
+					logger.warn("Duplicate Photo to Oracle:" + photo.toString());
 				}
 			}
 
@@ -340,7 +340,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 					insertPhoto(conn, photo, "FLICKR_PHOTO");
 					insertedPhotosId.add(photo.getId());
 				}else{
-					logger.error("Duplicate Photo to Pg:" + photo.toString());
+					logger.warn("Duplicate Photo to Pg:" + photo.toString());
 				}
 			}
 			System.out.println("finished insertPhotosToPg");
