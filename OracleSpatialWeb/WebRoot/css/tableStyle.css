@@ -12,7 +12,7 @@
 	border-top-width: 1px;
 	border-bottom-width: 1px;
 	padding-top: 5px;
-	padding-bottom: 5px;	
+	padding-bottom: 5px;
 	padding-right: 1%;
 	padding-left: 1%;
 	cursor: pointer;
@@ -43,7 +43,7 @@
 }
 
 .tabcontent {
-    	background-color: #A7BDF7; 
+    	background-color: #A7BDF7;
 	font-family: sans-serif;
 	font-size: 13px;
 /*	width:auto;
@@ -71,9 +71,9 @@ html,body,#map_canvas {
 
 #move{
 	border-width:0.31em;
-	border-style:solid; 
-	border-color:#8AA8F3; 
-	position:absolute;		
+	border-style:solid;
+	border-color:#8AA8F3;
+	position:absolute;
 	margin-left: 1%;
 	margin-top: 1%;
 	width:35%; /*500px*/
@@ -85,33 +85,33 @@ html,body,#map_canvas {
 	height:auto;
 }
 #table1{
-	
-	width:auto;	
-	height:auto;
-	
-}
-#table2{			
+
 	width:auto;
-	height:auto;		
+	height:auto;
+
+}
+#table2{
+	width:auto;
+	height:auto;
 }
 #table3{
-	
+
 	width:auto;
-	height:auto;		
+	height:auto;
 }
 #table4{
-	
+
 	width:auto;
-	height:auto;		
+	height:auto;
 }
 #table5{
-	
+
 	width:auto;
-	height:auto;		
+	height:auto;
 }
 #address{
 	position:absolute;
-	margin-bottom:5px;	
+	margin-bottom:5px;
 	top:0;
 	}
 #idmove {
@@ -125,27 +125,11 @@ html,body,#map_canvas {
   width: auto;
  /* position:absolute; */
 }
-#IntChartID_1{
-  width:30%; 
+#IntChartID{
+  width:30%;
   height:60px;
   opacity: 1;
   border-width:0.31em;
-  border-style:solid; 
-  border-color:#8AA8F3; 
-}
-#IntChartID_2{
-  width:30%; 
-  height:60px;
-  opacity: 1;
-  border-width:0.31em;
-  border-style:solid; 
-  border-color:#8AA8F3; 
-}
-#IntChartID_3{
-  width:30%; 
-  height:60px;
-  opacity: 1;
-  border-width:0.31em;
-  border-style:solid; 
-  border-color:#8AA8F3; 
+  border-style:solid;
+  border-color:#8AA8F3;
 }
