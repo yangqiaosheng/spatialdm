@@ -698,8 +698,8 @@ public class FlickrEuropeAreaMgr {
 			polygonElement.addContent(lineElement);
 			lineElement.setAttribute("width", "1");
 
-			List<Point2D> shape = area.getGeom();
-			for (Point2D point: shape) {
+			List<Point2D> geom = area.getGeom();
+			for (Point2D point: geom) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
 				pointElement.setAttribute("lng", String.valueOf(point.getX()));

@@ -175,7 +175,7 @@ public class TestFlickrEuropeArea {
 		hours.add("2007-05-09@13");
 		areaDto.setQueryLevel(Level.HOUR);
 
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23315, Radius.R80000), areaDto, 1, 20);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(22006, Radius.R40000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
 			System.out.println(p);
 		}
