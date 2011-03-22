@@ -6,8 +6,8 @@ CREATE TABLE flickr_photo
 (
   photo_id numeric NOT NULL,
   user_id character varying(20),
-  longitude numeric(15,0) NOT NULL,
-  latitude numeric(15,0) NOT NULL,
+  longitude double precision NOT NULL,
+  latitude double precision NOT NULL,
   taken_date timestamp without time zone,
   upload_date timestamp without time zone,
   viewed integer,

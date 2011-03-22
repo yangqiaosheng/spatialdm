@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.Flickr;
@@ -59,6 +60,15 @@ public class OperationExample {
 		requestContext.setAuth(auth);
 		Flickr.debugRequest = true;
 		Flickr.debugStream = true;
+	}
+
+	public void showPhotoInfo() throws IOException, SAXException, FlickrException {
+		PhotosInterface photosInterface = f.getPhotosInterface();
+		String photoId = "160740147";
+//		String photoId = "5418765299";
+		Photo photo = photosInterface.getPhoto(photoId);
+
+		System.out.println(photo.getTitle());
 	}
 
 	public void showPeoplesPhotos() throws IOException, SAXException, FlickrException {
@@ -164,8 +174,9 @@ public class OperationExample {
 	public static void main(String[] args) throws ParserConfigurationException, IOException, FlickrException, SAXException {
 		OperationExample t = new OperationExample();
 		//		t.showActivity();
-		t.showPeoplesPhotos();
+//		t.showPeoplesPhotos();
 //		t.showRecentPhotos();
+		t.showPhotoInfo();
 	}
 
 }
