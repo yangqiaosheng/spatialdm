@@ -1,10 +1,5 @@
 package de.fraunhofer.iais.spatial.util;
 
-import oracle.jdbc.OraclePreparedStatement;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +11,9 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
@@ -32,7 +30,7 @@ public class JoinFlickrEuropeAreaCount {
 	static int rownum = 1;
 	static Calendar startDate;
 
-	static DBUtil db = new DBUtil("/jdbc.properties", 3, 1);
+	static DBUtil db = new DBUtil("/jdbc.properties", 4, 1);
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
@@ -74,7 +72,7 @@ public class JoinFlickrEuropeAreaCount {
 						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = -1 where t.photo_id in (" +
 							"select t2.photo_id from (" +
 								"select t1.photo_id, ROWNUM rn from (" +
-									"select photo_id from flickr_europe where region_checked = 1" +
+									"select photo_id from " + PHOTOS_TABLE_NAME + " where region_checked = 2" +
 								") t1 where ROWNUM < ? " +
 							") t2 where rn >= ?" +
 						")");
@@ -100,7 +98,7 @@ public class JoinFlickrEuropeAreaCount {
 				conn.commit();
 
 				// REGION_CHECKED = 2 : already indexed
-				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = 2 where t.REGION_CHECKED = -1");
+				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = 1 where t.REGION_CHECKED = -1");
 				updateStmt2.executeUpdate();
 				db.close(updateStmt2);
 
@@ -166,18 +164,18 @@ public class JoinFlickrEuropeAreaCount {
 		db.close(selectAreaStmt);
 	}
 
-	private void addToIndex(Connection conn, Map<String, Integer> countsMap, Level queryLevel, int id, String radius) throws SQLException {
+	private void addToIndex(Connection conn, Map<String, Integer> countsMapAdd, Level queryLevel, int id, String radius) throws SQLException {
 		PreparedStatement selectCountStmt = db.getPstmt(conn, "select " + queryLevel + " as countStr from " + COUNTS_TABLE_NAME + " where id = ? and radius = ?");
 		selectCountStmt.setInt(1, id);
 		selectCountStmt.setString(2, radius);
 		ResultSet rs = db.getRs(selectCountStmt);
-		Map<String, Integer> countsMap2 = new TreeMap<String, Integer>();
+		Map<String, Integer> countsMapPre = new TreeMap<String, Integer>();
 
 		if (rs.next()) {
 			String countStr = rs.getString("countStr");
 
 			if (countStr != null) {
-				FlickrEuropeAreaDao.parseCounts(countStr, countsMap2, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
+				FlickrEuropeAreaDao.parseCounts(countStr, countsMapPre, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
 			}
 		}
 
@@ -185,17 +183,15 @@ public class JoinFlickrEuropeAreaCount {
 		db.close(selectCountStmt);
 
 		// add countsMap and countsMap2 together
-		for (Entry<String, Integer> e : countsMap.entrySet()) {
-			if (countsMap2.containsKey(e.getKey())) {
-				int value1 = countsMap.get(e.getKey());
-				int value2 = e.getValue();
-				countsMap2.put(e.getKey(), value1 + value2);
+		for (Entry<String, Integer> e : countsMapAdd.entrySet()) {
+			if (countsMapPre.containsKey(e.getKey())) {
+				countsMapPre.put(e.getKey(), e.getValue() + countsMapPre.get(e.getKey()));
 			} else {
-				countsMap2.put(e.getKey(), e.getValue());
+				countsMapPre.put(e.getKey(), e.getValue());
 			}
 		}
 
-		String countStr = FlickrEuropeAreaDao.createCountsDbString(countsMap2);
+		String countStr = FlickrEuropeAreaDao.createCountsDbString(countsMapPre);
 
 
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
