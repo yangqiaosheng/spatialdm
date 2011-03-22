@@ -19,6 +19,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -144,9 +146,12 @@ public class REST extends Transport {
 				in = conn.getInputStream();
 			}
 
+			String input = IOUtils.toString(in, "utf-8");
+			input = stripNonValidXMLChars(input);
+
 			Response response = null;
 			synchronized (mutex) {
-				Document document = builder.parse(in);
+				Document document = builder.parse(IOUtils.toInputStream(input, "utf-8"));
 				response = (Response) responseClass.newInstance();
 				response.parse(document);
 			}
@@ -316,5 +321,12 @@ public class REST extends Transport {
 	 */
 	public String getProxyCredentials() {
 		return new String(Base64.encode((proxyUser + ":" + proxyPassword).getBytes()));
+	}
+
+	public static String stripNonValidXMLChars(String str) {
+		if (str == null || "".equals(str)) {
+			return str;
+		}
+		return str.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]", "");
 	}
 }
