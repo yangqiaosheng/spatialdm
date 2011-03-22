@@ -1,10 +1,10 @@
-.glossymenu, .glossymenu li ul
+/*.glossymenu, .glossymenu li ul
 {
 	list-style-type:none;
 	margin:0;
 	padding:0;
-	width:185px; /*WIDTH OF MAIN MENU ITEMS*/
-	border-color: #8AA8F3; /*blue border*/
+	width:185px;
+	border-color: #8AA8F3; 
 }
 
 .glossymenu li{
@@ -22,9 +22,9 @@
 	text-decoration:none;
 }
 
-.glossymenu li ul{ /*SUB MENU STYLE*/
+.glossymenu li ul{ 
 	position: absolute;
-	width:190px; /*WIDTH OF SUB MENU ITEMS*/
+	width:190px; 
 	left:0;
 	top:0;
 	display:none;
@@ -35,7 +35,7 @@
 }
 
 .glossymenu li ul a{
-	width:180px; /*WIDTH OF SUB MENU ITEMS - 10px padding-left for A elements */
+	width:180px; 
 }
 
 .glossymenu .arrowdiv{
@@ -49,5 +49,5 @@ color:#000000;
 }
 
 .glossymenu li a:hover{
-background-color: #8AA8F3; /*blue border*/
-}
+background-color: #8AA8F3; 
+}*/
