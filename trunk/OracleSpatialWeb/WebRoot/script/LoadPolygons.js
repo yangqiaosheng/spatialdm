@@ -51,11 +51,11 @@ function loadXml(xml) {
             var lat = new Array();
             $(this).find('point').each(function () {
                 lng[n] = $(this).attr('lng');
-                lat[n] = $(this).attr('lat');		
-                center[pol] = new google.maps.LatLng(parseFloat(lat[n]), parseFloat(lng[n]));		
-		var distanceWidget = new DistanceWidget(center[pol], sel[id[pol]]);				
+                lat[n] = $(this).attr('lat');
+                center[pol] = new google.maps.LatLng(parseFloat(lat[n]), parseFloat(lng[n]));
+		var distanceWidget = new DistanceWidget(center[pol], sel[id[pol]]);
                 n++;
-            });          
+            });
             pol++;
         });
     });
@@ -66,7 +66,7 @@ function createPolygonsFortheMapWithInformationClosure(pol) {
         Polygon[id[i]] = new google.maps.Polygon({
             clickable: true,
             paths: arrayPolygons[i],
-            strokeColor: "#FF0000",            
+            strokeColor: "#FF0000",
             strokeWeight: wid[i],
             fillColor: "#0000FF",
             fillOpacity: 0.01
@@ -79,33 +79,33 @@ function createPolygonsFortheMapWithInformationClosure(pol) {
 
 
 function attachMessage(Polygon, valuei, number) {
-    var message = number.toString();    
+    var message = number.toString();
     var infowindow = new google.maps.InfoWindow({
         content: message,
         size: new google.maps.Size(50, 50)
     });
-    
-    google.maps.event.addListener(Polygon, 'click', function (event) {     
+
+    google.maps.event.addListener(Polygon, 'click', function (event) {
 	unSelectAllThePolygons();
-        cleanPhotos();     	
+        cleanPhotos();
         this.setOptions({
             fillColor: "#0000FF",
             fillOpacity: 0.35
         });
-        boolSelected[number] = 1;	
+        boolSelected[number] = 1;
 	globalvar = valuei;
-        globalPolygonSelected = number;        
+        globalPolygonSelected = number;
 	//alert(" center ="+center[globalvar].lat()+" "+center[globalvar].lng());
-        ids = "";        
+        ids = "";
         if (boolSelected[globalPolygonSelected] == 1) {
             ids = ids + "" + globalPolygonSelected;
-        }        
-        $('#numberOfItems').html("<span> Number of pictures selected: " + sel[globalPolygonSelected] + " idpoligon= "+ globalPolygonSelected+ "</span>");	
-	$("#chart1").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=year&random="+new Date()+"  '>"); 
-	$("#chart1").append("<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=month&random="+new Date()+" '>"); 
-	$("#chart1").append("<img title='Hours Level' id = 'IntChartID_3' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=hour&random="+new Date()+" '>"); 
-	$("#chart1").append("<img title='Day Level' id = 'IntChartID_4' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=day&random="+new Date()+" '>"); 
-	$("#chart1").append("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=weekday&random="+new Date()+" '>"); 
+        }
+        $('#numberOfItems').html("<span> Number of pictures selected: " + sel[globalPolygonSelected] + " idpoligon= "+ globalPolygonSelected+ "</span>");
+	$("#chart1").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=year&random="+new Date()+"  '>");
+	$("#chart1").append("<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=month&random="+new Date()+" '>");
+	$("#chart1").append("<img title='Hours Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=hour&random="+new Date()+" '>");
+	$("#chart1").append("<img title='Day Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=day&random="+new Date()+" '>");
+	$("#chart1").append("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=weekday&random="+new Date()+" '>");
 	atacheEventsOnCharts(); // charts.js
         setCarousel(ids);
     });
@@ -114,7 +114,7 @@ function attachMessage(Polygon, valuei, number) {
             fillColor: "#0000FF",
             fillOpacity: 0.35
         });
-        showContextMenu1(center[valuei], total[valuei], selc[valuei]);	
+        showContextMenu1(center[valuei], total[valuei], selc[valuei]);
     });
     google.maps.event.addListener(Polygon, 'mouseout', function (event) {
         hideContextMenu1();
@@ -130,49 +130,49 @@ function attachMessage(Polygon, valuei, number) {
     Polygon.setMap(map);
 }
 
-function initboolSelected(){ 
+function initboolSelected(){
     for (var i = 0; i < SizeBS; i++) {
        boolSelected[i] = 0;
        sel[i]=0;
-    }      
+    }
 }
-function unSelectAllThePolygons() {        
+function unSelectAllThePolygons() {
         if (boolSelected[globalPolygonSelected] == 1) {
             boolSelected[globalPolygonSelected] = 0;
             Polygon[globalPolygonSelected].setOptions({
                 fillOpacity: 0.01,
                 fillColor: "#FF0000"
             });
-       }    
+       }
 }
 function restorePolygon(){
-      if (boolSelected[globalPolygonSelected] == 1) {            
+      if (boolSelected[globalPolygonSelected] == 1) {
             Polygon[globalPolygonSelected].setOptions({
                 fillColor: "#0000FF",
 		fillOpacity: 0.35
-            });	
-	cleanPhotos(); 
-	ids = "";        
+            });
+	cleanPhotos();
+	ids = "";
         if (boolSelected[globalPolygonSelected] == 1) {
             ids = ids + "" + globalPolygonSelected;
-        }  
+        }
 	//alert("globalvar "+globalvar +" sel[globalvar]"+sel[globalvar]);
         $('#numberOfItems').html("<span> Number of pictures selected: " + sel[globalPolygonSelected] + "idpoligon= "+ globalPolygonSelected+ "</span>");	//globalvar
-	$("#chart1").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=year&random="+new Date()+"  '>"); 
-	$("#chart1").append("<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=month&random="+new Date()+" '>"); 
-	$("#chart1").append("<img title='Hours Level' id = 'IntChartID_3' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=hour&random="+new Date()+" '>"); 
-	$("#chart1").append("<img title='Day Level' id = 'IntChartID_4' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=day&random="+new Date()+" '>"); 
-	$("#chart1").append("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/TimeSeriesChart.png?areaid="+getId()+"&level=weekday&random="+new Date()+" '>"); 
+	$("#chart1").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=year&random="+new Date()+"  '>");
+	$("#chart1").append("<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=month&random="+new Date()+" '>");
+	$("#chart1").append("<img title='Hours Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=hour&random="+new Date()+" '>");
+	$("#chart1").append("<img title='Day Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=day&random="+new Date()+" '>");
+	$("#chart1").append("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=weekday&random="+new Date()+" '>");
 	atacheEventsOnCharts(); // charts.js
         setCarousel(ids);
-       }    
+       }
 }
 function deleteHistory() {
    // $("#maxContainer").removeClass('visible').addClass('invisible');
     for (var i = 0; i < History.length; i++) {
         History[i].setMap();
     }
-    History = new Array();   
-	
+    History = new Array();
+
 }
 

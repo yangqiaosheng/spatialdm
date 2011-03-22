@@ -48,7 +48,6 @@ public class TestFlickrEuropeArea {
 //	@Resource(name = "flickrEuropeAreaMgr")
 	private static FlickrEuropeAreaMgr areaMgr = null;
 
-	private FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 
 	@BeforeClass
 	public static void initClass() throws NamingException {
@@ -152,12 +151,12 @@ public class TestFlickrEuropeArea {
 	public void testPhoto2() {
 		long start = System.currentTimeMillis();
 
-		Set<String> hours = areaDto.getHours();
-		hours.add("2007-08-11@13");
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
-		areaDto.setQueryLevel(Level.HOUR);
+		areaDto.setQueryLevel(Level.DAY);
+		Set<String> queryStr = areaDto.getQueryStrs();
+		queryStr.add("2007-08-04");
 
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23505, Radius.R80000), areaDto, 1, 20);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23338, Radius.R80000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
 			System.out.println(p);
 		}
@@ -169,14 +168,14 @@ public class TestFlickrEuropeArea {
 	public void testPhoto3() {
 		long start = System.currentTimeMillis();
 
-		Set<String> hours = areaDto.getHours();
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		Set<String> hours = areaDto.getQueryStrs();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
 
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23505, Radius.R80000), areaDto, 1, 20);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23315, Radius.R80000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
 			System.out.println(p);
 		}
@@ -188,11 +187,11 @@ public class TestFlickrEuropeArea {
 	public void testPhoto4() {
 		long start = System.currentTimeMillis();
 
-		Set<String> hours = areaDto.getHours();
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		Set<String> hours = areaDto.getQueryStrs();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
 
 		for (int i = 2005; i < 2010; i++) {
@@ -205,49 +204,49 @@ public class TestFlickrEuropeArea {
 			}
 		}
 
-		List<FlickrPhoto> photos0 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(24795, Radius.R320000), areaDto, 1, 20);
+		List<FlickrPhoto> photos0 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(24669, Radius.R320000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos0) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos1 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(24416, Radius.R160000), areaDto, 1, 20);
+		List<FlickrPhoto> photos1 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(24272, Radius.R160000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos1) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23505, Radius.R80000), areaDto, 1, 20);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23315, Radius.R80000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos2 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(21353, Radius.R40000), areaDto, 1, 20);
+		List<FlickrPhoto> photos2 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(21170, Radius.R40000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos2) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos3 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(18005, Radius.R20000), areaDto, 1, 20);
+		List<FlickrPhoto> photos3 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(16988, Radius.R20000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos3) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos4 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(11349, Radius.R10000), areaDto, 1, 20);
+		List<FlickrPhoto> photos4 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(10091, Radius.R10000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos4) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos5 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(1, Radius.R5000), areaDto, 1, 20);
+		List<FlickrPhoto> photos5 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(27, Radius.R5000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos5) {
 			System.out.println(p);
 		}
 
-		Set<String> years = areaDto.getYears();
+		Set<String> years = areaDto.getQueryStrs();
 		years.add("2007");
 		years.add("2009");
 		years.add("2006");
 
 		FlickrEuropeAreaDto areaDto2 = new FlickrEuropeAreaDto();
 		areaDto2.setQueryLevel(Level.YEAR);
-		List<FlickrPhoto> photos6 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(1, Radius.R5000), areaDto2, 1, 20);
+		List<FlickrPhoto> photos6 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(27, Radius.R5000), areaDto2, 1, 20);
 		for (FlickrPhoto p : photos6) {
 			System.out.println(p);
 		}
@@ -259,12 +258,12 @@ public class TestFlickrEuropeArea {
 	public void testPhoto5() {
 		long start = System.currentTimeMillis();
 
-		Set<String> hours = areaDto.getHours();
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		Set<String> hours = areaDto.getQueryStrs();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
 
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
 
 		for (int i = 2005; i < 2010; i++) {
@@ -287,7 +286,7 @@ public class TestFlickrEuropeArea {
 		//			System.out.println(p);
 		//		}
 
-		FlickrArea area = areaMgr.getAreaDao().getAreaById(23505, Radius.R80000);
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(23315, Radius.R80000);
 		List<FlickrPhoto> photos3 = areaMgr.getAreaDao().getPhotos(area, areaDto, 1, 90);
 		for (int i = 0; i < photos3.size(); i++) {
 			FlickrPhoto p = photos3.get(i);
@@ -329,11 +328,11 @@ public class TestFlickrEuropeArea {
 	public void testPhotoXml() {
 		long start = System.currentTimeMillis();
 
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		Set<String> hours = areaDto.getHours();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setQueryLevel(Level.HOUR);
 
 		for (int i = 2005; i < 2010; i++) {
@@ -436,7 +435,6 @@ public class TestFlickrEuropeArea {
 //		}
 //		areaMgr.count(as, areaDto);
 //		System.out.println(as.size());
-		this.areaDto = areaDto;
 	}
 
 	@Test
@@ -528,6 +526,9 @@ public class TestFlickrEuropeArea {
 		areas.add(area3);
 
 		boolean smmoth = true;
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		String xml = IOUtils.toString(new FileReader("FlickrEuropeKmlRequest1.xml"));
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml), areaDto);
 		areaMgr.createXYLineChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, fos1);
 		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, smmoth, fos2);
 		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, smmoth, fos3);
