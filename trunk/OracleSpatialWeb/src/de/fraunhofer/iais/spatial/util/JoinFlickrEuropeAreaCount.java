@@ -94,8 +94,6 @@ public class JoinFlickrEuropeAreaCount {
 					count(conn, Level.YEAR, radius);
 					conn.commit();
 				}
-				countTotal(conn);
-				conn.commit();
 
 				// REGION_CHECKED = 2 : already indexed
 				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = 1 where t.REGION_CHECKED = -1");
@@ -106,6 +104,8 @@ public class JoinFlickrEuropeAreaCount {
 
 			} while(updateSize == BATCH_SIZE);
 
+			countTotal(conn);
+			conn.commit();
 		} catch (SQLException e) {
 			logger.error("begin()", e); //$NON-NLS-1$
 			try {

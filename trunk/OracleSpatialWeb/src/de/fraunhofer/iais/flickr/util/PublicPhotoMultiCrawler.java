@@ -44,7 +44,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	static final int pageSize = 500;
 	static final int NUM_THREAD = 6;
-	static final int MAX_NUM_RETRY = 2500;
+	static final int MAX_NUM_RETRY = 5000;
 	static final int MAX_TITLE_LENGTH = 255;
 
 	static final double MIN_LONGITUDE = -13.119622;
@@ -218,7 +218,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
-	private void retrievePeoplesPhotos(PeopleInterface peopleInterface, String userId, Date lastUploadDate) throws IOException, SAXException, FlickrException  {
+	private void retrievePeoplesPhotos(PeopleInterface peopleInterface, String userId, Date lastUploadDate) throws IOException, SQLException {
 
 		Set<String> extras = new HashSet<String>();
 		extras.add(Extras.DATE_TAKEN);
@@ -227,7 +227,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		extras.add(Extras.VIEWS);
 		//		extras.add(Extras.TAGS);
 
-		PhotoList photos;
+		PhotoList photos = null;
 		int pages = 0;
 		int page = 1;
 		int total = 0;
@@ -244,7 +244,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 		PhotoList insertOraclePhotos = new PhotoList();
 		PhotoList insertPgPhotos = new PhotoList();
-		Connection pgConn = pgDb.getConn();
+
 		try {
 			do {
 				//get all the photo with and without GEO info
@@ -252,8 +252,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 				//there is bugs in the Search method with bbox option, which will only return the result of accuracy=16
 //			photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), peopleInterface.new Bbox(MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE), extras, pageSize, page++);
-
 				photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), null, extras, pageSize, page++);
+
 				total = photos.getTotal();
 				pages = photos.getPages();
 				increaseNumTotalQuery();
@@ -276,12 +276,25 @@ public class PublicPhotoMultiCrawler extends Thread {
 				System.out.println("numTotalQuery:" + getNumTotalQuery());
 			} while (page <= pages);
 
-			if(!insertPhotosToOracle(insertOraclePhotos, userId)){
+			if (!insertPhotosToOracle(insertOraclePhotos, userId)) {
 				insertPhotosToPg(insertPgPhotos, userId);
 			}
 
+		} catch (SAXException e) {
+			flickrExceptionHandler(userId, page, e, -1);
+		} catch (FlickrException e) {
+			flickrExceptionHandler(userId, page, e, -2);
+		}
+	}
+
+	private void flickrExceptionHandler(String userId, int page, Exception e, int code) throws SQLException {
+		logger.error("userID:" + userId + "|page:" + page, e);
+		logger.error("retrievePeoplesPhotos()", e); //$NON-NLS-1$
+		Connection conn = oracleDb.getConn();
+		try {
+			updatePeoplesInfo(conn, userId, code);
 		} finally {
-			pgDb.close(pgConn);
+			oracleDb.close(conn);
 		}
 	}
 
