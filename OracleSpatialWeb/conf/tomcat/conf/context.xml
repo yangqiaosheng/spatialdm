@@ -20,7 +20,7 @@
 
     <!-- Default set of monitored resources -->
     <WatchedResource>WEB-INF/web.xml</WatchedResource>
-	
+
     <!-- Uncomment this to disable session persistence across Tomcat restarts -->
     <!--
     <Manager pathname="" />
@@ -31,7 +31,7 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
-	
+
 	<!-- maxActive: Maximum number of dB connections in pool. Make sure you
          configure your mysqld max_connections large enough to handle
          all of your db connections. Set to -1 for no limit.
@@ -53,23 +53,23 @@
          org.gjt.mm.mysql.Driver - we recommend using Connector/J though.
          Class name for the official MySQL Connector/J driver is com.mysql.jdbc.Driver.
          -->
-    
+
     <!-- url: The JDBC connection url for connecting to your MySQL dB.  -->
 
-	<!-- DBCP Connection Pool JNDI  -->
-	<!--
-	<Resource name="jdbc/OracleCP" auth="Container" type="javax.sql.DataSource"
-              maxActive="10" maxIdle="3" maxWait="10000"
+	<!-- DBCP Connection Pool JNDI
+	<Resource name="jdbc/pgCP" auth="Container" type="javax.sql.DataSource"
+              maxActive="28" maxIdle="8" maxWait="10000"
               username="gennady_flickr" password="gennady"
-			  driverClassName="oracle.jdbc.driver.OracleDriver"
-              url="jdbc:oracle:thin:@localhost:1521:XE"/> -->
-	
+			  driverClassName="org.postgresql.Driver"
+              url="jdbc:postgresql:kdphotomap"/>
+	-->
+
 	<!-- Oracle Implicit Connection Caching(ICC) DataSource configuration -->
 	<Resource name="jdbc/OracleCP" auth="Container" type="oracle.jdbc.pool.OracleDataSource"
 			  factory="oracle.jdbc.pool.OracleDataSourceFactory"
 			  user="gennady_flickr" password="gennady"
 			  url="jdbc:oracle:thin:@localhost:1521:XE"
 			  connectionCachingEnabled="true"
-			  connectionCacheProperties="{MinLimit=3, MaxLimit=10}" />
+			  connectionCacheProperties="{MinLimit=3, MaxLimit=18}" />
 
 </Context>

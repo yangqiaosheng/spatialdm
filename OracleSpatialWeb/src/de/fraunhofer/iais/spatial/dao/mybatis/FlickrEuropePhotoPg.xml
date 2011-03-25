@@ -21,8 +21,8 @@
 			VIEWED
  		from FLICKR_EUROPE P
 		where p.REGION_${radius}_ID = #{areaid}
-		 		and p.TAKEN_DATE >= to_date(#{queryStr}, #{oracleDatePatternStr})
-		 		and p.TAKEN_DATE <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
+		 		and p.TAKEN_DATE >= to_timestamp(#{queryStr}, #{oracleDatePatternStr})
+		 		and p.TAKEN_DATE <  to_timestamp(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
 		 order by p.TAKEN_DATE desc
 		 limit #{num}
 

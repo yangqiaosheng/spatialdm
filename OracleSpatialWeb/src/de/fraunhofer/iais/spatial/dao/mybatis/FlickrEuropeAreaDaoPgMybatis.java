@@ -10,6 +10,7 @@ import oracle.spatial.geometry.JGeometry;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jdom.IllegalDataException;
 import org.mybatis.spring.SqlSessionTemplate;
 
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
@@ -198,6 +199,11 @@ private static final String DB_NAME = "Pg";
 		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
 		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		Map parameters = new HashMap();
+
+		if(queryLevel == Level.YEAR){
+			throw new IllegalDataException("TO_DATE('" + queryStr + "', 'YYYY') in Oracle will returns a wrong result!");
+		}
+
 		parameters.put("areaid", area.getId());
 		parameters.put("radius", area.getRadius());
 		parameters.put("queryLevel", queryLevel);

@@ -26,7 +26,7 @@ public class Oracle2PgDataExport {
 //		copyFlickrEurope("FLICKR_EUROPE_area_320000");
 //		copyFlickrEurope("FLICKR_PEOPLE");
 //		copyFlickrEurope("FLICKR_EUROPE");
-//		copyFlickrEurope("FLICKR_EUROPE_COUNT");
+		copyFlickrEurope("FLICKR_EUROPE_COUNT");
 //		String tableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
 //		System.out.println("TableName:" + tableName);
 //		copyFlickrEurope(tableName);
@@ -90,7 +90,7 @@ public class Oracle2PgDataExport {
 						System.out.println(rsMetaData.getColumnLabel(i) + " | "+ rsMetaData.getColumnClassName(i) + " | " + rsMetaData.getColumnName(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
 					}
 				}
-				pgInsertStmt.executeUpdate();
+//				pgInsertStmt.executeUpdate();
 				pgInsertStmt.addBatch();
 				System.out.println("inserted num:" + (insertedNum++) + "/" + totalNum);
 				if (insertedNum % BATCH_SIZE == 0) {
