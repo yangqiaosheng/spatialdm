@@ -25,12 +25,14 @@ public class JoinFlickrEuropeAreaCount {
 	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrEuropeAreaCount.class);
 
 	final static int BATCH_SIZE = 1000000;
+	final static int BEGIN_REGION_CHECKED_CODE = 2;
+	final static int FINISH_REGION_CHECKED_CODE = 3;
 	final static String PHOTOS_TABLE_NAME = "FLICKR_EUROPE";
 	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
 	static int rownum = 1;
 	static Calendar startDate;
 
-	static DBUtil db = new DBUtil("/jdbc.properties", 4, 1);
+	static DBUtil db = new DBUtil("/jdbc_pg.properties", 4, 1);
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
@@ -62,22 +64,32 @@ public class JoinFlickrEuropeAreaCount {
 
 		Connection conn = db.getConn();
 		try {
-//			conn.setAutoCommit(false);
+			conn.setAutoCommit(false);
 
 
 			int updateSize = 0;
 			do {
 				// REGION_CHECKED = -1 : building the index
+				/* Oracle
 				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
 						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = -1 where t.photo_id in (" +
 							"select t2.photo_id from (" +
 								"select t1.photo_id, ROWNUM rn from (" +
-									"select photo_id from " + PHOTOS_TABLE_NAME + " where region_checked = 2" +
+									"select photo_id from " + PHOTOS_TABLE_NAME + " where region_checked = ?" +
 								") t1 where ROWNUM < ? " +
 							") t2 where rn >= ?" +
 						")");
-				updateStmt1.setInt(1, 1 + BATCH_SIZE);
-				updateStmt1.setInt(2, 1);
+				updateStmt1.setInt(1, BEGIN_REGION_CHECKED_CODE);
+				updateStmt1.setInt(2, 1 + BATCH_SIZE);
+				updateStmt1.setInt(3, 1);
+				*/
+
+				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
+						"update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = -1 where photo_id in (" +
+							"select photo_id from " + PHOTOS_TABLE_NAME + " t where t.region_checked = ?" +
+							"limit ? )");
+				updateStmt1.setInt(1, BEGIN_REGION_CHECKED_CODE);
+				updateStmt1.setInt(2, BATCH_SIZE);
 				updateSize = updateStmt1.executeUpdate();
 				rownum += updateSize;
 
@@ -96,10 +108,10 @@ public class JoinFlickrEuropeAreaCount {
 				}
 
 				// REGION_CHECKED = 2 : already indexed
-				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = 1 where t.REGION_CHECKED = -1");
+				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = -1");
+				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
 				updateStmt2.executeUpdate();
 				db.close(updateStmt2);
-
 				conn.commit();
 
 			} while(updateSize == BATCH_SIZE);
@@ -125,8 +137,8 @@ public class JoinFlickrEuropeAreaCount {
 
 		PreparedStatement selectFlickrStmt = db.getPstmt(conn,
 				"select date_str, count(*) as num from ("
-				+ " select t.photo_id, to_char(t.TAKEN_DATE,?) as date_str"
-				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = -1)"
+				+ " select t.photo_id, to_char(t.TAKEN_DATE, ?) as date_str"
+				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = -1) temp "
 				+ "group by date_str");
 
 		int areaId = -1;
@@ -167,7 +179,7 @@ public class JoinFlickrEuropeAreaCount {
 	private void addToIndex(Connection conn, Map<String, Integer> countsMapAdd, Level queryLevel, int id, String radius) throws SQLException {
 		PreparedStatement selectCountStmt = db.getPstmt(conn, "select " + queryLevel + " as countStr from " + COUNTS_TABLE_NAME + " where id = ? and radius = ?");
 		selectCountStmt.setInt(1, id);
-		selectCountStmt.setString(2, radius);
+		selectCountStmt.setInt(2, Integer.parseInt(radius));
 		ResultSet rs = db.getRs(selectCountStmt);
 		Map<String, Integer> countsMapPre = new TreeMap<String, Integer>();
 
@@ -197,7 +209,7 @@ public class JoinFlickrEuropeAreaCount {
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
 		updateStmt.setString(1, countStr);
 		updateStmt.setInt(2, id);
-		updateStmt.setString(3, radius);
+		updateStmt.setInt(3, Integer.parseInt(radius));
 
 
 		System.out.println("countStr:" + countStr);
@@ -213,8 +225,9 @@ public class JoinFlickrEuropeAreaCount {
 		PreparedStatement pstmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME + " t");
 		ResultSet pset = db.getRs(pstmt);
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set total = ? where id = ? and radius = ?");
+		int numUpdate = 0;
 		while (pset.next()) {
-			String id = pset.getString("id");
+			int id = pset.getInt("id");
 			String hourStr = pset.getString("hour");
 			String radius = pset.getString("radius");
 			if (hourStr != null) {
@@ -227,11 +240,16 @@ public class JoinFlickrEuropeAreaCount {
 				}
 
 				updateStmt.setInt(1, hour);
-				updateStmt.setString(2, id);
-				updateStmt.setString(3, radius);
+				updateStmt.setInt(2, id);
+				updateStmt.setInt(3, Integer.parseInt(radius));
+//				updateStmt.executeUpdate();
 				updateStmt.addBatch();
+				if((numUpdate++) % 200 == 0){
+					updateStmt.executeBatch();
+				}
 			}
 		}
+
 		updateStmt.executeBatch();
 		db.close(updateStmt);
 		db.close(pset);
