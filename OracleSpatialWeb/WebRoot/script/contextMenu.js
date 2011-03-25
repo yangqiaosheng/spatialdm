@@ -28,6 +28,16 @@ function showContextMenu1(caurrentLatLng, total, sel) {
     });
 }
 
+//Follow mouse
+$(document).ready(function(){
+    $(document).mousemove(function(e){
+         $('.contextmenu1').css({
+            top: (e.pageY + 15) + "px",
+            left: (e.pageX + 15) + "px"
+        });
+    });
+});
+
 function setMenuXY1(caurrentLatLng) {
     var mapWidth = $('#map_canvas').width();
     var mapHeight = $('#map_canvas').height();
@@ -75,11 +85,11 @@ function showContextMenu(caurrentLatLng) {
         contextmenuDir.style.visibility = "visible";
 	$('#menu1, #menu2, #menu3').hover(function () {
 	   var cssObj = {
-	    'color' : 'blue' 
+	    'color' : 'blue'
 	  }
-	  $(this).css(cssObj);	  
-	}, 
-	function () {    
+	  $(this).css(cssObj);
+	},
+	function () {
 	  var cssObj = {
 	    'color' : 'black'
 	  }
@@ -89,7 +99,7 @@ function showContextMenu(caurrentLatLng) {
 	  map.setCenter(caurrentLatLng);
 	  map.setZoom(map.getZoom()+1);
 	  hideContextMenu();
-	});  
+	});
 	$('#menu2').click(function(){
 	  map.setCenter(caurrentLatLng);
 	  map.setZoom(map.getZoom()-1);
