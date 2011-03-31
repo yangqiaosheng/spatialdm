@@ -73,3 +73,31 @@ CREATE INDEX flickr_europe_taken_date_idx
   USING btree
   (taken_date DESC);
 
+CREATE INDEX flickr_europe_r5000_id_idx
+  ON flickr_europe
+  USING btree
+  (region_5000_id);
+CREATE INDEX flickr_europe_r10000_id_idx
+  ON flickr_europe
+  USING btree
+  (region_10000_id);
+CREATE INDEX flickr_europe_r20000_id_idx
+  ON flickr_europe
+  USING btree
+  (region_20000_id);
+CREATE INDEX flickr_europe_r40000_id_idx
+  ON flickr_europe
+  USING btree
+  (region_40000_id);
+CREATE INDEX flickr_europe_r80000_id_idx
+  ON flickr_europe
+  USING btree
+  (region_80000_id);
+CREATE INDEX flickr_europe_r160000_id_idx
+  ON flickr_europe
+  USING btree
+  (region_160000_id);
+CREATE INDEX flickr_europe_r320000_id_idx
+  ON flickr_europe
+  USING btree
+  (region_320000_id);

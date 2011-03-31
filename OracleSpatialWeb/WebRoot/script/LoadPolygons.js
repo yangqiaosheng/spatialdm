@@ -86,7 +86,7 @@ function attachMessage(Polygon, valuei, number) {
     });
 
     google.maps.event.addListener(Polygon, 'click', function (event) {
-	unSelectAllThePolygons();
+		unSelectAllThePolygons();
         cleanPhotos();
         this.setOptions({
             fillColor: "#0000FF",

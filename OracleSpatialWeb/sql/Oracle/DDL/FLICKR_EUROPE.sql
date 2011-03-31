@@ -13,13 +13,13 @@
        "WOE_ID" VARCHAR2(20),
        "ACCURACY" NUMBER,
        "REGION_CHECKED" NUMBER default '0' not null,
-       "REGION_5000_ID" NUMBER,
-       "REGION_10000_ID" NUMBER,
-       "REGION_20000_ID" NUMBER,
-       "REGION_40000_ID" NUMBER,
-       "REGION_80000_ID" NUMBER,
-       "REGION_160000_ID" NUMBER,
-       "REGION_320000_ID" NUMBER,
+       "REGION_5000_ID" NUMBER default '0' not null,
+       "REGION_10000_ID" NUMBER default '0' not null,
+       "REGION_20000_ID" NUMBER default '0' not null,
+       "REGION_40000_ID" NUMBER default '0' not null,
+       "REGION_80000_ID" NUMBER default '0' not null,
+       "REGION_160000_ID" NUMBER default '0' not null,
+       "REGION_320000_ID" NUMBER default '0' not null,
         constraint "FLICKR_EUROPE_PK" primary key ("PHOTO_ID")
     );
 
