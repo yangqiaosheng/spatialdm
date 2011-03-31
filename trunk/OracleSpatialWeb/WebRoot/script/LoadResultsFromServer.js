@@ -93,23 +93,24 @@ function carouselLoadPictures(xml) {
     readXml(xml);
     xmldoc = null;
     if (booleanF2 == false) {
-	YAHOO.widget.Carousel.prototype.STRINGS.NEXT_BUTTON_TEXT = "<img src='right-enabled.gif'/> ";
-	YAHOO.widget.Carousel.prototype.STRINGS.PREVIOUS_BUTTON_TEXT = "<img src='left-enabled.gif'/> ";
+		YAHOO.widget.Carousel.prototype.STRINGS.NEXT_BUTTON_TEXT = "<img src='right-enabled.gif'/> ";
+		YAHOO.widget.Carousel.prototype.STRINGS.PREVIOUS_BUTTON_TEXT = "<img src='left-enabled.gif'/> ";
 
-	g_jcarousel = new YAHOO.widget.Carousel("carousel",{
-			  animation: { speed: 0.5 },
-			  numVisible: one_stepCarousel,
-			  scrollInc:  one_stepCarousel,
-		      });
-	g_jcarousel.addListener("afterScroll", scrollEvtHandler);
-	g_jcarousel.render();
-	g_jcarousel.show();
-	g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
-	timeofUpload++;
-	//$("#numberInbterval").html(" ");
-	loadTheCarousel(0, g_jcarousel, smallUrl);
+		g_jcarousel = new YAHOO.widget.Carousel("carousel",{
+				  animation: { speed: 0.5 },
+				  numVisible: one_stepCarousel,
+				  scrollInc:  one_stepCarousel,
+			      });
+		g_jcarousel.addListener("afterScroll", scrollEvtHandler);
+		g_jcarousel.render();
+		g_jcarousel.show();
+		g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
+		timeofUpload++;
+		//$("#numberInbterval").html(" ");
+		loadTheCarousel(0, g_jcarousel, smallUrl);
         booleanF2 = true;
     }
+
         if (lastCarousel > g_carouselTotalSize - beforeLoad) {
             loadTheCarousel(g_carouselTotalSize, g_jcarousel, smallUrl);
             g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
@@ -158,8 +159,14 @@ function readXml(xml) {
 }
 
  function cleanPhotos() {
-     if (g_jcarousel!=null){
-	g_jcarousel.clearItems();
+	 contorTotal = 0;
+	 g_carouselTotalSize = 0;
+     lastCarousel = 0;
+     page = 1;
+     booleanF = false;
+     ids = "";
+     if (g_jcarousel != null){
+		g_jcarousel.clearItems();
      }
      dateTotal = new Array();
      weekdayTotal = new Array();
@@ -167,13 +174,8 @@ function readXml(xml) {
      latitudeTotal = new Array();
      longitudeTotal = new Array();
      smallUrlTotal = new Array();
-     contorTotal = 0;
      setTheParameters();
-     g_carouselTotalSize = 0;
-     lastCarousel = 0;
-     page = 1
-     booleanF = false;
-     ids = "";
+
  }
 
 function getId(){

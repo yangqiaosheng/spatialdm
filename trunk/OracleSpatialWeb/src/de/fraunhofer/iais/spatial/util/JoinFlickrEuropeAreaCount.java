@@ -24,9 +24,9 @@ public class JoinFlickrEuropeAreaCount {
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrEuropeAreaCount.class);
 
-	final static int BATCH_SIZE = 1000000;
-	final static int BEGIN_REGION_CHECKED_CODE = 2;
-	final static int FINISH_REGION_CHECKED_CODE = 3;
+//	final static int BATCH_SIZE = 1000000;
+	final static int BEGIN_REGION_CHECKED_CODE = 1;
+	final static int FINISH_REGION_CHECKED_CODE = 2;
 	final static String PHOTOS_TABLE_NAME = "FLICKR_EUROPE";
 	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
 	static int rownum = 1;
@@ -64,58 +64,61 @@ public class JoinFlickrEuropeAreaCount {
 
 		Connection conn = db.getConn();
 		try {
-			conn.setAutoCommit(false);
+//			conn.setAutoCommit(false);
 
 
 			int updateSize = 0;
-			do {
-				// REGION_CHECKED = -1 : building the index
-				/* Oracle
-				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
-						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = -1 where t.photo_id in (" +
-							"select t2.photo_id from (" +
-								"select t1.photo_id, ROWNUM rn from (" +
-									"select photo_id from " + PHOTOS_TABLE_NAME + " where region_checked = ?" +
-								") t1 where ROWNUM < ? " +
-							") t2 where rn >= ?" +
-						")");
-				updateStmt1.setInt(1, BEGIN_REGION_CHECKED_CODE);
-				updateStmt1.setInt(2, 1 + BATCH_SIZE);
-				updateStmt1.setInt(3, 1);
-				*/
-
-				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
-						"update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = -1 where photo_id in (" +
-							"select photo_id from " + PHOTOS_TABLE_NAME + " t where t.region_checked = ?" +
-							"limit ? )");
-				updateStmt1.setInt(1, BEGIN_REGION_CHECKED_CODE);
-				updateStmt1.setInt(2, BATCH_SIZE);
-				updateSize = updateStmt1.executeUpdate();
-				rownum += updateSize;
-
-				db.close(updateStmt1);
-				conn.commit();
+//			do {
+//				// REGION_CHECKED = -1 : building the index
+//				/* Oracle */
+//				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
+//						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = -1 where t.photo_id in (" +
+//							"select t2.photo_id from (" +
+//								"select t1.photo_id, ROWNUM rn from (" +
+//									"select photo_id from " + PHOTOS_TABLE_NAME + " where region_checked = ?" +
+//								") t1 where ROWNUM < ? " +
+//							") t2 where rn >= ?" +
+//						")");
+//				updateStmt1.setInt(1, BEGIN_REGION_CHECKED_CODE);
+//				updateStmt1.setInt(2, 1 + BATCH_SIZE);
+//				updateStmt1.setInt(3, 1);
+//
+//				/* PostGIS
+//				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
+//						"update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = -1 where photo_id in (" +
+//							"select photo_id from " + PHOTOS_TABLE_NAME + " t where t.region_checked = ? " +
+//							"limit ? )");
+//				updateStmt1.setInt(1, BEGIN_REGION_CHECKED_CODE);
+//				updateStmt1.setInt(2, BATCH_SIZE);
+//				*/
+//				updateSize = updateStmt1.executeUpdate();
+//				rownum += updateSize;
+//
+//				db.close(updateStmt1);
+//				conn.commit();
 
 				for (String radius : radiusList) {
 					count(conn, Level.HOUR, radius);
-					conn.commit();
-					count(conn, Level.DAY, radius);
-					conn.commit();
-					count(conn, Level.MONTH, radius);
-					conn.commit();
-					count(conn, Level.YEAR, radius);
-					conn.commit();
+//					conn.commit();
+//					count(conn, Level.DAY, radius);
+//					conn.commit();
+//					count(conn, Level.MONTH, radius);
+//					conn.commit();
+//					count(conn, Level.YEAR, radius);
+//					conn.commit();
 				}
 
 				// REGION_CHECKED = 2 : already indexed
-				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = -1");
-				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
-				updateStmt2.executeUpdate();
-				db.close(updateStmt2);
-				conn.commit();
-
-			} while(updateSize == BATCH_SIZE);
-
+//				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = -1");
+//				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
+//				updateStmt2.executeUpdate();
+//				db.close(updateStmt2);
+//				conn.commit();
+//
+//			} while(updateSize == BATCH_SIZE);
+			countDay(conn);
+			countMonth(conn);
+			countYear(conn);
 			countTotal(conn);
 			conn.commit();
 		} catch (SQLException e) {
@@ -131,14 +134,14 @@ public class JoinFlickrEuropeAreaCount {
 	}
 
 	private void count(Connection conn, Level queryLevel, String radiusString) throws SQLException {
-		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = -1");
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = 1");
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 
 
 		PreparedStatement selectFlickrStmt = db.getPstmt(conn,
 				"select date_str, count(*) as num from ("
 				+ " select t.photo_id, to_char(t.TAKEN_DATE, ?) as date_str"
-				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = -1) temp "
+				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = 1) temp "
 				+ "group by date_str");
 
 		int areaId = -1;
@@ -218,6 +221,135 @@ public class JoinFlickrEuropeAreaCount {
 		System.out.println("executeUpdate:" + updateStmt.executeUpdate());
 
 		db.close(updateStmt);
+	}
+
+	private void countDay(Connection conn) throws SQLException {
+
+		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from FLICKR_DE_WEST_TABLE_Count");
+		ResultSet pset = db.getRs(personStmt);
+
+		while (pset.next()) {
+			String id = pset.getString("id");
+			String radius = pset.getString("radius");
+			String hourStr = pset.getString("hour");
+			StringBuffer dayStr = new StringBuffer();
+			if (hourStr != null) {
+				//person:28507282@N03
+				Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})@\\d{2}:(\\d{1,});");
+				Matcher m = p.matcher(hourStr);
+				String day = "";
+				int hour = 0;
+				while (m.find()) {
+					if (m.group(1).equals(day)) {
+						hour += Integer.parseInt(m.group(2));
+					} else {
+						if (!day.equals("")) {
+							dayStr.append(day + ":" + hour + ";");
+						}
+						day = m.group(1);
+						hour = Integer.parseInt(m.group(2));
+					}
+				}
+				if (!day.equals("")) {
+					dayStr.append(day + ":" + hour + ";");
+				}
+				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set day = ? where id = ? and radius = ?");
+				iStmt.setString(1, dayStr.toString());
+				iStmt.setString(2, id);
+				iStmt.setString(3, radius);
+				iStmt.executeUpdate();
+				iStmt.close();
+				System.out.println("id:" + id + "!" + dayStr);
+			}
+		}
+		db.close(pset);
+		db.close(personStmt);
+	}
+
+	private void countMonth(Connection conn) throws SQLException {
+
+		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from FLICKR_DE_WEST_TABLE_Count");
+		ResultSet pset = db.getRs(personStmt);
+
+		while (pset.next()) {
+			String id = pset.getString("id");
+			String hourStr = pset.getString("hour");
+			String radius = pset.getString("radius");
+			StringBuffer monthStr = new StringBuffer();
+			if (hourStr != null) {
+				//person:28507282@N03
+				Pattern p = Pattern.compile("(\\d{4}-\\d{2})-\\d{2}@\\d{2}:(\\d{1,});");
+				Matcher m = p.matcher(hourStr);
+				String month = "";
+				int hour = 0;
+				while (m.find()) {
+					if (m.group(1).equals(month)) {
+						hour += Integer.parseInt(m.group(2));
+					} else {
+						if (!month.equals("")) {
+							monthStr.append(month + ":" + hour + ";");
+						}
+						month = m.group(1);
+						hour = Integer.parseInt(m.group(2));
+					}
+				}
+				if (!month.equals("")) {
+					monthStr.append(month + ":" + hour + ";");
+				}
+				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set month = ? where id = ? and radius = ?");
+				iStmt.setString(1, monthStr.toString());
+				iStmt.setString(2, id);
+				iStmt.setString(3, radius);
+				iStmt.executeUpdate();
+				iStmt.close();
+				System.out.println("id:" + id + "!" + monthStr);
+			}
+		}
+		db.close(pset);
+		db.close(personStmt);
+	}
+
+	private void countYear(Connection conn) throws SQLException {
+
+		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from FLICKR_DE_WEST_TABLE_Count");
+		ResultSet pset = db.getRs(personStmt);
+
+		while (pset.next()) {
+			String id = pset.getString("id");
+			String hourStr = pset.getString("hour");
+			String radius = pset.getString("radius");
+			StringBuffer yearStr = new StringBuffer();
+			if (hourStr != null) {
+				//person:28507282@N03
+				Pattern p = Pattern.compile("(\\d{4})-\\d{2}-\\d{2}@\\d{2}:(\\d{1,});");
+				Matcher m = p.matcher(hourStr);
+				String year = "";
+				int hour = 0;
+				while (m.find()) {
+					if (m.group(1).equals(year)) {
+						hour += Integer.parseInt(m.group(2));
+					} else {
+						if (!year.equals("")) {
+							yearStr.append(year + ":" + hour + ";");
+						}
+						year = m.group(1);
+						hour = Integer.parseInt(m.group(2));
+					}
+				}
+				if (!year.equals("")) {
+					yearStr.append(year + ":" + hour + ";");
+				}
+				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set year = ? where id = ? and radius = ?");
+				iStmt.setString(1, yearStr.toString());
+				iStmt.setString(2, id);
+				iStmt.setString(3, radius);
+				iStmt.executeUpdate();
+				iStmt.close();
+				System.out.println("id:" + id + "!" + yearStr);
+			}
+		}
+		db.close(pset);
+		db.close(personStmt);
 	}
 
 	private void countTotal(Connection conn) throws SQLException {
