@@ -6,7 +6,7 @@ function atacheEventsOnCharts(){
       }, function(){
 	    $(this).css("height", "60px");
 	    $(this).css("width", "30%");
-      });  
+      });
 var mon = $("#IntChartID_2");
   mon.toggle(function(){
 	    $(this).css("height", "30%");
@@ -14,7 +14,7 @@ var mon = $("#IntChartID_2");
       }, function(){
 	    $(this).css("height", "60px");
 	    $(this).css("width", "30%");
-      });  
+      });
 var h = $("#IntChartID_3");
   h.toggle(function(){
 	    $(this).css("height", "30%");
@@ -22,7 +22,7 @@ var h = $("#IntChartID_3");
       }, function(){
 	    $(this).css("height", "60px");
 	    $(this).css("width", "30%");
-      });  
+      });
 var d = $("#IntChartID_4");
   d.toggle(function(){
 	    $(this).css("height", "30%");
@@ -30,7 +30,7 @@ var d = $("#IntChartID_4");
       }, function(){
 	    $(this).css("height", "60px");
 	    $(this).css("width", "30%");
-      });  
+      });
 
 var wd = $("#IntChartID_5");
   wd.toggle(function(){
@@ -39,5 +39,5 @@ var wd = $("#IntChartID_5");
       }, function(){
 	    $(this).css("height", "60px");
 	    $(this).css("width", "30%");
-      });  
+      });
 }
