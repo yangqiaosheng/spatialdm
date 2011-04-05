@@ -358,7 +358,7 @@ public class FlickrEuropeAreaMgr {
 		document.setRootElement(rootElement);
 		for (FlickrArea area : areas) {
 			String polyColor = "#0000";
-			int color = area.getTotalCount() / 30;
+			long color = area.getTotalCount() / 30;
 			if (color > 255) {
 				color = 255;
 			}
@@ -686,6 +686,7 @@ public class FlickrEuropeAreaMgr {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
+		rootElement.setAttribute("wholeDbNum", String.valueOf(this.getAreaDao().getTotalPhotoNum()));
 
 		for (FlickrArea area : areas) {
 			Element polygonElement = new Element("polygon");
@@ -848,7 +849,7 @@ public class FlickrEuropeAreaMgr {
 			Element polyStyleElement = new Element("PolyStyle", namespace);
 			styleElement.addContent(polyStyleElement);
 
-			int color = area.getTotalCount() / 30;
+			long color = area.getTotalCount() / 30;
 			if (color > 255) {
 				color = 255;
 			}

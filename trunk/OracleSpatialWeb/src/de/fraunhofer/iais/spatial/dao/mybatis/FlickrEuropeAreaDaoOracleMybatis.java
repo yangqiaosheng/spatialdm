@@ -40,7 +40,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		if (a != null) {
 			a.setRadius(radius);
 			a.setSelectedCount(0);
-			a.setTotalCount(getTotalCount(a.getId(), a.getRadius()));
+			a.setTotalCount(getTotalCountWithinArea(a.getId(), a.getRadius()));
 			loadYearsCount(a);
 			loadMonthsCount(a);
 			loadDaysCount(a);
@@ -193,6 +193,30 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 	}
 
 	@Override
+	public long getTotalCountWithinArea(long areaid, Radius radius) {
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		areaDto.setAreaid(areaid);
+		areaDto.setRadius(radius);
+
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME  + ".totalCount", areaDto);
+		int num = 0;
+		if(numObj != null){
+			num = (Integer)numObj;
+		}
+		return num;
+	}
+
+	@Override
+	public long getTotalPhotoNum() {
+		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalNum");
+		long num = 0;
+		if(numObj != null){
+			num = (Long)numObj;
+		}
+		return num;
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
@@ -210,20 +234,6 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		this.initPhotos(photos, area);
 
 		return photos;
-	}
-
-	@Override
-	public int getTotalCount(int areaid, Radius radius) {
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
-		areaDto.setAreaid(areaid);
-		areaDto.setRadius(radius);
-
-		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME  + ".totalCount", areaDto);
-		int num = 0;
-		if(numObj != null){
-			num = (Integer)numObj;
-		}
-		return num;
 	}
 
 }

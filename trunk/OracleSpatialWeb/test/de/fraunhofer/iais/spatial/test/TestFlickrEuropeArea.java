@@ -55,6 +55,7 @@ public class TestFlickrEuropeArea {
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 
 		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans.xml" });
+//		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans_oracle.xml" });
 		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
 
@@ -99,7 +100,7 @@ public class TestFlickrEuropeArea {
 
 	@Test
 	public void testJdbcDao0() {
-		int total = areaMgr.getAreaDao().getTotalCount(1, FlickrArea.Radius.R5000);
+		long total = areaMgr.getAreaDao().getTotalCountWithinArea(1, FlickrArea.Radius.R5000);
 
 		System.out.println("total:" + total);
 	}
@@ -107,6 +108,8 @@ public class TestFlickrEuropeArea {
 	@Test
 	public void testJdbcDao1() {
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R5000);
+
+		long totalNum = areaMgr.getAreaDao().getTotalPhotoNum();
 
 		String coordinates = "\t";
 		if (a != null) {
@@ -120,6 +123,7 @@ public class TestFlickrEuropeArea {
 			System.out.println("days:" + a.getDaysCount().size());
 			System.out.println("months:" + a.getMonthsCount().size());
 			System.out.println("years:" + a.getYearsCount().size());
+			System.out.println("Total Number of Photo:" + totalNum);
 			// System.out.println(person+":"+dao.getPersonCount(a.getId(),
 			// person));
 		}

@@ -5,9 +5,11 @@
 
 <mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrPhotoOracle">
 
-	<!-- cache: flushInterval: 24hours -->
-<!--   	<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>-->
-
+	<select id="totalNum" resultType="long" useCache="false">
+		select NUM_ROWS
+		from user_tables
+		where TABLE_NAME = 'FLICKR_EUROPE'
+	</select>
 	<select id="selectByDateQuery" resultType="FlickrPhoto" parameterType="map" useCache="false">
 		<![CDATA[
 		select
@@ -21,7 +23,7 @@
 			VIEWED
  		from (
  			select p.* from
- 					FLICKR_EUROPE P
+ 					FLICKR_EUROPE p
 			where p.REGION_${radius}_ID = #{areaid}
 			 		and p.TAKEN_DATE >= to_date(#{queryStr}, #{oracleDatePatternStr})
 			 		and p.TAKEN_DATE <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
@@ -30,5 +32,25 @@
 		where rownum <= #{num}
 		]]>
 	</select>
+
+	<!-- Test Query:
+		select
+				TAKEN_DATE as "date",
+				LATITUDE,
+				LONGITUDE,
+				USER_ID as "personId",
+				SMALLURL,
+				TITLE,
+				VIEWED
+	      from (
+	        select p.* from
+	            FLICKR_EUROPE p
+	        where p.REGION_5000_ID = 512
+	            and p.TAKEN_DATE >= to_date('2008-11-12', 'yyyy-mm-dd')
+	            and p.TAKEN_DATE <  to_date('2008-11-12', 'yyyy-mm-dd') + interval '1' month
+	        order by p.TAKEN_DATE desc
+	      )
+		where rownum <= 30
+	 -->
 
 </mapper>

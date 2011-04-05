@@ -32,7 +32,7 @@ public class JoinFlickrEuropeAreaCount {
 	static int rownum = 1;
 	static Calendar startDate;
 
-	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
+	static DBUtil db = new DBUtil("/jdbc.properties", 18, 3);
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
@@ -64,7 +64,7 @@ public class JoinFlickrEuropeAreaCount {
 
 		Connection conn = db.getConn();
 		try {
-//			conn.setAutoCommit(false);
+			conn.setAutoCommit(false);
 
 
 			int updateSize = 0;
@@ -225,11 +225,11 @@ public class JoinFlickrEuropeAreaCount {
 
 	private void countDay(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from FLICKR_DE_WEST_TABLE_Count");
+		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
-			String id = pset.getString("id");
+			int id = pset.getInt("id");
 			String radius = pset.getString("radius");
 			String hourStr = pset.getString("hour");
 			StringBuffer dayStr = new StringBuffer();
@@ -253,10 +253,10 @@ public class JoinFlickrEuropeAreaCount {
 				if (!day.equals("")) {
 					dayStr.append(day + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set day = ? where id = ? and radius = ?");
+				PreparedStatement iStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set day = ? where id = ? and radius = ?");
 				iStmt.setString(1, dayStr.toString());
-				iStmt.setString(2, id);
-				iStmt.setString(3, radius);
+				iStmt.setInt(2, id);
+				iStmt.setInt(3, Integer.parseInt(radius));
 				iStmt.executeUpdate();
 				iStmt.close();
 				System.out.println("id:" + id + "!" + dayStr);
@@ -268,11 +268,11 @@ public class JoinFlickrEuropeAreaCount {
 
 	private void countMonth(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from FLICKR_DE_WEST_TABLE_Count");
+		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
-			String id = pset.getString("id");
+			int id = pset.getInt("id");
 			String hourStr = pset.getString("hour");
 			String radius = pset.getString("radius");
 			StringBuffer monthStr = new StringBuffer();
@@ -296,10 +296,10 @@ public class JoinFlickrEuropeAreaCount {
 				if (!month.equals("")) {
 					monthStr.append(month + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set month = ? where id = ? and radius = ?");
+				PreparedStatement iStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set month = ? where id = ? and radius = ?");
 				iStmt.setString(1, monthStr.toString());
-				iStmt.setString(2, id);
-				iStmt.setString(3, radius);
+				iStmt.setInt(2, id);
+				iStmt.setInt(3, Integer.parseInt(radius));
 				iStmt.executeUpdate();
 				iStmt.close();
 				System.out.println("id:" + id + "!" + monthStr);
@@ -311,11 +311,11 @@ public class JoinFlickrEuropeAreaCount {
 
 	private void countYear(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from FLICKR_DE_WEST_TABLE_Count");
+		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
-			String id = pset.getString("id");
+			int id = pset.getInt("id");
 			String hourStr = pset.getString("hour");
 			String radius = pset.getString("radius");
 			StringBuffer yearStr = new StringBuffer();
@@ -339,10 +339,10 @@ public class JoinFlickrEuropeAreaCount {
 				if (!year.equals("")) {
 					yearStr.append(year + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = db.getPstmt(conn, "update FLICKR_DE_WEST_TABLE_count set year = ? where id = ? and radius = ?");
+				PreparedStatement iStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set year = ? where id = ? and radius = ?");
 				iStmt.setString(1, yearStr.toString());
-				iStmt.setString(2, id);
-				iStmt.setString(3, radius);
+				iStmt.setInt(2, id);
+				iStmt.setInt(3, Integer.parseInt(radius));
 				iStmt.executeUpdate();
 				iStmt.close();
 				System.out.println("id:" + id + "!" + yearStr);
