@@ -15,7 +15,7 @@ import oracle.spatial.geometry.JGeometry;
  */
 
 public class FlickrArea {
-	private int id;
+	private long id;
 	private Radius radius;
 	private String name;
 	private float area;
@@ -26,8 +26,8 @@ public class FlickrArea {
 	private Map<String, Integer> monthsCount = new HashMap<String, Integer>();
 	private Map<String, Integer> daysCount = new HashMap<String, Integer>();
 	private Map<String, Integer> hoursCount = new HashMap<String, Integer>();
-	private transient int totalCount;
-	private transient int selectedCount;
+	private transient long totalCount;
+	private transient long selectedCount;
 	private transient ChartData chartsData = new ChartData();
 
 	public enum Radius {
@@ -63,7 +63,7 @@ public class FlickrArea {
 		}
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -103,11 +103,11 @@ public class FlickrArea {
 		this.center = center;
 	}
 
-	public int getTotalCount() {
+	public long getTotalCount() {
 		return totalCount;
 	}
 
-	public void setTotalCount(int totalCount) {
+	public void setTotalCount(long totalCount) {
 		this.totalCount = totalCount;
 	}
 
@@ -127,11 +127,11 @@ public class FlickrArea {
 		return hoursCount;
 	}
 
-	public int getSelectCount() {
+	public long getSelectCount() {
 		return selectedCount;
 	}
 
-	public void setSelectedCount(int selectCount) {
+	public void setSelectedCount(long selectCount) {
 		this.selectedCount = selectCount;
 	}
 

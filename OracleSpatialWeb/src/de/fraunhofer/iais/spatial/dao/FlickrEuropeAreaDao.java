@@ -88,9 +88,16 @@ public abstract class FlickrEuropeAreaDao {
 	/**
 	 * get the total amount of photos uploaded within this area
 	 * @param areaid
-	 * @return int - number of photos
+	 * @param radius
+	 * @return long - number of photos
 	 */
-	public abstract int getTotalCount(int areaid, Radius radius);
+	public abstract long getTotalCountWithinArea(long areaid, Radius radius);
+
+	/**
+	 * get the total amount of photos stored in the database
+	 * @return long - number of photos
+	 */
+	public abstract long getTotalPhotoNum();
 
 
 	protected abstract List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num);

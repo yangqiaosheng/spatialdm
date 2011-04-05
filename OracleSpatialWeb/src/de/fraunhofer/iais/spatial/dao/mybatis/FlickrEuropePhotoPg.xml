@@ -5,8 +5,11 @@
 
 <mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrPhotoPg">
 
-	<!-- cache: flushInterval: 24hours -->
-<!--   	<cache eviction="LRU" size="512" readOnly="true" flushInterval="86400000"></cache>-->
+	<select id="totalNum" resultType="long" useCache="false">
+		select n_tup_ins
+		from pg_stat_user_tables
+		where relname = 'flickr_europe'
+	</select>
 
 	<select id="selectByDateQuery" resultType="FlickrPhoto" parameterType="map" useCache="false">
 		<![CDATA[
@@ -19,7 +22,7 @@
 			SMALLURL,
 			TITLE,
 			VIEWED
- 		from FLICKR_EUROPE P
+ 		from FLICKR_EUROPE p
 		where p.REGION_${radius}_ID = #{areaid}
 		 		and p.TAKEN_DATE >= to_timestamp(#{queryStr}, #{oracleDatePatternStr})
 		 		and p.TAKEN_DATE <  to_timestamp(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
@@ -28,5 +31,23 @@
 
 		]]>
 	</select>
+
+	<!-- Test Query:
+		select
+			PHOTO_ID as "id",
+			TAKEN_DATE as "date",
+			LATITUDE,
+			LONGITUDE,
+			USER_ID as "personId",
+			SMALLURL,
+			TITLE,
+			VIEWED
+		from FLICKR_EUROPE P
+		where p.REGION_5000_ID = 512
+				and p.TAKEN_DATE >= to_timestamp('2008-11-12', 'yyyy-mm-dd')
+				and p.TAKEN_DATE <  to_timestamp('2008-11-12', 'yyyy-mm-dd') + interval '1' month
+		order by p.TAKEN_DATE desc
+		limit 30
+	 -->
 
 </mapper>

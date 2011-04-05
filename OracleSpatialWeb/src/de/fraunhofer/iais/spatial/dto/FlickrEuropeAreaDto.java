@@ -22,7 +22,7 @@ public class FlickrEuropeAreaDto {
 	private SortedSet<String> weekdays = new TreeSet<String>();
 	private SortedSet<String> queryStrs = new TreeSet<String>();
 	private Level queryLevel;
-	private int areaid;
+	private long areaid;
 	private Radius radius;
 	private int zoom;
 	private Point2D center;
@@ -57,11 +57,11 @@ public class FlickrEuropeAreaDto {
 		return weekdays;
 	}
 
-	public int getAreaid() {
+	public long getAreaid() {
 		return areaid;
 	}
 
-	public void setAreaid(int areaid) {
+	public void setAreaid(long areaid) {
 		this.areaid = areaid;
 	}
 

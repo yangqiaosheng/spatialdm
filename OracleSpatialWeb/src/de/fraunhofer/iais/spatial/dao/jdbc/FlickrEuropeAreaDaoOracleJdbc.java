@@ -212,14 +212,14 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getTotalCount(java.lang.String, Radius)
 	 */
 	@Override
-	public int getTotalCount(int areaid, Radius radius) {
+	public long getTotalCountWithinArea(long areaid, Radius radius) {
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
 		int num = 0;
 		try {
 			selectStmt = db.getPstmt(conn, "select TOTAL from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, areaid);
+			selectStmt.setLong(1, areaid);
 			selectStmt.setInt(2, Integer.parseInt(radius.toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
@@ -249,7 +249,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 					+ " where t1.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + area.getRadius()
 					+ "_ID = ? and to_char(t1.dt, '" + oracleDatePatternStr + "') = ? order by t1.dt desc) t2 )"
 					+ " where rn = ?");
-			selectStmt.setInt(1, area.getId());
+			selectStmt.setLong(1, area.getId());
 			selectStmt.setString(2, queryStr);
 			selectStmt.setInt(3, idx);
 			rs = db.getRs(selectStmt);
@@ -285,7 +285,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 					+ " where t.PHOTO_ID = g.PHOTO_ID and g.CLUSTER_R" + area.getRadius()
 					+ "_ID = ? and t.dt >= " + oracleToDateStr + " and t.dt < " + oracleToDateStr + " + interval '1' " + queryLevel + " order by t.dt desc)"
 					+ " where rownum <= ?");
-			selectStmt.setInt(1, area.getId());
+			selectStmt.setLong(1, area.getId());
 			selectStmt.setInt(2, num);
 			rs = db.getRs(selectStmt);
 			while (rs.next()) {
@@ -371,7 +371,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 
 		try {
 			selectStmt = db.getPstmt(conn, "select HOUR from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, area.getId());
+			selectStmt.setLong(1, area.getId());
 			selectStmt.setInt(2, Integer.parseInt(area.getRadius().toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
@@ -396,7 +396,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 
 		try {
 			selectStmt = db.getPstmt(conn, "select DAY from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, area.getId());
+			selectStmt.setLong(1, area.getId());
 			selectStmt.setInt(2, Integer.parseInt(area.getRadius().toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
@@ -421,7 +421,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 
 		try {
 			selectStmt = db.getPstmt(conn, "select MONTH from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, area.getId());
+			selectStmt.setLong(1, area.getId());
 			selectStmt.setInt(2, Integer.parseInt(area.getRadius().toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
@@ -446,7 +446,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 
 		try {
 			selectStmt = db.getPstmt(conn, "select YEAR from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
-			selectStmt.setInt(1, area.getId());
+			selectStmt.setLong(1, area.getId());
 			selectStmt.setInt(2, Integer.parseInt(area.getRadius().toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
@@ -473,7 +473,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 	private void initArea(FlickrArea a) {
 		if (a != null) {
 			a.setSelectedCount(0);
-			a.setTotalCount(getTotalCount(a.getId(), a.getRadius()));
+			a.setTotalCount(getTotalCountWithinArea(a.getId(), a.getRadius()));
 			loadYearsCount(a);
 			loadMonthsCount(a);
 			loadDaysCount(a);
@@ -508,6 +508,12 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 
 	@Override
 	public int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long getTotalPhotoNum() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

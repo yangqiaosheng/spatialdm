@@ -34,7 +34,7 @@ private static final String DB_NAME = "Pg";
 		if (a != null) {
 			a.setRadius(radius);
 			a.setSelectedCount(0);
-			a.setTotalCount(getTotalCount(a.getId(), a.getRadius()));
+			a.setTotalCount(getTotalCountWithinArea(a.getId(), a.getRadius()));
 			loadYearsCount(a);
 			loadMonthsCount(a);
 			loadDaysCount(a);
@@ -193,6 +193,30 @@ private static final String DB_NAME = "Pg";
 	}
 
 	@Override
+	public long getTotalCountWithinArea(long areaid, Radius radius) {
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		areaDto.setAreaid(areaid);
+		areaDto.setRadius(radius);
+
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME  + ".totalCount", areaDto);
+		long num = 0;
+		if(numObj != null){
+			num = (Long)numObj;
+		}
+		return num;
+	}
+
+	@Override
+	public long getTotalPhotoNum() {
+		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalNum");
+		long num = 0;
+		if(numObj != null){
+			num = (Long)numObj;
+		}
+		return num;
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
@@ -215,20 +239,6 @@ private static final String DB_NAME = "Pg";
 		this.initPhotos(photos, area);
 
 		return photos;
-	}
-
-	@Override
-	public int getTotalCount(int areaid, Radius radius) {
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
-		areaDto.setAreaid(areaid);
-		areaDto.setRadius(radius);
-
-		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME  + ".totalCount", areaDto);
-		int num = 0;
-		if(numObj != null){
-			num = (Integer)numObj;
-		}
-		return num;
 	}
 
 }
