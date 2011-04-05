@@ -125,7 +125,39 @@ html,body,#map_canvas {
   width: auto;
  /* position:absolute; */
 }
-#IntChartID{
+#IntChartID_1{
+  width:30%;
+  height:60px;
+  opacity: 1;
+  border-width:0.31em;
+  border-style:solid;
+  border-color:#8AA8F3;
+}
+#IntChartID_2{
+  width:30%;
+  height:60px;
+  opacity: 1;
+  border-width:0.31em;
+  border-style:solid;
+  border-color:#8AA8F3;
+}
+#IntChartID_3{
+  width:30%;
+  height:60px;
+  opacity: 1;
+  border-width:0.31em;
+  border-style:solid;
+  border-color:#8AA8F3;
+}
+#IntChartID_4{
+  width:30%;
+  height:60px;
+  opacity: 1;
+  border-width:0.31em;
+  border-style:solid;
+  border-color:#8AA8F3;
+}
+#IntChartID_5{
   width:30%;
   height:60px;
   opacity: 1;
