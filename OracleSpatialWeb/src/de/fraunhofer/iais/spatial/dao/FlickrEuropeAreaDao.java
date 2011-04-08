@@ -99,6 +99,17 @@ public abstract class FlickrEuropeAreaDao {
 	 */
 	public abstract long getTotalPhotoNum();
 
+	/**
+	 * get the total amount of world photos stored in the database
+	 * @return long - number of world photos
+	 */
+	public abstract long getTotalWorldPhotoNum();
+
+	/**
+	 * get the total amount of people stored in the database
+	 * @return long - number of people
+	 */
+	public abstract long getTotalPeopleNum();
 
 	protected abstract List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num);
 

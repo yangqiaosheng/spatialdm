@@ -110,6 +110,7 @@ public class TestFlickrEuropeArea {
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R5000);
 
 		long totalNum = areaMgr.getAreaDao().getTotalPhotoNum();
+		long totalNumPeople = areaMgr.getAreaDao().getTotalPeopleNum();
 
 		String coordinates = "\t";
 		if (a != null) {
@@ -124,6 +125,7 @@ public class TestFlickrEuropeArea {
 			System.out.println("months:" + a.getMonthsCount().size());
 			System.out.println("years:" + a.getYearsCount().size());
 			System.out.println("Total Number of Photo:" + totalNum);
+			System.out.println("Total Number of People:" + totalNumPeople);
 			// System.out.println(person+":"+dao.getPersonCount(a.getId(),
 			// person));
 		}
@@ -533,12 +535,13 @@ public class TestFlickrEuropeArea {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		String xml = IOUtils.toString(new FileReader("FlickrEuropeKmlRequest1.xml"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml), areaDto);
+		boolean icon = false;
 		areaMgr.createXYLineChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, fos1);
-		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, smmoth, fos2);
-		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, smmoth, fos3);
-		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, fos4);
-		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto, 800, 300, true, smmoth, fos5);
-		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 800, 300, true, smmoth, fos6);
+		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, smmoth, icon, fos2);
+		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, smmoth, icon, fos3);
+		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, icon, fos4);
+		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto, 800, 300, true, smmoth, icon, fos5);
+		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 800, 300, true, smmoth, icon, fos6);
 	}
 
 //	@Test

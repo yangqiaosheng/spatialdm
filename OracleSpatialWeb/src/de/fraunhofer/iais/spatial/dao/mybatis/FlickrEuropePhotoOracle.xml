@@ -10,6 +10,19 @@
 		from user_tables
 		where TABLE_NAME = 'FLICKR_EUROPE'
 	</select>
+
+	<select id="totalWorldPhotoNum" resultType="long" useCache="false">
+		select NUM_ROWS
+		from user_tables
+		where TABLE_NAME = 'FLICKR_PHOTO'
+	</select>
+
+	<select id="totalPeopleNum" resultType="long" useCache="false">
+		select NUM_ROWS
+		from user_tables
+		where TABLE_NAME = 'FLICKR_PEOPLE'
+	</select>
+
 	<select id="selectByDateQuery" resultType="FlickrPhoto" parameterType="map" useCache="false">
 		<![CDATA[
 		select

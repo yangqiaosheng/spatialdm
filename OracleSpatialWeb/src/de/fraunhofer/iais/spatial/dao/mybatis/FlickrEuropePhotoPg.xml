@@ -11,6 +11,18 @@
 		where relname = 'flickr_europe'
 	</select>
 
+	<select id="totalPeopleNum" resultType="long" useCache="false">
+		select n_tup_ins
+		from pg_stat_user_tables
+		where relname = 'flickr_people'
+	</select>
+
+	<select id="totalWorldPhotoNum" resultType="long" useCache="false">
+		select n_tup_ins
+		from pg_stat_user_tables
+		where relname = 'flickr_photo'
+	</select>
+
 	<select id="selectByDateQuery" resultType="FlickrPhoto" parameterType="map" useCache="false">
 		<![CDATA[
 		select

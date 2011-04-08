@@ -217,6 +217,26 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 	}
 
 	@Override
+	public long getTotalWorldPhotoNum() {
+		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalWorldPhotoNum");
+		long num = 0;
+		if(numObj != null){
+			num = (Long)numObj;
+		}
+		return num;
+	}
+
+	@Override
+	public long getTotalPeopleNum() {
+		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalPeopleNum");
+		long num = 0;
+		if(numObj != null){
+			num = (Long)numObj;
+		}
+		return num;
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
