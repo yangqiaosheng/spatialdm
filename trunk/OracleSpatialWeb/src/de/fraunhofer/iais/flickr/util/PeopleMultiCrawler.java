@@ -51,7 +51,7 @@ public class PeopleMultiCrawler extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(PeopleMultiCrawler.class);
 
 	static final int pageSize = 1000;
-	static final int NUM_THREAD = 6;
+	static final int NUM_THREAD = 1;
 	static final int MAX_NUM_RETRY = 500;
 	static final int MAX_USERNAME_LENGTH = 200;
 

@@ -43,7 +43,6 @@ public class TimeSeriesChartServlet extends HttpServlet {
 
 	private static FlickrEuropeAreaMgr areaMgr = null;
 
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String webAppPath = getServletContext().getRealPath("/");
@@ -57,11 +56,11 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		int height = NumberUtils.toInt(request.getParameter("height"), DEFAULT_HEIGHT);
 		boolean smooth = BooleanUtils.toBoolean(request.getParameter("smooth"));
 
-		if(width > MAX_WIDTH){
+		if (width > MAX_WIDTH) {
 			width = MAX_WIDTH;
 		}
 
-		if(height > MAX_HEIGHT){
+		if (height > MAX_HEIGHT) {
 			height = MAX_HEIGHT;
 		}
 
@@ -70,7 +69,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
-			logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level+ " |smooth:" + smooth); //$NON-NLS-1$
+			logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level + " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				List<FlickrArea> areas = new ArrayList<FlickrArea>();
 				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
@@ -82,11 +81,16 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				}
 
 				boolean displayLegend = false;
-				if(areas.size()>1){
+				if (areas.size() > 1) {
 					displayLegend = true;
 				}
 
-				areaMgr.createTimeSeriesChart(areas, Level.valueOf(level.toUpperCase()), areaDto, width, height, displayLegend, smooth, sos);
+				boolean icon = false;
+				if (width <= 300) {
+					icon = true;
+				}
+
+				areaMgr.createTimeSeriesChart(areas, Level.valueOf(level.toUpperCase()), areaDto, width, height, displayLegend, smooth, icon, sos);
 
 			} catch (Exception e) {
 //				IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);

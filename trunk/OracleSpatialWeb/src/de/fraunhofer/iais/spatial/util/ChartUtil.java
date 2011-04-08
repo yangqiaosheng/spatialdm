@@ -59,9 +59,9 @@ public class ChartUtil {
 		ChartUtilities.writeChartAsPNG(os, jfreechart, width, height);
 	}
 
-	public static void createTimeSeriesChart(Map<String, Map<Date, Integer>> countsMap, Level displayLevel, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws IOException {
+	public static void createTimeSeriesChart(Map<String, Map<Date, Integer>> countsMap, Level displayLevel, int width, int height, boolean displayLegend, boolean smooth, boolean icon, OutputStream os) throws IOException {
 		XYDataset xySeriesDataset = createTimeSeriesDataset(countsMap);
-		JFreeChart jfreechart = buildTimeSeriesChart(xySeriesDataset, displayLevel, displayLegend, smooth);
+		JFreeChart jfreechart = buildTimeSeriesChart(xySeriesDataset, displayLevel, displayLegend, smooth, icon);
 		ChartUtilities.writeChartAsPNG(os, jfreechart, width, height);
 	}
 
@@ -254,7 +254,7 @@ public class ChartUtil {
 		return jfreechart;
 	}
 
-	private static JFreeChart buildTimeSeriesChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth) {
+	private static JFreeChart buildTimeSeriesChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth, boolean icon) {
 
 		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
 				"", // Title
@@ -337,6 +337,18 @@ public class ChartUtil {
 //			XYTitleAnnotation localXYTitleAnnotation = new XYTitleAnnotation(0.98D, 0.02D, legend, RectangleAnchor.BOTTOM_RIGHT);
 //		    localXYTitleAnnotation.setMaxWidth(0.48D);
 //		    xyPlot.addAnnotation(localXYTitleAnnotation);
+		}
+
+		if(icon){
+			jfreechart.setTitle(new TextTitle(displayLevel.toString(), new Font("Helvetica", Font.BOLD, 7)));
+			jfreechart.setTitle("");
+			xyPlot.getRangeAxis().setLabel("");
+			xyPlot.getRangeAxis().setTickLabelFont(new Font("Helvetica", Font.BOLD, 8));
+//			xyPlot.getDomainAxis().setVisible(false);
+			xyPlot.getDomainAxis().setTickLabelsVisible(false);
+			xyPlot.getDomainAxis().setLabelFont(new Font("Helvetica", Font.BOLD, 8));
+			xyLineAndShapeRenderer.setBaseItemLabelsVisible(false);
+			xyLineAndShapeRenderer.setBaseShapesVisible(false);
 		}
 
 		return jfreechart;

@@ -403,7 +403,7 @@ public class FlickrEuropeAreaMgr {
 		ChartUtil.createTimeSeriesChartOld(countsMap, os);
 	}
 
-	public void createTimeSeriesChart(List<FlickrArea> areas, Level displayLevel, FlickrEuropeAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
+	public void createTimeSeriesChart(List<FlickrArea> areas, Level displayLevel, FlickrEuropeAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, boolean icon, OutputStream os) throws ParseException, IOException {
 
 		Map<String, Map<Date, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Date, Integer>>();
 
@@ -519,7 +519,7 @@ public class FlickrEuropeAreaMgr {
 		}
 
 
-		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
+		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, icon, os);
 	}
 
 	public void createXYLineChart(List<FlickrArea> areas, Level displayLevel, FlickrEuropeAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
