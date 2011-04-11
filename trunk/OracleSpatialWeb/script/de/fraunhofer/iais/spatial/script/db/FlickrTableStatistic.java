@@ -1,4 +1,4 @@
-package de.fraunhofer.iais.spatial.util;
+package de.fraunhofer.iais.spatial.script.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +17,7 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 import de.fraunhofer.iais.spatial.scheduling.CleanOldKmlsTimerTask;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class FlickrTableStatistic {
 
