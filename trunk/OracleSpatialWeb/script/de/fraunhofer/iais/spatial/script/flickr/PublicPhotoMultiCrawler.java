@@ -447,6 +447,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	private void updatePeoplesInfo(Connection conn, String userId, int checkedFlag) throws SQLException {
 		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE set PHOTO_UPDATE_CHECKED = ?, PHOTO_UPDATE_CHECKED_DATE = ? where USER_ID = ?");
+		PreparedStatement updatePeoplePhotoCheckedNumPstmt = oracleDb.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_photo_update_checked_num'");
 		try {
 
 			int i = 1;
@@ -455,9 +456,12 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setString(i++, userId);
 			System.out.println("user_id:" + userId);
 			pstmt.executeUpdate();
+			updatePeoplePhotoCheckedNumPstmt.executeUpdate();
 		} finally {
+			oracleDb.close(updatePeoplePhotoCheckedNumPstmt);
 			oracleDb.close(pstmt);
 		}
+
 	}
 
 	public static void main(String[] args) {

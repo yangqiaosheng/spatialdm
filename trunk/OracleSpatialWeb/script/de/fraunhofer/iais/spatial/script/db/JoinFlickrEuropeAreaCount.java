@@ -33,7 +33,7 @@ public class JoinFlickrEuropeAreaCount {
 	static int rownum = 1;
 	static Calendar startDate;
 
-	static DBUtil db = new DBUtil("/jdbc.properties", 18, 3);
+	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
