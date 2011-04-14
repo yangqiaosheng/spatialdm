@@ -208,9 +208,7 @@ public class PeopleMultiCrawler extends Thread {
 			total = memberslist.getTotal();
 			pages = memberslist.getPages();
 			increaseNumTotalQuery();
-			if (memberslist.size() > 0) {
-				this.insertPeoples(userId, memberslist);
-			}
+			this.insertPeoples(userId, memberslist);
 
 			num += memberslist.size();
 
@@ -226,10 +224,9 @@ public class PeopleMultiCrawler extends Thread {
 
 		try {
 			conn.setAutoCommit(false);
-			PreparedStatement selectPstmt = null;
-			PreparedStatement insertPstmt = null;
-			selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");
-			insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME) values (?, ?)");
+			PreparedStatement selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");;
+			PreparedStatement insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME) values (?, ?)");
+			PreparedStatement updatePeopleContactCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_contact_update_checked_num'");
 			ResultSet rs = null;
 			try {
 				for (int i = 0; i < memberslist.size(); i++) {
@@ -253,9 +250,13 @@ public class PeopleMultiCrawler extends Thread {
 					}
 				}
 				insertPstmt.executeBatch();
+
+				updatePeopleContactCheckedNumPstmt.executeUpdate();
+
 			} finally {
 				db.close(rs);
 				db.close(insertPstmt);
+				db.close(updatePeopleContactCheckedNumPstmt);
 				db.close(selectPstmt);
 			}
 
