@@ -45,11 +45,11 @@ public class AuthProcess {
             IOUtilities.close(in);
         }
         f = new Flickr(
-            properties.getProperty("apiKey_5"),
-            properties.getProperty("secret_5"),
+            properties.getProperty("apiKey_7"),
+            properties.getProperty("secret_7"),
             new REST()
         );
-        System.out.println("apiKey:" + properties.getProperty("apiKey_4"));
+        System.out.println("apiKey:" + properties.getProperty("apiKey_7"));
         Flickr.debugStream = false;
         requestContext = RequestContext.getRequestContext();
         AuthInterface authInterface = f.getAuthInterface();

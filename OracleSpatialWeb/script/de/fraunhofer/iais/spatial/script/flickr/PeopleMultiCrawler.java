@@ -1,5 +1,6 @@
 package de.fraunhofer.iais.spatial.script.flickr;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +52,8 @@ public class PeopleMultiCrawler extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(PeopleMultiCrawler.class);
 
 	static final int pageSize = 1000;
-	static final int NUM_THREAD = 1;
-	static final int MAX_NUM_RETRY = 500;
+	static int NUM_THREAD = 0;
+	static final int MAX_NUM_RETRY = 5000;
 	static final int MAX_USERNAME_LENGTH = 200;
 
 	static Calendar beginDateLimit = Calendar.getInstance();
@@ -195,27 +196,33 @@ public class PeopleMultiCrawler extends Thread {
 		}
 	}
 
-	private void retrievePeopleContacts(ContactsInterface contactsInterface, String userId) throws IOException, SAXException, FlickrException {
-		MembersList memberslist;
+	private void retrievePeopleContacts(ContactsInterface contactsInterface, String userId) throws IOException, SAXException {
+		MembersList memberslist = null;
 		int pages = 0;
 		int page = 1;
 		int total = 0;
 		int num = 0;
 
 		System.out.println(userId);
-		do {
-			memberslist = contactsInterface.getPublicList(userId, pageSize, page++);
-			total = memberslist.getTotal();
-			pages = memberslist.getPages();
-			increaseNumTotalQuery();
-			this.insertPeoples(userId, memberslist);
+		try {
+			do {
+				memberslist = contactsInterface.getPublicList(userId, pageSize, page++);
+				total = memberslist.getTotal();
+				pages = memberslist.getPages();
+				increaseNumTotalQuery();
+				this.insertPeoples(userId, memberslist);
 
-			num += memberslist.size();
+				num += memberslist.size();
 
-			System.out.println("owner_id:" + userId);
-			System.out.println("total:" + total + " | num:" + memberslist.size() + " | sumNum:" + num);
-			System.out.println("numTotalQuery:" + getNumTotalQuery());
-		} while (page <= pages);
+				System.out.println("owner_id:" + userId);
+				System.out.println("total:" + total + " | num:" + memberslist.size() + " | sumNum:" + num);
+				System.out.println("numTotalQuery:" + getNumTotalQuery());
+			} while (page <= pages);
+		} catch (FlickrException e) {
+			logger.error("retrievePeopleContacts()", e); //$NON-NLS-1$
+			logger.info("retrievePeopleContacts() - ThreadId:" + this.getName()); //$NON-NLS-1$
+			logger.info("retrievePeopleContacts() - time:" + new Date()); //$NON-NLS-1$
+		}
 	}
 
 	private void insertPeoples(String userId, MembersList memberslist) {
@@ -260,6 +267,7 @@ public class PeopleMultiCrawler extends Thread {
 				db.close(selectPstmt);
 			}
 
+
 			updatePstmt.setString(1, userId);
 			updatePstmt.executeUpdate();
 			increaseNumCheckedPeople();
@@ -279,9 +287,13 @@ public class PeopleMultiCrawler extends Thread {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		beginDateLimit.set(2005, 00, 01);
+		Properties properties = new Properties();
+		properties.load(PeopleMultiCrawler.class.getResourceAsStream("/flickr.properties"));
+		NUM_THREAD = NumberUtils.toInt(properties.getProperty("threads_num"), 1);
+
 		for (int i = 0; i < NUM_THREAD; i++) {
 			PeopleMultiCrawler crawler = new PeopleMultiCrawler();
 			crawler.start();
