@@ -43,7 +43,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(PublicPhotoMultiCrawler.class);
 
 	static final int pageSize = 500;
-	static final int NUM_THREAD = 6;
+	static int NUM_THREAD = 0;
 	static final int MAX_NUM_RETRY = 5000;
 	static final int MAX_TITLE_LENGTH = 255;
 
@@ -464,7 +464,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		beginDateLimit = Calendar.getInstance();
 		beginDateLimit.set(2005, 00, 01);
@@ -477,6 +477,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 		radiusList.add("80000");
 		radiusList.add("160000");
 		radiusList.add("320000");
+
+		Properties properties = new Properties();
+		properties.load(PeopleMultiCrawler.class.getResourceAsStream("/flickr.properties"));
+		NUM_THREAD = NumberUtils.toInt(properties.getProperty("threads_num"), 1);
 
 		for (int i = 0; i < NUM_THREAD; i++) {
 			PublicPhotoMultiCrawler crawler = new PublicPhotoMultiCrawler();
