@@ -99,7 +99,7 @@ public class ExifInfoReader {
 			String line = createDateOutputFormat.format(infoItem.getCreateDate()) + ", "
 						+ infoItem.getLatitude() + ", "
 						+ infoItem.getLongitude() + ", "
-						+ infoItem.getFile().getName();
+						+ infoItem.getFile().getCanonicalPath();
 			lines.add(line);
 		}
 
