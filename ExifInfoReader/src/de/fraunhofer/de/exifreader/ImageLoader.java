@@ -29,10 +29,13 @@ public class ImageLoader extends DirectoryWalker<File> {
 
 	@Override
 	protected void handleFile(File file, int depth, Collection<File> results) {
-//		if(StringUtils.endsWithIgnoreCase(file.getName(), ".jpg")){
+		if (StringUtils.endsWithIgnoreCase(file.getName(), ".jpg")) {
 			results.add(file);
-			System.out.println(file.getAbsolutePath());
-//		}
+			System.out.print("+ ");
+		} else {
+			System.out.print("  ");
+		}
+		System.out.println(file.getAbsolutePath());
 	}
 
 }

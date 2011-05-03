@@ -6,13 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOCase;
-import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
@@ -29,14 +27,36 @@ import org.apache.sanselan.formats.tiff.constants.TiffConstants;
  */
 public class ExifInfoReader {
 
-	final static File INPUT_FOLDER = new File("images");
 	final static File OUTPUT_FILE = new File(new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()) + ".csv");
 
 	public static void main(String[] args) throws ImageReadException, IOException, ParseException {
 		List<InfoItem> exitInfoItems = new ArrayList<InfoItem>();
 
-		for (File file : new ImageLoader().load(INPUT_FOLDER)) {
-			exitInfoItems.add(readMetadata(file));
+		Set<File> inputFolders = new HashSet<File>();
+
+		if (args.length > 0) {
+			for (String inputPath : args) {
+				File inputFolder = new File(inputPath);
+				if (inputFolder.isDirectory()) {
+					inputFolders.add(inputFolder);
+					System.out.println("INPUT PATH: " + inputFolder.getAbsolutePath());
+				} else {
+					System.out.println("WARNNING: " + inputFolder.getAbsolutePath() + " is not a valid Directory Path");
+				}
+			}
+		} else {
+			File inputFolder = new File("images");
+			if (inputFolder.isDirectory()) {
+				inputFolders.add(inputFolder);
+				System.out.println("INPUT PATH: " + inputFolder.getAbsolutePath() + "(DEFAULT)");
+			}
+		}
+		System.out.println();
+
+		for (File inputFolder : inputFolders) {
+			for (File file : new ImageLoader().load(inputFolder)) {
+				exitInfoItems.add(readMetadata(file));
+			}
 		}
 
 		exportCSV(exitInfoItems);
@@ -53,6 +73,7 @@ public class ExifInfoReader {
 	public static InfoItem readMetadata(File file) throws ImageReadException, IOException, ParseException {
 		// 	get all metadata stored in EXIF format (ie. from JPEG or TIFF).
 		//  org.w3c.dom.Node node = Sanselan.getMetadataObsolete(imageBytes);
+		System.out.println("file: " + file.getPath());
 		IImageMetadata metadata = Sanselan.getMetadata(file);
 
 		JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
@@ -73,7 +94,6 @@ public class ExifInfoReader {
 		InfoItem infoItem = new InfoItem(createDate, latitude, longitude, file);
 
 		// print out various interesting EXIF tags.
-		System.out.println("file: " + file.getPath());
 		System.out.println("    " + "Create Date: " + createDateField.getValueDescription());
 		System.out.println("    " + "GPS Description: " + gpsDescription);
 		System.out.println("    " + "GPS Longitude (Degrees East): " + longitude);
@@ -96,10 +116,7 @@ public class ExifInfoReader {
 
 		for (InfoItem infoItem : exitInfoItems) {
 			SimpleDateFormat createDateOutputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-			String line = createDateOutputFormat.format(infoItem.getCreateDate()) + ", "
-						+ infoItem.getLatitude() + ", "
-						+ infoItem.getLongitude() + ", "
-						+ infoItem.getFile().getCanonicalPath();
+			String line = createDateOutputFormat.format(infoItem.getCreateDate()) + ", " + infoItem.getLatitude() + ", " + infoItem.getLongitude() + ", " + infoItem.getFile().getCanonicalPath();
 			lines.add(line);
 		}
 
