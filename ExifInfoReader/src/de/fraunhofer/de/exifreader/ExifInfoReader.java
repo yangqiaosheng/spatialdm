@@ -64,6 +64,8 @@ public class ExifInfoReader {
 					System.out.println("    " + e.getMessage() + "\n");
 				} catch (ParseException e) {
 					System.out.println("    " + e.getMessage() + "\n");
+				} catch (Exception e) {
+					System.out.println("    " + e.getMessage() + "\n");
 				}
 				if (infoItem != null) {
 					exitInfoItems.add(infoItem);
@@ -85,38 +87,43 @@ public class ExifInfoReader {
 	public static InfoItem readMetadata(File file) throws ImageReadException, IOException, ParseException {
 		// 	get all metadata stored in EXIF format (ie. from JPEG or TIFF).
 		//  org.w3c.dom.Node node = Sanselan.getMetadataObsolete(imageBytes);
+		InfoItem infoItem = null;
 		System.out.println("file: " + file.getPath());
 		IImageMetadata metadata = Sanselan.getMetadata(file);
 
-		JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+		if (metadata != null) {
+			JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+			TiffImageMetadata.GPSInfo gpsInfo = jpegMetadata.getExif().getGPS();
 
-		TiffImageMetadata.GPSInfo gpsInfo = jpegMetadata.getExif().getGPS();
-		InfoItem infoItem = null;
+			if (gpsInfo != null) {
+				String gpsDescription = gpsInfo.toString();
+				double longitude = gpsInfo.getLongitudeAsDegreesEast();
+				double latitude = gpsInfo.getLatitudeAsDegreesNorth();
 
-		if (gpsInfo != null) {
-			String gpsDescription = gpsInfo.toString();
-			double longitude = gpsInfo.getLongitudeAsDegreesEast();
-			double latitude = gpsInfo.getLatitudeAsDegreesNorth();
+				TiffField createDateField = jpegMetadata.findEXIFValueWithExactMatch(TiffConstants.EXIF_TAG_CREATE_DATE);
+				String createDateStr = createDateField.getValueDescription();
+				createDateStr = StringUtils.removeStart(createDateStr, "'");
+				createDateStr = StringUtils.removeEnd(createDateStr, "'");
+				SimpleDateFormat createDateInputFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+				Date createDate = createDateInputFormat.parse(createDateStr);
 
-			TiffField createDateField = jpegMetadata.findEXIFValueWithExactMatch(TiffConstants.EXIF_TAG_CREATE_DATE);
-			String createDateStr = createDateField.getValueDescription();
-			createDateStr = StringUtils.removeStart(createDateStr, "'");
-			createDateStr = StringUtils.removeEnd(createDateStr, "'");
-			SimpleDateFormat createDateInputFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-			Date createDate = createDateInputFormat.parse(createDateStr);
+				infoItem = new InfoItem(createDate, latitude, longitude, file);
 
-			infoItem = new InfoItem(createDate, latitude, longitude, file);
-
-			// print out various interesting EXIF tags.
-			System.out.println("    " + "Create Date: " + createDateField.getValueDescription());
-			System.out.println("    " + "GPS Description: " + gpsDescription);
-			System.out.println("    " + "GPS Longitude (Degrees East): " + longitude);
-			System.out.println("    " + "GPS Latitude (Degrees North): " + latitude);
-			System.out.println();
+				// print out various interesting EXIF tags.
+				System.out.println("    " + "Create Date: " + createDateField.getValueDescription());
+				System.out.println("    " + "GPS Description: " + gpsDescription);
+				System.out.println("    " + "GPS Longitude (Degrees East): " + longitude);
+				System.out.println("    " + "GPS Latitude (Degrees North): " + latitude);
+				System.out.println();
+			} else {
+				System.out.println("    " + "No GPS Data");
+				System.out.println();
+			}
 		} else {
-			System.out.println("    " + "No GPS Data");
+			System.out.println("    " + "No Exif Data");
 			System.out.println();
 		}
+
 		return infoItem;
 	}
 
