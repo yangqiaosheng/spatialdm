@@ -1,0 +1,107 @@
+# on crash - remove previous folder
+~/shrt_hadoop.sh fs -rmr group2/tmp_out
+
+# run
+~/shrt_hadoop.sh jar ~/group2/upload/HadoopEx3.jar ${group2}.JobExecute
+
+
+
+# DUMP ->
+Initial cleanup of tmp and old output
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0x7) at pc=0xb7613867, pid=31632, tid=3063770000
+#
+# JRE version: 6.0_22-b04
+# Java VM: Java HotSpot(TM) Server VM (17.1-b03 mixed mode linux-x86 )
+# Problematic frame:
+# C  [libc.so.6+0x77867]  memset+0x37
+#
+# An error report file with more information is saved as:
+# /home/hadoop/hs_err_pid31632.log
+Creating dummy localOld file
+11/05/10 21:16:12 WARN mapred.JobClient: Use GenericOptionsParser for parsing the arguments. Applications should implement Tool for the same.
+11/05/10 21:16:12 INFO input.FileInputFormat: Total input paths to process : 1
+11/05/10 21:16:13 INFO mapred.JobClient: Running job: job_201105101847_0016
+11/05/10 21:16:14 INFO mapred.JobClient:  map 0% reduce 0%
+11/05/10 21:16:20 INFO mapred.JobClient: Task Id : attempt_201105101847_0016_m_000002_0, Status : FAILED
+java.io.IOException: Task process exit with nonzero status of 139.
+	at org.apache.hadoop.mapred.TaskRunner.run(TaskRunner.java:418)
+
+11/05/10 21:16:20 WARN mapred.JobClient: Error reading task outputhttp://marlowe.Informatik.RWTH-Aachen.DE:50060/tasklog?plaintext=true&taskid=attempt_201105101847_0016_m_000002_0&filter=stdout
+11/05/10 21:16:20 WARN mapred.JobClient: Error reading task outputhttp://marlowe.Informatik.RWTH-Aachen.DE:50060/tasklog?plaintext=true&taskid=attempt_201105101847_0016_m_000002_0&filter=stderr
+11/05/10 21:16:26 INFO mapred.JobClient: Task Id : attempt_201105101847_0016_r_000002_0, Status : FAILED
+java.io.IOException: Task process exit with nonzero status of 139.
+	at org.apache.hadoop.mapred.TaskRunner.run(TaskRunner.java:418)
+
+11/05/10 21:16:26 WARN mapred.JobClient: Error reading task outputhttp://marlowe.Informatik.RWTH-Aachen.DE:50060/tasklog?plaintext=true&taskid=attempt_201105101847_0016_r_000002_0&filter=stdout
+11/05/10 21:16:26 WARN mapred.JobClient: Error reading task outputhttp://marlowe.Informatik.RWTH-Aachen.DE:50060/tasklog?plaintext=true&taskid=attempt_201105101847_0016_r_000002_0&filter=stderr
+11/05/10 21:16:33 INFO mapred.JobClient:  map 100% reduce 0%
+11/05/10 21:16:45 INFO mapred.JobClient:  map 100% reduce 100%
+11/05/10 21:16:47 INFO mapred.JobClient: Job complete: job_201105101847_0016
+11/05/10 21:16:47 INFO mapred.JobClient: Counters: 17
+11/05/10 21:16:47 INFO mapred.JobClient:   Job Counters 
+11/05/10 21:16:47 INFO mapred.JobClient:     Launched reduce tasks=1
+11/05/10 21:16:47 INFO mapred.JobClient:     Rack-local map tasks=1
+11/05/10 21:16:47 INFO mapred.JobClient:     Launched map tasks=1
+11/05/10 21:16:47 INFO mapred.JobClient:   FileSystemCounters
+11/05/10 21:16:47 INFO mapred.JobClient:     FILE_BYTES_READ=110
+11/05/10 21:16:47 INFO mapred.JobClient:     HDFS_BYTES_READ=36
+11/05/10 21:16:47 INFO mapred.JobClient:     FILE_BYTES_WRITTEN=252
+11/05/10 21:16:47 INFO mapred.JobClient:     HDFS_BYTES_WRITTEN=24
+11/05/10 21:16:47 INFO mapred.JobClient:   Map-Reduce Framework
+11/05/10 21:16:47 INFO mapred.JobClient:     Reduce input groups=2
+11/05/10 21:16:47 INFO mapred.JobClient:     Combine output records=0
+11/05/10 21:16:47 INFO mapred.JobClient:     Map input records=4
+11/05/10 21:16:47 INFO mapred.JobClient:     Reduce shuffle bytes=0
+11/05/10 21:16:47 INFO mapred.JobClient:     Reduce output records=2
+11/05/10 21:16:47 INFO mapred.JobClient:     Spilled Records=8
+11/05/10 21:16:47 INFO mapred.JobClient:     Map output bytes=96
+11/05/10 21:16:47 INFO mapred.JobClient:     Combine input records=0
+11/05/10 21:16:47 INFO mapred.JobClient:     Map output records=4
+11/05/10 21:16:47 INFO mapred.JobClient:     Reduce input records=4
+Getting merge of iteration 1
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0x7) at pc=0xb7667867, pid=31723, tid=3064114064
+#
+# JRE version: 6.0_22-b04
+# Java VM: Java HotSpot(TM) Server VM (17.1-b03 mixed mode linux-x86 )
+# Problematic frame:
+# C  [libc.so.6+0x77867]  memset+0x37
+#
+# An error report file with more information is saved as:
+# /home/hadoop/hs_err_pid31723.log
+Cleaning up tmp dir
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0x7) at pc=0xb75fb867, pid=31741, tid=3063671696
+#
+# JRE version: 6.0_22-b04
+# Java VM: Java HotSpot(TM) Server VM (17.1-b03 mixed mode linux-x86 )
+# Problematic frame:
+# C  [libc.so.6+0x77867]  memset+0x37
+#
+# An error report file with more information is saved as:
+# /home/hadoop/hs_err_pid31741.log
+Sorting new output
+Uploading sorted output to hdfs
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0x7) at pc=0xb75c5867, pid=31761, tid=3063450512
+#
+# JRE version: 6.0_22-b04
+# Java VM: Java HotSpot(TM) Server VM (17.1-b03 mixed mode linux-x86 )
+# Problematic frame:
+# C  [libc.so.6+0x77867]  memset+0x37
+#
+# An error report file with more information is saved as:
+# /home/hadoop/hs_err_pid31761.log
+Diff
+Overwriting old centers with new ones
+Done after 1 iterations. Success.
+Removing old local file
