@@ -2,7 +2,7 @@
 
 -- DROP TABLE flickr_photo;
 
-CREATE TABLE flickr_photo
+CREATE TABLE flickr_world
 (
   photo_id numeric NOT NULL,
   user_id character varying(20),
@@ -11,7 +11,8 @@ CREATE TABLE flickr_photo
   taken_date timestamp without time zone,
   upload_date timestamp without time zone,
   viewed integer,
-  title character varying(255),
+  title character varying(1024),
+  tags character varying(1024),
   smallurl character varying(100),
   place_id character varying(20),
   woe_id character varying(20),
