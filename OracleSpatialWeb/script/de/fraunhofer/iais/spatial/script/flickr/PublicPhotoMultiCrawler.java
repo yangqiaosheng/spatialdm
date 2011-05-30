@@ -333,7 +333,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			for (Photo photo : worldPhotos) {
 				if (!worldPhotosId.contains(photo.getId())) {
-					insertPhoto(conn, photo, "FLICKR_PHOTO");
+					insertPhoto(conn, photo, "FLICKR_WORLD");
 					worldPhotosId.add(photo.getId());
 					addWorldNum++;
 				}else{
@@ -391,7 +391,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			System.out.println("numPhoto:" + increaseNumPhoto());
 		} catch (PSQLException e){
 			logger.debug("Wrong input Photo to PostgreSQL:" + photo.toString());
-			logger.debug("insertPhotosToPg()", e); //$NON-NLS-1$
+			logger.debug("insertPhoto()", e); //$NON-NLS-1$
 		} catch (SQLException e){
 			logger.error("Wrong input Photo:" + photo.toString());
 			throw e;

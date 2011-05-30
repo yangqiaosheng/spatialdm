@@ -73,7 +73,7 @@ public class FlickrTableStatistic {
 			PreparedStatement insertStmt = null;
 			try {
 
-				selectWorldStmt = db.getPstmt(conn, "select n_tup_ins from pg_stat_user_tables where relname = 'flickr_photo'");
+				selectWorldStmt = db.getPstmt(conn, "select n_tup_ins from pg_stat_user_tables where relname = 'flickr_world'");
 				selectEuropeStmt = db.getPstmt(conn, "select n_tup_ins from pg_stat_user_tables where relname = 'flickr_europe'");
 				selectPeopleStmt = db.getPstmt(conn, "select n_tup_ins from pg_stat_user_tables where relname = 'flickr_people'");
 				selectPeoplePhotoUpdateCheckedStmt = db.getPstmt(conn, "select value as n_tup_ins from flickr_statistic_items where name = 'people_photo_checked_num'");
