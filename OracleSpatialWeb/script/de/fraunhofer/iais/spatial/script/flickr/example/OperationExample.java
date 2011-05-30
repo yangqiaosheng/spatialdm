@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
@@ -27,12 +28,14 @@ import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.Permission;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.Extras;
+import com.aetrion.flickr.photos.Note;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.places.Location;
 import com.aetrion.flickr.places.Place;
 import com.aetrion.flickr.places.PlacesInterface;
+import com.aetrion.flickr.tags.Tag;
 
 /**
  * Demonstration of howto use the ActivityInterface.
@@ -79,6 +82,7 @@ public class OperationExample {
 		extras.add(Extras.GEO);
 		extras.add(Extras.VIEWS);
 		extras.add(Extras.LICENSE);
+		extras.add(Extras.TAGS);
 
 //		String userId = "49596882@N02";
 		String userId = "27076251@N05";
@@ -94,6 +98,11 @@ public class OperationExample {
 		for (int i = 0; i < pl.size(); i++) {
 			Photo p = (Photo) pl.get(i);
 			System.out.println(p.getId() + ":" + p.getDateTaken().toLocaleString() + " | " + p.getDatePosted().toLocaleString() + ":" + p.getGeoData() + ":" + p.getDescription() + ":" + p.getPlaceId() + ":" + p.getWoeId());
+
+			for (Tag tag : p.getTags()) {
+				System.out.println(" " + ToStringBuilder.reflectionToString(tag));
+			}
+
 			PlacesInterface placeI = f.getPlacesInterface();
 			if (p.getPlaceId() != null && !"".equals(p.getPlaceId())) {
 //				System.out.println("place_id:" + p.getPlaceId());
@@ -174,9 +183,9 @@ public class OperationExample {
 	public static void main(String[] args) throws ParserConfigurationException, IOException, FlickrException, SAXException {
 		OperationExample t = new OperationExample();
 		//		t.showActivity();
-//		t.showPeoplesPhotos();
+		t.showPeoplesPhotos();
 //		t.showRecentPhotos();
-		t.showPhotoInfo();
+//		t.showPhotoInfo();
 	}
 
 }

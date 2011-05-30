@@ -75,8 +75,8 @@ public class FlickrTableStatistic {
 				selectWorldStmt = db.getPstmt(conn, "select n_tup_ins from pg_stat_user_tables where relname = 'flickr_photo'");
 				selectEuropeStmt = db.getPstmt(conn, "select n_tup_ins from pg_stat_user_tables where relname = 'flickr_europe'");
 				selectPeopleStmt = db.getPstmt(conn, "select n_tup_ins from pg_stat_user_tables where relname = 'flickr_people'");
-				selectPeoplePhotoUpdateCheckedStmt = db.getPstmt(conn, "select value as n_tup_ins from flickr_statistic_items where name = 'people_photo_update_checked_num'");
-				selectPeopleContactUpdateCheckedStmt = db.getPstmt(conn, "select value as n_tup_ins from flickr_statistic_items where name = 'people_contact_update_checked_num'");
+				selectPeoplePhotoUpdateCheckedStmt = db.getPstmt(conn, "select value as n_tup_ins from flickr_statistic_items where name = 'people_photo_checked_num'");
+				selectPeopleContactUpdateCheckedStmt = db.getPstmt(conn, "select value as n_tup_ins from flickr_statistic_items where name = 'people_contact_checked_num'");
 
 				worldRs = db.getRs(selectWorldStmt);
 				europeRs = db.getRs(selectEuropeStmt);
@@ -100,7 +100,7 @@ public class FlickrTableStatistic {
 					peopleContactUpdateCheckedNum = peopleContactUpdateCheckedRs.getLong("n_tup_ins");
 				}
 
-				insertStmt = db.getPstmt(conn, "insert into flickr_statistic (checked_date, world_photo_num, europe_photo_num, people_num, people_photo_update_checked_num, people_contact_update_checked_num) values (?, ?, ?, ?, ?, ?)");
+				insertStmt = db.getPstmt(conn, "insert into flickr_statistic (checked_date, world_photo_num, europe_photo_num, people_num, people_photo_checked_num, people_contact_checked_num) values (?, ?, ?, ?, ?, ?)");
 
 				int i = 1;
 				insertStmt.setTimestamp(i++, new Timestamp(new Date().getTime()));
