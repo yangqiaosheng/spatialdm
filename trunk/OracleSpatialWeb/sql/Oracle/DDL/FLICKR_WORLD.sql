@@ -13,5 +13,5 @@
        "PLACE_ID" VARCHAR2(20),
        "WOE_ID" VARCHAR2(20),
        "ACCURACY" NUMBER,
-        constraint "FLICKR_PHOTO_PK" primary key ("PHOTO_ID")
+        constraint "FLICKR_WORLD_PK" primary key ("PHOTO_ID")
     );
