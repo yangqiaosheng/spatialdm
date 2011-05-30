@@ -16,6 +16,8 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
@@ -33,6 +35,7 @@ import com.aetrion.flickr.photos.Extras;
 import com.aetrion.flickr.photos.GeoData;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.tags.Tag;
 
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
@@ -45,7 +48,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static final int pageSize = 500;
 	static int NUM_THREAD = 0;
 	static final int MAX_NUM_RETRY = 5000;
-	static final int MAX_TITLE_LENGTH = 255;
+	static final int MAX_TITLE_LENGTH = 1024;
 
 	static final double MIN_LONGITUDE = -13.119622;
 	static final double MIN_LATITUDE = 34.26329;
@@ -225,7 +228,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		extras.add(Extras.DATE_UPLOAD);
 		extras.add(Extras.GEO);
 		extras.add(Extras.VIEWS);
-		//		extras.add(Extras.TAGS);
+		extras.add(Extras.TAGS);
 
 		PhotoList photos = null;
 		int pages = 0;
@@ -242,8 +245,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 		Calendar minTakenDate = beginDateLimit;
 		Calendar maxTakenDate = Calendar.getInstance();
 
-		PhotoList insertOraclePhotos = new PhotoList();
-		PhotoList insertPgPhotos = new PhotoList();
+		PhotoList insertEuropePhotos = new PhotoList();
+		PhotoList insertWorldPhotos = new PhotoList();
 
 		try {
 			do {
@@ -262,11 +265,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 					Photo p = (Photo) photos.get(i);
 
 					if (checkDate(p.getDateTaken(), p.getDatePosted()) && p.getGeoData() != null) {
-						insertPgPhotos.add(p);
+						insertWorldPhotos.add(p);
 					}
 
 					if (checkDate(p.getDateTaken(), p.getDatePosted()) && checkLocation(p.getGeoData())) {
-						insertOraclePhotos.add(p);
+						insertEuropePhotos.add(p);
 					}
 				}
 				num += photos.size();
@@ -276,8 +279,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 				System.out.println("numTotalQuery:" + getNumTotalQuery());
 			} while (page <= pages);
 
-			if (!insertPhotosToOracle(insertOraclePhotos, userId)) {
-				insertPhotosToPg(insertPgPhotos, userId);
+			if (insertPhotos(insertEuropePhotos, insertWorldPhotos, userId)) {
+
 			}
 
 		} catch (SAXException e) {
@@ -287,89 +290,76 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
-	private void flickrExceptionHandler(String userId, int page, Exception e, int code) throws SQLException {
+	private void flickrExceptionHandler(String userId, int page, Exception e, int photoCheckedFlag) throws SQLException {
 		logger.error("userID:" + userId + "|page:" + page, e);
 		logger.error("retrievePeoplesPhotos()", e); //$NON-NLS-1$
 		Connection conn = oracleDb.getConn();
 		try {
-			updatePeoplesInfo(conn, userId, code);
+			updatePeoplesInfo(conn, userId, photoCheckedFlag, 0, 0);
 		} finally {
 			oracleDb.close(conn);
 		}
 	}
 
-	private boolean insertPhotosToOracle(PhotoList photos, String userId) {
-		boolean hasError = false;
+	private boolean insertPhotos(PhotoList europePhotos, PhotoList worldPhotos, String userId) {
+		boolean success = true;
 		Connection conn = oracleDb.getConn();
 
 		try {
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 
-			//remove duplicate insertPhotos
-			HashSet<String> insertedPhotosId = new HashSet<String>();
+			int addEuorpeNum = 0;
+			int addWorldNum = 0;
 
-			for (Photo photo : photos) {
-				if (!insertedPhotosId.contains(photo.getId())) {
+			//remove duplicate insertPhotos
+			HashSet<String> europePhotosId = new HashSet<String>();
+			HashSet<String> worldPhotosId = new HashSet<String>();
+
+			for (Photo photo : europePhotos) {
+				if (!europePhotosId.contains(photo.getId())) {
 					insertPhoto(conn, photo, "FLICKR_EUROPE");
 					updatePhotoRegionInfo(conn, photo, radiusList);
-					insertedPhotosId.add(photo.getId());
+					europePhotosId.add(photo.getId());
+					addEuorpeNum++;
 				}else{
-					logger.warn("Duplicate Photo to Oracle:" + photo.toString());
+					logger.warn("Duplicate Photo to Euorpe:" + photo.toString());
 				}
 			}
 
-			if (photos.size() > 0) {
-				updatePeoplesInfo(conn, userId, 2);
-			} else {
-				updatePeoplesInfo(conn, userId, 1);
+			for (Photo photo : worldPhotos) {
+				if (!worldPhotosId.contains(photo.getId())) {
+					insertPhoto(conn, photo, "FLICKR_PHOTO");
+					worldPhotosId.add(photo.getId());
+					addWorldNum++;
+				}else{
+					logger.warn("Duplicate Photo to World:" + photo.toString());
+				}
 			}
+
+			updatePeoplesInfo(conn, userId, 1, addWorldNum, addEuorpeNum);
 
 			conn.commit();
 		} catch (SQLException e) {
-			logger.error("User:" + userId + "|size:" + photos.size());
-			logger.error("insertPhotosToOracle()", e); //$NON-NLS-1$
+			logger.error("User:" + userId + "|size:" + europePhotos.size());
+			logger.error("insertPhotosToEurope()", e); //$NON-NLS-1$
 			try {
-				hasError = true;
+				success = false;
 				conn.rollback();
 			} catch (SQLException e1) {
-				logger.error("insertPhotos()", e); //$NON-NLS-1$
+				logger.error("insertPhotosToEurope()", e); //$NON-NLS-1$
 			}
 		} finally {
 			oracleDb.close(conn);
 		}
-		return hasError;
-	}
-
-	private void insertPhotosToPg(PhotoList photos, String userId) {
-		Connection conn = pgDb.getConn();
-
-		try {
-			//remove duplicate insertPhotos
-			HashSet<String> insertedPhotosId = new HashSet<String>();
-
-			for (Photo photo : photos) {
-				if (!insertedPhotosId.contains(photo.getId())) {
-					insertPhoto(conn, photo, "FLICKR_PHOTO");
-					insertedPhotosId.add(photo.getId());
-				}else{
-					logger.warn("Duplicate Photo to Pg:" + photo.toString());
-				}
-			}
-			System.out.println("finished insertPhotosToPg");
-		} catch (SQLException e) {
-			logger.error("User:" + userId + "|size:" + photos.size());
-			logger.error("insertPhotosToPg()", e); //$NON-NLS-1$
-		} finally {
-			pgDb.close(conn);
-		}
+		return success;
 	}
 
 	private void insertPhoto(Connection conn, Photo photo, String tableName) throws SQLException {
 		PreparedStatement pstmt = oracleDb
 				.getPstmt(
 						conn,
-						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, TAGS, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		try {
 			int i = 1;
 			pstmt.setLong(i++, NumberUtils.toLong(photo.getId()));
@@ -381,11 +371,14 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setTimestamp(i++, new Timestamp(photo.getDatePosted().getTime()));
 
 			pstmt.setInt(i++, photo.getViews());
-			String title = photo.getTitle();
-			if (title != null && title.length() > MAX_TITLE_LENGTH) {
-				title = title.substring(0, MAX_TITLE_LENGTH);
+			String title = StringUtils.substring(photo.getTitle(), 0, MAX_TITLE_LENGTH);
+			Collection<Tag> tags = photo.getTags();
+			String tagsStr = "";
+			for (Tag tag : tags) {
+				tagsStr += tag.getValue() + ",";
 			}
 			pstmt.setString(i++, title);
+			pstmt.setString(i++, tagsStr);
 			pstmt.setString(i++, photo.getSmallUrl());
 			pstmt.setString(i++, photo.getPlaceId());
 			pstmt.setString(i++, photo.getWoeId());
@@ -445,14 +438,16 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
-	private void updatePeoplesInfo(Connection conn, String userId, int checkedFlag) throws SQLException {
-		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE set PHOTO_UPDATE_CHECKED = ?, PHOTO_UPDATE_CHECKED_DATE = ? where USER_ID = ?");
+	private void updatePeoplesInfo(Connection conn, String userId, int photoCheckedFlag, int addWorldNum, int addEuropeNum) throws SQLException {
+		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE set PHOTO_UPDATE_CHECKED = ?, PHOTO_UPDATE_CHECKED_DATE = ?, WORLD_NUM = WORLD_NUM + ?, EUROPE_NUM = EUROPE_NUM + ? where USER_ID = ?");
 		PreparedStatement updatePeoplePhotoCheckedNumPstmt = oracleDb.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_photo_update_checked_num'");
 		try {
 
 			int i = 1;
-			pstmt.setInt(i++, checkedFlag);
+			pstmt.setInt(i++, photoCheckedFlag);
 			pstmt.setTimestamp(i++, new Timestamp(new Date().getTime()));
+			pstmt.setInt(i++, addWorldNum);
+			pstmt.setInt(i++, addEuropeNum);
 			pstmt.setString(i++, userId);
 			System.out.println("user_id:" + userId);
 			pstmt.executeUpdate();
