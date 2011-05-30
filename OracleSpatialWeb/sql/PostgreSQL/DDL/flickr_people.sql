@@ -9,6 +9,8 @@ CREATE TABLE flickr_people
   contact_update_checked integer NOT NULL DEFAULT 0,
   photo_update_checked_date timestamp without time zone,
   photo_update_checked integer NOT NULL DEFAULT 0,
+  world_num integer NOT NULL DEFAULT 0,
+  europe_num integer NOT NULL DEFAULT 0,
   CONSTRAINT flickr_people_pk PRIMARY KEY (user_id)
 )
 WITH (
