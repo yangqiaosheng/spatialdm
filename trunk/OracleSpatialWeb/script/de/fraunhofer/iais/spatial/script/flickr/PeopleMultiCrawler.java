@@ -233,7 +233,7 @@ public class PeopleMultiCrawler extends Thread {
 			conn.setAutoCommit(false);
 			PreparedStatement selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");;
 			PreparedStatement insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME) values (?, ?)");
-			PreparedStatement updatePeopleContactCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_contact_update_checked_num'");
+			PreparedStatement updatePeopleContactCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_contact_checked_num'");
 			ResultSet rs = null;
 			try {
 				for (int i = 0; i < memberslist.size(); i++) {

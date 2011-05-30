@@ -195,6 +195,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 //		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0");
 //		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(ora_hash(USER_ID), ?)) = ?");
 		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(hashtext(USER_ID), ?)) = ?");
+
+		conn.setAutoCommit(false);
+		pstmt.setFetchSize(2000);
+
 		pstmt.setInt(1, NUM_THREAD);
 		pstmt.setInt(2, threadId);
 		ResultSet rs = null;
@@ -440,7 +444,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	private void updatePeoplesInfo(Connection conn, String userId, int photoCheckedFlag, int addWorldNum, int addEuropeNum) throws SQLException {
 		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE set PHOTO_UPDATE_CHECKED = ?, PHOTO_UPDATE_CHECKED_DATE = ?, WORLD_NUM = WORLD_NUM + ?, EUROPE_NUM = EUROPE_NUM + ? where USER_ID = ?");
-		PreparedStatement updatePeoplePhotoCheckedNumPstmt = oracleDb.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_photo_update_checked_num'");
+		PreparedStatement updatePeoplePhotoCheckedNumPstmt = oracleDb.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_photo_checked_num'");
 		try {
 
 			int i = 1;
