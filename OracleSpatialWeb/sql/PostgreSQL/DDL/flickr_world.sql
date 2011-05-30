@@ -18,7 +18,7 @@ CREATE TABLE flickr_world
   woe_id character varying(20),
   accuracy integer,
   CONSTRAINT flickr_world_pk PRIMARY KEY (photo_id),
-  CONSTRAINT flickr_world_fk FOREIGN KEY (user_id)
+  CONSTRAINT flickr_world_user_fk FOREIGN KEY (user_id)
       REFERENCES flickr_people (user_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
