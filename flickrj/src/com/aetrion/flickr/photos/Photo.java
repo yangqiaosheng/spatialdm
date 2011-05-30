@@ -91,9 +91,8 @@ public class Photo {
 	private int comments;
 	private int views = -1;
 	private int rotation;
-	private Collection notes;
-	private Collection tags;
-	private Collection urls;
+	private Collection<Note> notes;
+	private Collection<Tag> tags;
 	private String iconServer;
 	private String iconFarm;
 	private String url;
@@ -343,37 +342,22 @@ public class Photo {
 		}
 	}
 
-	public Collection getNotes() {
+	public Collection<Note> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(Collection notes) {
+	public void setNotes(Collection<Note> notes) {
 		this.notes = notes;
 	}
 
-	public Collection getTags() {
+	public Collection<Tag> getTags() {
 		return tags;
 	}
 
-	public void setTags(Collection tags) {
+	public void setTags(Collection<Tag> tags) {
 		this.tags = tags;
 	}
 
-	/**
-	 *
-	 * @return List of {@link PhotoUrl}
-	 */
-	public Collection getUrls() {
-		return urls;
-	}
-
-	/**
-	 *
-	 * @param urls List of {@link PhotoUrl}
-	 */
-	public void setUrls(Collection urls) {
-		this.urls = urls;
-	}
 
 	/**
 	 * Sets the number of views for this Photo.
@@ -869,8 +853,8 @@ public class Photo {
 	 * @param sizes
 	 * @see com.aetrion.flickr.photos.PhotosInterface#getSizes(String)
 	 */
-	public void setSizes(Collection sizes) {
-		Iterator it = sizes.iterator();
+	public void setSizes(Collection<Size> sizes) {
+		Iterator<Size> it = sizes.iterator();
 		while (it.hasNext()) {
 			Size size = (Size) it.next();
 			if (size.getLabel() == Size.SMALL) {
