@@ -21,7 +21,8 @@ import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class FlickrTableStatistic {
 
-	private static final int PERIOD = 900;
+	//logging interval (seconds)
+	private static final int PERIOD = 3600;
 
 	/**
 	 * Logger for this class
