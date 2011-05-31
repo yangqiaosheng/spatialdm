@@ -519,29 +519,23 @@ public class TestFlickrEuropeArea {
 //		years.add("2007");
 //		years.add("2001");
 //		years.add("2005-01");
-		FileOutputStream fos1 = new FileOutputStream("temp/xyChart.png");
-		FileOutputStream fos2 = new FileOutputStream("temp/tsCharth.png");
-		FileOutputStream fos3 = new FileOutputStream("temp/tsChartd.png");
-		FileOutputStream fos4 = new FileOutputStream("temp/tsChartm.png");
-		FileOutputStream fos5 = new FileOutputStream("temp/tsCharty.png");
-		FileOutputStream fos6 = new FileOutputStream("temp/tsChartw.png");
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
 		FlickrArea area1 = areaMgr.getAreaDao().getAreaById(23312, FlickrArea.Radius.R80000);
-		FlickrArea area3 = areaMgr.getAreaDao().getAreaById(23318, FlickrArea.Radius.R80000);
+//		FlickrArea area3 = areaMgr.getAreaDao().getAreaById(23318, FlickrArea.Radius.R80000);
 		areas.add(area1);
-		areas.add(area3);
+//		areas.add(area3);
 
 		boolean smmoth = true;
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		String xml = IOUtils.toString(new FileReader("FlickrEuropeKmlRequest1.xml"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml), areaDto);
-		boolean icon = false;
-		areaMgr.createXYLineChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, fos1);
-		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, smmoth, icon, fos2);
-		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, smmoth, icon, fos3);
-		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, icon, fos4);
-		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto, 800, 300, true, smmoth, icon, fos5);
-		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 800, 300, true, smmoth, icon, fos6);
+		boolean icon = true;
+//		areaMgr.createXYLineChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, new FileOutputStream("temp/xyChart.png"));
+//		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, smmoth, icon, new FileOutputStream("temp/tsCharth.png"));
+//		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, smmoth, icon, new FileOutputStream("temp/tsChartd.png"));
+//		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, icon, new FileOutputStream("temp/tsChartm.png"));
+		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto,  100, 60, false, smmoth, icon, new FileOutputStream("temp/tsCharty.png"));
+		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 100, 60, false, smmoth, icon, new FileOutputStream("temp/tsChartw.png"));
 	}
 
 //	@Test
