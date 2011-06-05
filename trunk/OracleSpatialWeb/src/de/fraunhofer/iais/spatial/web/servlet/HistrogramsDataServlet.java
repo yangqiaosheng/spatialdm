@@ -120,7 +120,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 	private String histrogramsResponseXml(Document document, Histrograms histrograms) {
 
 		Element rootElement = document.getRootElement();
-		Element histrogramsElement = new Element("histrograms");
+		Element histrogramsElement = new Element("histrogramsData");
 		rootElement.addContent(histrogramsElement);
 
 		addHistrogram(document, histrograms.getWeekdays(), Level.WEEKDAY);
