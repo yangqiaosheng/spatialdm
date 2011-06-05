@@ -23,6 +23,7 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.Histrograms;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -135,16 +136,18 @@ public class HistrogramsDataServlet extends HttpServlet {
 	private void addHistrogram(Document document, Map<Integer, Integer> histrogramData, Level displayLevel) {
 
 		int maxValue = new TreeSet<Integer>(histrogramData.values()).last();
+		int minValue = new TreeSet<Integer>(histrogramData.values()).first();
 		String levelStr = displayLevel.toString().toLowerCase();
 
 		Element rootElement = document.getRootElement();
 		Element histrogramElement = new Element(levelStr + "s");
 		histrogramElement.setAttribute("maxValue", String.valueOf(maxValue));
+		histrogramElement.setAttribute("minValue", String.valueOf(minValue));
 		rootElement.addContent(histrogramElement);
 
 		for(Map.Entry<Integer, Integer> e : histrogramData.entrySet()){
 			Element valueElement = new Element(levelStr);
-			valueElement.setAttribute("id", String.valueOf(e.getKey()));
+			valueElement.setAttribute("id", DateUtil.getChartLabelStr(e.getKey(), displayLevel));
 			valueElement.setText(String.valueOf(e.getValue()));
 		}
 	}
