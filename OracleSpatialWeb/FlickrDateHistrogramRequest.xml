@@ -1,0 +1,47 @@
+<request>
+	<screen>
+		<bounds>((50.50134064742177, 6.383916015625002), (50.9412634108359, 8.141728515625001))</bounds>
+		<center>(50.721818280377356, 7.262822265625002)</center>
+		<zoom>11</zoom>
+	</screen>
+
+	<calendar>
+		<years>
+			<year>2008</year>
+			<year>2009</year>
+		</years>
+
+		<!--
+		<months>
+			<month>May</month>
+			<month>September</month>
+			<month>October</month>
+			<month>November</month>
+		</months>
+		-->
+
+		<!--
+		<days>
+			<day>01</day>
+			<day>14</day>
+		</days>
+		-->
+
+		<!--
+		<hours>
+			<hour>00</hour>
+			<hour>04</hour>
+			<hour>10</hour>
+			<hour>23</hour>
+		</hours>
+		-->
+
+		<!--
+		<weekdays>
+			<weekday>Saturday</weekday>
+			<weekday>Sunday</weekday>
+		</weekdays>
+		-->
+	</calendar>
+
+</request>

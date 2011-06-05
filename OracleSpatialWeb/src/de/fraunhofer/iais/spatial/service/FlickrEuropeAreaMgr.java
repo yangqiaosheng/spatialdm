@@ -23,8 +23,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import oracle.spatial.geometry.JGeometry;
-
 import org.apache.commons.lang.StringUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -39,10 +37,11 @@ import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.Histrograms;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
-import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.DateUtil;
+import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -351,45 +350,12 @@ public class FlickrEuropeAreaMgr {
 		}
 	}
 
-
-	public String createMarkersXml(List<FlickrArea> areas, String file) {
-		Document document = new Document();
-		Element rootElement = new Element("polygons");
-		document.setRootElement(rootElement);
-		for (FlickrArea area : areas) {
-			String polyColor = "#0000";
-			long color = area.getTotalCount() / 30;
-			if (color > 255) {
-				color = 255;
-			}
-
-			Element polygonElement = new Element("polygon");
-			rootElement.addContent(polygonElement);
-			polygonElement.setAttribute("color", polyColor + StringUtil.byteToHexString((byte) color));
-			polygonElement.setAttribute("opacity", "2");
-
-			Element lineElement = new Element("line");
-			polygonElement.addContent(lineElement);
-			lineElement.setAttribute("color", "#111111");
-			lineElement.setAttribute("width", "2");
-			lineElement.setAttribute("opacity", "1");
-
-			List<Point2D> shape = area.getGeom();
-			for (Point2D point: shape) {
-				Element pointElement = new Element("point");
-				lineElement.addContent(pointElement);
-				pointElement.setAttribute("lat", String.valueOf(point.getX()));
-				pointElement.setAttribute("lng", String.valueOf(point.getY()));
-			}
-		}
-		XmlUtil.xml2File(document, file, false);
-		return XmlUtil.xml2String(document, false);
-	}
-
+	@Deprecated
 	public void createBarChart(Map<String, Integer> cs) {
 		ChartUtil.createBarChart(cs, "temp/bar.jpg");
 	}
 
+	@Deprecated
 	public void createTimeSeriesChartOld(FlickrArea area, Set<String> years, OutputStream os) throws ParseException, IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -607,42 +573,36 @@ public class FlickrEuropeAreaMgr {
 			ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
 		}
 
-	public void generateChartData(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
+	/**
+	 * calculate the histrograms DataSets for each FlickrArea, and a Summary Histrograms DataSet
+	 * @param areas
+	 * @param areaDto
+	 * @return the Summary Histrograms DataSets for all FlickrAreas
+	 */
+	public Histrograms calculateHistrograms(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
+
+		Histrograms sumHistrograms =  new Histrograms();
+
+		Map<Integer, Integer> sumYearData = sumHistrograms.getYears();
+		Map<Integer, Integer> sumMonthData = sumHistrograms.getMonths();
+		Map<Integer, Integer> sumDayData = sumHistrograms.getDays();
+		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
+		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
 
 		int queryStrsLength = areaDto.getQueryStrs().first().length();
 		for (FlickrArea area : areas) {
-			Map<Integer, Integer> yearData = area.getChartsData().getYears();
-			Map<Integer, Integer> monthData = area.getChartsData().getMonths();
-			Map<Integer, Integer> dayData = area.getChartsData().getDays();
-			Map<Integer, Integer> hourData = area.getChartsData().getHours();
-			Map<Integer, Integer> weekdayData = area.getChartsData().getWeekdays();
-
-			// init
-			for (int year : DateUtil.allYearInts) {
-				yearData.put(year, 0);
-			}
-
-			for (int month : DateUtil.allMonthInts) {
-				monthData.put(month, 0);
-			}
-
-			for (int day : DateUtil.allDayInts) {
-				dayData.put(day, 0);
-			}
-
-			for (int hour : DateUtil.allHourInts) {
-				hourData.put(hour, 0);
-			}
-
-			for (int weekday : DateUtil.allWeekdayInts) {
-				weekdayData.put(weekday, 0);
-			}
+			Map<Integer, Integer> yearData = area.getHistrogramData().getYears();
+			Map<Integer, Integer> monthData = area.getHistrogramData().getMonths();
+			Map<Integer, Integer> dayData = area.getHistrogramData().getDays();
+			Map<Integer, Integer> hourData = area.getHistrogramData().getHours();
+			Map<Integer, Integer> weekdayData = area.getHistrogramData().getWeekdays();
 
 			//set values
 			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int hour = Integer.parseInt(e.getKey().substring(11, 13));
 					hourData.put(hour, e.getValue() + hourData.get(hour));
+					sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
 				}
 			}
 
@@ -650,6 +610,7 @@ public class FlickrEuropeAreaMgr {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int day = Integer.parseInt(e.getKey().substring(8, 10));
 					dayData.put(day, e.getValue() + dayData.get(day));
+					sumDayData.put(day, e.getValue() + sumDayData.get(day));
 				}
 			}
 
@@ -657,6 +618,7 @@ public class FlickrEuropeAreaMgr {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int month = Integer.parseInt(e.getKey().substring(5, 7));
 					monthData.put(month, e.getValue() + monthData.get(month));
+					sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
 				}
 			}
 
@@ -664,6 +626,7 @@ public class FlickrEuropeAreaMgr {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int year = Integer.parseInt(e.getKey().substring(0, 4));
 					yearData.put(year, e.getValue() + yearData.get(year));
+					sumYearData.put(year, e.getValue() + sumYearData.get(year));
 				}
 			}
 
@@ -677,58 +640,23 @@ public class FlickrEuropeAreaMgr {
 					calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
 					int weekday = DateUtil.getWeekdayInt(calendar.getTime());
 					weekdayData.put(weekday, e.getValue() + weekdayData.get(weekday));
+					sumWeekdayData.put(weekday, e.getValue() + sumWeekdayData.get(weekday));
 				}
 			}
 		}
+
+		return sumHistrograms;
 	}
 
-	public String createXml(List<FlickrArea> areas, String filenamePrefix, Radius radius) throws UnsupportedEncodingException {
-		Document document = new Document();
-		Element rootElement = new Element("polygons");
-		document.setRootElement(rootElement);
-		rootElement.setAttribute("wholeDbNum", String.valueOf(this.getAreaDao().getTotalPhotoNum()));
 
-		for (FlickrArea area : areas) {
-			Element polygonElement = new Element("polygon");
-			rootElement.addContent(polygonElement);
-			polygonElement.setAttribute("id", String.valueOf(area.getId()));
-			polygonElement.setAttribute("total", String.valueOf(area.getTotalCount()));
-			polygonElement.setAttribute("select", String.valueOf(area.getSelectCount()));
 
-			Element lineElement = new Element("line");
-			polygonElement.addContent(lineElement);
-			lineElement.setAttribute("width", "1");
-
-			List<Point2D> geom = area.getGeom();
-			for (Point2D point: geom) {
-				Element pointElement = new Element("point");
-				lineElement.addContent(pointElement);
-				pointElement.setAttribute("lng", String.valueOf(point.getX()));
-				pointElement.setAttribute("lat", String.valueOf(point.getY()));
-			}
-
-			Element centerElement = new Element("center");
-			polygonElement.addContent(centerElement);
-			Element pointElement = new Element("point");
-			centerElement.addContent(pointElement);
-			pointElement.setAttribute("lng", String.valueOf(area.getCenter().getX()));
-			pointElement.setAttribute("lat", String.valueOf(area.getCenter().getY()));
-		}
-
-		if(filenamePrefix != null){
-			XmlUtil.xml2File(document, filenamePrefix + ".xml", false);
-		}
-
-		return XmlUtil.xml2String(document, false);
-	}
-
-	public String createKml(List<FlickrArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
+	public String buildKmlFile(List<FlickrArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = this.getClass().getResource("/../../").getPath();
 		if (StringUtils.isEmpty(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
 
-		Document document = bulidKmlDoc(areas, radius, remoteBasePath);
+		Document document = createKmlDoc(areas, radius, remoteBasePath);
 
 		if(filenamePrefix != null){
 			if(StringUtils.isNotEmpty(filenamePrefix)){
@@ -743,14 +671,14 @@ public class FlickrEuropeAreaMgr {
 		return XmlUtil.xml2String(document, false);
 	}
 
-	public String createKml(List<FlickrArea> areas, Radius radius, String remoteBasePath, Writer out) throws IOException {
-		Document document = bulidKmlDoc(areas, radius, remoteBasePath);
+	public String buildKmlString(List<FlickrArea> areas, Radius radius, String remoteBasePath, Writer out) throws IOException {
+		Document document = createKmlDoc(areas, radius, remoteBasePath);
 		new XMLOutputter().output(document, out);
 
 		return XmlUtil.xml2String(document, false);
 	}
 
-	private Document bulidKmlDoc(List<FlickrArea> areas, Radius radius, String remoteBasePath) {
+	private Document createKmlDoc(List<FlickrArea> areas, Radius radius, String remoteBasePath) {
 		Document document = new Document();
 
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
@@ -821,7 +749,7 @@ public class FlickrEuropeAreaMgr {
 		// Polygon
 		for (FlickrArea area : areas) {
 			String name = area.getSelectCount() + " / " + area.getTotalCount();
-			String description = buildDescription(area);
+			String description = buildKmlDescription(area);
 
 //			String polyStyleColor = "440000"; //not transparent
 			String polyStyleColor = "000000"; //transparent
@@ -878,11 +806,11 @@ public class FlickrEuropeAreaMgr {
 
 			Element extendedDataElement = new Element("ExtendedData", namespace);
 			placemarkElement.addContent(extendedDataElement);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getWeekdays(), Level.WEEKDAY);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getYears(), Level.YEAR);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getMonths(), Level.MONTH);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getDays(), Level.DAY);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getChartsData().getHours(), Level.HOUR);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getWeekdays(), Level.WEEKDAY);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getYears(), Level.YEAR);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getMonths(), Level.MONTH);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getDays(), Level.DAY);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getHours(), Level.HOUR);
 		}
 		return document;
 	}
@@ -897,24 +825,24 @@ public class FlickrEuropeAreaMgr {
 		}
 	}
 
-	private String buildDescription(FlickrArea area) {
+	private String buildKmlDescription(FlickrArea area) {
 		int width = 640;
-		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getChartsData().getWeekdays(), Level.WEEKDAY);
-		String yearChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getChartsData().getYears(), Level.YEAR);
-		String monthChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getChartsData().getMonths(), Level.MONTH);
-		String dayChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getChartsData().getDays(), Level.DAY);
-		String hourChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getChartsData().getHours(), Level.HOUR);
+		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getHistrogramData().getWeekdays(), Level.WEEKDAY);
+		String yearChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getHistrogramData().getYears(), Level.YEAR);
+		String monthChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistrogramData().getMonths(), Level.MONTH);
+		String dayChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistrogramData().getDays(), Level.DAY);
+		String hourChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistrogramData().getHours(), Level.HOUR);
 
 		String description = weekdayChartImg + yearChartImg + "<BR>" + monthChartImg + "<BR>" + dayChartImg + "<BR>" + hourChartImg;
 		return description;
 	}
 
-	private String createGoogleChartImg(String title, int width, int height, Map<Integer, Integer> chartData, Level displayLevel) {
+	private String createGoogleChartImg(String title, int width, int height, Map<Integer, Integer> histrogramData, Level displayLevel) {
 		String values = "";
 		String labels = "";
-		int maxValue = new TreeSet<Integer>(chartData.values()).last();
-		int barWithd = (int) (width / chartData.size() / 1.3);
-		for(Map.Entry<Integer, Integer> e : chartData.entrySet()){
+		int maxValue = new TreeSet<Integer>(histrogramData.values()).last();
+		int barWithd = (int) (width / histrogramData.size() / 1.3);
+		for(Map.Entry<Integer, Integer> e : histrogramData.entrySet()){
 			labels += "|" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
 			values += "," + e.getValue();
 		}
@@ -941,4 +869,5 @@ public class FlickrEuropeAreaMgr {
 
 		return img;
 	}
+
 }

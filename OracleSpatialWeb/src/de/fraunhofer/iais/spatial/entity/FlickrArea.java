@@ -2,12 +2,8 @@ package de.fraunhofer.iais.spatial.entity;
 
 import java.awt.geom.Point2D;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
-import oracle.spatial.geometry.JGeometry;
 
 /**
  * Entity mapped to the table FLICKR_DE_WEST_TABLE_RADIUS and FLICKR_DE_WEST_TABLE_COUNT
@@ -26,9 +22,10 @@ public class FlickrArea {
 	private Map<String, Integer> monthsCount = new HashMap<String, Integer>();
 	private Map<String, Integer> daysCount = new HashMap<String, Integer>();
 	private Map<String, Integer> hoursCount = new HashMap<String, Integer>();
+
 	private transient long totalCount;
 	private transient long selectedCount;
-	private transient ChartData chartsData = new ChartData();
+	private transient Histrograms histrograms = new Histrograms();
 
 	public enum Radius {
 		R5000, R10000, R20000, R40000, R80000, R160000, R320000;
@@ -39,29 +36,6 @@ public class FlickrArea {
 		}
 	}
 
-	public class ChartData{
-		private Map<Integer, Integer> years = new TreeMap<Integer, Integer>();
-		private Map<Integer, Integer> months = new TreeMap<Integer, Integer>();
-		private Map<Integer, Integer> days = new TreeMap<Integer, Integer>();
-		private Map<Integer, Integer> hours = new TreeMap<Integer, Integer>();
-		private Map<Integer, Integer> weekdays = new TreeMap<Integer, Integer>();
-
-		public Map<Integer, Integer> getYears() {
-			return years;
-		}
-		public Map<Integer, Integer> getMonths() {
-			return months;
-		}
-		public Map<Integer, Integer> getDays() {
-			return days;
-		}
-		public Map<Integer, Integer> getHours() {
-			return hours;
-		}
-		public Map<Integer, Integer> getWeekdays() {
-			return weekdays;
-		}
-	}
 
 	public long getId() {
 		return id;
@@ -143,8 +117,8 @@ public class FlickrArea {
 		this.radius = radius;
 	}
 
-	public ChartData getChartsData() {
-		return chartsData;
+	public Histrograms getHistrogramData() {
+		return histrograms;
 	}
 
 }

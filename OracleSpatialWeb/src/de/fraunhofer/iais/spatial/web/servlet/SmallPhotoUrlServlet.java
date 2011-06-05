@@ -57,6 +57,11 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/xml");
+		// Prevents caching
+		response.setHeader("Cache-Control", "no-store"); // HTTP1.1
+		response.setHeader("Pragma", "no-cache"); // HTTP1.0
+		response.setDateHeader("Expires", 0); // proxy server
+
 		String areaid = request.getParameter("areaid");
 		String page = request.getParameter("page");
 		String pageSize = request.getParameter("page_size");
