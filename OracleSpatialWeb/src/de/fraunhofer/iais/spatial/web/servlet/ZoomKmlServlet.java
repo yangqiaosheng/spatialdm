@@ -1,7 +1,5 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -48,7 +46,7 @@ public class ZoomKmlServlet extends HttpServlet {
 		}
 
 		// web base path for local operation
-		String localBasePath = getServletContext().getRealPath("/");
+//		String localBasePath = getServletContext().getRealPath("/");
 		// web base path for remote access
 		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 		//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
