@@ -25,6 +25,7 @@ import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
+@Deprecated
 public class PolygonKmlServlet extends HttpServlet {
 	/**
 	* Logger for this class
@@ -74,7 +75,7 @@ public class PolygonKmlServlet extends HttpServlet {
 				} else if (areaDto.getBoundaryRect() != null) {
 					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 					if(size > 2000){
-						throw new RuntimeException("The maximun number of return polygons is exceeded! \n" +
+						throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" +
 								" Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
 					}
 					areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
@@ -83,7 +84,7 @@ public class PolygonKmlServlet extends HttpServlet {
 				}
 
 				areaMgr.countSelected(areas, areaDto);
-				kmlStr = areaMgr.createKml(areas, null, areaDto.getRadius(), remoteBasePath, false);
+				kmlStr = areaMgr.buildKmlFile(areas, null, areaDto.getRadius(), remoteBasePath, false);
 
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$

@@ -1,11 +1,9 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Calendar;
-import java.util.Date;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -22,6 +20,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -35,6 +34,16 @@ public class PolygonXmlServlet extends HttpServlet {
 
 	private static FlickrEuropeAreaMgr areaMgr = null;
 
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 *
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -58,11 +67,12 @@ public class PolygonXmlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
+		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
+
 		if (StringUtils.isEmpty(xml)) {
 			messageElement.setText("ERROR: wrong input parameter!");
 			responseStr = XmlUtil.xml2String(document, true);
 		} else {
-
 			FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 			if("true".equals(persist) && request.getSession().getAttribute("areaDto") != null){
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true" );
@@ -70,28 +80,26 @@ public class PolygonXmlServlet extends HttpServlet {
 			}
 
 			try {
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
-
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
-
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				List<FlickrArea> areas = null;
-
 				if (areaDto.getPolygon() != null) {
 					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
 				} else if (areaDto.getBoundaryRect() != null) {
 					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 					if(size > 2000){
-						throw new RuntimeException("The maximun number of return polygons is exceeded! \n" +
+						throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" +
 								" Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
 					}
 					areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 				} else {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
+
 				areaMgr.countSelected(areas, areaDto);
-				responseStr = areaMgr.createXml(areas, null, areaDto.getRadius());
+				responseStr = createXml(areas, null, areaDto.getRadius(), areaMgr.getAreaDao().getTotalPhotoNum());
+
 				request.getSession().setAttribute("areaDto", areaDto);
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
@@ -106,6 +114,46 @@ public class PolygonXmlServlet extends HttpServlet {
 		out.print(responseStr);
 		out.flush();
 		out.close();
+	}
+
+	private String createXml(List<FlickrArea> areas, String filenamePrefix, Radius radius, long totalPhotoNum) throws UnsupportedEncodingException {
+		Document document = new Document();
+		Element rootElement = new Element("polygons");
+		document.setRootElement(rootElement);
+		rootElement.setAttribute("wholeDbNum", String.valueOf(totalPhotoNum));
+
+		for (FlickrArea area : areas) {
+			Element polygonElement = new Element("polygon");
+			rootElement.addContent(polygonElement);
+			polygonElement.setAttribute("id", String.valueOf(area.getId()));
+			polygonElement.setAttribute("total", String.valueOf(area.getTotalCount()));
+			polygonElement.setAttribute("select", String.valueOf(area.getSelectCount()));
+
+			Element lineElement = new Element("line");
+			polygonElement.addContent(lineElement);
+			lineElement.setAttribute("width", "1");
+
+			List<Point2D> geom = area.getGeom();
+			for (Point2D point: geom) {
+				Element pointElement = new Element("point");
+				lineElement.addContent(pointElement);
+				pointElement.setAttribute("lng", String.valueOf(point.getX()));
+				pointElement.setAttribute("lat", String.valueOf(point.getY()));
+			}
+
+			Element centerElement = new Element("center");
+			polygonElement.addContent(centerElement);
+			Element pointElement = new Element("point");
+			centerElement.addContent(pointElement);
+			pointElement.setAttribute("lng", String.valueOf(area.getCenter().getX()));
+			pointElement.setAttribute("lat", String.valueOf(area.getCenter().getY()));
+		}
+
+		if(filenamePrefix != null){
+			XmlUtil.xml2File(document, filenamePrefix + ".xml", false);
+		}
+
+		return XmlUtil.xml2String(document, false);
 	}
 
 	@Override

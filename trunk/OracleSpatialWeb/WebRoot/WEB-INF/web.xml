@@ -19,7 +19,7 @@
 		<res-auth>Container</res-auth>
 	</resource-ref>
 	-->
-	
+
 	<!-- has error
 	<resource-ref>
 		<description>PostGIS Connection Pool</description>
@@ -66,7 +66,7 @@
 
 	<!--
 		- JavaMelody configuration
-	
+
 	<filter>
 		<filter-name>monitoring</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
@@ -133,7 +133,7 @@
 		<servlet-name>PolygonKml</servlet-name>
 		<url-pattern>/PolygonKml</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<description>Retrieve the data to create a kml with different zoom levels</description>
 		<display-name>ZoomedKml</display-name>
@@ -178,6 +178,17 @@
 	<servlet-mapping>
 		<servlet-name>SmallPhotoUrl</servlet-name>
 		<url-pattern>/SmallPhotoUrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<description>return the Datasets of Histrograms</description>
+		<display-name>HistrogramsData</display-name>
+		<servlet-name>HistrogramsData</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.HistrogramsDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HistrogramsData</servlet-name>
+		<url-pattern>/HistrogramsData</url-pattern>
 	</servlet-mapping>
 
 	<!-- allow directory listing of this web application only -->

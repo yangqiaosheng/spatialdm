@@ -47,6 +47,7 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 
 public class ChartUtil {
 
+	@Deprecated
 	public static void createTimeSeriesChartOld(Map<Date, Integer> countsMap, OutputStream os) throws IOException {
 		XYDataset timeSeriesDataset = createTimeSeriesDatasetOld(countsMap);
 		JFreeChart jfreechart = buildTimeSeriesChartOld(timeSeriesDataset);
@@ -65,6 +66,7 @@ public class ChartUtil {
 		ChartUtilities.writeChartAsPNG(os, jfreechart, width, height);
 	}
 
+	@Deprecated
 	private static XYDataset createTimeSeriesDatasetOld(Map<Date, Integer> countsMap) {
 		TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 		SimpleDateFormat dsdf = new SimpleDateFormat("dd", Locale.ENGLISH);
@@ -140,6 +142,7 @@ public class ChartUtil {
 		return xySeriesCollection;
 	}
 
+	@Deprecated
 	private static JFreeChart buildTimeSeriesChartOld(XYDataset xydataset) {
 
 		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
@@ -355,6 +358,7 @@ public class ChartUtil {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static void createBarChart(Map<String, Integer> countsMap, String filename) {
 		System.out.println("chart");
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
