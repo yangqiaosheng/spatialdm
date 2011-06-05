@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <response>
 	<message>SUCCESS</message>
-	<histrograms>
+	<histrogramsData>
 		<years maxValue="6786">
 			<year id="2005">3040</year>
 			<year id="2006">234</year>
@@ -96,5 +96,5 @@
 			<weekday id="Saturday">234232</weekday>
 			<weekday id="Sunday">12232</weekday>
 		</weekdays>
-	</histrograms>
+	</histrogramsData>
 </response>
