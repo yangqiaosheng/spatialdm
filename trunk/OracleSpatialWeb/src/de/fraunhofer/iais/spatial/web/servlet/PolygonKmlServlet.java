@@ -1,10 +1,7 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -13,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdom.Document;
-import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -23,7 +18,6 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
-import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 @Deprecated
 public class PolygonKmlServlet extends HttpServlet {
@@ -58,7 +52,7 @@ public class PolygonKmlServlet extends HttpServlet {
 		if (StringUtils.isNotEmpty(xml)) {
 
 			try {
-				String filenamePrefix = StringUtil.genFilename(new Date());
+//				String filenamePrefix = StringUtil.genFilename(new Date());
 
 				FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 
