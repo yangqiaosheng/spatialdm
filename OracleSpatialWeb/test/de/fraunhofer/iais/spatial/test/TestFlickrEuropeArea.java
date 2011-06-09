@@ -3,8 +3,10 @@ package de.fraunhofer.iais.spatial.test;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,9 +23,11 @@ import javax.naming.NamingException;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -37,10 +41,12 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.entity.Histrograms;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.servlet.HistrogramsDataServlet;
 
 //@ContextConfiguration("classpath:beans.xml")
 public class TestFlickrEuropeArea {
@@ -331,6 +337,29 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
+	public void testHistrogram() throws JDOMException, IOException, ParseException {
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest.xml"))), areaDto);
+		List<FlickrArea> areas = null;
+		if (areaDto.getBoundaryRect() == null) {
+			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+		} else {
+			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		}
+
+		long start = System.currentTimeMillis();
+		Histrograms sumHistrograms = areaMgr.calculateHistrograms(areas, areaDto);
+
+		Document document = new Document();
+		Element rootElement = new Element("response");
+		document.setRootElement(rootElement);
+		String resultXml = new HistrogramsDataServlet().histrogramsResponseXml(document, sumHistrograms, true);
+		System.out.println(resultXml);
+
+		System.out.println(System.currentTimeMillis() - start);
+	}
+
+	@Test
 	public void testPhotoXml() {
 		long start = System.currentTimeMillis();
 
@@ -385,22 +414,6 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
-	public void testTree() {
-		SortedSet<String> s = new TreeSet<String>();
-		s.add("2007-05-08");
-		s.add("2007-06-08");
-		s.add("2007-05-09");
-		s.add("2007-05-18");
-		s.add("2009-01-08");
-		s.add("2008-01-08");
-		s.add("1995-01-08");
-		while (s.size() > 0) {
-			System.out.println(s.last());
-			s.remove(s.last());
-		}
-	}
-
-	@Test
 	public void testRequestXml() throws Exception {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 //		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest2.xml"));
@@ -447,13 +460,7 @@ public class TestFlickrEuropeArea {
 	public void testKml1() throws Exception {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
-		StringBuffer xml = new StringBuffer();
-		String thisLine;
-		while ((thisLine = br.readLine()) != null) {
-			xml.append(thisLine);
-		}
-		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrEuropeKmlRequest1.xml"))), areaDto);
 		List<FlickrArea> as = null;
 		if (areaDto.getBoundaryRect() == null) {
 			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
