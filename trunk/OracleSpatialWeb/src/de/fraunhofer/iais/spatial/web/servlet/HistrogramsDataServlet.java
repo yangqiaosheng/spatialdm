@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
@@ -67,6 +69,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 		response.setDateHeader("Expires", 0); // proxy server
 
 		String xml = request.getParameter("xml");
+		String hasChart = request.getParameter("chart");
 
 		PrintWriter out = response.getWriter();
 
@@ -101,7 +104,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 				}
 
 				Histrograms sumHistrograms = areaMgr.calculateHistrograms(areas, areaDto);
-				histrogramsResponseXml(document, sumHistrograms);
+				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
 
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
@@ -118,38 +121,86 @@ public class HistrogramsDataServlet extends HttpServlet {
 		out.close();
 	}
 
-	private String histrogramsResponseXml(Document document, Histrograms histrograms) {
+	public String histrogramsResponseXml(Document document, Histrograms histrograms, boolean hasChart) {
 
 		Element rootElement = document.getRootElement();
-		Element histrogramsElement = new Element("histrogramsData");
-		rootElement.addContent(histrogramsElement);
+		Element histrogramsDataElement = new Element("histrogramsData");
+		rootElement.addContent(histrogramsDataElement);
 
-		addHistrogram(document, histrograms.getWeekdays(), Level.WEEKDAY);
-		addHistrogram(document, histrograms.getHours(), Level.HOUR);
-		addHistrogram(document, histrograms.getDays(), Level.DAY);
-		addHistrogram(document, histrograms.getMonths(), Level.MONTH);
-		addHistrogram(document, histrograms.getYears(), Level.YEAR);
 
-		return XmlUtil.xml2String(document, true);
+		addHistrogram(histrogramsDataElement, histrograms.getWeekdays(), Level.WEEKDAY);
+		addHistrogram(histrogramsDataElement, histrograms.getHours(), Level.HOUR);
+		addHistrogram(histrogramsDataElement, histrograms.getDays(), Level.DAY);
+		addHistrogram(histrogramsDataElement, histrograms.getMonths(), Level.MONTH);
+		addHistrogram(histrogramsDataElement, histrograms.getYears(), Level.YEAR);
+
+		if(hasChart){
+			Element histrogramsChartElement = new Element("histrogramsChart");
+			rootElement.addContent(histrogramsChartElement);
+
+			addGoogleHistrogramChart(histrogramsChartElement, "Photos Distribution", 400, 200, histrograms.getWeekdays(), Level.WEEKDAY);
+			addGoogleHistrogramChart(histrogramsChartElement, "Photos Distribution", 400, 200, histrograms.getHours(), Level.HOUR);
+			addGoogleHistrogramChart(histrogramsChartElement, "Photos Distribution", 400, 200, histrograms.getDays(), Level.DAY);
+			addGoogleHistrogramChart(histrogramsChartElement, "Photos Distribution", 400, 200, histrograms.getMonths(), Level.MONTH);
+			addGoogleHistrogramChart(histrogramsChartElement, "Photos Distribution", 400, 200, histrograms.getYears(), Level.YEAR);
+		}
+		return XmlUtil.xml2String(document, false);
 	}
 
-	private void addHistrogram(Document document, Map<Integer, Integer> histrogramData, Level displayLevel) {
+	private void addHistrogram(Element element, Map<Integer, Integer> histrogramData, Level displayLevel) {
 
 		int maxValue = new TreeSet<Integer>(histrogramData.values()).last();
 		int minValue = new TreeSet<Integer>(histrogramData.values()).first();
 		String levelStr = displayLevel.toString().toLowerCase();
 
-		Element rootElement = document.getRootElement();
 		Element histrogramElement = new Element(levelStr + "s");
 		histrogramElement.setAttribute("maxValue", String.valueOf(maxValue));
 		histrogramElement.setAttribute("minValue", String.valueOf(minValue));
-		rootElement.addContent(histrogramElement);
+		element.addContent(histrogramElement);
 
 		for(Map.Entry<Integer, Integer> e : histrogramData.entrySet()){
 			Element valueElement = new Element(levelStr);
+			histrogramElement.addContent(valueElement);
 			valueElement.setAttribute("id", DateUtil.getChartLabelStr(e.getKey(), displayLevel));
 			valueElement.setText(String.valueOf(e.getValue()));
 		}
+	}
+
+	private void addGoogleHistrogramChart(Element element, String title, int width, int height, Map<Integer, Integer> histrogramData, Level displayLevel) {
+		String levelStr = displayLevel.toString().toLowerCase();
+		Element histrogramChartElement = new Element("histrogramChart");
+		element.addContent(histrogramChartElement);
+		histrogramChartElement.setAttribute("type", levelStr);
+
+		String values = "";
+		String labels = "";
+		int maxValue = new TreeSet<Integer>(histrogramData.values()).last();
+		int barWithd = (int) (width / histrogramData.size() / 1.3);
+		for(Map.Entry<Integer, Integer> e : histrogramData.entrySet()){
+			labels += "|" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
+			values += "," + e.getValue();
+		}
+
+//		for(Map.Entry<Integer, Integer> e : chartData.entrySet()){
+//			String dataName = displayLevel + "_" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
+//			labels += "|$[" + dataName + "/displayName]";
+//			values += ",$[" + dataName + "]";
+//		}
+
+		String imgUrl =
+		"http://chart.apis.google.com/chart" + 	//chart engine
+		"?chtt=" + displayLevel +				//chart title
+		"&cht=bvs" +							//chart type
+		"&chs=" + width + "x" + height +		//chart size(pixel)
+		"&chd=t:" + values.substring(1) + 		//values
+		"&chxt=x,y" +							//display axises
+		"&chxl=0:" + labels +					//labels in x axis
+		"&chbh=" + barWithd +					//chbh=<bar_width_or_scale>,<space_between_bars>,<space_between_groups>
+		"&chm=N,444444,-1,,12" +				//data marker chm= <marker_type>,<color>,<series_index>,<which_points>,<size>,<z_order>,<placement>
+		"&chds=1," + maxValue * 1.2 +			//scale of y axis (default 1-100)
+		"&chxr=1,0," + maxValue * 1.2; 			//scale in value (default 1-100)
+
+		histrogramChartElement.addContent(new CDATA(imgUrl));
 	}
 
 	/**
