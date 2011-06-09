@@ -837,7 +837,7 @@ public class FlickrEuropeAreaMgr {
 		return description;
 	}
 
-	private String createGoogleChartImg(String title, int width, int height, Map<Integer, Integer> histrogramData, Level displayLevel) {
+	public String createGoogleChartImg(String title, int width, int height, Map<Integer, Integer> histrogramData, Level displayLevel) {
 		String values = "";
 		String labels = "";
 		int maxValue = new TreeSet<Integer>(histrogramData.values()).last();

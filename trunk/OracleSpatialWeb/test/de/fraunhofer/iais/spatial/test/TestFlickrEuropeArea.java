@@ -353,7 +353,9 @@ public class TestFlickrEuropeArea {
 		Document document = new Document();
 		Element rootElement = new Element("response");
 		document.setRootElement(rootElement);
-		String resultXml = new HistrogramsDataServlet().histrogramsResponseXml(document, sumHistrograms, true);
+		HistrogramsDataServlet histrogramsDataServlet = new HistrogramsDataServlet();
+		histrogramsDataServlet.setAreaMgr(areaMgr);
+		String resultXml = histrogramsDataServlet.histrogramsResponseXml(document, sumHistrograms, true);
 		System.out.println(resultXml);
 
 		System.out.println(System.currentTimeMillis() - start);
