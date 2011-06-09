@@ -172,35 +172,13 @@ public class HistrogramsDataServlet extends HttpServlet {
 		element.addContent(histrogramChartElement);
 		histrogramChartElement.setAttribute("type", levelStr);
 
-		String values = "";
-		String labels = "";
-		int maxValue = new TreeSet<Integer>(histrogramData.values()).last();
-		int barWithd = (int) (width / histrogramData.size() / 1.3);
-		for(Map.Entry<Integer, Integer> e : histrogramData.entrySet()){
-			labels += "|" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
-			values += "," + e.getValue();
-		}
-
-//		for(Map.Entry<Integer, Integer> e : chartData.entrySet()){
-//			String dataName = displayLevel + "_" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
-//			labels += "|$[" + dataName + "/displayName]";
-//			values += ",$[" + dataName + "]";
-//		}
-
-		String imgUrl =
-		"http://chart.apis.google.com/chart" + 	//chart engine
-		"?chtt=" + displayLevel +				//chart title
-		"&cht=bvs" +							//chart type
-		"&chs=" + width + "x" + height +		//chart size(pixel)
-		"&chd=t:" + values.substring(1) + 		//values
-		"&chxt=x,y" +							//display axises
-		"&chxl=0:" + labels +					//labels in x axis
-		"&chbh=" + barWithd +					//chbh=<bar_width_or_scale>,<space_between_bars>,<space_between_groups>
-		"&chm=N,444444,-1,,12" +				//data marker chm= <marker_type>,<color>,<series_index>,<which_points>,<size>,<z_order>,<placement>
-		"&chds=1," + maxValue * 1.2 +			//scale of y axis (default 1-100)
-		"&chxr=1,0," + maxValue * 1.2; 			//scale in value (default 1-100)
+		String imgUrl = areaMgr.createGoogleChartImg(title, width, height, histrogramData, displayLevel);
 
 		histrogramChartElement.addContent(new CDATA(imgUrl));
+	}
+
+	public void setAreaMgr(FlickrEuropeAreaMgr areaMgr) {
+		HistrogramsDataServlet.areaMgr = areaMgr;
 	}
 
 	/**
