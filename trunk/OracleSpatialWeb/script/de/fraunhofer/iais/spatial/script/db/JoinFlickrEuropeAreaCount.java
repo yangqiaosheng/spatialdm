@@ -191,7 +191,7 @@ public class JoinFlickrEuropeAreaCount {
 			String countStr = rs.getString("countStr");
 
 			if (countStr != null) {
-				FlickrEuropeAreaDao.parseCounts(countStr, countsMapPre, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
+				FlickrEuropeAreaDao.parseCountDbString(countStr, countsMapPre, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
 			}
 		}
 
@@ -207,7 +207,7 @@ public class JoinFlickrEuropeAreaCount {
 			}
 		}
 
-		String countStr = FlickrEuropeAreaDao.createCountsDbString(countsMapPre);
+		String countStr = FlickrEuropeAreaDao.createCountDbString(countsMapPre);
 
 
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");

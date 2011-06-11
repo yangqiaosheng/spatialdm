@@ -12,7 +12,7 @@ CREATE TABLE flickr_europe_count
   "month" text,
   "year" text,
   total integer,
-  CONSTRAINT flickr_europe_pkey PRIMARY KEY (id, radius)
+  CONSTRAINT flickr_europe_count_pkey PRIMARY KEY (id, radius)
 )
 WITH (
   OIDS=FALSE
