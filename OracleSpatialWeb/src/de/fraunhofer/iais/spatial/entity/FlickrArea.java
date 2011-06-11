@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Entity mapped to the table FLICKR_DE_WEST_TABLE_RADIUS and FLICKR_DE_WEST_TABLE_COUNT
@@ -22,6 +23,10 @@ public class FlickrArea {
 	private Map<String, Integer> monthsCount = new HashMap<String, Integer>();
 	private Map<String, Integer> daysCount = new HashMap<String, Integer>();
 	private Map<String, Integer> hoursCount = new HashMap<String, Integer>();
+
+	private Map<String, Map<String, Integer>> hoursTagsCount = new HashMap<String, Map<String, Integer>>();
+
+	private transient Map<String, Integer> tagsCount = new TreeMap<String, Integer>();
 
 	private transient long totalCount;
 	private transient long selectedCount;
@@ -119,6 +124,14 @@ public class FlickrArea {
 
 	public Histrograms getHistrogramData() {
 		return histrograms;
+	}
+
+	public Map<String, Map<String, Integer>> getHoursTagsCount() {
+		return hoursTagsCount;
+	}
+
+	public Map<String, Integer> getTagsCount() {
+		return tagsCount;
 	}
 
 }

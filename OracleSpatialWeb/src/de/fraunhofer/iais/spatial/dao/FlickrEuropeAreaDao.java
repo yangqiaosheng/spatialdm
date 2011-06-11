@@ -10,6 +10,9 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
@@ -28,10 +31,14 @@ public abstract class FlickrEuropeAreaDao {
 	public static SimpleDateFormat monthDateFormat = new SimpleDateFormat("yyyy-MM");
 	public static SimpleDateFormat yearDateFormat = new SimpleDateFormat("yyyy");
 
-	public static Pattern hourRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d{1,});");
-	public static Pattern dayRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d{1,});");
-	public static Pattern monthRegExPattern = Pattern.compile("(\\d{4}-\\d{2}):(\\d{1,});");
-	public static Pattern yearRegExPattern = Pattern.compile("(\\d{4}):(\\d{1,});");
+	// eg. 2010-03-04@23:334;
+	public static Pattern hourRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d+);");
+	public static Pattern dayRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d+);");
+	public static Pattern monthRegExPattern = Pattern.compile("(\\d{4}-\\d{2})(\\d+);");
+	public static Pattern yearRegExPattern = Pattern.compile("(\\d{4}):(\\d+);");
+
+	// eg. 2010-03-04@23:test|32,live|334,west|12;
+	public static Pattern hourTagsRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<((\\w+\\|\\d+,?)+)>;");
 
 
 	/**
@@ -226,23 +233,57 @@ public abstract class FlickrEuropeAreaDao {
 
 	}
 
-	public final static void parseCounts(String count, Map<String, Integer> counts, Pattern dateRegExPattern) {
+	public final static void parseCountDbString(String count, Map<String, Integer> datesCount, Pattern dateRegExPattern) {
 		Matcher m = dateRegExPattern.matcher(count);
 		while (m.find()) {
-			counts.put(m.group(1), Integer.parseInt(m.group(2)));
+			datesCount.put(m.group(1), Integer.parseInt(m.group(2)));
 		}
 	}
 
-	public final static String createCountsDbString(Map<String, Integer> counts){
+	public final static void parseHoursTagsCountDbString(String count, Map<String, Map<String, Integer>> hoursTagsCount) {
+		Matcher m = hourTagsRegExPattern.matcher(count);
+		while (m.find()) {
+			Map<String, Integer> tagsCount = new TreeMap<String, Integer>();
+			for(String term : StringUtils.split(m.group(2), ",")){
+				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
+			}
+			hoursTagsCount.put(m.group(1), tagsCount);
+		}
+	}
+
+	public final static String createCountDbString(Map<String, Integer> datesCount){
 		StringBuffer strBuffer = new StringBuffer();
-		if(!(counts instanceof SortedMap<?, ?>)){
-			counts = new TreeMap<String, Integer>(counts);
+		if(!(datesCount instanceof SortedMap<?, ?>)){
+			datesCount = new TreeMap<String, Integer>(datesCount);
 		}
 
-		for (Map.Entry<String, Integer> e : counts.entrySet()) {
+		for (Map.Entry<String, Integer> e : datesCount.entrySet()) {
 			strBuffer.append(e.getKey())
 					 .append(":")
 					 .append(e.getValue())
+					 .append(";");
+		}
+		return strBuffer.toString();
+	}
+
+	public final static String createHoursTagsCountDbString(Map<String, Map<String, Integer>> hoursTagsCount){
+		StringBuffer strBuffer = new StringBuffer();
+		if(!(hoursTagsCount instanceof SortedMap<?, ?>)){
+			hoursTagsCount = new TreeMap<String, Map<String, Integer>>(hoursTagsCount);
+		}
+
+		for (Map.Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
+			strBuffer.append(e.getKey())
+					 .append(":")
+					 .append("<");
+
+			for (Map.Entry<String, Integer> term : e.getValue().entrySet()) {
+				strBuffer.append(term.getKey())
+						 .append("|")
+						 .append(term.getValue())
+						 .append(",");
+			}
+			strBuffer.append(">")
 					 .append(";");
 		}
 		return strBuffer.toString();
