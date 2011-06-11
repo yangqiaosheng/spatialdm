@@ -377,7 +377,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("HOUR");
 				if (count != null) {
-					parseCounts(count, area.getHoursCount(), hourRegExPattern);
+					parseCountDbString(count, area.getHoursCount(), hourRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -402,7 +402,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("DAY");
 				if (count != null) {
-					parseCounts(count, area.getDaysCount(), dayRegExPattern);
+					parseCountDbString(count, area.getDaysCount(), dayRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -427,7 +427,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("MONTH");
 				if (count != null) {
-					parseCounts(count, area.getMonthsCount(), monthRegExPattern);
+					parseCountDbString(count, area.getMonthsCount(), monthRegExPattern);
 				}
 			}
 		} catch (SQLException e) {
@@ -452,7 +452,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 			if (rs.next()) {
 				String count = rs.getString("YEAR");
 				if (count != null) {
-					parseCounts(count, area.getYearsCount(), yearRegExPattern);
+					parseCountDbString(count, area.getYearsCount(), yearRegExPattern);
 				}
 			}
 		} catch (SQLException e) {

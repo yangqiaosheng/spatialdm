@@ -36,6 +36,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
+import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
@@ -105,11 +106,22 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
+	public void testHoursTags() throws ParseException {
+		String count = "2010-03-04@23:<test|32,live|334,west|12,es|12,ht|12,>;2010-03-05@00:<test|132,live|1334,west|112,es|12,ht|112,>;";
+		FlickrArea area = new FlickrArea();
+		areaMgr.getAreaDao();
+		FlickrEuropeAreaDao.parseHoursTagsCountDbString(count, area.getHoursTagsCount());
+		System.out.println(area.getHoursTagsCount());
+		System.out.println(FlickrEuropeAreaDao.createHoursTagsCountDbString(area.getHoursTagsCount()));
+	}
+
+	@Test
 	public void testJdbcDao0() {
 		long total = areaMgr.getAreaDao().getTotalCountWithinArea(1, FlickrArea.Radius.R5000);
 
 		System.out.println("total:" + total);
 	}
+
 
 	@Test
 	public void testJdbcDao1() {

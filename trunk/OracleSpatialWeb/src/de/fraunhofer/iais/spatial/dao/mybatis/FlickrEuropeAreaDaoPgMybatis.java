@@ -60,7 +60,7 @@ private static final String DB_NAME = "Pg";
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hourCount", area);
 		if (count != null) {
-			parseCounts(count, area.getHoursCount(), hourRegExPattern);
+			parseCountDbString(count, area.getHoursCount(), hourRegExPattern);
 		}
 	}
 
@@ -70,7 +70,7 @@ private static final String DB_NAME = "Pg";
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".dayCount", area);
 		if (count != null) {
-			parseCounts(count, area.getDaysCount(), dayRegExPattern);
+			parseCountDbString(count, area.getDaysCount(), dayRegExPattern);
 		}
 	}
 
@@ -80,7 +80,7 @@ private static final String DB_NAME = "Pg";
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".monthCount", area);
 		if (count != null) {
-			parseCounts(count, area.getMonthsCount(), monthRegExPattern);
+			parseCountDbString(count, area.getMonthsCount(), monthRegExPattern);
 		}
 	}
 
@@ -90,7 +90,7 @@ private static final String DB_NAME = "Pg";
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".yearCount", area);
 		if (count != null) {
-			parseCounts(count, area.getYearsCount(), yearRegExPattern);
+			parseCountDbString(count, area.getYearsCount(), yearRegExPattern);
 		}
 	}
 

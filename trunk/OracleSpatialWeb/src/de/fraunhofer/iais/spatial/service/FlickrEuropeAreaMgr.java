@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -91,6 +93,26 @@ public class FlickrEuropeAreaMgr {
 			}
 
 			area.setSelectedCount(num);
+		}
+	}
+
+	public void countTags(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws Exception {
+
+		for (FlickrArea area : areas) {
+			Map<String, Map<String, Integer>> hoursTagsCount = null;
+			Map<String, Integer> tagsCount = area.getTagsCount();
+
+			hoursTagsCount = area.getHoursTagsCount();
+
+			for (String queryStr : areaDto.getQueryStrs()) {
+				if (hoursTagsCount.containsKey(queryStr)) {
+					Map<String, Integer> tags = hoursTagsCount.get(queryStr);
+					for (Map.Entry<String, Integer> e : tags.entrySet()) {
+						int previousValue = MapUtils.getIntValue(tagsCount, tagsCount);
+						tagsCount.put(e.getKey(), previousValue + e.getValue());
+					}
+				}
+			}
 		}
 	}
 

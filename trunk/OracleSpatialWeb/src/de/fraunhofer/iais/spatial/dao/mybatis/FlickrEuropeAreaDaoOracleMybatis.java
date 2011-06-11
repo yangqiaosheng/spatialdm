@@ -66,7 +66,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hourCount", area);
 		if (count != null) {
-			parseCounts(count, area.getHoursCount(), hourRegExPattern);
+			parseCountDbString(count, area.getHoursCount(), hourRegExPattern);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".dayCount", area);
 		if (count != null) {
-			parseCounts(count, area.getDaysCount(), dayRegExPattern);
+			parseCountDbString(count, area.getDaysCount(), dayRegExPattern);
 		}
 	}
 
@@ -86,7 +86,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".monthCount", area);
 		if (count != null) {
-			parseCounts(count, area.getMonthsCount(), monthRegExPattern);
+			parseCountDbString(count, area.getMonthsCount(), monthRegExPattern);
 		}
 	}
 
@@ -96,7 +96,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".yearCount", area);
 		if (count != null) {
-			parseCounts(count, area.getYearsCount(), yearRegExPattern);
+			parseCountDbString(count, area.getYearsCount(), yearRegExPattern);
 		}
 	}
 
