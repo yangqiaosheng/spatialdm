@@ -6,6 +6,6 @@
        "DAY" CLOB,
        "MONTH" CLOB,
        "YEAR" CLOB,
-       "TOTAL" NUMBER,
+       "TOTAL" CLOB,
         constraint "FLICKR_EUROPE_TAGS_COUNT_PK" primary key ("ID","RADIUS")
     );
