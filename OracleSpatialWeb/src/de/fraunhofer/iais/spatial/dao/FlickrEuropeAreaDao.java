@@ -37,8 +37,8 @@ public abstract class FlickrEuropeAreaDao {
 	public static Pattern monthRegExPattern = Pattern.compile("(\\d{4}-\\d{2})(\\d+);");
 	public static Pattern yearRegExPattern = Pattern.compile("(\\d{4}):(\\d+);");
 
-	// eg. 2010-03-04@23:test|32,live|334,west|12;
-	public static Pattern hourTagsRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<((\\w+\\|\\d+,?)+)>;");
+	// eg. 2010-03-04@23:test tags|32,schön|334,宫殿|12;
+	public static Pattern hourTagsRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;");
 
 
 	/**
@@ -233,14 +233,14 @@ public abstract class FlickrEuropeAreaDao {
 
 	}
 
-	public final static void parseCountDbString(String count, Map<String, Integer> datesCount, Pattern dateRegExPattern) {
+	public final static void parseCountDbString(String count, SortedMap<String, Integer> datesCount, Pattern dateRegExPattern) {
 		Matcher m = dateRegExPattern.matcher(count);
 		while (m.find()) {
 			datesCount.put(m.group(1), Integer.parseInt(m.group(2)));
 		}
 	}
 
-	public final static void parseHoursTagsCountDbString(String count, Map<String, Map<String, Integer>> hoursTagsCount) {
+	public final static void parseHoursTagsCountDbString(String count, SortedMap<String, Map<String, Integer>> hoursTagsCount) {
 		Matcher m = hourTagsRegExPattern.matcher(count);
 		while (m.find()) {
 			Map<String, Integer> tagsCount = new TreeMap<String, Integer>();
@@ -251,11 +251,8 @@ public abstract class FlickrEuropeAreaDao {
 		}
 	}
 
-	public final static String createCountDbString(Map<String, Integer> datesCount){
+	public final static String createDatesCountDbString(SortedMap<String, Integer> datesCount){
 		StringBuffer strBuffer = new StringBuffer();
-		if(!(datesCount instanceof SortedMap<?, ?>)){
-			datesCount = new TreeMap<String, Integer>(datesCount);
-		}
 
 		for (Map.Entry<String, Integer> e : datesCount.entrySet()) {
 			strBuffer.append(e.getKey())
@@ -266,13 +263,10 @@ public abstract class FlickrEuropeAreaDao {
 		return strBuffer.toString();
 	}
 
-	public final static String createHoursTagsCountDbString(Map<String, Map<String, Integer>> hoursTagsCount){
+	public final static String createDatesTagsCountDbString(SortedMap<String, Map<String, Integer>> datesTagsCount){
 		StringBuffer strBuffer = new StringBuffer();
-		if(!(hoursTagsCount instanceof SortedMap<?, ?>)){
-			hoursTagsCount = new TreeMap<String, Map<String, Integer>>(hoursTagsCount);
-		}
 
-		for (Map.Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
+		for (Map.Entry<String, Map<String, Integer>> e : datesTagsCount.entrySet()) {
 			strBuffer.append(e.getKey())
 					 .append(":")
 					 .append("<");

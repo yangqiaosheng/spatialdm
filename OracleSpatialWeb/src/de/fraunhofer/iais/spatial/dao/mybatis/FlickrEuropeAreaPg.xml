@@ -50,25 +50,31 @@
 		where ST_Intersects(m.geom, #{pgQueryGeom})
 	</select>
 
-	<select id="hourCount" resultType="String" parameterType="FlickrArea">
+	<select id="hoursTagsCount" resultType="String" parameterType="FlickrArea">
+		select hour
+		from FLICKR_EUROPE_TAGS_COUNT
+		where ID = #{id} and RADIUS = #{radius}
+	</select>
+
+	<select id="hoursCount" resultType="String" parameterType="FlickrArea">
 		select hour
 		from FLICKR_EUROPE_COUNT
 		where ID = #{id} and RADIUS = ${radius}
 	</select>
 
-	<select id="dayCount" resultType="String" parameterType="FlickrArea">
+	<select id="daysCount" resultType="String" parameterType="FlickrArea">
 		select day
 		from FLICKR_EUROPE_COUNT
 		where ID = #{id} and RADIUS = ${radius}
 	</select>
 
-	<select id="monthCount" resultType="String" parameterType="FlickrArea">
+	<select id="monthsCount" resultType="String" parameterType="FlickrArea">
 		select month
 		from FLICKR_EUROPE_COUNT
 		where ID = #{id} and RADIUS = ${radius}
 	</select>
 
-	<select id="yearCount" resultType="String" parameterType="FlickrArea">
+	<select id="yearsCount" resultType="String" parameterType="FlickrArea">
 		select year
 		from FLICKR_EUROPE_COUNT
 		where ID = #{id} and RADIUS = ${radius}
