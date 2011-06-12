@@ -13,9 +13,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +47,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.entity.Histrograms;
+import de.fraunhofer.iais.spatial.script.db.JoinFlickrEuropeAreaTagsCount;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
@@ -109,10 +114,50 @@ public class TestFlickrEuropeArea {
 	public void testHoursTags() throws ParseException {
 		String count = "2010-03-04@23:<test|32,live|334,west|12,es|12,ht|12,>;2010-03-05@00:<test|132,live|1334,west|112,es|12,ht|112,>;";
 		FlickrArea area = new FlickrArea();
-		areaMgr.getAreaDao();
 		FlickrEuropeAreaDao.parseHoursTagsCountDbString(count, area.getHoursTagsCount());
 		System.out.println(area.getHoursTagsCount());
-		System.out.println(FlickrEuropeAreaDao.createHoursTagsCountDbString(area.getHoursTagsCount()));
+		System.out.println(FlickrEuropeAreaDao.createDatesTagsCountDbString(area.getHoursTagsCount()));
+	}
+
+	@Test
+	public void testHoursTags2() throws ParseException {
+		String count1 = "2010-03-04@23:<test|32,west|12,es|12,ht|12,>;2010-03-05@00:<test|132,live|1334,west|112,es|12,ht|112,>;";
+		FlickrArea area1 = new FlickrArea();
+		FlickrEuropeAreaDao.parseHoursTagsCountDbString(count1, area1.getHoursTagsCount());
+		System.out.println(area1.getHoursTagsCount());
+
+		String count2 = "2010-03-04@23:<test|30,live|334,west|12,es|12,ht|12,>;2010-03-05@00:<test|132,live|1334,west|112,es|12,ht|112,>;";
+		FlickrArea area2 = new FlickrArea();
+		FlickrEuropeAreaDao.parseHoursTagsCountDbString(count2, area2.getHoursTagsCount());
+		System.out.println(area2.getHoursTagsCount());
+
+		JoinFlickrEuropeAreaTagsCount.mergeTagsCountsMap(area1.getHoursTagsCount(), area2.getHoursTagsCount());
+
+		System.out.println(FlickrEuropeAreaDao.createDatesTagsCountDbString(area1.getHoursTagsCount()));
+	}
+
+	@Test
+	public void testHoursTags3() throws ParseException {
+		String hourStr = "2009-01-11@14:<deutschland|1,bayern|1,wuerzburg|1,hats|1,franken|1,winter|1,bavaria|1,julia|1,snow|1,franconia|1,germany|1,schnee|1,portraits|1,huete|1,>;2009-05-20@19:<clouds|1,deutschland|1,bavaria|1,wolken|1,sonnenstrahlen|1,sunrays|1,würzburg|1,bayern|1,germany|1,regen|1,rain|1,sun|1,>;2009-05-20@20:<port|1,deutschland|1,hafen|1,flüsse|1,markers|1,würzburg|1,bayern|1,oldport|1,zero|1,rivers|1,alterhafen|1,himmel|1,main|1,jsovtmb|1,sky|1,bavaria|1,julia|1,schiffe|1,germany|1,ships|1,null|1,>;";
+		SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
+		SortedMap<String, Map<String, Integer>> daysTagsCount = new TreeMap<String, Map<String, Integer>>();
+
+		FlickrEuropeAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
+
+		System.out.println("hoursTagsCount:" + hoursTagsCount);
+
+		for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
+			Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})@\\d{2}");
+			Matcher m = p.matcher(e.getKey());
+			m.find();
+			String key = m.group(1);
+			System.out.println(key + ":" + e.getValue());
+			JoinFlickrEuropeAreaTagsCount.addToTagsCountsMap(daysTagsCount, key, e.getValue());
+		}
+
+
+		String dayStr = FlickrEuropeAreaDao.createDatesTagsCountDbString(daysTagsCount);
+		System.out.println("!" + dayStr);
 	}
 
 	@Test

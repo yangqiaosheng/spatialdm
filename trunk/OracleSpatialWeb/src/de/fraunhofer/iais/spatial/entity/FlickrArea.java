@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
@@ -19,14 +20,14 @@ public class FlickrArea {
 	private Point2D center;
 	private List<Point2D> geom;
 
-	private Map<String, Integer> yearsCount = new HashMap<String, Integer>();
-	private Map<String, Integer> monthsCount = new HashMap<String, Integer>();
-	private Map<String, Integer> daysCount = new HashMap<String, Integer>();
-	private Map<String, Integer> hoursCount = new HashMap<String, Integer>();
+	private SortedMap<String, Integer> yearsCount = new TreeMap<String, Integer>();
+	private SortedMap<String, Integer> monthsCount = new TreeMap<String, Integer>();
+	private SortedMap<String, Integer> daysCount = new TreeMap<String, Integer>();
+	private SortedMap<String, Integer> hoursCount = new TreeMap<String, Integer>();
 
-	private Map<String, Map<String, Integer>> hoursTagsCount = new HashMap<String, Map<String, Integer>>();
+	private SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 
-	private transient Map<String, Integer> tagsCount = new TreeMap<String, Integer>();
+	private transient Map<String, Integer> tagsCount = new HashMap<String, Integer>();
 
 	private transient long totalCount;
 	private transient long selectedCount;
@@ -90,19 +91,19 @@ public class FlickrArea {
 		this.totalCount = totalCount;
 	}
 
-	public Map<String, Integer> getYearsCount() {
+	public SortedMap<String, Integer> getYearsCount() {
 		return yearsCount;
 	}
 
-	public Map<String, Integer> getMonthsCount() {
+	public SortedMap<String, Integer> getMonthsCount() {
 		return monthsCount;
 	}
 
-	public Map<String, Integer> getDaysCount() {
+	public SortedMap<String, Integer> getDaysCount() {
 		return daysCount;
 	}
 
-	public Map<String, Integer> getHoursCount() {
+	public SortedMap<String, Integer> getHoursCount() {
 		return hoursCount;
 	}
 
@@ -126,7 +127,7 @@ public class FlickrArea {
 		return histrograms;
 	}
 
-	public Map<String, Map<String, Integer>> getHoursTagsCount() {
+	public SortedMap<String, Map<String, Integer>> getHoursTagsCount() {
 		return hoursTagsCount;
 	}
 

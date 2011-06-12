@@ -54,11 +54,21 @@ private static final String DB_NAME = "Pg";
 		}
 	}
 
+	private void loadHoursTagsCount(FlickrArea area) {
+		if (MapUtils.isNotEmpty(area.getHoursTagsCount()))
+			return; // cached
+
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hoursTagsCount", area);
+		if (count != null) {
+			parseHoursTagsCountDbString(count, area.getHoursTagsCount());
+		}
+	}
+
 	private void loadHoursCount(FlickrArea area) {
 		if (MapUtils.isNotEmpty(area.getHoursCount()))
 			return; // cached
 
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hourCount", area);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hoursCount", area);
 		if (count != null) {
 			parseCountDbString(count, area.getHoursCount(), hourRegExPattern);
 		}
@@ -68,7 +78,7 @@ private static final String DB_NAME = "Pg";
 		if (MapUtils.isNotEmpty(area.getDaysCount()))
 			return; // cached
 
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".dayCount", area);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".daysCount", area);
 		if (count != null) {
 			parseCountDbString(count, area.getDaysCount(), dayRegExPattern);
 		}
@@ -78,7 +88,7 @@ private static final String DB_NAME = "Pg";
 		if (MapUtils.isNotEmpty(area.getMonthsCount()))
 			return; // cached
 
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".monthCount", area);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".monthsCount", area);
 		if (count != null) {
 			parseCountDbString(count, area.getMonthsCount(), monthRegExPattern);
 		}
@@ -88,7 +98,7 @@ private static final String DB_NAME = "Pg";
 		if (MapUtils.isNotEmpty(area.getYearsCount()))
 			return; // cached
 
-		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".yearCount", area);
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".yearsCount", area);
 		if (count != null) {
 			parseCountDbString(count, area.getYearsCount(), yearRegExPattern);
 		}

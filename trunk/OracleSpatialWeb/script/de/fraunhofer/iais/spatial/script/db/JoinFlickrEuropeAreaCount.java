@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -25,9 +26,10 @@ public class JoinFlickrEuropeAreaCount {
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrEuropeAreaCount.class);
 
-//	final static int BATCH_SIZE = 1000000;
+	final static int BATCH_SIZE = 1000000;
 	final static int BEGIN_REGION_CHECKED_CODE = 1;
 	final static int FINISH_REGION_CHECKED_CODE = 2;
+	final static int TEMP_REGION_CHECKED_CODE = -1;
 	final static String PHOTOS_TABLE_NAME = "FLICKR_EUROPE";
 	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
 	static int rownum = 1;
@@ -69,28 +71,30 @@ public class JoinFlickrEuropeAreaCount {
 
 
 			int updateSize = 0;
-//			do {
-//				// REGION_CHECKED = -1 : building the index
-//				/* Oracle */
+			do {
+				// REGION_CHECKED = -1 : building the index
+				/* Oracle */
 //				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
-//						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = -1 where t.photo_id in (" +
+//						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = ? where t.photo_id in (" +
 //							"select t2.photo_id from (" +
 //								"select t1.photo_id, ROWNUM rn from (" +
 //									"select photo_id from " + PHOTOS_TABLE_NAME + " where region_checked = ?" +
 //								") t1 where ROWNUM < ? " +
 //							") t2 where rn >= ?" +
 //						")");
-//				updateStmt1.setInt(1, BEGIN_REGION_CHECKED_CODE);
-//				updateStmt1.setInt(2, 1 + BATCH_SIZE);
-//				updateStmt1.setInt(3, 1);
+//				updateStmt1.setInt(1, TEMP_REGION_CHECKED_CODE);
+//				updateStmt1.setInt(2, BEGIN_REGION_CHECKED_CODE);
+//				updateStmt1.setInt(3, 1 + BATCH_SIZE);
+//				updateStmt1.setInt(4, 1);
 //
 //				/* PostGIS
-//				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
-//						"update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = -1 where photo_id in (" +
-//							"select photo_id from " + PHOTOS_TABLE_NAME + " t where t.region_checked = ? " +
-//							"limit ? )");
-//				updateStmt1.setInt(1, BEGIN_REGION_CHECKED_CODE);
-//				updateStmt1.setInt(2, BATCH_SIZE);
+				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
+						"update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where photo_id in (" +
+							"select photo_id from " + PHOTOS_TABLE_NAME + " t where t.region_checked = ? " +
+							"limit ? )");
+				updateStmt1.setInt(1, TEMP_REGION_CHECKED_CODE);
+				updateStmt1.setInt(2, BEGIN_REGION_CHECKED_CODE);
+				updateStmt1.setInt(3, BATCH_SIZE);
 //				*/
 //				updateSize = updateStmt1.executeUpdate();
 //				rownum += updateSize;
@@ -109,14 +113,15 @@ public class JoinFlickrEuropeAreaCount {
 //					conn.commit();
 				}
 
-				// REGION_CHECKED = 2 : already indexed
-//				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = -1");
-//				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
-//				updateStmt2.executeUpdate();
-//				db.close(updateStmt2);
-//				conn.commit();
-//
-//			} while(updateSize == BATCH_SIZE);
+//				 REGION_CHECKED = 2 : already indexed
+				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
+				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
+				updateStmt2.setInt(2, TEMP_REGION_CHECKED_CODE);
+				updateStmt2.executeUpdate();
+				db.close(updateStmt2);
+				conn.commit();
+
+			} while(updateSize == BATCH_SIZE);
 			countDay(conn);
 			countMonth(conn);
 			countYear(conn);
@@ -135,14 +140,15 @@ public class JoinFlickrEuropeAreaCount {
 	}
 
 	private void count(Connection conn, Level queryLevel, String radiusString) throws SQLException {
-		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = 1");
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = ?");
+		selectAreaStmt.setInt(1, TEMP_REGION_CHECKED_CODE);
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 
 
 		PreparedStatement selectFlickrStmt = db.getPstmt(conn,
 				"select date_str, count(*) as num from ("
 				+ " select t.photo_id, to_char(t.TAKEN_DATE, ?) as date_str"
-				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = 1) temp "
+				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = ?) temp "
 				+ "group by date_str");
 
 		int areaId = -1;
@@ -153,6 +159,7 @@ public class JoinFlickrEuropeAreaCount {
 
 			selectFlickrStmt.setString(1, FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel));
 			selectFlickrStmt.setInt(2, areaId);
+			selectFlickrStmt.setInt(3, TEMP_REGION_CHECKED_CODE);
 
 			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
 
@@ -180,18 +187,18 @@ public class JoinFlickrEuropeAreaCount {
 		db.close(selectAreaStmt);
 	}
 
-	private void addToIndex(Connection conn, Map<String, Integer> countsMapAdd, Level queryLevel, int id, String radius) throws SQLException {
+	private void addToIndex(Connection conn, Map<String, Integer> countsMapToAdd, Level queryLevel, int id, String radius) throws SQLException {
 		PreparedStatement selectCountStmt = db.getPstmt(conn, "select " + queryLevel + " as countStr from " + COUNTS_TABLE_NAME + " where id = ? and radius = ?");
 		selectCountStmt.setInt(1, id);
 		selectCountStmt.setInt(2, Integer.parseInt(radius));
 		ResultSet rs = db.getRs(selectCountStmt);
-		Map<String, Integer> countsMapPre = new TreeMap<String, Integer>();
+		SortedMap<String, Integer> countsMap = new TreeMap<String, Integer>();
 
 		if (rs.next()) {
 			String countStr = rs.getString("countStr");
 
 			if (countStr != null) {
-				FlickrEuropeAreaDao.parseCountDbString(countStr, countsMapPre, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
+				FlickrEuropeAreaDao.parseCountDbString(countStr, countsMap, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
 			}
 		}
 
@@ -199,15 +206,9 @@ public class JoinFlickrEuropeAreaCount {
 		db.close(selectCountStmt);
 
 		// add countsMap and countsMap2 together
-		for (Entry<String, Integer> e : countsMapAdd.entrySet()) {
-			if (countsMapPre.containsKey(e.getKey())) {
-				countsMapPre.put(e.getKey(), e.getValue() + countsMapPre.get(e.getKey()));
-			} else {
-				countsMapPre.put(e.getKey(), e.getValue());
-			}
-		}
+		mergeCountsMap(countsMap, countsMapToAdd);
 
-		String countStr = FlickrEuropeAreaDao.createCountDbString(countsMapPre);
+		String countStr = FlickrEuropeAreaDao.createDatesCountDbString(countsMap);
 
 
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
@@ -222,6 +223,16 @@ public class JoinFlickrEuropeAreaCount {
 		System.out.println("executeUpdate:" + updateStmt.executeUpdate());
 
 		db.close(updateStmt);
+	}
+
+	private void mergeCountsMap(SortedMap<String, Integer> countsMap, Map<String, Integer> countsMapToAdd) {
+		for (Entry<String, Integer> e : countsMapToAdd.entrySet()) {
+			if (countsMap.containsKey(e.getKey())) {
+				countsMap.put(e.getKey(), e.getValue() + countsMap.get(e.getKey()));
+			} else {
+				countsMap.put(e.getKey(), e.getValue());
+			}
+		}
 	}
 
 	private void countDay(Connection conn) throws SQLException {
