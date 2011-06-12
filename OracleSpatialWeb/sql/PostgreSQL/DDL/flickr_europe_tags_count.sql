@@ -11,7 +11,7 @@ CREATE TABLE flickr_europe_tags_count
   "day" text,
   "month" text,
   "year" text,
-  total integer,
+  total text,
   CONSTRAINT flickr_europe_tags_count_pkey PRIMARY KEY (id, radius)
 )
 WITH (
