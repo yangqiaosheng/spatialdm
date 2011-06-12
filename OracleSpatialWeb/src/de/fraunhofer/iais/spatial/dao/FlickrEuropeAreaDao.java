@@ -3,6 +3,8 @@ package de.fraunhofer.iais.spatial.dao;
 import java.awt.geom.Point2D;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -12,6 +14,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
@@ -243,7 +248,7 @@ public abstract class FlickrEuropeAreaDao {
 	public final static void parseHoursTagsCountDbString(String count, SortedMap<String, Map<String, Integer>> hoursTagsCount) {
 		Matcher m = hourTagsRegExPattern.matcher(count);
 		while (m.find()) {
-			Map<String, Integer> tagsCount = new TreeMap<String, Integer>();
+			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 			for(String term : StringUtils.split(m.group(2), ",")){
 				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
 			}
@@ -271,7 +276,7 @@ public abstract class FlickrEuropeAreaDao {
 					 .append(":")
 					 .append("<");
 
-			for (Map.Entry<String, Integer> term : e.getValue().entrySet()) {
+			for (Map.Entry<String, Integer> term : sortTagsCountByValuesDesc(e.getValue()).entrySet()) {
 				strBuffer.append(term.getKey())
 						 .append("|")
 						 .append(term.getValue())
@@ -282,4 +287,25 @@ public abstract class FlickrEuropeAreaDao {
 		}
 		return strBuffer.toString();
 	}
+
+	private static Map<String, Integer> sortTagsCountByValuesDesc(Map<String, Integer> unsortTagsCount) {
+
+		List<Map.Entry<String, Integer>> entries = Lists.newLinkedList(unsortTagsCount.entrySet());
+
+		//sort list based on comparator
+		Collections.sort(entries, new Comparator<Map.Entry<String, Integer>>() {
+			public int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
+				return e2.getValue() - (e1).getValue();
+			}
+		});
+
+		//put sorted list into map again
+		Map<String, Integer> sortedMap = Maps.newLinkedHashMap();
+
+		for(Map.Entry<String, Integer> entry : entries){
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+
+	return sortedMap;
+   }
 }
