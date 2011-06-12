@@ -7,20 +7,20 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.postgis.PGgeometry;
-
 import oracle.spatial.geometry.JGeometry;
+
+import com.google.common.collect.Sets;
 
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
 public class FlickrEuropeAreaDto {
 
-	private SortedSet<String> years = new TreeSet<String>();
-	private SortedSet<String> months = new TreeSet<String>();
-	private SortedSet<String> days = new TreeSet<String>();
-	private SortedSet<String> hours = new TreeSet<String>();
-	private SortedSet<String> weekdays = new TreeSet<String>();
-	private SortedSet<String> queryStrs = new TreeSet<String>();
+	private SortedSet<String> years = Sets.newTreeSet();
+	private SortedSet<String> months = Sets.newTreeSet();
+	private SortedSet<String> days = Sets.newTreeSet();
+	private SortedSet<String> hours = Sets.newTreeSet();
+	private SortedSet<String> weekdays = Sets.newTreeSet();
+	private SortedSet<String> queryStrs = Sets.newTreeSet();
 	private Level queryLevel;
 	private long areaid;
 	private Radius radius;

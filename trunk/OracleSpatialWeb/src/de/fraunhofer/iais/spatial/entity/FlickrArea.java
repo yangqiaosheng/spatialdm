@@ -1,11 +1,11 @@
 package de.fraunhofer.iais.spatial.entity;
 
 import java.awt.geom.Point2D;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.TreeMap;
+
+import com.google.common.collect.Maps;
 
 /**
  * Entity mapped to the table FLICKR_DE_WEST_TABLE_RADIUS and FLICKR_DE_WEST_TABLE_COUNT
@@ -20,14 +20,14 @@ public class FlickrArea {
 	private Point2D center;
 	private List<Point2D> geom;
 
-	private SortedMap<String, Integer> yearsCount = new TreeMap<String, Integer>();
-	private SortedMap<String, Integer> monthsCount = new TreeMap<String, Integer>();
-	private SortedMap<String, Integer> daysCount = new TreeMap<String, Integer>();
-	private SortedMap<String, Integer> hoursCount = new TreeMap<String, Integer>();
+	private SortedMap<String, Integer> yearsCount = Maps.newTreeMap();
+	private SortedMap<String, Integer> monthsCount = Maps.newTreeMap();
+	private SortedMap<String, Integer> daysCount = Maps.newTreeMap();
+	private SortedMap<String, Integer> hoursCount = Maps.newTreeMap();
 
-	private SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
+	private SortedMap<String, Map<String, Integer>> hoursTagsCount = Maps.newTreeMap();
 
-	private transient Map<String, Integer> tagsCount = new HashMap<String, Integer>();
+	private transient Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 
 	private transient long totalCount;
 	private transient long selectedCount;

@@ -105,10 +105,10 @@ public class JoinFlickrEuropeAreaTagsCount {
 //				db.close(updateStmt1);
 //				conn.commit();
 
-//				for (String radius : radiusList) {
-//					countHoursTags(conn, radius);
-//					conn.commit();
-//				}
+				for (String radius : radiusList) {
+					countHoursTags(conn, radius);
+					conn.commit();
+				}
 
 //				 REGION_CHECKED = 2 : already indexed
 //				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
