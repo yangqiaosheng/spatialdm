@@ -618,6 +618,9 @@ public class FlickrEuropeAreaMgr {
 			Map<Integer, Integer> hourData = area.getHistrogramData().getHours();
 			Map<Integer, Integer> weekdayData = area.getHistrogramData().getWeekdays();
 
+			Calendar calendar = DateUtil.createReferenceCalendar();
+			calendar.setLenient(false);
+
 			//set values
 			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
@@ -625,36 +628,25 @@ public class FlickrEuropeAreaMgr {
 					hourData.put(hour, e.getValue() + hourData.get(hour));
 					sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
 				}
-			}
 
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int day = Integer.parseInt(e.getKey().substring(8, 10));
 					dayData.put(day, e.getValue() + dayData.get(day));
 					sumDayData.put(day, e.getValue() + sumDayData.get(day));
 				}
-			}
 
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int month = Integer.parseInt(e.getKey().substring(5, 7));
 					monthData.put(month, e.getValue() + monthData.get(month));
 					sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
 				}
-			}
 
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int year = Integer.parseInt(e.getKey().substring(0, 4));
 					yearData.put(year, e.getValue() + yearData.get(year));
 					sumYearData.put(year, e.getValue() + sumYearData.get(year));
 				}
-			}
 
-			Calendar calendar = DateUtil.createReferenceCalendar();
-			calendar.setLenient(false);
-
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
 					calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
