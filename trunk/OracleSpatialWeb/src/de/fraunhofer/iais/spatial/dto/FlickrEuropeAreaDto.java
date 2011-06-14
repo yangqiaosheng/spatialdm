@@ -4,8 +4,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import oracle.spatial.geometry.JGeometry;
 
@@ -20,7 +20,7 @@ public class FlickrEuropeAreaDto {
 	private SortedSet<String> days = Sets.newTreeSet();
 	private SortedSet<String> hours = Sets.newTreeSet();
 	private SortedSet<String> weekdays = Sets.newTreeSet();
-	private SortedSet<String> queryStrs = Sets.newTreeSet();
+	private Set<String> queryStrs = Sets.newHashSet();
 	private Level queryLevel;
 	private long areaid;
 	private Radius radius;
@@ -97,8 +97,27 @@ public class FlickrEuropeAreaDto {
 		this.boundaryRect = boundaryRect;
 	}
 
-	public SortedSet<String> getQueryStrs() {
+	public Set<String> getQueryStrs() {
 		return queryStrs;
+	}
+
+	public int getQueryStrsLength() {
+		int queryStrsLength = 0;
+		switch (queryLevel) {
+		case HOUR:
+			queryStrsLength = "2010-01-02@14".length();
+			break;
+		case DAY:
+			queryStrsLength = "2010-01-02".length();
+			break;
+		case MONTH:
+			queryStrsLength = "2010-01".length();
+			break;
+		case YEAR:
+			queryStrsLength = "2010".length();
+			break;
+		}
+		return queryStrsLength;
 	}
 
 	public Level getQueryLevel() {
