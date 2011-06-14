@@ -1,16 +1,17 @@
 package de.fraunhofer.iais.spatial.entity;
 
 import java.util.Map;
-import java.util.TreeMap;
+
+import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.util.DateUtil;
 
 public class Histrograms{
-	private Map<Integer, Integer> years = new TreeMap<Integer, Integer>();
-	private Map<Integer, Integer> months = new TreeMap<Integer, Integer>();
-	private Map<Integer, Integer> days = new TreeMap<Integer, Integer>();
-	private Map<Integer, Integer> hours = new TreeMap<Integer, Integer>();
-	private Map<Integer, Integer> weekdays = new TreeMap<Integer, Integer>();
+	private Map<Integer, Integer> years = Maps.newTreeMap();
+	private Map<Integer, Integer> months = Maps.newTreeMap();
+	private Map<Integer, Integer> days = Maps.newTreeMap();
+	private Map<Integer, Integer> hours = Maps.newTreeMap();
+	private Map<Integer, Integer> weekdays = Maps.newTreeMap();
 
 	public Histrograms(){
 		init();

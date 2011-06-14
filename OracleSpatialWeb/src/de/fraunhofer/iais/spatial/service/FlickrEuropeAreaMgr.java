@@ -58,6 +58,65 @@ public class FlickrEuropeAreaMgr {
 		this.flickrDeWestAreaDao = areaDao;
 	}
 
+	/**
+	 * calculate the histrograms DataSets for each FlickrArea, and a Summary Histrograms DataSet
+	 * @param areas
+	 * @param areaDto
+	 * @return the Summary Histrograms DataSets for all FlickrAreas
+	 */
+	public Histrograms calculateHistrograms(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
+
+		Histrograms sumHistrograms =  new Histrograms();
+
+		Map<Integer, Integer> sumYearData = sumHistrograms.getYears();
+		Map<Integer, Integer> sumMonthData = sumHistrograms.getMonths();
+		Map<Integer, Integer> sumDayData = sumHistrograms.getDays();
+		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
+		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
+
+		int queryStrsLength = areaDto.getQueryStrsLength();
+		for (FlickrArea area : areas) {
+			Map<Integer, Integer> yearData = area.getHistrogramData().getYears();
+			Map<Integer, Integer> monthData = area.getHistrogramData().getMonths();
+			Map<Integer, Integer> dayData = area.getHistrogramData().getDays();
+			Map<Integer, Integer> hourData = area.getHistrogramData().getHours();
+			Map<Integer, Integer> weekdayData = area.getHistrogramData().getWeekdays();
+
+			Calendar calendar = DateUtil.createReferenceCalendar();
+			calendar.setLenient(false);
+
+			//set values
+			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+					int hour = Integer.parseInt(e.getKey().substring(11, 13));
+					hourData.put(hour, e.getValue() + hourData.get(hour));
+					sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
+
+					int day = Integer.parseInt(e.getKey().substring(8, 10));
+					dayData.put(day, e.getValue() + dayData.get(day));
+					sumDayData.put(day, e.getValue() + sumDayData.get(day));
+
+					int month = Integer.parseInt(e.getKey().substring(5, 7));
+					monthData.put(month, e.getValue() + monthData.get(month));
+					sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
+
+					int year = Integer.parseInt(e.getKey().substring(0, 4));
+					yearData.put(year, e.getValue() + yearData.get(year));
+					sumYearData.put(year, e.getValue() + sumYearData.get(year));
+
+					calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
+					calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
+					calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
+					int weekday = DateUtil.getWeekdayInt(calendar.getTime());
+					weekdayData.put(weekday, e.getValue() + weekdayData.get(weekday));
+					sumWeekdayData.put(weekday, e.getValue() + sumWeekdayData.get(weekday));
+				}
+			}
+		}
+
+		return sumHistrograms;
+	}
+
 	public void countSelected(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws Exception {
 
 		for (FlickrArea area : areas) {
@@ -79,17 +138,17 @@ public class FlickrEuropeAreaMgr {
 				break;
 			}
 
-//			for (Map.Entry<String, Integer> e : counts.entrySet()) {
-//				if (areaDto.getQueryStrs().contains(e.getKey())) {
-//					num += e.getValue();
-//				}
-//			}
-
-			for (String queryStr : areaDto.getQueryStrs()) {
-				if (counts.containsKey(queryStr)) {
-					num += counts.get(queryStr);
+			for (Map.Entry<String, Integer> e : counts.entrySet()) {
+				if (areaDto.getQueryStrs().contains(e.getKey())) {
+					num += e.getValue();
 				}
 			}
+
+//			for (String queryStr : areaDto.getQueryStrs()) {
+//				if (counts.containsKey(queryStr)) {
+//					num += counts.get(queryStr);
+//				}
+//			}
 
 			area.setSelectedCount(num);
 		}
@@ -186,7 +245,7 @@ public class FlickrEuropeAreaMgr {
 			Pattern intervalPattern = Pattern.compile("([\\d]{2}/[\\d]{2}/[\\d]{4}) - ([\\d]{2}/[\\d]{2}/[\\d]{4})");
 			Matcher intervalMachter = intervalPattern.matcher(intervalStr);
 
-			SortedSet<String> queryStrs = areaDto.getQueryStrs();
+			Set<String> queryStrs = areaDto.getQueryStrs();
 
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			areaDto.setQueryLevel(Level.DAY);
@@ -214,7 +273,7 @@ public class FlickrEuropeAreaMgr {
 			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
 			SortedSet<Date> selectedDays = new TreeSet<Date>();
-			SortedSet<String> queryStrs = areaDto.getQueryStrs();
+			Set<String> queryStrs = areaDto.getQueryStrs();
 
 			// day of week in English format
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
@@ -318,7 +377,7 @@ public class FlickrEuropeAreaMgr {
 		areaDto.setQueryLevel(Level.HOUR);
 
 		// construct the Query Strings
-		SortedSet<String> queryStrs = areaDto.getQueryStrs();
+		Set<String> queryStrs = areaDto.getQueryStrs();
 
 		SortedSet<String> tempYears = new TreeSet<String>(areaDto.getYears());
 		SortedSet<String> tempMonths = new TreeSet<String>(areaDto.getMonths());
@@ -394,7 +453,7 @@ public class FlickrEuropeAreaMgr {
 
 		Map<String, Map<Date, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Date, Integer>>();
 
-		int queryStrsLength = areaDto.getQueryStrs().first().length();
+		int queryStrsLength = areaDto.getQueryStrsLength();
 
 		for (FlickrArea area : areas) {
 
@@ -513,7 +572,7 @@ public class FlickrEuropeAreaMgr {
 
 			Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
 
-			int queryStrsLength = areaDto.getQueryStrs().first().length();
+			int queryStrsLength = areaDto.getQueryStrsLength();
 
 			for (FlickrArea area : areas) {
 
@@ -593,75 +652,6 @@ public class FlickrEuropeAreaMgr {
 
 			ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
 		}
-
-	/**
-	 * calculate the histrograms DataSets for each FlickrArea, and a Summary Histrograms DataSet
-	 * @param areas
-	 * @param areaDto
-	 * @return the Summary Histrograms DataSets for all FlickrAreas
-	 */
-	public Histrograms calculateHistrograms(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
-
-		Histrograms sumHistrograms =  new Histrograms();
-
-		Map<Integer, Integer> sumYearData = sumHistrograms.getYears();
-		Map<Integer, Integer> sumMonthData = sumHistrograms.getMonths();
-		Map<Integer, Integer> sumDayData = sumHistrograms.getDays();
-		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
-		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
-
-		int queryStrsLength = areaDto.getQueryStrs().first().length();
-		for (FlickrArea area : areas) {
-			Map<Integer, Integer> yearData = area.getHistrogramData().getYears();
-			Map<Integer, Integer> monthData = area.getHistrogramData().getMonths();
-			Map<Integer, Integer> dayData = area.getHistrogramData().getDays();
-			Map<Integer, Integer> hourData = area.getHistrogramData().getHours();
-			Map<Integer, Integer> weekdayData = area.getHistrogramData().getWeekdays();
-
-			Calendar calendar = DateUtil.createReferenceCalendar();
-			calendar.setLenient(false);
-
-			//set values
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
-				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-					int hour = Integer.parseInt(e.getKey().substring(11, 13));
-					hourData.put(hour, e.getValue() + hourData.get(hour));
-					sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
-				}
-
-				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-					int day = Integer.parseInt(e.getKey().substring(8, 10));
-					dayData.put(day, e.getValue() + dayData.get(day));
-					sumDayData.put(day, e.getValue() + sumDayData.get(day));
-				}
-
-				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-					int month = Integer.parseInt(e.getKey().substring(5, 7));
-					monthData.put(month, e.getValue() + monthData.get(month));
-					sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
-				}
-
-				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-					int year = Integer.parseInt(e.getKey().substring(0, 4));
-					yearData.put(year, e.getValue() + yearData.get(year));
-					sumYearData.put(year, e.getValue() + sumYearData.get(year));
-				}
-
-				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-					calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
-					calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
-					calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
-					int weekday = DateUtil.getWeekdayInt(calendar.getTime());
-					weekdayData.put(weekday, e.getValue() + weekdayData.get(weekday));
-					sumWeekdayData.put(weekday, e.getValue() + sumWeekdayData.get(weekday));
-				}
-			}
-		}
-
-		return sumHistrograms;
-	}
-
-
 
 	public String buildKmlFile(List<FlickrArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = this.getClass().getResource("/../../").getPath();
