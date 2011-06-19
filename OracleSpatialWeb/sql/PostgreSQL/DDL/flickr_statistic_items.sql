@@ -12,3 +12,9 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE flickr_statistic_items OWNER TO gennady_flickr;
+
+
+-- init
+insert into flickr_statistic_items (name, value) values ('people_photo_checked_num', 0);
+insert into flickr_statistic_items (name, value) values ('people_contact_checked_num', 0);
+insert into flickr_statistic_items (name, value) values ('people_random_location_num', 0);
