@@ -17,6 +17,3 @@ WITH (
 );
 ALTER TABLE flickr_statistic OWNER TO gennady_flickr;
 
--- init
-insert into flickr_statistic_items (name, value) values ('people_photo_checked_num', 0);
-insert into flickr_statistic_items (name, value) values ('people_contact_checked_num', 0);

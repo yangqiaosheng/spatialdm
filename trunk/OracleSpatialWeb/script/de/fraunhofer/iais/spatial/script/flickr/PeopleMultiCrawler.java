@@ -231,7 +231,7 @@ public class PeopleMultiCrawler extends Thread {
 
 		try {
 			conn.setAutoCommit(false);
-			PreparedStatement selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");;
+			PreparedStatement selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");
 			PreparedStatement insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME) values (?, ?)");
 			PreparedStatement updatePeopleContactCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_contact_checked_num'");
 			ResultSet rs = null;
@@ -242,7 +242,7 @@ public class PeopleMultiCrawler extends Thread {
 					rs = db.getRs(selectPstmt);
 
 					if (rs.next()) {
-						System.out.println(userId + " already existed");
+						System.out.println(m.getId() + " already existed");
 					} else {
 						String username = m.getUserName();
 						if (username != null && username.length() > MAX_USERNAME_LENGTH) {
@@ -253,7 +253,7 @@ public class PeopleMultiCrawler extends Thread {
 						insertPstmt.setString(2, username);
 						insertPstmt.addBatch();
 						increaseNumInsertedPeople();
-						System.out.println(userId + " inserted");
+						System.out.println(m.getId() + " inserted");
 					}
 				}
 				insertPstmt.executeBatch();
