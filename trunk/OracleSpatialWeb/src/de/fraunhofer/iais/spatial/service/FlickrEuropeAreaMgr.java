@@ -674,9 +674,8 @@ public class FlickrEuropeAreaMgr {
 		return XmlUtil.xml2String(document, false);
 	}
 
-	public String buildKmlString(List<FlickrArea> areas, Radius radius, String remoteBasePath, Writer out) throws IOException {
+	public String buildKmlString(List<FlickrArea> areas, Radius radius, String remoteBasePath) throws IOException {
 		Document document = createKmlDoc(areas, radius, remoteBasePath);
-		new XMLOutputter().output(document, out);
 
 		return XmlUtil.xml2String(document, false);
 	}

@@ -394,31 +394,6 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
-	public void testHistrogram() throws JDOMException, IOException, ParseException {
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
-		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest.xml"))), areaDto);
-		List<FlickrArea> areas = null;
-		if (areaDto.getBoundaryRect() == null) {
-			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
-		} else {
-			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-		}
-
-		long start = System.currentTimeMillis();
-		Histrograms sumHistrograms = areaMgr.calculateHistrograms(areas, areaDto);
-
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
-		HistrogramsDataServlet histrogramsDataServlet = new HistrogramsDataServlet();
-		histrogramsDataServlet.setAreaMgr(areaMgr);
-		String resultXml = histrogramsDataServlet.histrogramsResponseXml(document, sumHistrograms, true);
-		System.out.println(resultXml);
-
-		System.out.println(System.currentTimeMillis() - start);
-	}
-
-	@Test
 	public void testPhotoXml() {
 		long start = System.currentTimeMillis();
 
@@ -474,6 +449,7 @@ public class TestFlickrEuropeArea {
 
 	@Test
 	public void testRequestXml() throws Exception {
+
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 //		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest2.xml"));
 //		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
@@ -513,13 +489,40 @@ public class TestFlickrEuropeArea {
 //		}
 //		areaMgr.count(as, areaDto);
 //		System.out.println(as.size());
+
+	}
+
+	@Test
+	public void testHistrogram() throws JDOMException, IOException, ParseException {
+		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
+		List<FlickrArea> areas = null;
+		if (areaDto.getBoundaryRect() == null) {
+			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+		} else {
+			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		}
+
+		long start = System.currentTimeMillis();
+		Histrograms sumHistrograms = areaMgr.calculateHistrograms(areas, areaDto);
+
+		Document document = new Document();
+		Element rootElement = new Element("response");
+		document.setRootElement(rootElement);
+		HistrogramsDataServlet histrogramsDataServlet = new HistrogramsDataServlet();
+		histrogramsDataServlet.setAreaMgr(areaMgr);
+		String resultXml = histrogramsDataServlet.histrogramsResponseXml(document, sumHistrograms, true);
+		System.out.println(resultXml);
+
+		System.out.println(System.currentTimeMillis() - start);
 	}
 
 	@Test
 	public void testKml1() throws Exception {
+		long start = System.currentTimeMillis();
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrEuropeKmlRequest1.xml"))), areaDto);
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
 		List<FlickrArea> as = null;
 		if (areaDto.getBoundaryRect() == null) {
 			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
@@ -527,26 +530,11 @@ public class TestFlickrEuropeArea {
 			as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
 
-		long start = System.currentTimeMillis();
 		areaMgr.countSelected(as, areaDto);
-		System.out.println(System.currentTimeMillis() - start);
-//		System.out.println(areaMgr.createKml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius(), null, true));
-//		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
-	}
 
-	@Test
-	public void testXmlGeneration() throws Exception {
-		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
-		StringBuffer xml = new StringBuffer();
-		String thisLine;
-		while ((thisLine = br.readLine()) != null) {
-			xml.append(thisLine);
-		}
-		String xmlStr = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml.toString()));
-		SAXBuilder builder = new SAXBuilder();
-		Document document = builder.build(new ByteArrayInputStream(xmlStr.getBytes()));
-		System.out.println(XmlUtil.xml2String(document, false));
-		System.out.println(URLEncoder.encode((XmlUtil.xml2String(document, true)), "UTF-8"));
+		System.out.println(areaMgr.buildKmlString(as, areaDto.getRadius(), ""));
+		System.out.println(System.currentTimeMillis() - start);
+//		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
 	}
 
 	@Test
