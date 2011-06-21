@@ -252,13 +252,13 @@ public class PublicPhotoMultiCrawler extends Thread {
 		PhotoList insertEuropePhotos = new PhotoList();
 		PhotoList insertWorldPhotos = new PhotoList();
 
-//		try {
+		try {
 			do {
 				//get all the photo with and without GEO info
-//			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
+			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
 
 				//there is bugs in the Search method with bbox option, which will only return the result of accuracy=16
-//			photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), peopleInterface.new Bbox(MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE), extras, pageSize, page++);
+//			    photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), peopleInterface.new Bbox(MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE), extras, pageSize, page++);
 //				photos = peopleInterface.searchWithGeoPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), null, extras, pageSize, page++);
 
 				total = photos.getTotal();
@@ -287,11 +287,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			}
 
-//		} catch (SAXException e) {
-//			flickrExceptionHandler(userId, page, e, -1);
-//		} catch (FlickrException e) {
-//			flickrExceptionHandler(userId, page, e, -2);
-//		}
+		} catch (SAXException e) {
+			flickrExceptionHandler(userId, page, e, -1);
+		} catch (FlickrException e) {
+			flickrExceptionHandler(userId, page, e, -2);
+		}
 	}
 
 	private void flickrExceptionHandler(String userId, int page, Exception e, int photoCheckedFlag) throws SQLException {
