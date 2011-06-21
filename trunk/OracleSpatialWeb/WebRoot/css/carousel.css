@@ -21,12 +21,26 @@
 }
 
 #carousel {	
-	width: auto;
+	width: 100%;
 }
 .carousel {	
 	height: auto;
 	width: auto;
 }
+/*in this subitem I want to put the name of the picture and the title*/
+
+/*.subitem{
+
+	 width: 100px;
+	 height: 50%;
+	 background-color: #CCFFFF;
+	 overflow: hidden;
+	 vertical-align: middle;
+	 MARGIN-RIGHT: auto;
+	 MARGIN-LEFT: auto;
+	 position: relative;
+	 opacity: 1;
+}*/
 
 .item {	
 
@@ -58,7 +72,6 @@
 	opacity: 0.8;*/
 	border-width:0.31em;
 	border-style:solid; 
-	height: auto;
 	border-color:#8AA8F3; 
 	width: auto;
 	position: absolute;
@@ -82,6 +95,15 @@
     visibility: hidden;
 }
 #container {
-	width: auto;
-	height: auto;
+	width: 100%;
+	height: 100%;
 }
+
+#pictureMouseOver{
+    position:fixed;
+    width: auto;
+    height: auto;
+    top:5%;
+    right:5%;
+}
+

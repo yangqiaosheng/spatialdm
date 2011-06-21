@@ -12,7 +12,7 @@ label.error {
   width: 20%;
   height: auto;
   left: 80%;
-/*   top: 80%; */
+  top: 80%;
 }
 .legendContainer1 {
   position: absolute;
@@ -31,18 +31,12 @@ label.error {
   border-style: solid;
   border-color: #06A8FA;
   left: 80%;
-  top: 60%;
+  top: 80%;
 }
 
 .pictureContainer {
   position: absolute;
   width: auto;
-  height: auto;
-  left: 80%;
-  top: 30%;
-}
-.pictureMouseOver{
-  width: auto;
-  height: auto;
+  height: auto; 
 }
 

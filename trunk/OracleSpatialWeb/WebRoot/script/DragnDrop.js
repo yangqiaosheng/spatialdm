@@ -3,4 +3,5 @@ $(document).ready(function(){
     $("#move").draggable({ handle: '#idmove' });
     $("#maxContainer").draggable({ opacity: 1 });
     $("#photoWindow").draggable({ opacity: 1 });
+    $("#pictureMouseOver").draggable({ opacity: 1 });     
 });

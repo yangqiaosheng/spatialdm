@@ -1,5 +1,5 @@
-<div class="pictureContainer timeCstar">
-  <div id="pictureMouseOver" class ="timeCstar"></div>
+<div class="pictureContainer">
+  <div id="pictureMouseOver"></div>
 </div>
 
 
@@ -9,4 +9,5 @@
       <input type="button" id="showhide" value="hide">
   </div>
   <div id="legendInfo" class="timeCstar"> This content changes dynamically. </div>
+
 </div>
