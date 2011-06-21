@@ -1,275 +1,308 @@
 var number = new Array(200);
 var field = new Array(200);
 var nameString = new Array(200);
+
+
+var nameStringHistogram = new Array(200);
+var number_Histogram = new Array(200);
+var field_Histogram = new Array(200);
+
 // in this string I map months, years, days hours.
 var text1 = "";
 var numberHeader = new Array(7);
 var fieldHeader = new Array(7);
+var N = 100;
 
 // this function is executed in the begining onload on body
-function loadStart() {
-    for (var i = 1; i < 100; i++)// here are actually 73 elements in sjp, but dosn't matter if I put more
-    {
-        field[i] = document.getElementById('controltime' + i);
-        number[i] = 0;
+function loadStart() {	
+	field = get_set_Field();
+	number = get_set_number();
+	nameString = loadDataForTable();		
+	activateTheHeaderOfTable();		
+	//nameStringHistogram = loadDataForTable();	
+}
+function get_set_Field(){
+	var local_nameString = new Array(200);
+	for (var i=0;i<N; i++){ 
+		local_nameString[i] = document.getElementById('controltime' + i);
+	}
+	return local_nameString;
+}
+function get_set_number(){
+	var local_nameString = new Array(200);
+	for (var i=0;i<N; i++){
+		local_nameString[i] = 0;
+	}
+	return local_nameString;	
+}
+
+function activateTheHeaderOfTable() {
+	for ( var i = 1; i < 6; i++) {
+		fieldHeader[i] = document.getElementById('controltime_header' + i);
+		numberHeader[i] = 0;
+	}
+}
+
+function loadDataForTable(){
+	var local_nameString = new Array(200);
+	for (var i = 1; i < N; i++){       
         switch (i) {
             case 1:
-            nameString[i] = "2005";
+            	local_nameString[i] = "2005";
             break;
             case 2:
-            nameString[i] = "2006";
+            	local_nameString[i] = "2006";
             break;
             case 3:
-            nameString[i] = "2007";
+            	local_nameString[i] = "2007";
             break;
             case 4:
-            nameString[i] = "2008";
+            	local_nameString[i] = "2008";
             break;
             case 5:
-            nameString[i] = "2009";
+            	local_nameString[i] = "2009";
             break;
             case 6:
-            nameString[i] = "2010";
+            	local_nameString[i] = "2010";
+	    break;
+	    case 7:
+            	local_nameString[i] = "2011";
             break;
             // ***********************************************************************
-            case 7:
-            nameString[i] = "January";
-            break;
             case 8:
-            nameString[i] = "February";
+            	local_nameString[i] = "January";
             break;
             case 9:
-            nameString[i] = "March";
+            	local_nameString[i] = "February";
             break;
             case 10:
-            nameString[i] = "April";
+            	local_nameString[i] = "March";
             break;
             case 11:
-            nameString[i] = "May";
+            	local_nameString[i] = "April";
             break;
             case 12:
-            nameString[i] = "June";
+            	local_nameString[i] = "May";
             break;
             case 13:
-            nameString[i] = "July";
+            	local_nameString[i] = "June";
             break;
             case 14:
-            nameString[i] = "August";
+            	local_nameString[i] = "July";
             break;
             case 15:
-            nameString[i] = "September";
+            	local_nameString[i] = "August";
             break;
             case 16:
-            nameString[i] = "October";
+            	local_nameString[i] = "September";
             break;
             case 17:
-            nameString[i] = "November";
+            	local_nameString[i] = "October";
             break;
             case 18:
-            nameString[i] = "December";
+            	local_nameString[i] = "November";
+            break;
+            case 19:
+            	local_nameString[i] = "December";
             break;
             // ***********************************************************************
             
-            case 19:
-            nameString[i] = "1";
-            break;
             case 20:
-            nameString[i] = "2";
+            	local_nameString[i] = "1";
             break;
             case 21:
-            nameString[i] = "3";
+            	local_nameString[i] = "2";
             break;
             case 22:
-            nameString[i] = "4";
+            	local_nameString[i] = "3";
             break;
             case 23:
-            nameString[i] = "5";
+            	local_nameString[i] = "4";
             break;
             case 24:
-            nameString[i] = "6";
+            	local_nameString[i] = "5";
             break;
             case 25:
-            nameString[i] = "7";
+            	local_nameString[i] = "6";
             break;
             case 26:
-            nameString[i] = "8";
+            	local_nameString[i] = "7";
             break;
             case 27:
-            nameString[i] = "9";
+            	local_nameString[i] = "8";
             break;
             case 28:
-            nameString[i] = "10";
+            	local_nameString[i] = "9";
             break;
             case 29:
-            nameString[i] = "11";
+            	local_nameString[i] = "10";
             break;
             case 30:
-            nameString[i] = "12";
+            	local_nameString[i] = "11";
             break;
             case 31:
-            nameString[i] = "13";
+            	local_nameString[i] = "12";
             break;
             case 32:
-            nameString[i] = "14";
+            	local_nameString[i] = "13";
             break;
             case 33:
-            nameString[i] = "15";
+            	local_nameString[i] = "14";
             break;
             case 34:
-            nameString[i] = "16";
+            	local_nameString[i] = "15";
             break;
             case 35:
-            nameString[i] = "17";
+            	local_nameString[i] = "16";
             break;
             case 36:
-            nameString[i] = "18";
+            	local_nameString[i] = "17";
             break;
             case 37:
-            nameString[i] = "19";
+            	local_nameString[i] = "18";
             break;
             case 38:
-            nameString[i] = "20";
+            	local_nameString[i] = "19";
             break;
             case 39:
-            nameString[i] = "21";
+            	local_nameString[i] = "20";
             break;
             case 40:
-            nameString[i] = "22";
+            	local_nameString[i] = "21";
             break;
             case 41:
-            nameString[i] = "23";
+            	local_nameString[i] = "22";
             break;
             case 42:
-            nameString[i] = "24";
+            	local_nameString[i] = "23";
             break;
             case 43:
-            nameString[i] = "25";
+            	local_nameString[i] = "24";
             break;
             case 44:
-            nameString[i] = "26";
+            	local_nameString[i] = "25";
             break;
             case 45:
-            nameString[i] = "27";
+            	local_nameString[i] = "26";
             break;
             case 46:
-            nameString[i] = "28";
+            	local_nameString[i] = "27";
             break;
             case 47:
-            nameString[i] = "29";
+            	local_nameString[i] = "28";
             break;
             case 48:
-            nameString[i] = "30";
+            	local_nameString[i] = "29";
             break;
             case 49:
-            nameString[i] = "31";
+            	local_nameString[i] = "30";
+            break;
+            case 50:
+            	local_nameString[i] = "31";
             break;
             
             // ***********************************************************************
-            case 50:
-            nameString[i] = "0";
-            break;
             case 51:
-            nameString[i] = "1";
+            	local_nameString[i] = "0";
             break;
             case 52:
-            nameString[i] = "2";
+            	local_nameString[i] = "1";
             break;
             case 53:
-            nameString[i] = "3";
+            	local_nameString[i] = "2";
             break;
             case 54:
-            nameString[i] = "4";
+            	local_nameString[i] = "3";
             break;
             case 55:
-            nameString[i] = "5";
+            	local_nameString[i] = "4";
             break;
             case 56:
-            nameString[i] = "6";
+            	local_nameString[i] = "5";
             break;
             case 57:
-            nameString[i] = "7";
+            	local_nameString[i] = "6";
             break;
             case 58:
-            nameString[i] = "8";
+            	local_nameString[i] = "7";
             break;
             case 59:
-            nameString[i] = "9";
+            	local_nameString[i] = "8";
             break;
             case 60:
-            nameString[i] = "10";
+            	local_nameString[i] = "9";
             break;
             case 61:
-            nameString[i] = "11";
+            	local_nameString[i] = "10";
             break;
             case 62:
-            nameString[i] = "12";
+            	local_nameString[i] = "11";
             break;
             case 63:
-            nameString[i] = "13";
+            	local_nameString[i] = "12";
             break;
             case 64:
-            nameString[i] = "14";
+            	local_nameString[i] = "13";
             break;
             case 65:
-            nameString[i] = "15";
+            	local_nameString[i] = "14";
             break;
             case 66:
-            nameString[i] = "16";
+            	local_nameString[i] = "15";
             break;
             case 67:
-            nameString[i] = "17";
+            	local_nameString[i] = "16";
             break;
             case 68:
-            nameString[i] = "18";
-            
+            	local_nameString[i] = "17";
             break;
             case 69:
-            nameString[i] = "19";
+            	local_nameString[i] = "18";            
             break;
             case 70:
-            nameString[i] = "20";
+            	local_nameString[i] = "19";
             break;
             case 71:
-            nameString[i] = "21";
+            	local_nameString[i] = "20";
             break;
             case 72:
-            nameString[i] = "22";
+            	local_nameString[i] = "21";
             break;
             case 73:
-            nameString[i] = "23";
+            	local_nameString[i] = "22";
+            break;
+            case 74:
+            	local_nameString[i] = "23";
             break;
             // ***********************************************************************
-            case 74:
-            nameString[i] = "Monday";
-            break;
             case 75:
-            nameString[i] = "Tuesday";
+            	local_nameString[i] = "Sunday";
             break;
             case 76:
-            nameString[i] = "Wednesday";
+            	local_nameString[i] = "Monday";
             break;
             case 77:
-            nameString[i] = "Thursday";
+            	local_nameString[i] = "Tuesday";
             break;
             case 78:
-            nameString[i] = "Friday";
+            	local_nameString[i] = "Wednesday";
             break;
             case 79:
-            nameString[i] = "Saturday";
+            	local_nameString[i] = "Thursday";
             break;
             case 80:
-            nameString[i] = "Sunday";
+            	local_nameString[i] = "Friday";
             break;
-        }
+            case 81:
+            	local_nameString[i] = "Saturday";
+            break;
+        }      
     }
-    for (var i = 1; i < 6; i++)// here are actually 73 elements in sjp, but dosn't matter if I put more
-    {
-        fieldHeader[i] = document.getElementById('controltime_header' + i);
-        numberHeader[i] = 0;
-    }
+    return local_nameString;
 }
-//this fucntion receive a parameter as number of the argument- even if the parameter is not visible
-function selectbutton() {
+// this fucntion receive a parameter as number of the argument- even if the
+// parameter is not visible
+/*function selectbutton() {
     var argv = selectbutton.arguments;
     number[argv[0]]++;
     // even, odd for selection deselection
@@ -279,7 +312,7 @@ function selectbutton() {
         field[argv[0]].style.background = '#06A8FA';
     }
 }
-
+*/
 function selectbuttonHeader() {
     var argv = selectbuttonHeader.arguments;
     numberHeader[argv[0]]++;
@@ -341,22 +374,19 @@ function selectbuttonHeader() {
 }
 
 function ask() {
-    
-    text1 = "";
-    var bounds = map.getBounds();
-    var center = map.getCenter();
-    var zoomLevel = map.getZoom();
-    headerXML = createHeaderXML(bounds, center, zoomLevel);
+   // alert("ask");
+    text1 = "";    
+    headerXML = createHeaderXML();
     bodyXML = timeController1XML(text1);
     sendToServerCalendarData(headerXML, bodyXML);    
-    //alert("globalPolygonSelected "+ globalPolygonSelected); 	
+    // alert("globalPolygonSelected "+ globalPolygonSelected);
 }
 
 function refreshButtons() {    
-    //deleteHistory();
-    resetTable();
+    // deleteHistory();
+    //resetTable();
 }
-
+/*
 function resetTable(){
   for (var i=1; i<=80;i++){
    if (number[i] % 2 != 0) {
@@ -366,4 +396,4 @@ function resetTable(){
         field[i].style.background = '#06A8FA';
     }
   }
-}
+}*/

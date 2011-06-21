@@ -1,43 +1,37 @@
 function atacheEventsOnCharts(){
-  var yr = $("#IntChartID_1");
-  yr.toggle(function(){
-	    $(this).css("height", "30%");
-	    $(this).css("width", "140%");
+  var yr = $("#chart1");
+  yr.toggle(function(){	 
+	  $("#pictureMouseOver").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=year&width=600&height=300"+new Date()+"  '>");
       }, function(){
-	    $(this).css("height", "60px");
-	    $(this).css("width", "30%");
-      });
-var mon = $("#IntChartID_2");
-  mon.toggle(function(){
-	    $(this).css("height", "30%");
-	    $(this).css("width", "140%");
-      }, function(){
-	    $(this).css("height", "60px");
-	    $(this).css("width", "30%");
-      });
-var h = $("#IntChartID_3");
-  h.toggle(function(){
-	    $(this).css("height", "30%");
-	    $(this).css("width", "140%");
-      }, function(){
-	    $(this).css("height", "60px");
-	    $(this).css("width", "30%");
-      });
-var d = $("#IntChartID_4");
-  d.toggle(function(){
-	    $(this).css("height", "30%");
-	    $(this).css("width", "140%");
-      }, function(){
-	    $(this).css("height", "60px");
-	    $(this).css("width", "30%");
-      });
+	  $("#pictureMouseOver").html("");	  	  
+	 
+      });  
 
-var wd = $("#IntChartID_5");
-  wd.toggle(function(){
-	    $(this).css("height", "30%");
-	    $(this).css("width", "140%");
+var mon = $("#chart2");  
+  mon.toggle(function(){	 
+	  $("#pictureMouseOver").html("<img title='Month Level' id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=month&width=600&height=300"+new Date()+"  '>");
       }, function(){
-	    $(this).css("height", "60px");
-	    $(this).css("width", "30%");
-      });
+	  $("#pictureMouseOver").html("");	 	
+      });  
+
+var h = $("#chart3");
+  h.toggle(function(){
+	 $("#pictureMouseOver").html("<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=day&width=600&height=300"+new Date()+"  '>");
+      }, function(){
+	 $("#pictureMouseOver").html("");	 
+      }); 
+var h = $("#chart4");
+  h.toggle(function(){
+	  $("#pictureMouseOver").html("<img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=hour&width=600&height=300"+new Date()+"  '>");
+      }, function(){
+	  $("#pictureMouseOver").html("");	 
+      }); 
+
+
+var h = $("#chart5");
+  h.toggle(function(){
+	  $("#pictureMouseOver").html("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=weekday&width=600&height=300"+new Date()+"  '>");
+      }, function(){
+	  $("#pictureMouseOver").html("");	
+      }); 
 }

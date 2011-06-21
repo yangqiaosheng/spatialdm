@@ -13,8 +13,8 @@ var globalvar = null;
 
 function loadXml(xml) {
     //alert(" sas load xml");
-    arrayPolygons = new Array();
-    Polygon = new Array();
+  //  arrayPolygons = new Array();
+   // Polygon = new Array();
     pol = 0;
     total = new Array();
     sel = new Array();
@@ -86,8 +86,9 @@ function attachMessage(Polygon, valuei, number) {
     });
 
     google.maps.event.addListener(Polygon, 'click', function (event) {
-		unSelectAllThePolygons();
+	unSelectAllThePolygons();
         cleanPhotos();
+	$("#maxContainer").show();
         this.setOptions({
             fillColor: "#0000FF",
             fillOpacity: 0.35
@@ -100,12 +101,12 @@ function attachMessage(Polygon, valuei, number) {
         if (boolSelected[globalPolygonSelected] == 1) {
             ids = ids + "" + globalPolygonSelected;
         }
-        $('#numberOfItems').html("<span> Number of pictures selected: " + sel[globalPolygonSelected] + " idpoligon= "+ globalPolygonSelected+ "</span>");
-	$("#chart1").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=year&random="+new Date()+"  '>");
-	$("#chart1").append("<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=month&random="+new Date()+" '>");
-	$("#chart1").append("<img title='Hours Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=hour&random="+new Date()+" '>");
-	$("#chart1").append("<img title='Day Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=day&random="+new Date()+" '>");
-	$("#chart1").append("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=weekday&random="+new Date()+" '>");
+        $('#numberOfItems').html("<span> Number of pictures selected: " + sel[globalPolygonSelected] + " idpoligon= "+ globalPolygonSelected+ "</span>");	
+	$("#chart1").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=year&width=140&height=80&"+new Date()+"  '>");
+	$("#chart2").html("<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=month&width=140&height=80&"+new Date()+"  '>");	
+	$("#chart3").html("<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=day&width=140&height=80&"+new Date()+"  '>");
+	$("#chart4").html("<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=hour&width=140&height=80&"+new Date()+"  '>");
+	$("#chart5").html("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=weekday&width=140&height=80&"+new Date()+"  '>");
 	atacheEventsOnCharts(); // charts.js
         setCarousel(ids);
     });
@@ -158,11 +159,11 @@ function restorePolygon(){
         }
 	//alert("globalvar "+globalvar +" sel[globalvar]"+sel[globalvar]);
         $('#numberOfItems').html("<span> Number of pictures selected: " + sel[globalPolygonSelected] + "idpoligon= "+ globalPolygonSelected+ "</span>");	//globalvar
-	$("#chart1").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=year&random="+new Date()+"  '>");
-	$("#chart1").append("<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=month&random="+new Date()+" '>");
-	$("#chart1").append("<img title='Hours Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=hour&random="+new Date()+" '>");
-	$("#chart1").append("<img title='Day Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=day&random="+new Date()+" '>");
-	$("#chart1").append("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=weekday&random="+new Date()+" '>");
+	$("#chart1").html("<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=year&width=140&height=80&"+new Date()+"  '>");
+	$("#chart2").html("<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=month&width=140&height=80&"+new Date()+"  '>");
+	$("#chart3").html("<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=day&width=140&height=80&"+new Date()+"  '>");
+	$("#chart4").html("<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=hour&width=140&height=80&"+new Date()+"  '>");
+	$("#chart5").html("<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid="+getId()+"&level=weekday&width=140&height=80&"+new Date()+"  '>");
 	atacheEventsOnCharts(); // charts.js
         setCarousel(ids);
        }
