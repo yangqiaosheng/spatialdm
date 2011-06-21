@@ -331,7 +331,7 @@ function init() {
 		bodyXMLHistogram = timeController1XMLHistogram_Selected();
 		//alert("sent for polygons "+bodyXMLHistogram);
 		if (jQuery("#AggregationCheckBox").attr("checked") == true){
-		  sendToServerCalendarData(headerXMLHistogram, bodyXMLHistogram);		
+		  sendToServerCalendarData(headerXMLHistogram, bodyXMLHistogram);
 		}else{}
 	}
 }
@@ -349,7 +349,7 @@ function Histogramm(model, options) {
 }
 
 function activateToolTip(spanElement, subSpan, index, arrayX, classNumber) {
-	spanElement.onmouseover = function() {	
+	spanElement.onmouseover = function() {
 		spanElement.style.background = '#FFFF00';
 		subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
 		// spanElement.innerHTML = arrayX[index].value2;
@@ -359,13 +359,13 @@ function activateToolTip(spanElement, subSpan, index, arrayX, classNumber) {
 			spanElement.style.background = "#DDDDDD";
 		} else {
 			spanElement.style.background = '#FFFF00';
-		}		
+		}
 		subSpan.innerHTML = "";
 	};
 	spanElement.onclick = function() {
 		if (arrayX[index].label == 0) {
 			spanElement.style.background = '#FFFF00';
-			arrayX[index].label = 1;			
+			arrayX[index].label = 1;
 			globalArray[arrayX[index].indexVal] = 1;
 			console.log(globalArray[arrayX[index].indexVal]+" "+arrayX[index].indexVal);
 			if (once == true) {
@@ -1190,9 +1190,8 @@ function sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram)
 		}
 	};
 
-	xmlHttp
-			.open("POST",
-					"http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/HistrogramsData");
+//	xmlHttp.open("POST","http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/HistrogramsData");
+	xmlHttp.open("POST","HistrogramsData");
 
 	xmlHttp.setRequestHeader('Content-Type',
 			'application/x-www-form-urlencoded; charset=UTF-8');
