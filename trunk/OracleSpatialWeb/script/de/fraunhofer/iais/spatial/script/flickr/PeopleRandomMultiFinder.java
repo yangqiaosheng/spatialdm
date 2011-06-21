@@ -190,36 +190,36 @@ public class PeopleRandomMultiFinder extends Thread {
 			double lon = -0.1;
 			float radius = 32;
 
-//			try {
-//				do {
-//					photos = peopleInterface.searchRandomLocationPhotos(lat, lon, radius, extras, pageSize, page++);
-//
-//					total = photos.getTotal();
-//					pages = photos.getPages();
-//					increaseNumTotalQuery();
-//
-//					for (int i = 0; i < photos.size(); i++) {
-//						Photo p = (Photo) photos.get(i);
-//						if (!users.containsKey(p.getOwner().getId())) {
-//							users.put(p.getOwner().getId(), p.getOwner().getUsername());
-//						}
-//
-//					}
-//					num += photos.size();
-//
-//					System.out.println("total:" + total + " | num:" + num);
-//					System.out.println("numTotalQuery:" + getNumTotalQuery());
-//				} while (page <= pages);
-//
-//				if(users.size()>0){
-//					insertPeoples(users);
-//				}
-//
-//			} catch (SAXException e) {
-//				logger.error("lat:" + lat + "|lon:" + lon + "|page:" + page, e);
-//			} catch (FlickrException e) {
-//				logger.error("lat:" + lat + "|lon:" + lon + "|page:" + page, e);
-//			}
+			try {
+				do {
+					photos = peopleInterface.searchRandomLocationPhotos(lat, lon, radius, extras, pageSize, page++);
+
+					total = photos.getTotal();
+					pages = photos.getPages();
+					increaseNumTotalQuery();
+
+					for (int i = 0; i < photos.size(); i++) {
+						Photo p = (Photo) photos.get(i);
+						if (!users.containsKey(p.getOwner().getId())) {
+							users.put(p.getOwner().getId(), p.getOwner().getUsername());
+						}
+
+					}
+					num += photos.size();
+
+					System.out.println("total:" + total + " | num:" + num);
+					System.out.println("numTotalQuery:" + getNumTotalQuery());
+				} while (page <= pages);
+
+				if(users.size()>0){
+					insertPeoples(users);
+				}
+
+			} catch (SAXException e) {
+				logger.error("lat:" + lat + "|lon:" + lon + "|page:" + page, e);
+			} catch (FlickrException e) {
+				logger.error("lat:" + lat + "|lon:" + lon + "|page:" + page, e);
+			}
 		}
 	}
 
