@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -349,7 +350,7 @@ public class PeopleInterface {
 	 * @throws SAXException
 	 * @throws FlickrException
 	 */
-	public PhotoList getSearchWithGeoPhoto(String userId, Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, Bbox bbox, Set<String> extras, int perPage, int page) throws IOException, SAXException, FlickrException {
+	public PhotoList searchWithGeoPhotos(String userId, Date minUploadDate, Date maxUploadDate, Date minTakenDate, Date maxTakenDate, Bbox bbox, Set<String> extras, int perPage, int page) throws IOException, SAXException, FlickrException {
 
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter("method", METHOD_SEARCH));
@@ -382,6 +383,75 @@ public class PeopleInterface {
 		parameters.add(new Parameter("accuracy", 15));
 		if(bbox != null){
 			parameters.add(new Parameter("bbox", "" + bbox.minLongitude + "," + bbox.minLatitude + "," + bbox.maxLongitude + "," + bbox.maxLatitude + ","));
+		}
+
+		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
+
+		Response response = transport.get(transport.getPath(), parameters);
+		if (response.isError())
+			throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+		Element photosElement = response.getPayload();
+		PhotoList photos = PhotoUtils.createPhotoList(photosElement);
+		return photos;
+	}
+
+	/**
+	 * Return a list of geo-tagged photos matching some criteria. Only photos visible to the calling user will be returned.
+	 * To return private or semi-private photos, the caller must be authenticated with 'read' permissions, and have permission to view the photos.
+	 * Unauthenticated calls will only return public photos.
+	 *
+	 * This method does not require authentication
+	 *
+	 * A tag, for instance, is considered a limiting agent as are user defined min_date_taken and min_date_upload parameters — If no limiting factor is passed we return only photos added in the last 12 hours (though we may extend the limit in the future).
+	 *
+	 * Unlike standard photo queries, geo (or bounding box) queries will only return 250 results per page.
+	 *
+	 * @see com.aetrion.flickr.photos.Extras
+	 * @param lat [-90, 90] A valid latitude, in decimal format, for doing radial geo queries.
+	 * @param lon [-180, 180] A valid longitude, in decimal format, for doing radial geo queries.
+	 * @param radius [0, 32] A valid radius used for geo queries, greater than zero and less than 20 miles (or 32 kilometers), for use with point-based geo queries. The default value is 5 (km).
+	 * @param extras Set of extra-attributes to include (may be null)
+	 * @param perPage Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
+	 * @param page The page of results to return. If this argument is omitted, it defaults to 1.
+	 * @return The PhotoList collection
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws FlickrException
+	 */
+	public PhotoList searchRandomLocationPhotos(double lat, double lon, float radius, Set<String> extras, int perPage, int page) throws IOException, SAXException, FlickrException {
+
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(new Parameter("method", METHOD_SEARCH));
+		parameters.add(new Parameter("api_key", apiKey));
+
+
+		if (perPage > 0) {
+			parameters.add(new Parameter("per_page", "" + perPage));
+		}
+		if (page > 0) {
+			parameters.add(new Parameter("page", "" + page));
+		}
+
+		if (lat >= -90 & lat <= 90) {
+			parameters.add(new Parameter("lat", "" + lat));
+		} else {
+			throw new IllegalArgumentException("wrong parameter lat:" + lat);
+		}
+
+		if (lat >= -180 & lat <= 180) {
+			parameters.add(new Parameter("lon", "" + lon));
+		} else{
+			throw new IllegalArgumentException("wrong parameter lon:" + lon);
+		}
+
+		if (radius >= 0 & radius <= 32) {
+			parameters.add(new Parameter("radius", "" + radius));
+		} else {
+			throw new IllegalArgumentException("wrong parameter radius:" + radius);
+		}
+
+		if (extras != null) {
+			parameters.add(new Parameter(Extras.KEY_EXTRAS, StringUtilities.join(extras, ",")));
 		}
 
 		parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
