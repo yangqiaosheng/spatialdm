@@ -9,9 +9,9 @@ function agregationPolygonsAdd() {
 				var center = map.getCenter();
 				var zoomLevel = map.getZoom();
 				//$("#legendInfo").html(zoomLevel+" ");
-				headerXML = createHeaderXML(bounds, center, zoomLevel);
-				bodyXML = "";
-				sendToServer_ScreenCenter_ScreenBounds(headerXML, bodyXML);
+//				headerXML = createHeaderXML(bounds, center, zoomLevel);
+//				bodyXML = "";
+//				sendToServer_ScreenCenter_ScreenBounds(headerXML, bodyXML);
 			});
 }
 
@@ -47,20 +47,20 @@ $(function() {
 	$("#CalendarContent").hide();
 	//$("#selectedYMDHContent").hide();
 	$("#histogramContent").hide();
-	
+
 	$("#selectedYMDHCheckbox").click(function() {
-		//$("#selectedYMDHContent").show(1000);				
-		$("#CalendarContent").hide(1000);		
+		//$("#selectedYMDHContent").show(1000);
+		$("#CalendarContent").hide(1000);
 		$("#histogramContent").hide(1000);
-	}); 
+	});
 	$("#CalendarcheckBox").click(function() {
 		$("#CalendarContent").show(1000);
-		//$("#selectedYMDHContent").hide(1000);		
+		//$("#selectedYMDHContent").hide(1000);
 		$("#histogramContent").hide(1000);
 	});
 	$("#histogramCheckbox").click(function() {
 		$("#histogramContent").show(1000);
 		$("#CalendarContent").hide(1000);
 		//$("#selectedYMDHContent").hide(1000);
-	});	
+	});
 });
