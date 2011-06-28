@@ -106,6 +106,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 				Histrograms sumHistrograms = areaMgr.calculateHistrograms(areas, areaDto);
 				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
 
+//				request.getSession().setAttribute("areaDto", areaDto);
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$

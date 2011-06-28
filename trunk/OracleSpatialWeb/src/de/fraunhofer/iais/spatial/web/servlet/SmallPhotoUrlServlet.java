@@ -88,8 +88,13 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
-				photosResponseXml(document, area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
-				messageElement.setText("SUCCESS");
+
+				if(area != null){
+					photosResponseXml(document, area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
+					messageElement.setText("SUCCESS");
+				}else{
+					messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
+				}
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
