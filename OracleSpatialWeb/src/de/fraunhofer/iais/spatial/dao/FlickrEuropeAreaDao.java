@@ -1,28 +1,32 @@
 package de.fraunhofer.iais.spatial.dao;
 
 import java.awt.geom.Point2D;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 
 public abstract class FlickrEuropeAreaDao {
 
@@ -155,7 +159,8 @@ public abstract class FlickrEuropeAreaDao {
 		int idx = 1;
 		int pos = 0;
 
-		List<String> tempQueryStrs = new ArrayList<String>(areaDto.getQueryStrs());
+		List<String> tempQueryStrs = new ArrayList<String>(new TreeSet<String>(areaDto.getQueryStrs()));
+//		List<String> tempQueryStrs = new ArrayList<String>(areaDto.getQueryStrs());
 		for (int i = tempQueryStrs.size() - 1; i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
 				if(pos + count.get(tempQueryStrs.get(i)) <= start){
@@ -179,6 +184,14 @@ public abstract class FlickrEuropeAreaDao {
 		for (FlickrPhoto photo : photos){
 			photo.setIndex((i++) + (page - 1) * pageSize);
 		}
+
+		//sort photos list based on comparator
+		Collections.sort(photos, new Comparator<FlickrPhoto>() {
+			@Override
+			public int compare(FlickrPhoto p1, FlickrPhoto p2) {
+				return p2.getDate().compareTo(p1.getDate());
+			}
+		});
 
 		return photos;
 	}
@@ -294,8 +307,9 @@ public abstract class FlickrEuropeAreaDao {
 
 		//sort list based on comparator
 		Collections.sort(entries, new Comparator<Map.Entry<String, Integer>>() {
+			@Override
 			public int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
-				return e2.getValue() - (e1).getValue();
+				return e2.getValue() - e1.getValue();
 			}
 		});
 

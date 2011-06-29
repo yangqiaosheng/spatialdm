@@ -20,7 +20,7 @@ public class FlickrEuropeAreaDto {
 	private SortedSet<String> days = Sets.newTreeSet();
 	private SortedSet<String> hours = Sets.newTreeSet();
 	private SortedSet<String> weekdays = Sets.newTreeSet();
-	private Set<String> queryStrs = Sets.newHashSet();
+	private Set<String> queryStrs = Sets.newTreeSet();
 	private Level queryLevel;
 	private long areaid;
 	private Radius radius;
