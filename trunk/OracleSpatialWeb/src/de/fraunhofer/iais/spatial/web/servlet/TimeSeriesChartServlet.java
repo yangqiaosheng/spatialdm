@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.BooleanUtils;
@@ -19,6 +20,8 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.google.common.collect.Lists;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
@@ -77,7 +80,10 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				for (String areaid : areaids) {
-					areas.add(areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), radius));
+					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), radius);
+					if(area != null){
+						areas.add(area);
+					}
 				}
 
 				boolean displayLegend = false;

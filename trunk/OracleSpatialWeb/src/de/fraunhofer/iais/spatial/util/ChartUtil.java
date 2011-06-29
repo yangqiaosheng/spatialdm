@@ -54,6 +54,7 @@ public class ChartUtil {
 		ChartUtilities.writeChartAsPNG(os, jfreechart, 600, 300);
 	}
 
+	@Deprecated
 	public static void createXYLineChart(Map<String, Map<Integer, Integer>> countsMap, Level displayLevel, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws IOException {
 		XYDataset xySeriesDataset = createXYSeriesDataset(countsMap);
 		JFreeChart jfreechart = buildXYLineChart(xySeriesDataset, displayLevel, displayLegend, smooth);
@@ -126,6 +127,7 @@ public class ChartUtil {
 		return timeSeriesCollection;
 	}
 
+	@Deprecated
 	private static XYDataset createXYSeriesDataset(Map<String, Map<Integer, Integer>> countsMap) {
 
 		XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
@@ -185,6 +187,7 @@ public class ChartUtil {
 		return jfreechart;
 	}
 
+	@Deprecated
 	private static JFreeChart buildXYLineChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth) {
 
 		JFreeChart jfreechart = ChartFactory.createXYLineChart(

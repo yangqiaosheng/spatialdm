@@ -103,7 +103,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 //					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 //				}
 
-				Histrograms sumHistrograms = areaMgr.calculateHistrograms(areas, areaDto);
+				Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(areas, areaDto);
 				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
 
 //				request.getSession().setAttribute("areaDto", areaDto);

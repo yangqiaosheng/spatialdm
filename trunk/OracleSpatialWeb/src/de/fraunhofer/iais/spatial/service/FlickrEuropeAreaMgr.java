@@ -59,12 +59,12 @@ public class FlickrEuropeAreaMgr {
 	}
 
 	/**
-	 * calculate the histrograms DataSets for each FlickrArea, and a Summary Histrograms DataSet
+	 * calculate a Summary Histrograms DataSet for all FlickrArea
 	 * @param areas
 	 * @param areaDto
 	 * @return the Summary Histrograms DataSets for all FlickrAreas
 	 */
-	public Histrograms calculateHistrograms(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
+	public Histrograms calculateSumHistrogram(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
 
 		Histrograms sumHistrograms =  new Histrograms();
 
@@ -73,6 +73,45 @@ public class FlickrEuropeAreaMgr {
 		Map<Integer, Integer> sumDayData = sumHistrograms.getDays();
 		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
 		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
+
+		for (FlickrArea area : areas) {
+
+			Calendar calendar = DateUtil.createReferenceCalendar();
+			calendar.setLenient(false);
+
+			//set values
+			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+				if (areaDto.getQueryStrs().contains(e.getKey())) {
+					int hour = Integer.parseInt(e.getKey().substring(11, 13));
+					sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
+
+					int day = Integer.parseInt(e.getKey().substring(8, 10));
+					sumDayData.put(day, e.getValue() + sumDayData.get(day));
+
+					int month = Integer.parseInt(e.getKey().substring(5, 7));
+					sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
+
+					int year = Integer.parseInt(e.getKey().substring(0, 4));
+					sumYearData.put(year, e.getValue() + sumYearData.get(year));
+
+					calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
+					calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
+					calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
+					int weekday = DateUtil.getWeekdayInt(calendar.getTime());
+					sumWeekdayData.put(weekday, e.getValue() + sumWeekdayData.get(weekday));
+				}
+			}
+		}
+
+		return sumHistrograms;
+	}
+
+	/**
+	 * calculate the histrograms DataSets for each FlickrArea
+	 * @param areas
+	 * @param areaDto
+	 */
+	public void calculateHistrograms(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
 
 		int queryStrsLength = areaDto.getQueryStrsLength();
 		for (FlickrArea area : areas) {
@@ -90,31 +129,24 @@ public class FlickrEuropeAreaMgr {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int hour = Integer.parseInt(e.getKey().substring(11, 13));
 					hourData.put(hour, e.getValue() + hourData.get(hour));
-					sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
 
 					int day = Integer.parseInt(e.getKey().substring(8, 10));
 					dayData.put(day, e.getValue() + dayData.get(day));
-					sumDayData.put(day, e.getValue() + sumDayData.get(day));
 
 					int month = Integer.parseInt(e.getKey().substring(5, 7));
 					monthData.put(month, e.getValue() + monthData.get(month));
-					sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
 
 					int year = Integer.parseInt(e.getKey().substring(0, 4));
 					yearData.put(year, e.getValue() + yearData.get(year));
-					sumYearData.put(year, e.getValue() + sumYearData.get(year));
 
 					calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
 					calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
 					calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
 					int weekday = DateUtil.getWeekdayInt(calendar.getTime());
 					weekdayData.put(weekday, e.getValue() + weekdayData.get(weekday));
-					sumWeekdayData.put(weekday, e.getValue() + sumWeekdayData.get(weekday));
 				}
 			}
 		}
-
-		return sumHistrograms;
 	}
 
 	public void countSelected(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws Exception {
@@ -568,6 +600,7 @@ public class FlickrEuropeAreaMgr {
 		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, icon, os);
 	}
 
+	@Deprecated
 	public void createXYLineChart(List<FlickrArea> areas, Level displayLevel, FlickrEuropeAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
 
 			Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
