@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.SessionDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.Histrograms;
@@ -43,6 +45,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 
 	private static FlickrEuropeAreaMgr areaMgr = null;
+	public static String histrogramsSessionId = "histrogramsSessionId";
+//	public static StringBuffer idStrBuf = null;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -61,6 +65,17 @@ public class HistrogramsDataServlet extends HttpServlet {
 		 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		String histrogramSessionIdStr = StringUtil.genId();
+
+		HttpSession session = request.getSession();
+
+		if(session.getAttribute(histrogramsSessionId) == null){
+			session.setAttribute(histrogramsSessionId, new SessionDto(histrogramSessionIdStr));
+		}
+
+		SessionDto sessionDto = (SessionDto)session.getAttribute(histrogramsSessionId);
+		sessionDto.setHistrogramSessionId(histrogramSessionIdStr);
 
 		response.setContentType("text/xml");
 		// Prevents caching
@@ -82,36 +97,35 @@ public class HistrogramsDataServlet extends HttpServlet {
 		logger.info("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		if (StringUtils.isEmpty(xml)) {
-			messageElement.setText("ERROR: wrong input parameter!");
+			messageElement.setText("ERROR: no xml parameter!");
 		} else {
 			FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 			try {
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
-				List<FlickrArea> areas = null;
-//				if (areaDto.getPolygon() != null) {
-//					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
-//				} else if (areaDto.getBoundaryRect() != null) {
+
 					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 					if(size > 2000){
 						throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" +
 								" Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
 					}
-					areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-//				} else {
-//					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
-//				}
 
-				Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(areas, areaDto);
-				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
+					List<FlickrArea> areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+
+				Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(histrogramSessionIdStr, sessionDto, areas, areaDto);
+				if(sumHistrograms != null){
+					histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
+					messageElement.setText("SUCCESS");
+				}else{
+					messageElement.setText("INFO: interupted by another query!");
+				}
 
 //				request.getSession().setAttribute("areaDto", areaDto);
-				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
-//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			}
 		}
@@ -120,6 +134,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 		out.flush();
 		out.close();
+		session.removeAttribute(histrogramsSessionId);
+		System.gc();
 	}
 
 	public String histrogramsResponseXml(Document document, Histrograms histrograms, boolean hasChart) {

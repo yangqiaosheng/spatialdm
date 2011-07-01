@@ -107,6 +107,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 
 		out.flush();
 		out.close();
+		System.gc();
 	}
 
 	private String photosResponseXml(Document document, FlickrArea area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {

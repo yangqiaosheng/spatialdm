@@ -88,6 +88,7 @@ public class PolygonKmlServlet extends HttpServlet {
 		out.print(kmlStr);
 		out.flush();
 		out.close();
+		System.gc();
 	}
 
 	@Override
