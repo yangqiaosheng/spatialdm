@@ -99,7 +99,6 @@ public class PolygonXmlServlet extends HttpServlet {
 
 				areaMgr.countSelected(areas, areaDto);
 				responseStr = createXml(areas, null, areaDto.getRadius(), areaMgr.getAreaDao().getTotalPhotoNum());
-
 				request.getSession().setAttribute("areaDto", areaDto);
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
@@ -114,6 +113,7 @@ public class PolygonXmlServlet extends HttpServlet {
 		out.print(responseStr);
 		out.flush();
 		out.close();
+		System.gc();
 	}
 
 	private String createXml(List<FlickrArea> areas, String filenamePrefix, Radius radius, long totalPhotoNum) throws UnsupportedEncodingException {

@@ -76,7 +76,7 @@ public class ZoomKmlServlet extends HttpServlet {
 		} else {
 
 			try {
-				String filenamePrefix = StringUtil.genFilename(new Date());
+				String filenamePrefix = StringUtil.genId(new Date());
 
 				FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 				if ("true".equals(persist)) {
@@ -124,6 +124,7 @@ public class ZoomKmlServlet extends HttpServlet {
 		out.print(XmlUtil.xml2String(document, true));
 		out.flush();
 		out.close();
+		System.gc();
 	}
 
 	@Override

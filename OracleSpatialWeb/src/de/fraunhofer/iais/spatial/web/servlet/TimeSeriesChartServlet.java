@@ -106,6 +106,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 
 		sos.flush();
 		sos.close();
+		System.gc();
 	}
 
 	/**

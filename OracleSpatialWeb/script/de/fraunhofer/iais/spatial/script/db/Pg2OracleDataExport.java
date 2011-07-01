@@ -26,13 +26,13 @@ public class Pg2OracleDataExport {
 		long start = System.currentTimeMillis();
 
 //		copyFlickrEurope("FLICKR_EUROPE_area_320000");
-		copyFlickrEurope("FLICKR_EUROPE");
-		copyFlickrEurope("FLICKR_PHOTO");
+//		copyFlickrEurope("FLICKR_EUROPE");
+//		copyFlickrEurope("FLICKR_PHOTO");
 //		copyFlickrEurope("FLICKR_EUROPE");
 //		copyFlickrEurope("FLICKR_EUROPE_COUNT");
-//		String tableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
-//		System.out.println("TableName:" + tableName);
-//		copyFlickrEurope(tableName);
+		String tableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
+		System.out.println("TableName:" + tableName);
+		copyFlickrEurope(tableName);
 
 		Date endDate = new Date();
 		long end = System.currentTimeMillis();

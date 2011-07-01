@@ -18,10 +18,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -36,6 +39,7 @@ import org.jdom.output.XMLOutputter;
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.SessionDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.Histrograms;
@@ -45,6 +49,7 @@ import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.servlet.HistrogramsDataServlet;
 
 public class FlickrEuropeAreaMgr {
 
@@ -63,8 +68,9 @@ public class FlickrEuropeAreaMgr {
 	 * @param areas
 	 * @param areaDto
 	 * @return the Summary Histrograms DataSets for all FlickrAreas
+	 * @throws InterruptedException
 	 */
-	public Histrograms calculateSumHistrogram(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
+	public Histrograms calculateSumHistrogram(String idStr, SessionDto sessionDto, List<FlickrArea> areas, FlickrEuropeAreaDto areaDto){
 
 		Histrograms sumHistrograms =  new Histrograms();
 
@@ -73,8 +79,18 @@ public class FlickrEuropeAreaMgr {
 		Map<Integer, Integer> sumDayData = sumHistrograms.getDays();
 		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
 		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
-
+		int num = 0;
 		for (FlickrArea area : areas) {
+			if(!sessionDto.getHistrogramSessionId().equals(idStr)){
+				return null;
+			} else {
+				if (num++ % 5 == 0) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e1) {
+					}
+				}
+			}
 
 			Calendar calendar = DateUtil.createReferenceCalendar();
 			calendar.setLenient(false);

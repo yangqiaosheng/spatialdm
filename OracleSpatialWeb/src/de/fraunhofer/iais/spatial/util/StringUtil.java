@@ -73,12 +73,21 @@ public class StringUtil {
 	}
 
 	/**
-	 * generate a random file name
+	 * generate a random id
+	 * format: yyMMddHHmmss-UUID(first 8 bit)
+	 * @return random file name
+	 */
+	public static String genId() {
+		return genId(new Date());
+	}
+
+	/**
+	 * generate a random id
 	 * format: yyMMddHHmmss-UUID(first 8 bit)
 	 * @param d - current Date
 	 * @return random file name
 	 */
-	public static String genFilename(Date d) {
+	public static String genId(Date d) {
 		String dateStr = new SimpleDateFormat("yyMMddHHmmss-").format(d);
 		return dateStr + UUID.randomUUID().toString().substring(0, 8);
 	}

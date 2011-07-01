@@ -504,7 +504,7 @@ public class TestFlickrEuropeArea {
 		}
 
 		long start = System.currentTimeMillis();
-		Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(areas, areaDto);
+		Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(null,null,areas, areaDto);
 
 		Document document = new Document();
 		Element rootElement = new Element("response");
