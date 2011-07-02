@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -107,21 +108,23 @@ public class HistrogramsDataServlet extends HttpServlet {
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				if(session.getAttribute(histrogramsSessionDb) != null){
-					int waitSec = 5;
-					for (int i = 0; i < waitSec; i++) {
+					int waitSec = 50;
+					for (int i = 1; i <= waitSec; i++) {
 						Thread.sleep(1000);
-						if(session.getAttribute(histrogramsSessionDb) == null && sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)){
+						if (session.getAttribute(histrogramsSessionDb) == null && sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)) {
 							break;
-						}else{
-							if(i == waitSec - 1 || !sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)){
-								throw new TaskRejectedException("Blocked until:" + waitSec + "s");
+						} else {
+							if (i == waitSec) {
+								throw new TimeoutException("Blocked until:" + waitSec + "s");
+							} else if (!sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)) {
+								throw new InterruptedException();
 							}
 						}
 					}
 				}
 
 				session.setAttribute(histrogramsSessionDb, new SessionDto(histrogramSessionIdStr));
-
+				Thread.sleep(2000);
 				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 				session.removeAttribute(histrogramsSessionDb);
 				if (size > 2000) {
@@ -136,14 +139,14 @@ public class HistrogramsDataServlet extends HttpServlet {
 				session.removeAttribute(histrogramsSessionId);
 
 //				request.getSession().setAttribute("areaDto", areaDto);
-			} catch (TaskRejectedException e) {
+			} catch (TimeoutException e) {
 				messageElement.setText("INFO: Rejected until Timeout!");
 				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} catch (InterruptedException e) {
 				messageElement.setText("INFO: interupted by another query!");
-				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				rootElement.addContent(new Element("description").setText(e.getMessage()));
+//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+//				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");

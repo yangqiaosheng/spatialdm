@@ -35,6 +35,7 @@ public abstract class FlickrEuropeAreaDao {
 	public static String dbMonthPatternStr = "YYYY-MM";
 	public static String dbYearPatternStr = "YYYY";
 
+	//not thread safe!!!
 	public static SimpleDateFormat hourDateFormat = new SimpleDateFormat("yyyy-MM-dd@HH");
 	public static SimpleDateFormat dayDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	public static SimpleDateFormat monthDateFormat = new SimpleDateFormat("yyyy-MM");

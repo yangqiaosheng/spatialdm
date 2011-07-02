@@ -29,7 +29,7 @@ public class JoinFlickrEuropeAreaCount {
 	final static int BATCH_SIZE = 1000000;
 	final static int BEGIN_REGION_CHECKED_CODE = 1;
 	final static int FINISH_REGION_CHECKED_CODE = 2;
-	final static int TEMP_REGION_CHECKED_CODE = -1;
+	final static int TEMP_REGION_CHECKED_CODE = 1;
 	final static String PHOTOS_TABLE_NAME = "FLICKR_EUROPE";
 	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
 	static int rownum = 1;
@@ -41,6 +41,7 @@ public class JoinFlickrEuropeAreaCount {
 		long start = System.currentTimeMillis();
 		startDate = Calendar.getInstance();
 		startDate.setTimeInMillis(start);
+
 
 		JoinFlickrEuropeAreaCount t = new JoinFlickrEuropeAreaCount();
 		t.begin();
@@ -69,9 +70,8 @@ public class JoinFlickrEuropeAreaCount {
 		try {
 			conn.setAutoCommit(false);
 
-
 			int updateSize = 0;
-			do {
+//			do {
 				// REGION_CHECKED = -1 : building the index
 				/* Oracle */
 //				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
@@ -88,17 +88,17 @@ public class JoinFlickrEuropeAreaCount {
 //				updateStmt1.setInt(4, 1);
 //
 //				/* PostGIS
-				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
-						"update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where photo_id in (" +
-							"select photo_id from " + PHOTOS_TABLE_NAME + " t where t.region_checked = ? " +
-							"limit ? )");
-				updateStmt1.setInt(1, TEMP_REGION_CHECKED_CODE);
-				updateStmt1.setInt(2, BEGIN_REGION_CHECKED_CODE);
-				updateStmt1.setInt(3, BATCH_SIZE);
-//				*/
+//				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
+//						"update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where photo_id in (" +
+//							"select photo_id from " + PHOTOS_TABLE_NAME + " t where t.region_checked = ? " +
+//							"limit ? )");
+//				updateStmt1.setInt(1, TEMP_REGION_CHECKED_CODE);
+//				updateStmt1.setInt(2, BEGIN_REGION_CHECKED_CODE);
+//				updateStmt1.setInt(3, BATCH_SIZE);
+////				*/
 //				updateSize = updateStmt1.executeUpdate();
 //				rownum += updateSize;
-//
+////
 //				db.close(updateStmt1);
 //				conn.commit();
 
@@ -114,14 +114,14 @@ public class JoinFlickrEuropeAreaCount {
 				}
 
 //				 REGION_CHECKED = 2 : already indexed
-				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
-				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
-				updateStmt2.setInt(2, TEMP_REGION_CHECKED_CODE);
-				updateStmt2.executeUpdate();
-				db.close(updateStmt2);
-				conn.commit();
-
-			} while(updateSize == BATCH_SIZE);
+//				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
+//				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
+//				updateStmt2.setInt(2, TEMP_REGION_CHECKED_CODE);
+//				updateStmt2.executeUpdate();
+//				db.close(updateStmt2);
+//				conn.commit();
+//
+//			} while(updateSize == BATCH_SIZE);
 			countDay(conn);
 			countMonth(conn);
 			countYear(conn);
