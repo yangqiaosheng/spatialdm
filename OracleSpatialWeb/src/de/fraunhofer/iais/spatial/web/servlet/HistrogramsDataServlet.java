@@ -113,8 +113,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 						if(session.getAttribute(histrogramsSessionDb) == null && sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)){
 							break;
 						}else{
-							if(i == waitSec - 1){
-								throw new TaskRejectedException("Block until Timeout!");
+							if(i == waitSec - 1 || !sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)){
+								throw new TaskRejectedException("Blocked until:" + waitSec + "s");
 							}
 						}
 					}
