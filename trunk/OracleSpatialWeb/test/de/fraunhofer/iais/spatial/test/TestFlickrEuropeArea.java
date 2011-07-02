@@ -493,7 +493,7 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
-	public void testHistrogram() throws JDOMException, IOException, ParseException {
+	public void testHistrogram() throws JDOMException, IOException, ParseException, InterruptedException {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
 		List<FlickrArea> areas = null;

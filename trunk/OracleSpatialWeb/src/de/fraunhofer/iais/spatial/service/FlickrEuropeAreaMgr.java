@@ -70,7 +70,7 @@ public class FlickrEuropeAreaMgr {
 	 * @return the Summary Histrograms DataSets for all FlickrAreas
 	 * @throws InterruptedException
 	 */
-	public Histrograms calculateSumHistrogram(String idStr, SessionDto sessionDto, List<FlickrArea> areas, FlickrEuropeAreaDto areaDto){
+	public Histrograms calculateSumHistrogram(String idStr, SessionDto sessionDto, List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws InterruptedException{
 
 		Histrograms sumHistrograms =  new Histrograms();
 
@@ -87,8 +87,11 @@ public class FlickrEuropeAreaMgr {
 				} catch (InterruptedException e1) {
 				}
 			}
-			if(!sessionDto.getHistrogramSessionId().equals(idStr)){
-				return null;
+
+			synchronized (this) {
+				if(!sessionDto.getHistrogramSessionId().equals(idStr)){
+					throw new InterruptedException();
+				}
 			}
 
 			Calendar calendar = DateUtil.createReferenceCalendar();
