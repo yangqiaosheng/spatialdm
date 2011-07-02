@@ -81,15 +81,14 @@ public class FlickrEuropeAreaMgr {
 		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
 		int num = 0;
 		for (FlickrArea area : areas) {
+			if (num++ % 5 == 0) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e1) {
+				}
+			}
 			if(!sessionDto.getHistrogramSessionId().equals(idStr)){
 				return null;
-			} else {
-				if (num++ % 5 == 0) {
-					try {
-						Thread.sleep(1);
-					} catch (InterruptedException e1) {
-					}
-				}
 			}
 
 			Calendar calendar = DateUtil.createReferenceCalendar();
