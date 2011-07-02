@@ -19,6 +19,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
@@ -46,6 +47,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 	private static FlickrEuropeAreaMgr areaMgr = null;
 	public static String histrogramsSessionId = "histrogramsSessionId";
+	public static String histrogramsSessionDb = "histrogramsSessionDb";
 //	public static StringBuffer idStrBuf = null;
 
 	@Override
@@ -68,13 +70,14 @@ public class HistrogramsDataServlet extends HttpServlet {
 		String histrogramSessionIdStr = StringUtil.genId();
 
 		HttpSession session = request.getSession();
-
-		if(session.getAttribute(histrogramsSessionId) == null){
-			session.setAttribute(histrogramsSessionId, new SessionDto(histrogramSessionIdStr));
+		SessionDto sessionDto = null;
+		synchronized (this) {
+			if(session.getAttribute(histrogramsSessionId) == null){
+				session.setAttribute(histrogramsSessionId, new SessionDto(histrogramSessionIdStr));
+			}
+			sessionDto = (SessionDto)session.getAttribute(histrogramsSessionId);
+			sessionDto.setHistrogramSessionId(histrogramSessionIdStr);
 		}
-
-		SessionDto sessionDto = (SessionDto)session.getAttribute(histrogramsSessionId);
-		sessionDto.setHistrogramSessionId(histrogramSessionIdStr);
 
 		response.setContentType("text/xml");
 		// Prevents caching
@@ -103,24 +106,44 @@ public class HistrogramsDataServlet extends HttpServlet {
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
-
-					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-					if(size > 2000){
-						throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" +
-								" Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+				if(session.getAttribute(histrogramsSessionDb) != null){
+					int waitSec = 5;
+					for (int i = 0; i < waitSec; i++) {
+						Thread.sleep(1000);
+						if(session.getAttribute(histrogramsSessionDb) == null && sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)){
+							break;
+						}else{
+							if(i == waitSec - 1){
+								throw new TaskRejectedException("Block until Timeout!");
+							}
+						}
 					}
-
-					List<FlickrArea> areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-
-				Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(histrogramSessionIdStr, sessionDto, areas, areaDto);
-				if(sumHistrograms != null){
-					histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
-					messageElement.setText("SUCCESS");
-				}else{
-					messageElement.setText("INFO: interupted by another query!");
 				}
 
+				session.setAttribute(histrogramsSessionDb, new SessionDto(histrogramSessionIdStr));
+
+				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+				session.removeAttribute(histrogramsSessionDb);
+				if (size > 2000) {
+					throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+				}
+
+				List<FlickrArea> areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+
+				Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(histrogramSessionIdStr, sessionDto, areas, areaDto);
+				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
+				messageElement.setText("SUCCESS");
+				session.removeAttribute(histrogramsSessionId);
+
 //				request.getSession().setAttribute("areaDto", areaDto);
+			} catch (TaskRejectedException e) {
+				messageElement.setText("INFO: Rejected until Timeout!");
+				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+				rootElement.addContent(new Element("description").setText(e.getMessage()));
+			} catch (InterruptedException e) {
+				messageElement.setText("INFO: interupted by another query!");
+				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
@@ -133,7 +156,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 		out.flush();
 		out.close();
-		session.removeAttribute(histrogramsSessionId);
+
 		System.gc();
 	}
 
