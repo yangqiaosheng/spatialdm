@@ -81,7 +81,7 @@ public class FlickrEuropeAreaMgr {
 		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
 		int num = 0;
 		for (FlickrArea area : areas) {
-			if (num++ % 5 == 0) {
+			if (num++ % 10 == 0) {
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e1) {
@@ -311,7 +311,9 @@ public class FlickrEuropeAreaMgr {
 				Calendar end = Calendar.getInstance();
 				end.setTime(endDate);
 				while (calendar.getTime().before(end.getTime())) {
-					queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(calendar.getTime()));
+					synchronized (this) {
+						queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(calendar.getTime()));
+					}
 					calendar.add(Calendar.DATE, 1);
 				}
 			}
@@ -332,8 +334,9 @@ public class FlickrEuropeAreaMgr {
 			while (selectedDaysMachter.find()) {
 				Date selectedDay = inputDateFormat.parse(selectedDaysMachter.group());
 				selectedDays.add(selectedDay);
-
-				queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(selectedDay));
+				synchronized (this) {
+					queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(selectedDay));
+				}
 			}
 		}
 
@@ -469,7 +472,9 @@ public class FlickrEuropeAreaMgr {
 							// filter out the selected weekdays
 							if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
 								//queryStrs.add(y + "-" + m + "-" + d + "@" + h);
-								queryStrs.add(FlickrEuropeAreaDao.hourDateFormat.format(calendar.getTime()));
+								synchronized (this) {
+									queryStrs.add(FlickrEuropeAreaDao.hourDateFormat.format(calendar.getTime()));
+								}
 							}
 						} catch (IllegalArgumentException e) {
 							// omit the wrong date
