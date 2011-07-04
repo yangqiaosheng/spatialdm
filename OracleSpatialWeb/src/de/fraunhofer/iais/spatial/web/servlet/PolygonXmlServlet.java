@@ -120,7 +120,9 @@ public class PolygonXmlServlet extends HttpServlet {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
-		rootElement.setAttribute("wholeDbNum", String.valueOf(totalPhotoNum));
+		rootElement.setAttribute("polygonsNum", String.valueOf(areas.size()));
+		rootElement.setAttribute("radius", radius.toString());
+		rootElement.setAttribute("wholeDbPhotosNum", String.valueOf(totalPhotoNum));
 
 		for (FlickrArea area : areas) {
 			Element polygonElement = new Element("polygon");
