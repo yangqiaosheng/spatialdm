@@ -108,7 +108,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				if(session.getAttribute(histrogramsSessionDb) != null){
-					int waitSec = 50;
+					int waitSec = 5;
 					for (int i = 1; i <= waitSec; i++) {
 						Thread.sleep(1000);
 						if (session.getAttribute(histrogramsSessionDb) == null && sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)) {
@@ -116,17 +116,17 @@ public class HistrogramsDataServlet extends HttpServlet {
 						} else {
 							if (i == waitSec) {
 								throw new TimeoutException("Blocked until:" + waitSec + "s");
-							} else if (!sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)) {
-								throw new InterruptedException();
+							}
+							if (!sessionDto.getHistrogramSessionId().equals(histrogramSessionIdStr)) {
+								throw new InterruptedException("Interrupted before");
 							}
 						}
 					}
 				}
 
 				session.setAttribute(histrogramsSessionDb, new SessionDto(histrogramSessionIdStr));
-				Thread.sleep(2000);
 				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-				session.removeAttribute(histrogramsSessionDb);
+
 				if (size > 2000) {
 					throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
 				}
@@ -152,6 +152,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 				messageElement.setText("ERROR: wrong input parameter!");
 				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 				rootElement.addContent(new Element("description").setText(e.getMessage()));
+			} finally {
+				session.removeAttribute(histrogramsSessionDb);
 			}
 		}
 

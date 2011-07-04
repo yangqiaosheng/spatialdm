@@ -80,6 +80,7 @@ public class FlickrEuropeAreaMgr {
 		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
 		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
 		int num = 0;
+		Thread.sleep(30);
 		for (FlickrArea area : areas) {
 			if (num++ % 10 == 0) {
 				try {
@@ -90,7 +91,7 @@ public class FlickrEuropeAreaMgr {
 
 			synchronized (this) {
 				if(!sessionDto.getHistrogramSessionId().equals(idStr)){
-					throw new InterruptedException();
+					throw new InterruptedException("Interrupted after");
 				}
 			}
 
