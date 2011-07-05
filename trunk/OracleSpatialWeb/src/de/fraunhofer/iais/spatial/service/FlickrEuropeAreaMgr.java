@@ -82,7 +82,7 @@ public class FlickrEuropeAreaMgr {
 		int num = 0;
 		Thread.sleep(30);
 		for (FlickrArea area : areas) {
-			if (num++ % 10 == 0) {
+			if (num++ % 3 == 0) {
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e1) {
