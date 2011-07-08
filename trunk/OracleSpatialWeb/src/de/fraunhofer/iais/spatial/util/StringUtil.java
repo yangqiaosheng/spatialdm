@@ -87,7 +87,7 @@ public class StringUtil {
 	 * @param d - current Date
 	 * @return random file name
 	 */
-	public static String genId(Date d) {
+	private static String genId(Date d) {
 		String dateStr = new SimpleDateFormat("yyMMddHHmmss-").format(d);
 		return dateStr + UUID.randomUUID().toString().substring(0, 8);
 	}

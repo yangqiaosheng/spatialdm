@@ -24,12 +24,11 @@ public class FlickrArea {
 	private SortedMap<String, Integer> monthsCount = Maps.newTreeMap();
 	private SortedMap<String, Integer> daysCount = Maps.newTreeMap();
 	private SortedMap<String, Integer> hoursCount = Maps.newTreeMap();
-
 	private SortedMap<String, Map<String, Integer>> hoursTagsCount = Maps.newTreeMap();
 
-	private transient Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
+	private long totalCount;
 
-	private transient long totalCount;
+	private transient Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 	private transient long selectedCount;
 	private transient Histrograms histrograms = new Histrograms();
 

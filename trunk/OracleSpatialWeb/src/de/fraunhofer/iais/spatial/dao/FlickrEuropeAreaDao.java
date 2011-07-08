@@ -36,19 +36,19 @@ public abstract class FlickrEuropeAreaDao {
 	public static String dbYearPatternStr = "YYYY";
 
 	//not thread safe!!!
-	public static SimpleDateFormat hourDateFormat = new SimpleDateFormat("yyyy-MM-dd@HH");
-	public static SimpleDateFormat dayDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	public static SimpleDateFormat monthDateFormat = new SimpleDateFormat("yyyy-MM");
-	public static SimpleDateFormat yearDateFormat = new SimpleDateFormat("yyyy");
+	public static String hourDateFormatStr = "yyyy-MM-dd@HH";
+	public static String dayDateFormatStr = "yyyy-MM-dd";
+	public static String monthDateFormatStr = "yyyy-MM";
+	public static String yearDateFormatStr = "yyyy";
 
 	// eg. 2010-03-04@23:334;
-	public static Pattern hourRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d+);");
-	public static Pattern dayRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d+);");
-	public static Pattern monthRegExPattern = Pattern.compile("(\\d{4}-\\d{2})(\\d+);");
-	public static Pattern yearRegExPattern = Pattern.compile("(\\d{4}):(\\d+);");
+	public static String hourRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d+);";
+	public static String dayRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}):(\\d+);";
+	public static String monthRegExPatternStr = "(\\d{4}-\\d{2})(\\d+);";
+	public static String yearRegExPatternStr = "(\\d{4}):(\\d+);";
 
 	// eg. 2010-03-04@23:test tags|32,schön|334,宫殿|12;
-	public static Pattern hourTagsRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;");
+	public static String hourTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
 
 
 	/**
@@ -222,29 +222,29 @@ public abstract class FlickrEuropeAreaDao {
 
 		switch (queryLevel) {
 		case YEAR:
-			dataCountRegExPatter = FlickrEuropeAreaDao.yearRegExPattern;
+			dataCountRegExPatter = Pattern.compile(FlickrEuropeAreaDao.yearRegExPatternStr);
 			break;
 		case MONTH:
-			dataCountRegExPatter = FlickrEuropeAreaDao.monthRegExPattern;
+			dataCountRegExPatter = Pattern.compile(FlickrEuropeAreaDao.monthRegExPatternStr);
 			break;
 		case DAY:
-			dataCountRegExPatter = FlickrEuropeAreaDao.dayRegExPattern;
+			dataCountRegExPatter = Pattern.compile(FlickrEuropeAreaDao.dayRegExPatternStr);
 			break;
 		case HOUR:
-			dataCountRegExPatter = FlickrEuropeAreaDao.hourRegExPattern;
+			dataCountRegExPatter = Pattern.compile(FlickrEuropeAreaDao.hourRegExPatternStr);
 			break;
 		}
 		return dataCountRegExPatter;
 	}
 
 	protected final static Level judgeQueryLevel(String QueryStr){
-		if(QueryStr.matches(FlickrEuropeAreaDao.hourRegExPattern.pattern().split(":")[0])){
+		if(QueryStr.matches(FlickrEuropeAreaDao.hourRegExPatternStr.split(":")[0])){
 			return Level.HOUR;
-		}else if(QueryStr.matches(FlickrEuropeAreaDao.dayRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeAreaDao.dayRegExPatternStr.split(":")[0])){
 			return Level.DAY;
-		}else if(QueryStr.matches(FlickrEuropeAreaDao.monthRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeAreaDao.monthRegExPatternStr.split(":")[0])){
 			return Level.MONTH;
-		}else if(QueryStr.matches(FlickrEuropeAreaDao.yearRegExPattern.pattern().split(":")[0])){
+		}else if(QueryStr.matches(FlickrEuropeAreaDao.yearRegExPatternStr.split(":")[0])){
 			return Level.YEAR;
 		}else{
 			return null;
@@ -260,7 +260,7 @@ public abstract class FlickrEuropeAreaDao {
 	}
 
 	public final static void parseHoursTagsCountDbString(String count, SortedMap<String, Map<String, Integer>> hoursTagsCount) {
-		Matcher m = hourTagsRegExPattern.matcher(count);
+		Matcher m = Pattern.compile(hourTagsRegExPatternStr).matcher(count);
 		while (m.find()) {
 			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 			for(String term : StringUtils.split(m.group(2), ",")){

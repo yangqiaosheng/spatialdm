@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -73,10 +74,12 @@ public class PolygonXmlServlet extends HttpServlet {
 			messageElement.setText("ERROR: wrong input parameter!");
 			responseStr = XmlUtil.xml2String(document, true);
 		} else {
-			FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
-			if("true".equals(persist) && request.getSession().getAttribute("areaDto") != null){
-				logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true" );
-				areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
+			FlickrEuropeAreaDto areaDto = null;
+			if ("true".equals(persist) && request.getSession().getAttribute("areaDto") != null) {
+				logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
+				areaDto = (FlickrEuropeAreaDto) SerializationUtils.clone((FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto"));
+			} else {
+				areaDto = new FlickrEuropeAreaDto();
 			}
 
 			try {

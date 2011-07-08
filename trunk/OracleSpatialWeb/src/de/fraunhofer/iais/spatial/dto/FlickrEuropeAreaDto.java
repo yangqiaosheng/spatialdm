@@ -2,6 +2,7 @@ package de.fraunhofer.iais.spatial.dto;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,7 @@ import com.google.common.collect.Sets;
 
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class FlickrEuropeAreaDto {
+public class FlickrEuropeAreaDto implements Serializable {
 
 	private SortedSet<String> years = Sets.newTreeSet();
 	private SortedSet<String> months = Sets.newTreeSet();

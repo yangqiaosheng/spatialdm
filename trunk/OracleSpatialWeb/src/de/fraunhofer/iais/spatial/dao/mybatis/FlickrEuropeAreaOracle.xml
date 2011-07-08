@@ -81,7 +81,7 @@
 		where ID = #{id} and RADIUS = #{radius}
 	</select>
 
-	<select id="totalCount" resultType="long" parameterType="FlickrEuropeAreaDto">
+	<select id="totalCount" resultType="long" parameterType="FlickrArea">
 		select total
 		from FLICKR_EUROPE_COUNT
 		where ID = #{areaid} and RADIUS = #{radius}

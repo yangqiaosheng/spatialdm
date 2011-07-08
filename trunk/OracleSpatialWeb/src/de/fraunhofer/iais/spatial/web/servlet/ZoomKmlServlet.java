@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -76,12 +77,14 @@ public class ZoomKmlServlet extends HttpServlet {
 		} else {
 
 			try {
-				String filenamePrefix = StringUtil.genId(new Date());
+				String filenamePrefix = StringUtil.genId();
 
-				FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+				FlickrEuropeAreaDto areaDto = null;
 				if ("true".equals(persist)) {
 					logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
-					areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
+					areaDto = (FlickrEuropeAreaDto) SerializationUtils.clone((FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto"));
+				} else {
+					areaDto = new FlickrEuropeAreaDto();
 				}
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$

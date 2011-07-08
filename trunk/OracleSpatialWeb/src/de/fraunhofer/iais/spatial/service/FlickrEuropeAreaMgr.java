@@ -36,10 +36,12 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
+import com.google.common.collect.Maps;
+
 import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
-import de.fraunhofer.iais.spatial.dto.SessionDto;
+import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.Histrograms;
@@ -70,19 +72,19 @@ public class FlickrEuropeAreaMgr {
 	 * @return the Summary Histrograms DataSets for all FlickrAreas
 	 * @throws InterruptedException
 	 */
-	public Histrograms calculateSumHistrogram(String idStr, SessionDto sessionDto, List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws InterruptedException{
+	public Histrograms calculateSumHistrogram(String idStr, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws InterruptedException{
 
 		Histrograms sumHistrograms =  new Histrograms();
 
-		Map<Integer, Integer> sumYearData = sumHistrograms.getYears();
-		Map<Integer, Integer> sumMonthData = sumHistrograms.getMonths();
-		Map<Integer, Integer> sumDayData = sumHistrograms.getDays();
-		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
-		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
+		Map<String, Integer> sumQueryStrData = Maps.newHashMap();
+		for (String queryStr : areaDto.getQueryStrs()) {
+			sumQueryStrData.put(queryStr, 0);
+		}
+
 		int num = 0;
 		Thread.sleep(30);
 		for (FlickrArea area : areas) {
-			if (num++ % 3 == 0) {
+			if (num++ % 2 == 0) {
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e1) {
@@ -90,36 +92,47 @@ public class FlickrEuropeAreaMgr {
 			}
 
 			synchronized (this) {
-				if(!sessionDto.getHistrogramSessionId().equals(idStr)){
+				if(!sessionMutex.getHistrogramSessionId().equals(idStr)){
 					throw new InterruptedException("Interrupted after");
 				}
 			}
 
-			Calendar calendar = DateUtil.createReferenceCalendar();
-			calendar.setLenient(false);
-
-			//set values
 			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey())) {
-					int hour = Integer.parseInt(e.getKey().substring(11, 13));
-					sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
-
-					int day = Integer.parseInt(e.getKey().substring(8, 10));
-					sumDayData.put(day, e.getValue() + sumDayData.get(day));
-
-					int month = Integer.parseInt(e.getKey().substring(5, 7));
-					sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
-
-					int year = Integer.parseInt(e.getKey().substring(0, 4));
-					sumYearData.put(year, e.getValue() + sumYearData.get(year));
-
-					calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
-					calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
-					calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
-					int weekday = DateUtil.getWeekdayInt(calendar.getTime());
-					sumWeekdayData.put(weekday, e.getValue() + sumWeekdayData.get(weekday));
+					sumQueryStrData.put(e.getKey(), e.getValue() + sumQueryStrData.get(e.getKey()));
 				}
 			}
+		}
+
+		Calendar calendar = DateUtil.createReferenceCalendar();
+		calendar.setLenient(false);
+
+		Map<Integer, Integer> sumYearData = sumHistrograms.getYears();
+		Map<Integer, Integer> sumMonthData = sumHistrograms.getMonths();
+		Map<Integer, Integer> sumDayData = sumHistrograms.getDays();
+		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
+		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
+
+		//set values
+		for (Map.Entry<String, Integer> e : sumQueryStrData.entrySet()) {
+
+			int hour = Integer.parseInt(e.getKey().substring(11, 13));
+			sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
+
+			int day = Integer.parseInt(e.getKey().substring(8, 10));
+			sumDayData.put(day, e.getValue() + sumDayData.get(day));
+
+			int month = Integer.parseInt(e.getKey().substring(5, 7));
+			sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
+
+			int year = Integer.parseInt(e.getKey().substring(0, 4));
+			sumYearData.put(year, e.getValue() + sumYearData.get(year));
+
+			calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
+			calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
+			calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
+			int weekday = DateUtil.getWeekdayInt(calendar.getTime());
+			sumWeekdayData.put(weekday, e.getValue() + sumWeekdayData.get(weekday));
 		}
 
 		return sumHistrograms;
@@ -302,6 +315,7 @@ public class FlickrEuropeAreaMgr {
 			areaDto.setQueryLevel(Level.DAY);
 
 			if (intervalMachter.find()) {
+				SimpleDateFormat dayDateFormat = new SimpleDateFormat(FlickrEuropeAreaDao.dayDateFormatStr);
 				Date beginDate = inputDateFormat.parse(intervalMachter.group(1));
 				Date endDate = inputDateFormat.parse(intervalMachter.group(2));
 				areaDto.setBeginDate(beginDate);
@@ -312,9 +326,7 @@ public class FlickrEuropeAreaMgr {
 				Calendar end = Calendar.getInstance();
 				end.setTime(endDate);
 				while (calendar.getTime().before(end.getTime())) {
-					synchronized (this) {
-						queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(calendar.getTime()));
-					}
+					queryStrs.add(dayDateFormat.format(calendar.getTime()));
 					calendar.add(Calendar.DATE, 1);
 				}
 			}
@@ -323,6 +335,7 @@ public class FlickrEuropeAreaMgr {
 		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 		String selectedDaysStr = rootElement.getChildText("selected_days");
 		if (StringUtils.isNotBlank(selectedDaysStr)) {
+			SimpleDateFormat dayDateFormat = new SimpleDateFormat(FlickrEuropeAreaDao.dayDateFormatStr);
 			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
 			SortedSet<Date> selectedDays = new TreeSet<Date>();
@@ -335,9 +348,7 @@ public class FlickrEuropeAreaMgr {
 			while (selectedDaysMachter.find()) {
 				Date selectedDay = inputDateFormat.parse(selectedDaysMachter.group());
 				selectedDays.add(selectedDay);
-				synchronized (this) {
-					queryStrs.add(FlickrEuropeAreaDao.dayDateFormat.format(selectedDay));
-				}
+				queryStrs.add(dayDateFormat.format(selectedDay));
 			}
 		}
 
@@ -457,6 +468,8 @@ public class FlickrEuropeAreaMgr {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setLenient(false);
 
+		SimpleDateFormat hourDateFormat = new SimpleDateFormat(FlickrEuropeAreaDao.hourDateFormatStr);
+
 		for (String y : tempYears) {
 			for (String m : tempMonths) {
 				for (String d : tempDays) {
@@ -473,9 +486,7 @@ public class FlickrEuropeAreaMgr {
 							// filter out the selected weekdays
 							if (areaDto.getWeekdays().size() == 0 || areaDto.getWeekdays().contains(sdf.format(calendar.getTime()))) {
 								//queryStrs.add(y + "-" + m + "-" + d + "@" + h);
-								synchronized (this) {
-									queryStrs.add(FlickrEuropeAreaDao.hourDateFormat.format(calendar.getTime()));
-								}
+								queryStrs.add(hourDateFormat.format(calendar.getTime()));
 							}
 						} catch (IllegalArgumentException e) {
 							// omit the wrong date
