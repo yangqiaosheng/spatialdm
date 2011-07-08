@@ -47,7 +47,6 @@ public class insertIntoOsmCut {
 
 		long end = System.currentTimeMillis();
 		Calendar endDate = Calendar.getInstance();
-		endDate.setTimeInMillis(end);
 
 
 
@@ -61,10 +60,11 @@ public class insertIntoOsmCut {
 				String bufferTableName = BUFFER_TABLE_NAME + bufferSize;
 				String insertTableName = INSERT_TABLE_NAME + bufferSize + osmSuffix;
 				insert(osmTableName, bufferTableName, insertTableName);
+				endDate.setTimeInMillis(end);
 				long endtTableInsertTime = System.currentTimeMillis();
 				logger.info("osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName + "\t|cost time:" + (endtTableInsertTime - startTableInsertTime)/1000 + "s");
 				logger.info("start time:" + startDate.getTime()); //$NON-NLS-1$
-				logger.info("end time:" + endDate.getTime()); //$NON-NLS-1$
+				logger.info("endTableTime:" + endDate.getTime()); //$NON-NLS-1$
 				logger.info("main(String[]) - escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
 			}
 		}
@@ -73,7 +73,8 @@ public class insertIntoOsmCut {
 	}
 
 	private static void insert(String osmTableName, String bufferTableName, String insertTableName) throws SQLException {
-		logger.info("osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName);
+		Calendar startTableInsertDate = Calendar.getInstance();
+		logger.info("startTableDate:" + startTableInsertDate.getTime() + "\t|osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName);
 		Connection conn = db.getConn();
 		conn.setAutoCommit(false);
 		int selectedNum = 0;
@@ -163,7 +164,7 @@ public class insertIntoOsmCut {
 
 
 			conn.commit();
-			logger.debug("osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName);
+			logger.debug("startTableDate:" + startTableInsertDate.getTime() + "\t|osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName);
 			logger.debug("totalNum:" + totalNum + "\t|selectedNum:" + selectedNum + "\t|insertedNum:" + insertedNum);
 		}
 
