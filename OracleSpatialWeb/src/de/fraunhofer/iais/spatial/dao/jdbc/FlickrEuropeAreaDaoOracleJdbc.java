@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.jdom.Element;
 
@@ -23,6 +24,11 @@ import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
 public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
+
+	Pattern hourRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d+);");
+	Pattern dayRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d+);");
+	Pattern monthRegExPattern = Pattern.compile("(\\d{4}-\\d{2})(\\d+);");
+	Pattern yearRegExPattern = Pattern.compile("(\\d{4}):(\\d+);");
 
 	private DB db;
 

@@ -1,9 +1,9 @@
 package de.fraunhofer.iais.spatial.dto;
 
-public class SessionDto {
+public class SessionMutex {
 	private String histrogramSessionId;
 
-	public SessionDto(String histrogramSessionId) {
+	public SessionMutex(String histrogramSessionId) {
 		this.histrogramSessionId = histrogramSessionId;
 	}
 
