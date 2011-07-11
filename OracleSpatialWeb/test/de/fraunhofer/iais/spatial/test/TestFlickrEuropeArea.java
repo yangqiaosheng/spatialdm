@@ -501,7 +501,6 @@ public class TestFlickrEuropeArea {
 	public void testHistogram2() throws JDOMException, IOException, ParseException, InterruptedException {
 		testHistogram();
 		testHistogram();
-		testHistogram();
 	}
 	@Test
 	public void testHistogram() throws JDOMException, IOException, ParseException, InterruptedException {
@@ -509,11 +508,7 @@ public class TestFlickrEuropeArea {
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
 		long start = System.currentTimeMillis();
 		List<FlickrArea> areas = null;
-		if (areaDto.getBoundaryRect() == null) {
-			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
-		} else {
-			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-		}
+		areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 //		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
 		long middle = System.currentTimeMillis();
 		String histrogramSessionId = StringUtil.genId();
