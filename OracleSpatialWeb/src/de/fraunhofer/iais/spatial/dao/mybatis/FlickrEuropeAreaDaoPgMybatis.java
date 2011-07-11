@@ -2,6 +2,7 @@ package de.fraunhofer.iais.spatial.dao.mybatis;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
+import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
 public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
@@ -37,20 +39,26 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 		this.sessionTemplate = sessionTemplate;
 	}
 
-	private void initArea(FlickrArea a, Radius radius) {
-		if (a != null) {
-			a.setRadius(radius);
-			a.setSelectedCount(0);
-			a.setTotalCount(getTotalCountWithinArea(a.getId(), a.getRadius()));
-			loadYearsCount(a);
-			loadMonthsCount(a);
-			loadDaysCount(a);
-			loadHoursCount(a);
+	private void initArea(FlickrArea area, Radius radius) {
+
+		if (area.isCached() == false) {
+			//initialize the not cached object
+			area.setRadius(radius);
+			area.setTotalCount(getTotalCountWithinArea(area.getId(), area.getRadius()));
+			loadYearsCount(area);
+			loadMonthsCount(area);
+			loadDaysCount(area);
+			loadHoursCount(area);
+		} else {
+			//initialize the cached object
+			area.setCached(true);
+			area.setSelectedCount(0);
+			area.setHistograms(new Histograms());
 		}
 	}
 
-	private void initAreas(List<FlickrArea> as, Radius radius) {
-		for (FlickrArea a : as) {
+	private void initAreas(List<FlickrArea> areas, Radius radius) {
+		for (FlickrArea a : areas) {
 			initArea(a, radius);
 		}
 	}
@@ -62,8 +70,6 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 	}
 
 	private void loadHoursTagsCount(FlickrArea area) {
-		if (MapUtils.isNotEmpty(area.getHoursTagsCount()))
-			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hoursTagsCount", area);
 		if (count != null) {
@@ -72,8 +78,6 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 	}
 
 	private void loadHoursCount(FlickrArea area) {
-		if (MapUtils.isNotEmpty(area.getHoursCount()))
-			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hoursCount", area);
 		if (count != null) {
@@ -81,9 +85,8 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 		}
 	}
 
+	@Deprecated
 	private void loadDaysCount(FlickrArea area) {
-		if (MapUtils.isNotEmpty(area.getDaysCount()))
-			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".daysCount", area);
 		if (count != null) {
@@ -91,9 +94,8 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 		}
 	}
 
+	@Deprecated
 	private void loadMonthsCount(FlickrArea area) {
-		if (MapUtils.isNotEmpty(area.getMonthsCount()))
-			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".monthsCount", area);
 		if (count != null) {
@@ -101,9 +103,8 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 		}
 	}
 
+	@Deprecated
 	private void loadYearsCount(FlickrArea area) {
-		if (MapUtils.isNotEmpty(area.getYearsCount()))
-			return; // cached
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".yearsCount", area);
 		if (count != null) {
@@ -113,13 +114,23 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 
 	@Override
 	public List<FlickrArea> getAllAreas(Radius radius) {
+
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaDto.setRadius(radius);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectAll", areaDto);
-		initAreas(as, radius);
+		/*
+		 * couldn't make use of the mybatis object cache
+		List<FlickrArea> areas = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectAll", areaDto);
+		initAreas(areas, radius);
+		*/
 
-		return as;
+		List<FlickrArea> areas = new ArrayList<FlickrArea>();
+		List<Integer> areaIds = (List) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectAllIds", areaDto);
+		for(int areaid : areaIds) {
+			areas.add(getAreaById(areaid, radius));
+		}
+
+		return areas;
 	}
 
 	@Override
@@ -141,7 +152,7 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -160,7 +171,7 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
 
-		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".selectByIdGeomSize", areaDto);
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".selectByGeomSize", areaDto);
 		int num = 0;
 		if(numObj != null){
 			num = (Integer)numObj;
@@ -181,10 +192,19 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByIdGeom", areaDto);
-		initAreas(as, radius);
+		List<FlickrArea> areas = new ArrayList<FlickrArea>();
+		List<Integer> areaIds = (List) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectIdsByGeom", areaDto);
+		for(int areaid : areaIds) {
+			areas.add(getAreaById(areaid, radius));
+		}
 
-		return as;
+		/*
+		 * counldn't make use of the mybatis object cache
+		List<FlickrArea> areas = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByGeom", areaDto);
+		initAreas(areas, radius);
+		 */
+
+		return areas;
 	}
 
 	@Override
@@ -203,7 +223,7 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -224,7 +244,7 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 	}
 
 	@Override
-	public long getTotalPhotoNum() {
+	public long getTotalEuropePhotoNum() {
 		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalNum");
 		long num = 0;
 		if(numObj != null){

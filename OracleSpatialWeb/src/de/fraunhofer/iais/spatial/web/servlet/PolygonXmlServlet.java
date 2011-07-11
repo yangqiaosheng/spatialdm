@@ -101,7 +101,7 @@ public class PolygonXmlServlet extends HttpServlet {
 				}
 
 				areaMgr.countSelected(areas, areaDto);
-				responseStr = createXml(areas, null, areaDto.getRadius(), areaMgr.getAreaDao().getTotalPhotoNum());
+				responseStr = createXml(areas, null, areaDto.getRadius(), areaMgr.getAreaDao().getTotalEuropePhotoNum());
 				request.getSession().setAttribute("areaDto", areaDto);
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$

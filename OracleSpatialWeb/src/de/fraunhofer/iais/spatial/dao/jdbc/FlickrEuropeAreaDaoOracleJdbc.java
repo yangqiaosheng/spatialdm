@@ -519,7 +519,7 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 	}
 
 	@Override
-	public long getTotalPhotoNum() {
+	public long getTotalEuropePhotoNum() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

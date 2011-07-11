@@ -146,7 +146,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setOracleQueryGeom(queryGeom);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -161,7 +161,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setOracleQueryGeom(queryGeom);
 
-		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".selectByIdGeomSize", areaDto);
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".selectByGeomSize", areaDto);
 		int num = 0;
 		if(numObj != null){
 			num = (Integer)numObj;
@@ -179,7 +179,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setOracleQueryGeom(queryGeom);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -202,7 +202,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 		areaDto.setRadius(radius);
 		areaDto.setOracleQueryGeom(queryGeom);
 
-		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByIdGeom", areaDto);
+		List<FlickrArea> as = (List<FlickrArea>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectByGeom", areaDto);
 		initAreas(as, radius);
 
 		return as;
@@ -223,7 +223,7 @@ public class FlickrEuropeAreaDaoOracleMybatis extends FlickrEuropeAreaDao {
 	}
 
 	@Override
-	public long getTotalPhotoNum() {
+	public long getTotalEuropePhotoNum() {
 		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalNum");
 		long num = 0;
 		if(numObj != null){
