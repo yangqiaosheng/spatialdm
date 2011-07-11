@@ -174,7 +174,7 @@ public class TestFlickrEuropeArea {
 	public void testJdbcDao1() {
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R5000);
 
-		long totalNum = areaMgr.getAreaDao().getTotalPhotoNum();
+		long totalNum = areaMgr.getAreaDao().getTotalEuropePhotoNum();
 		long totalNumPeople = areaMgr.getAreaDao().getTotalPeopleNum();
 
 		String coordinates = "\t";
@@ -498,17 +498,23 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
+	public void testHistogram2() throws JDOMException, IOException, ParseException, InterruptedException {
+		testHistogram();
+		testHistogram();
+		testHistogram();
+	}
+	@Test
 	public void testHistogram() throws JDOMException, IOException, ParseException, InterruptedException {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
-//		List<FlickrArea> areas = null;
-//		if (areaDto.getBoundaryRect() == null) {
-//			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
-//		} else {
-//			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-//		}
 		long start = System.currentTimeMillis();
-		List<FlickrArea> areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
+		List<FlickrArea> areas = null;
+		if (areaDto.getBoundaryRect() == null) {
+			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+		} else {
+			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		}
+//		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
 		long middle = System.currentTimeMillis();
 		String histrogramSessionId = StringUtil.genId();
 		SessionMutex sessionMutex = new SessionMutex(histrogramSessionId);

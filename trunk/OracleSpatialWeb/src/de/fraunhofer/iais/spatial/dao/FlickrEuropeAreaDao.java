@@ -35,7 +35,6 @@ public abstract class FlickrEuropeAreaDao {
 	public static String dbMonthPatternStr = "YYYY-MM";
 	public static String dbYearPatternStr = "YYYY";
 
-	//not thread safe!!!
 	public static String hourDateFormatStr = "yyyy-MM-dd@HH";
 	public static String dayDateFormatStr = "yyyy-MM-dd";
 	public static String monthDateFormatStr = "yyyy-MM";
@@ -112,7 +111,7 @@ public abstract class FlickrEuropeAreaDao {
 	 * get the total amount of photos stored in the database
 	 * @return long - number of photos
 	 */
-	public abstract long getTotalPhotoNum();
+	public abstract long getTotalEuropePhotoNum();
 
 	/**
 	 * get the total amount of world photos stored in the database
@@ -252,7 +251,7 @@ public abstract class FlickrEuropeAreaDao {
 
 	}
 
-	public final static void parseCountDbString(String count, SortedMap<String, Integer> datesCount, Pattern dateRegExPattern) {
+	public final static synchronized void parseCountDbString(String count, SortedMap<String, Integer> datesCount, Pattern dateRegExPattern) {
 		Matcher m = dateRegExPattern.matcher(count);
 		while (m.find()) {
 			datesCount.put(m.group(1), Integer.parseInt(m.group(2)));

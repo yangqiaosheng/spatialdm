@@ -19,14 +19,14 @@ public class FlickrArea {
 	private float area;
 	private Point2D center;
 	private List<Point2D> geom;
+	private boolean isCached = false;
 
+	private long totalCount;
 	private SortedMap<String, Integer> yearsCount = Maps.newTreeMap();
 	private SortedMap<String, Integer> monthsCount = Maps.newTreeMap();
 	private SortedMap<String, Integer> daysCount = Maps.newTreeMap();
 	private SortedMap<String, Integer> hoursCount = Maps.newTreeMap();
 	private SortedMap<String, Map<String, Integer>> hoursTagsCount = Maps.newTreeMap();
-
-	private long totalCount;
 
 	private transient Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 	private transient long selectedCount;
@@ -90,6 +90,14 @@ public class FlickrArea {
 		this.totalCount = totalCount;
 	}
 
+	public boolean isCached() {
+		return isCached;
+	}
+
+	public void setCached(boolean isCached) {
+		this.isCached = isCached;
+	}
+
 	public SortedMap<String, Integer> getYearsCount() {
 		return yearsCount;
 	}
@@ -122,8 +130,12 @@ public class FlickrArea {
 		this.radius = radius;
 	}
 
-	public Histograms getHistogramData() {
+	public Histograms getHistograms() {
 		return histograms;
+	}
+
+	public void setHistograms(Histograms histograms) {
+		this.histograms = histograms;
 	}
 
 	public SortedMap<String, Map<String, Integer>> getHoursTagsCount() {
