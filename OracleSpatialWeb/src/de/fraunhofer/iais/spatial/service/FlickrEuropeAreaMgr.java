@@ -44,7 +44,7 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.Histrograms;
+import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.DateUtil;
@@ -66,15 +66,15 @@ public class FlickrEuropeAreaMgr {
 	}
 
 	/**
-	 * calculate a Summary Histrograms DataSet for all FlickrArea
+	 * calculate a Summary Histograms DataSet for all FlickrArea
 	 * @param areas
 	 * @param areaDto
-	 * @return the Summary Histrograms DataSets for all FlickrAreas
+	 * @return the Summary Histograms DataSets for all FlickrAreas
 	 * @throws InterruptedException
 	 */
-	public Histrograms calculateSumHistrogram(String idStr, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws InterruptedException{
+	public Histograms calculateSumHistogram(String idStr, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws InterruptedException{
 
-		Histrograms sumHistrograms =  new Histrograms();
+		Histograms sumHistrograms =  new Histograms();
 
 		Map<String, Integer> sumQueryStrData = Maps.newHashMap();
 		for (String queryStr : areaDto.getQueryStrs()) {
@@ -92,7 +92,7 @@ public class FlickrEuropeAreaMgr {
 			}
 
 			synchronized (this) {
-				if(!sessionMutex.getHistrogramSessionId().equals(idStr)){
+				if(!sessionMutex.getHistogramSessionId().equals(idStr)){
 					throw new InterruptedException("Interrupted after");
 				}
 			}
@@ -139,19 +139,19 @@ public class FlickrEuropeAreaMgr {
 	}
 
 	/**
-	 * calculate the histrograms DataSets for each FlickrArea
+	 * calculate the histograms DataSets for each FlickrArea
 	 * @param areas
 	 * @param areaDto
 	 */
-	public void calculateHistrograms(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
+	public void calculateHistograms(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
 
 		int queryStrsLength = areaDto.getQueryStrsLength();
 		for (FlickrArea area : areas) {
-			Map<Integer, Integer> yearData = area.getHistrogramData().getYears();
-			Map<Integer, Integer> monthData = area.getHistrogramData().getMonths();
-			Map<Integer, Integer> dayData = area.getHistrogramData().getDays();
-			Map<Integer, Integer> hourData = area.getHistrogramData().getHours();
-			Map<Integer, Integer> weekdayData = area.getHistrogramData().getWeekdays();
+			Map<Integer, Integer> yearData = area.getHistogramData().getYears();
+			Map<Integer, Integer> monthData = area.getHistogramData().getMonths();
+			Map<Integer, Integer> dayData = area.getHistogramData().getDays();
+			Map<Integer, Integer> hourData = area.getHistogramData().getHours();
+			Map<Integer, Integer> weekdayData = area.getHistogramData().getWeekdays();
 
 			Calendar calendar = DateUtil.createReferenceCalendar();
 			calendar.setLenient(false);
@@ -876,11 +876,11 @@ public class FlickrEuropeAreaMgr {
 
 			Element extendedDataElement = new Element("ExtendedData", namespace);
 			placemarkElement.addContent(extendedDataElement);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getWeekdays(), Level.WEEKDAY);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getYears(), Level.YEAR);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getMonths(), Level.MONTH);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getDays(), Level.DAY);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistrogramData().getHours(), Level.HOUR);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistogramData().getWeekdays(), Level.WEEKDAY);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistogramData().getYears(), Level.YEAR);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistogramData().getMonths(), Level.MONTH);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistogramData().getDays(), Level.DAY);
+			addKmlExtendedElement(extendedDataElement, namespace, area.getHistogramData().getHours(), Level.HOUR);
 		}
 		return document;
 	}
@@ -897,11 +897,11 @@ public class FlickrEuropeAreaMgr {
 
 	private String buildKmlDescription(FlickrArea area) {
 		int width = 640;
-		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getHistrogramData().getWeekdays(), Level.WEEKDAY);
-		String yearChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getHistrogramData().getYears(), Level.YEAR);
-		String monthChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistrogramData().getMonths(), Level.MONTH);
-		String dayChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistrogramData().getDays(), Level.DAY);
-		String hourChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistrogramData().getHours(), Level.HOUR);
+		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getHistogramData().getWeekdays(), Level.WEEKDAY);
+		String yearChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getHistogramData().getYears(), Level.YEAR);
+		String monthChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistogramData().getMonths(), Level.MONTH);
+		String dayChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistogramData().getDays(), Level.DAY);
+		String hourChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistogramData().getHours(), Level.HOUR);
 
 		String description = weekdayChartImg + yearChartImg + "<BR>" + monthChartImg + "<BR>" + dayChartImg + "<BR>" + hourChartImg;
 		return description;

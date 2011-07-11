@@ -6,14 +6,14 @@ import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.util.DateUtil;
 
-public class Histrograms{
+public class Histograms{
 	private Map<Integer, Integer> years = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> months = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> days = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> hours = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> weekdays = Maps.newLinkedHashMap();
 
-	public Histrograms(){
+	public Histograms(){
 		init();
 	}
 

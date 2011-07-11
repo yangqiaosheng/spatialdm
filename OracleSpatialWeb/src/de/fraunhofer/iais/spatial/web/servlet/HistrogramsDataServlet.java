@@ -27,7 +27,7 @@ import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.Histrograms;
+import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
@@ -47,8 +47,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 
 	private static FlickrEuropeAreaMgr areaMgr = null;
-	public static String histrogramsSessionId = "histrogramsSessionId";
-	public static String histrogramsSessionLock = "histrogramsSessionLock";
+	public static String histogramsSessionId = "HISTOGRAM_SESSION_ID";
+	public static String histogramsSessionLock = "HISTOGRAM_SESSION_LOCK";
 //	public static StringBuffer idStrBuf = null;
 
 	@Override
@@ -73,10 +73,10 @@ public class HistrogramsDataServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		SessionMutex sessionMutex = null;
 		synchronized (this) {
-			if(session.getAttribute(histrogramsSessionId) == null){
-				session.setAttribute(histrogramsSessionId, new SessionMutex(histrogramSessionIdStr));
+			if(session.getAttribute(histogramsSessionId) == null){
+				session.setAttribute(histogramsSessionId, new SessionMutex(histrogramSessionIdStr));
 			}
-			sessionMutex = (SessionMutex)session.getAttribute(histrogramsSessionId);
+			sessionMutex = (SessionMutex)session.getAttribute(histogramsSessionId);
 			sessionMutex.setHistrogramSessionId(histrogramSessionIdStr);
 		}
 
@@ -107,24 +107,24 @@ public class HistrogramsDataServlet extends HttpServlet {
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
-				if(session.getAttribute(histrogramsSessionLock) != null){
+				if(session.getAttribute(histogramsSessionLock) != null){
 					int waitSec = 5;
 					for (int i = 1; i <= waitSec; i++) {
 						Thread.sleep(1000);
-						if (session.getAttribute(histrogramsSessionLock) == null && sessionMutex.getHistrogramSessionId().equals(histrogramSessionIdStr)) {
+						if (session.getAttribute(histogramsSessionLock) == null && sessionMutex.getHistogramSessionId().equals(histrogramSessionIdStr)) {
 							break;
 						} else {
 							if (i == waitSec) {
 								throw new TimeoutException("Blocked until:" + waitSec + "s");
 							}
-							if (!sessionMutex.getHistrogramSessionId().equals(histrogramSessionIdStr)) {
+							if (!sessionMutex.getHistogramSessionId().equals(histrogramSessionIdStr)) {
 								throw new InterruptedException("Interrupted before");
 							}
 						}
 					}
 				}
 
-				session.setAttribute(histrogramsSessionLock, new SessionMutex(histrogramSessionIdStr));
+				session.setAttribute(histogramsSessionLock, new SessionMutex(histrogramSessionIdStr));
 				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 
 				if (size > 2000) {
@@ -133,10 +133,10 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 				List<FlickrArea> areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 
-				Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(histrogramSessionIdStr, sessionMutex, areas, areaDto);
+				Histograms sumHistrograms = areaMgr.calculateSumHistogram(histrogramSessionIdStr, sessionMutex, areas, areaDto);
 				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
 				messageElement.setText("SUCCESS");
-				session.removeAttribute(histrogramsSessionId);
+				session.removeAttribute(histogramsSessionId);
 
 //				request.getSession().setAttribute("areaDto", areaDto);
 			} catch (TimeoutException e) {
@@ -153,7 +153,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} finally {
-				session.removeAttribute(histrogramsSessionLock);
+				session.removeAttribute(histogramsSessionLock);
 			}
 		}
 
@@ -165,7 +165,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 		System.gc();
 	}
 
-	public String histrogramsResponseXml(Document document, Histrograms histrograms, boolean hasChart) {
+	public String histrogramsResponseXml(Document document, Histograms histrograms, boolean hasChart) {
 
 		Element rootElement = document.getRootElement();
 		Element histrogramsDataElement = new Element("histrogramsData");

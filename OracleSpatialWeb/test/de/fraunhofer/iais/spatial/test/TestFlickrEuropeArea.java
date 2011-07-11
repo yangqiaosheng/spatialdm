@@ -48,7 +48,7 @@ import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
-import de.fraunhofer.iais.spatial.entity.Histrograms;
+import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.script.db.JoinFlickrEuropeAreaTagsCount;
 import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
@@ -498,7 +498,7 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
-	public void testHistrogram() throws JDOMException, IOException, ParseException, InterruptedException {
+	public void testHistogram() throws JDOMException, IOException, ParseException, InterruptedException {
 		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
 //		List<FlickrArea> areas = null;
@@ -512,7 +512,7 @@ public class TestFlickrEuropeArea {
 		long middle = System.currentTimeMillis();
 		String histrogramSessionId = StringUtil.genId();
 		SessionMutex sessionMutex = new SessionMutex(histrogramSessionId);
-		Histrograms sumHistrograms = areaMgr.calculateSumHistrogram(histrogramSessionId,sessionMutex,areas, areaDto);
+		Histograms sumHistrograms = areaMgr.calculateSumHistogram(histrogramSessionId,sessionMutex,areas, areaDto);
 
 		Document document = new Document();
 		Element rootElement = new Element("response");
