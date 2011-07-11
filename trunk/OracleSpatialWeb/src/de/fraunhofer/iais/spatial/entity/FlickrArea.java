@@ -1,6 +1,7 @@
 package de.fraunhofer.iais.spatial.entity;
 
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -13,6 +14,9 @@ import com.google.common.collect.Maps;
  */
 
 public class FlickrArea {
+
+	private static final long serialVersionUID = -5736041303318937777L;
+
 	private long id;
 	private Radius radius;
 	private String name;

@@ -9,7 +9,7 @@
  	<cache eviction="LRU" size="2000" readOnly="true" flushInterval="86400000"></cache>
 
 	<!-- Ehcache: configurated in classpath:ehcache.xml -->
-<!--   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+<!--   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
 
 	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
 		select

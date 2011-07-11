@@ -43,6 +43,7 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 
 		if (area.isCached() == false) {
 			//initialize the not cached object
+			area.setCached(true);
 			area.setRadius(radius);
 			area.setTotalCount(getTotalCountWithinArea(area.getId(), area.getRadius()));
 			loadYearsCount(area);
@@ -51,7 +52,6 @@ public class FlickrEuropeAreaDaoPgMybatis extends FlickrEuropeAreaDao {
 			loadHoursCount(area);
 		} else {
 			//initialize the cached object
-			area.setCached(true);
 			area.setSelectedCount(0);
 			area.setHistograms(new Histograms());
 		}
