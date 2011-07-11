@@ -7,7 +7,7 @@ public class SessionMutex {
 		this.histrogramSessionId = histrogramSessionId;
 	}
 
-	public String getHistrogramSessionId() {
+	public String getHistogramSessionId() {
 		return histrogramSessionId;
 	}
 

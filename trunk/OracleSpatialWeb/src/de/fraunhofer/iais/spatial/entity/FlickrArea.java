@@ -30,7 +30,7 @@ public class FlickrArea {
 
 	private transient Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 	private transient long selectedCount;
-	private transient Histrograms histrograms = new Histrograms();
+	private transient Histograms histograms = new Histograms();
 
 	public enum Radius {
 		R5000, R10000, R20000, R40000, R80000, R160000, R320000;
@@ -122,8 +122,8 @@ public class FlickrArea {
 		this.radius = radius;
 	}
 
-	public Histrograms getHistrogramData() {
-		return histrograms;
+	public Histograms getHistogramData() {
+		return histograms;
 	}
 
 	public SortedMap<String, Map<String, Integer>> getHoursTagsCount() {
