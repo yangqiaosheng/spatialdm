@@ -40,17 +40,19 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.script.db.JoinFlickrEuropeAreaTagsCount;
-import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrAreaCancelableJob;
+import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -59,9 +61,10 @@ import de.fraunhofer.iais.spatial.web.servlet.HistrogramsDataServlet;
 //@ContextConfiguration("classpath:beans.xml")
 public class TestFlickrEuropeArea {
 
-//	@Resource(name = "flickrEuropeAreaMgr")
-	private static FlickrEuropeAreaMgr areaMgr = null;
-
+//	@Resource(name = "flickrAreaMgr")
+	private static FlickrAreaMgr areaMgr = null;
+//	@Resource(name = "flickrAreaCancelableJob")
+	private static FlickrAreaCancelableJob areaCancelableJob = null;
 
 	@BeforeClass
 	public static void initClass() throws NamingException {
@@ -73,7 +76,8 @@ public class TestFlickrEuropeArea {
 		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
 
-		areaMgr = (FlickrEuropeAreaMgr) context.getBean("flickrEuropeAreaMgr");
+		areaMgr = context.getBean("flickrAreaMgr", FlickrAreaMgr.class);
+		areaCancelableJob = context.getBean("flickrAreaCancelableJob", FlickrAreaCancelableJob.class);
 	}
 
 	@Test
@@ -116,26 +120,26 @@ public class TestFlickrEuropeArea {
 	public void testHoursTags() throws ParseException {
 		String count = "2010-03-04@23:<test|32,live|334,west|12,es|12,ht|12,>;2010-03-05@00:<test|132,live|1334,west|112,es|12,ht|112,>;";
 		FlickrArea area = new FlickrArea();
-		FlickrEuropeAreaDao.parseHoursTagsCountDbString(count, area.getHoursTagsCount());
+		FlickrAreaDao.parseHoursTagsCountDbString(count, area.getHoursTagsCount());
 		System.out.println(area.getHoursTagsCount());
-		System.out.println(FlickrEuropeAreaDao.createDatesTagsCountDbString(area.getHoursTagsCount()));
+		System.out.println(FlickrAreaDao.createDatesTagsCountDbString(area.getHoursTagsCount()));
 	}
 
 	@Test
 	public void testHoursTags2() throws ParseException {
 		String count1 = "2010-03-04@23:<test|32,west|12,es|12,ht|12,>;2010-03-05@00:<test|132,live|1334,west|112,es|12,ht|112,>;";
 		FlickrArea area1 = new FlickrArea();
-		FlickrEuropeAreaDao.parseHoursTagsCountDbString(count1, area1.getHoursTagsCount());
+		FlickrAreaDao.parseHoursTagsCountDbString(count1, area1.getHoursTagsCount());
 		System.out.println(area1.getHoursTagsCount());
 
 		String count2 = "2010-03-04@23:<test|30,live|334,west|12,es|12,ht|12,>;2010-03-05@00:<test|132,live|1334,west|112,es|12,ht|112,>;";
 		FlickrArea area2 = new FlickrArea();
-		FlickrEuropeAreaDao.parseHoursTagsCountDbString(count2, area2.getHoursTagsCount());
+		FlickrAreaDao.parseHoursTagsCountDbString(count2, area2.getHoursTagsCount());
 		System.out.println(area2.getHoursTagsCount());
 
 		JoinFlickrEuropeAreaTagsCount.mergeTagsCountsMap(area1.getHoursTagsCount(), area2.getHoursTagsCount());
 
-		System.out.println(FlickrEuropeAreaDao.createDatesTagsCountDbString(area1.getHoursTagsCount()));
+		System.out.println(FlickrAreaDao.createDatesTagsCountDbString(area1.getHoursTagsCount()));
 	}
 
 	@Test
@@ -144,7 +148,7 @@ public class TestFlickrEuropeArea {
 		SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 		SortedMap<String, Map<String, Integer>> daysTagsCount = new TreeMap<String, Map<String, Integer>>();
 
-		FlickrEuropeAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
+		FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
 		System.out.println("hoursTagsCount:" + hoursTagsCount);
 
@@ -158,7 +162,7 @@ public class TestFlickrEuropeArea {
 		}
 
 
-		String dayStr = FlickrEuropeAreaDao.createDatesTagsCountDbString(daysTagsCount);
+		String dayStr = FlickrAreaDao.createDatesTagsCountDbString(daysTagsCount);
 		System.out.println("!" + dayStr);
 	}
 
@@ -222,7 +226,7 @@ public class TestFlickrEuropeArea {
 	public void testPhoto2() {
 		long start = System.currentTimeMillis();
 
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaDto.setQueryLevel(Level.DAY);
 		Set<String> queryStr = areaDto.getQueryStrs();
 		queryStr.add("2007-08-04");
@@ -239,7 +243,7 @@ public class TestFlickrEuropeArea {
 	public void testPhoto3() {
 		long start = System.currentTimeMillis();
 
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 		Set<String> hours = areaDto.getQueryStrs();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
@@ -258,7 +262,7 @@ public class TestFlickrEuropeArea {
 	public void testPhoto4() {
 		long start = System.currentTimeMillis();
 
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 		Set<String> hours = areaDto.getQueryStrs();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
@@ -315,7 +319,7 @@ public class TestFlickrEuropeArea {
 		years.add("2009");
 		years.add("2006");
 
-		FlickrEuropeAreaDto areaDto2 = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto2 = new FlickrAreaDto();
 		areaDto2.setQueryLevel(Level.YEAR);
 		List<FlickrPhoto> photos6 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(27, Radius.R5000), areaDto2, 1, 20);
 		for (FlickrPhoto p : photos6) {
@@ -329,7 +333,7 @@ public class TestFlickrEuropeArea {
 	public void testPhoto5() {
 		long start = System.currentTimeMillis();
 
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 		Set<String> hours = areaDto.getQueryStrs();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
@@ -399,7 +403,7 @@ public class TestFlickrEuropeArea {
 	public void testPhotoXml() {
 		long start = System.currentTimeMillis();
 
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 		Set<String> hours = areaDto.getHours();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
@@ -418,7 +422,7 @@ public class TestFlickrEuropeArea {
 		System.out.println(photosResponseXml(11349, Radius.R10000, areaDto, 100));
 	}
 
-	private String photosResponseXml(int areaid, Radius radius, FlickrEuropeAreaDto areaDto, int num) {
+	private String photosResponseXml(int areaid, Radius radius, FlickrAreaDto areaDto, int num) {
 		FlickrArea area = areaMgr.getAreaDao().getAreaById(areaid, radius);
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, 1, num);
 
@@ -452,7 +456,7 @@ public class TestFlickrEuropeArea {
 	@Test
 	public void testRequestXml() throws Exception {
 
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 //		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest2.xml"));
 //		BufferedReader br = new BufferedReader(new FileReader("FlickrEuropeKmlRequest1.xml"));
 //		StringBuffer xml = new StringBuffer();
@@ -491,7 +495,7 @@ public class TestFlickrEuropeArea {
 //		}
 //		areaMgr.count(as, areaDto);
 //		System.out.println(as.size());
-		FlickrEuropeAreaDto areaDto2 = (FlickrEuropeAreaDto) SerializationUtils.clone(areaDto);
+		FlickrAreaDto areaDto2 = (FlickrAreaDto) SerializationUtils.clone(areaDto);
 		System.out.println("areaDto2 == areaDto:" + (areaDto2 == areaDto));
 		System.out.println("areaDto2.equals(areaDto):" + areaDto2.equals(areaDto));
 //		System.out.println("areaDto2.queryStringsSize:" + areaDto2.getQueryStrs().size() + " |areaDto2.queryStrings:" + areaDto2.getQueryStrs());
@@ -504,16 +508,16 @@ public class TestFlickrEuropeArea {
 	}
 	@Test
 	public void testHistogram() throws JDOMException, IOException, ParseException, InterruptedException {
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
 		long start = System.currentTimeMillis();
-		List<FlickrArea> areas = null;
-		areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-//		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
-		long middle = System.currentTimeMillis();
 		String histrogramSessionId = StringUtil.genId();
 		SessionMutex sessionMutex = new SessionMutex(histrogramSessionId);
-		Histograms sumHistrograms = areaMgr.calculateSumHistogram(histrogramSessionId,sessionMutex,areas, areaDto);
+		List<FlickrArea> areas = null;
+//		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
+		areas = areaCancelableJob.getAreasByRect(histrogramSessionId, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		long middle = System.currentTimeMillis();
+		Histograms sumHistrograms = areaCancelableJob.calculateSumHistogram(histrogramSessionId, sessionMutex, areas, areaDto);
 
 		Document document = new Document();
 		Element rootElement = new Element("response");
@@ -530,7 +534,7 @@ public class TestFlickrEuropeArea {
 	@Test
 	public void testKml1() throws Exception {
 		long start = System.currentTimeMillis();
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
 		List<FlickrArea> as = null;
@@ -590,7 +594,7 @@ public class TestFlickrEuropeArea {
 //		areas.add(area3);
 
 		boolean smmoth = true;
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
 		String xml = IOUtils.toString(new FileReader("FlickrEuropeKmlRequest1.xml"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml), areaDto);
 		boolean icon = true;

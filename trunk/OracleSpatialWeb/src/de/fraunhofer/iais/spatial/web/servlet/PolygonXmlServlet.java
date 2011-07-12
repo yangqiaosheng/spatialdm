@@ -19,10 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
-import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -33,7 +33,7 @@ public class PolygonXmlServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(PolygonXmlServlet.class);
 	private static final long serialVersionUID = -6814809670117597713L;
 
-	private static FlickrEuropeAreaMgr areaMgr = null;
+	private static FlickrAreaMgr areaMgr = null;
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -74,12 +74,12 @@ public class PolygonXmlServlet extends HttpServlet {
 			messageElement.setText("ERROR: wrong input parameter!");
 			responseStr = XmlUtil.xml2String(document, true);
 		} else {
-			FlickrEuropeAreaDto areaDto = null;
+			FlickrAreaDto areaDto = null;
 			if ("true".equals(persist) && request.getSession().getAttribute("areaDto") != null) {
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
-				areaDto = (FlickrEuropeAreaDto) SerializationUtils.clone((FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto"));
+				areaDto = (FlickrAreaDto) SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
 			} else {
-				areaDto = new FlickrEuropeAreaDto();
+				areaDto = new FlickrAreaDto();
 			}
 
 			try {
@@ -174,7 +174,7 @@ public class PolygonXmlServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrEuropeAreaMgr", FlickrEuropeAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaMgr", FlickrAreaMgr.class);
 	}
 
 }

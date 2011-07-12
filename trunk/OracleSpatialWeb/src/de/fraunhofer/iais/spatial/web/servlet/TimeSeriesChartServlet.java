@@ -23,11 +23,11 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.google.common.collect.Lists;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
-import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 
 public class TimeSeriesChartServlet extends HttpServlet {
@@ -44,7 +44,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4033923021316859791L;
 
-	private static FlickrEuropeAreaMgr areaMgr = null;
+	private static FlickrAreaMgr areaMgr = null;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -75,7 +75,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 			logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level + " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				List<FlickrArea> areas = new ArrayList<FlickrArea>();
-				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
+				FlickrAreaDto areaDto = (FlickrAreaDto) request.getSession().getAttribute("areaDto");
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
@@ -117,6 +117,6 @@ public class TimeSeriesChartServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrEuropeAreaMgr", FlickrEuropeAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaMgr", FlickrAreaMgr.class);
 	}
 }

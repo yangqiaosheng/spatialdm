@@ -19,11 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
-import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -36,7 +36,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 	private static final long serialVersionUID = 289355222687198395L;
 
 	private static final int MAX_PAGE_SIZE = 200;
-	private static FlickrEuropeAreaMgr areaMgr = null;
+	private static FlickrAreaMgr areaMgr = null;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -81,7 +81,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			messageElement.setText("ERROR: please perform a query first!");
 		} else {
 			try {
-				FlickrEuropeAreaDto areaDto = (FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto");
+				FlickrAreaDto areaDto = (FlickrAreaDto) request.getSession().getAttribute("areaDto");
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 
@@ -110,7 +110,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		System.gc();
 	}
 
-	private String photosResponseXml(Document document, FlickrArea area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {
+	private String photosResponseXml(Document document, FlickrArea area, FlickrAreaDto areaDto, int page, int pageSize) {
 
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -152,6 +152,6 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrEuropeAreaMgr", FlickrEuropeAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaMgr", FlickrAreaMgr.class);
 	}
 }

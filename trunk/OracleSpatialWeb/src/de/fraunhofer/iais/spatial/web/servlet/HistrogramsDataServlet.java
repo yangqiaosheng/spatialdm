@@ -23,12 +23,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.Histograms;
-import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrAreaCancelableJob;
+import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -46,7 +47,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(HistrogramsDataServlet.class);
 
 
-	private static FlickrEuropeAreaMgr areaMgr = null;
+	private static FlickrAreaMgr areaMgr = null;
+	private static FlickrAreaCancelableJob areaCancelableJob = null;
 	public static String histogramsSessionId = "HISTOGRAM_SESSION_ID";
 	public static String histogramsSessionLock = "HISTOGRAM_SESSION_LOCK";
 //	public static StringBuffer idStrBuf = null;
@@ -102,7 +104,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 		if (StringUtils.isEmpty(xml)) {
 			messageElement.setText("ERROR: no xml parameter!");
 		} else {
-			FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+			FlickrAreaDto areaDto = new FlickrAreaDto();
 			try {
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
@@ -131,9 +133,9 @@ public class HistrogramsDataServlet extends HttpServlet {
 					throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
 				}
 
-				List<FlickrArea> areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+				List<FlickrArea> areas = areaCancelableJob.getAreasByRect(histrogramSessionIdStr, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 
-				Histograms sumHistrograms = areaMgr.calculateSumHistogram(histrogramSessionIdStr, sessionMutex, areas, areaDto);
+				Histograms sumHistrograms = areaCancelableJob.calculateSumHistogram(histrogramSessionIdStr, sessionMutex, areas, areaDto);
 				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
 				messageElement.setText("SUCCESS");
 				session.removeAttribute(histogramsSessionId);
@@ -221,7 +223,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 		histrogramChartElement.addContent(new CDATA(imgUrl));
 	}
 
-	public void setAreaMgr(FlickrEuropeAreaMgr areaMgr) {
+	public void setAreaMgr(FlickrAreaMgr areaMgr) {
 		HistrogramsDataServlet.areaMgr = areaMgr;
 	}
 
@@ -233,6 +235,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrEuropeAreaMgr", FlickrEuropeAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaMgr", FlickrAreaMgr.class);
+		areaCancelableJob = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaCancelableJob", FlickrAreaCancelableJob.class);
+
 	}
 }

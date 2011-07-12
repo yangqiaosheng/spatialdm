@@ -11,7 +11,7 @@
 	<!-- Ehcache: configurated in classpath:ehcache.xml -->
 <!--   		<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
 
-	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID,
 			NAME,
@@ -22,7 +22,7 @@
 		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}'
 	</select>
 
-	<select id="selectById" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID,
 			NAME,
@@ -33,7 +33,7 @@
 		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}' and m.ID = #{areaid}
 	</select>
 
-	<select id="selectByGeom" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectByGeom" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID,
 			NAME,
@@ -44,7 +44,7 @@
 		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}' and sdo_relate(m.geom, #{oracleQueryGeom},'mask=anyinteract') = 'TRUE'
 	</select>
 
-	<select id="selectByGeomSize" resultType="int" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectByGeomSize" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			COUNT(*)
 		from FLICKR_EUROPE_AREA_${radius} m, user_sdo_geom_metadata d

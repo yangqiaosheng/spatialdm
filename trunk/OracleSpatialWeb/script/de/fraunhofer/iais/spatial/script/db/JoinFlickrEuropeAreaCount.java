@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class JoinFlickrEuropeAreaCount {
@@ -157,7 +157,7 @@ public class JoinFlickrEuropeAreaCount {
 			areaId = selectAreaRs.getInt("id");
 
 
-			selectFlickrStmt.setString(1, FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel));
+			selectFlickrStmt.setString(1, FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel));
 			selectFlickrStmt.setInt(2, areaId);
 			selectFlickrStmt.setInt(3, TEMP_REGION_CHECKED_CODE);
 
@@ -198,7 +198,7 @@ public class JoinFlickrEuropeAreaCount {
 			String countStr = rs.getString("countStr");
 
 			if (countStr != null) {
-				FlickrEuropeAreaDao.parseCountDbString(countStr, countsMap, FlickrEuropeAreaDao.judgeDbDateCountRegExPattern(queryLevel));
+				FlickrAreaDao.parseCountDbString(countStr, countsMap, FlickrAreaDao.judgeDbDateCountRegExPattern(queryLevel));
 			}
 		}
 
@@ -208,7 +208,7 @@ public class JoinFlickrEuropeAreaCount {
 		// add countsMap and countsMap2 together
 		mergeCountsMap(countsMap, countsMapToAdd);
 
-		String countStr = FlickrEuropeAreaDao.createDatesCountDbString(countsMap);
+		String countStr = FlickrAreaDao.createDatesCountDbString(countsMap);
 
 
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");

@@ -6,7 +6,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,13 +17,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,116 +30,38 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 
-import com.google.common.collect.Maps;
-
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
-import de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoOracleJdbc;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
-import de.fraunhofer.iais.spatial.dto.SessionMutex;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
+import de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
-import de.fraunhofer.iais.spatial.web.servlet.HistrogramsDataServlet;
 
-public class FlickrEuropeAreaMgr {
+public class FlickrAreaMgr {
 
-	private FlickrEuropeAreaDao flickrDeWestAreaDao = new FlickrEuropeAreaDaoOracleJdbc();
+	private FlickrAreaDao flickrAreaDao = new FlickrAreaDaoOracleJdbc();
 
-	public FlickrEuropeAreaDao getAreaDao() {
-		return flickrDeWestAreaDao;
+	public FlickrAreaDao getAreaDao() {
+		return flickrAreaDao;
 	}
 
-	public void setAreaDao(FlickrEuropeAreaDao areaDao) {
-		this.flickrDeWestAreaDao = areaDao;
+	public void setAreaDao(FlickrAreaDao areaDao) {
+		this.flickrAreaDao = areaDao;
 	}
 
-	/**
-	 * calculate a Summary Histograms DataSet for all FlickrArea
-	 * @param areas
-	 * @param areaDto
-	 * @return the Summary Histograms DataSets for all FlickrAreas
-	 * @throws InterruptedException
-	 */
-	public Histograms calculateSumHistogram(String idStr, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws InterruptedException{
-
-		Histograms sumHistrograms =  new Histograms();
-
-		Map<String, Integer> sumQueryStrData = Maps.newHashMap();
-		for (String queryStr : areaDto.getQueryStrs()) {
-			sumQueryStrData.put(queryStr, 0);
-		}
-
-		int num = 0;
-		Thread.sleep(30);
-		for (FlickrArea area : areas) {
-			if (num++ % 2 == 0) {
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e1) {
-				}
-			}
-
-			synchronized (this) {
-				if(!sessionMutex.getHistogramSessionId().equals(idStr)){
-					throw new InterruptedException("Interrupted after");
-				}
-			}
-
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
-				if (areaDto.getQueryStrs().contains(e.getKey())) {
-					sumQueryStrData.put(e.getKey(), e.getValue() + sumQueryStrData.get(e.getKey()));
-				}
-			}
-		}
-
-		Calendar calendar = DateUtil.createReferenceCalendar();
-		calendar.setLenient(false);
-
-		Map<Integer, Integer> sumYearData = sumHistrograms.getYears();
-		Map<Integer, Integer> sumMonthData = sumHistrograms.getMonths();
-		Map<Integer, Integer> sumDayData = sumHistrograms.getDays();
-		Map<Integer, Integer> sumHourData = sumHistrograms.getHours();
-		Map<Integer, Integer> sumWeekdayData = sumHistrograms.getWeekdays();
-
-		//set values
-		for (Map.Entry<String, Integer> e : sumQueryStrData.entrySet()) {
-
-			int hour = Integer.parseInt(e.getKey().substring(11, 13));
-			sumHourData.put(hour, e.getValue() + sumHourData.get(hour));
-
-			int day = Integer.parseInt(e.getKey().substring(8, 10));
-			sumDayData.put(day, e.getValue() + sumDayData.get(day));
-
-			int month = Integer.parseInt(e.getKey().substring(5, 7));
-			sumMonthData.put(month, e.getValue() + sumMonthData.get(month));
-
-			int year = Integer.parseInt(e.getKey().substring(0, 4));
-			sumYearData.put(year, e.getValue() + sumYearData.get(year));
-
-			calendar.set(Calendar.YEAR, Integer.parseInt(e.getKey().substring(0, 4)));
-			calendar.set(Calendar.MONTH, Integer.parseInt(e.getKey().substring(5, 7)) - 1);
-			calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(e.getKey().substring(8, 10)));
-			int weekday = DateUtil.getWeekdayInt(calendar.getTime());
-			sumWeekdayData.put(weekday, e.getValue() + sumWeekdayData.get(weekday));
-		}
-
-		return sumHistrograms;
-	}
 
 	/**
 	 * calculate the histograms DataSets for each FlickrArea
 	 * @param areas
 	 * @param areaDto
 	 */
-	public void calculateHistograms(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) {
+	public void calculateHistograms(List<FlickrArea> areas, FlickrAreaDto areaDto) {
 
 		int queryStrsLength = areaDto.getQueryStrsLength();
 		for (FlickrArea area : areas) {
@@ -181,7 +99,7 @@ public class FlickrEuropeAreaMgr {
 		}
 	}
 
-	public void countSelected(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws Exception {
+	public void countSelected(List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
 
 		for (FlickrArea area : areas) {
 			int num = 0;
@@ -218,7 +136,7 @@ public class FlickrEuropeAreaMgr {
 		}
 	}
 
-	public void countTags(List<FlickrArea> areas, FlickrEuropeAreaDto areaDto) throws Exception {
+	public void countTags(List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
 
 		for (FlickrArea area : areas) {
 			Map<String, Map<String, Integer>> hoursTagsCount = null;
@@ -239,7 +157,7 @@ public class FlickrEuropeAreaMgr {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void parseXmlRequest(String xml, FlickrEuropeAreaDto areaDto) throws JDOMException, IOException, ParseException {
+	public void parseXmlRequest(String xml, FlickrAreaDto areaDto) throws JDOMException, IOException, ParseException {
 		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
@@ -315,7 +233,7 @@ public class FlickrEuropeAreaMgr {
 			areaDto.setQueryLevel(Level.DAY);
 
 			if (intervalMachter.find()) {
-				SimpleDateFormat dayDateFormat = new SimpleDateFormat(FlickrEuropeAreaDao.dayDateFormatStr);
+				SimpleDateFormat dayDateFormat = new SimpleDateFormat(FlickrAreaDao.dayDateFormatStr);
 				Date beginDate = inputDateFormat.parse(intervalMachter.group(1));
 				Date endDate = inputDateFormat.parse(intervalMachter.group(2));
 				areaDto.setBeginDate(beginDate);
@@ -335,7 +253,7 @@ public class FlickrEuropeAreaMgr {
 		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 		String selectedDaysStr = rootElement.getChildText("selected_days");
 		if (StringUtils.isNotBlank(selectedDaysStr)) {
-			SimpleDateFormat dayDateFormat = new SimpleDateFormat(FlickrEuropeAreaDao.dayDateFormatStr);
+			SimpleDateFormat dayDateFormat = new SimpleDateFormat(FlickrAreaDao.dayDateFormatStr);
 			Pattern selectedDaysPattern = Pattern.compile("([A-Z]{1}[a-z]{2} [\\d]{2} [\\d]{4})");
 			Matcher selectedDaysMachter = selectedDaysPattern.matcher(selectedDaysStr);
 			SortedSet<Date> selectedDays = new TreeSet<Date>();
@@ -437,7 +355,7 @@ public class FlickrEuropeAreaMgr {
 
 	}
 
-	private void setCalendarQueryStrs(FlickrEuropeAreaDto areaDto) {
+	private void setCalendarQueryStrs(FlickrAreaDto areaDto) {
 
 		areaDto.setQueryLevel(Level.HOUR);
 
@@ -468,7 +386,7 @@ public class FlickrEuropeAreaMgr {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setLenient(false);
 
-		SimpleDateFormat hourDateFormat = new SimpleDateFormat(FlickrEuropeAreaDao.hourDateFormatStr);
+		SimpleDateFormat hourDateFormat = new SimpleDateFormat(FlickrAreaDao.hourDateFormatStr);
 
 		for (String y : tempYears) {
 			for (String m : tempMonths) {
@@ -516,7 +434,7 @@ public class FlickrEuropeAreaMgr {
 		ChartUtil.createTimeSeriesChartOld(countsMap, os);
 	}
 
-	public void createTimeSeriesChart(List<FlickrArea> areas, Level displayLevel, FlickrEuropeAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, boolean icon, OutputStream os) throws ParseException, IOException {
+	public void createTimeSeriesChart(List<FlickrArea> areas, Level displayLevel, FlickrAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, boolean icon, OutputStream os) throws ParseException, IOException {
 
 		Map<String, Map<Date, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Date, Integer>>();
 
@@ -636,7 +554,7 @@ public class FlickrEuropeAreaMgr {
 	}
 
 	@Deprecated
-	public void createXYLineChart(List<FlickrArea> areas, Level displayLevel, FlickrEuropeAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
+	public void createXYLineChart(List<FlickrArea> areas, Level displayLevel, FlickrAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
 
 			Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
 
