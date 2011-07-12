@@ -14,7 +14,7 @@ import com.google.common.collect.Sets;
 
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class FlickrEuropeAreaDto implements Serializable {
+public class FlickrAreaDto implements Serializable {
 
 	private SortedSet<String> years = Sets.newTreeSet();
 	private SortedSet<String> months = Sets.newTreeSet();

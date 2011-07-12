@@ -43,7 +43,7 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.VerticalAlignment;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 
 public class ChartUtil {
 

@@ -19,9 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -36,7 +36,7 @@ public class ZoomKmlServlet extends HttpServlet {
 	// "/srv/tomcat6/webapps/OracleSpatialWeb/kml/";
 	public static final String kmlPath = "kml/";
 
-	private static FlickrEuropeAreaMgr areaMgr = null;
+	private static FlickrAreaMgr areaMgr = null;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -79,12 +79,12 @@ public class ZoomKmlServlet extends HttpServlet {
 			try {
 				String filenamePrefix = StringUtil.genId();
 
-				FlickrEuropeAreaDto areaDto = null;
+				FlickrAreaDto areaDto = null;
 				if ("true".equals(persist)) {
 					logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
-					areaDto = (FlickrEuropeAreaDto) SerializationUtils.clone((FlickrEuropeAreaDto) request.getSession().getAttribute("areaDto"));
+					areaDto = (FlickrAreaDto) SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
 				} else {
-					areaDto = new FlickrEuropeAreaDto();
+					areaDto = new FlickrAreaDto();
 				}
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
@@ -143,7 +143,7 @@ public class ZoomKmlServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrEuropeAreaMgr", FlickrEuropeAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaMgr", FlickrAreaMgr.class);
 //		areaMgr.fillCache();
 	}
 

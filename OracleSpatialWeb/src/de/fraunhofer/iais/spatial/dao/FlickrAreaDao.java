@@ -22,13 +22,13 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 
-public abstract class FlickrEuropeAreaDao {
+public abstract class FlickrAreaDao {
 
 	public static String dbHourPatternStr = "YYYY-MM-DD@HH24";
 	public static String dbDayPatternStr = "YYYY-MM-DD";
@@ -51,52 +51,88 @@ public abstract class FlickrEuropeAreaDao {
 
 
 	/**
-	 * Returns a List of all the FlickrDeWestArea instances
-	 * @return List<FlickrDeWestArea>
+	 * Returns a List of all the FlickrArea ids
+	 * @return List<Integer>
+	 */
+	public abstract List<Integer> getAllAreaIds(Radius radius);
+
+	/**
+	 * Returns a List of all the FlickrArea instances
+	 * @return List<FlickrArea>
 	 */
 	public abstract List<FlickrArea> getAllAreas(Radius radius);
 
 	/**
-	 * Returns the instance of FlickrDeWestArea related to that areaid
+	 * Returns the instance of FlickrArea related to that areaid
 	 * @param areaid
-	 * @return FlickrDeWestArea
+	 * @return FlickrArea
 	 */
 	public abstract FlickrArea getAreaById(int areaid, Radius radius);
 
 	/**
-	 * Returns a List of FlickrDeWestArea instances which interact to this point
+	 * Returns a List of FlickrArea ids which interact to this point
 	 * @param x
 	 * @param y
-	 * @return List<FlickrDeWestArea>
+	 * @return List<Integer>
 	 */
+	public abstract List<Integer> getAreaIdsByPoint(double x, double y, Radius radius);
+
+	/**
+	 * Returns a List of FlickrArea instances which interact to this point
+	 * @param x
+	 * @param y
+	 * @return List<FlickrArea>
+	 */
+	@Deprecated
 	public abstract List<FlickrArea> getAreasByPoint(double x, double y, Radius radius);
 
 	/**
-	 * Returns a List of FlickrDeWestArea instances which interact to this rectangle
+	 * Returns the size of the List of FlickrArea instances which interact to this rectangle
 	 * @param x1
 	 * @param y1
 	 * @param x2
 	 * @param y2
-	 * @return List<FlickrDeWestArea>
+	 * @return List<FlickrArea>
 	 */
 	public abstract int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius);
 
 	/**
-	 * Returns a List of FlickrDeWestArea instances which interact to this rectangle
+	 * Returns a List of FlickrArea ids which interact to this rectangle
 	 * @param x1
 	 * @param y1
 	 * @param x2
 	 * @param y2
-	 * @return List<FlickrDeWestArea>
+	 * @return List<Integer>
 	 */
+	public abstract List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius);
+
+	/**
+	 * Returns a List of FlickrArea instances which interact to this rectangle
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return List<FlickrArea>
+	 */
+	@Deprecated
 	public abstract List<FlickrArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius);
 
 	/**
-	 * Returns a List of FlickrDeWestArea instances which interact to this polygon
+	 * Returns a List of FlickrArea ids which interact to this polygon
 	 * @param polygon
 	 * @param radius
-	 * @return
+	 * @return List<Integer>
 	 */
+	public abstract List<Integer> getAreaIdsByPolygon(List<Point2D> polygon, Radius radius);
+
+
+	/**
+	 * Returns a List of FlickrArea instances which interact to this polygon
+	 * @param polygon
+	 * @param radius
+	 * @return List<FlickrArea>
+	 */
+	@Deprecated
 	public abstract List<FlickrArea> getAreasByPolygon(List<Point2D> polygon, Radius radius);
 
 	/**
@@ -136,7 +172,7 @@ public abstract class FlickrEuropeAreaDao {
 	 * @param pageSize
 	 * @return
 	 */
-	public final List<FlickrPhoto> getPhotos(FlickrArea area, FlickrEuropeAreaDto areaDto, int page, int pageSize) {
+	public final List<FlickrPhoto> getPhotos(FlickrArea area, FlickrAreaDto areaDto, int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		List<FlickrPhoto> photos = new ArrayList<FlickrPhoto>();
 		Map<String, Integer> count = null;
@@ -201,16 +237,16 @@ public abstract class FlickrEuropeAreaDao {
 
 		switch (queryLevel) {
 		case YEAR:
-			dbDatePatternStr = FlickrEuropeAreaDao.dbYearPatternStr;
+			dbDatePatternStr = FlickrAreaDao.dbYearPatternStr;
 			break;
 		case MONTH:
-			dbDatePatternStr = FlickrEuropeAreaDao.dbMonthPatternStr;
+			dbDatePatternStr = FlickrAreaDao.dbMonthPatternStr;
 			break;
 		case DAY:
-			dbDatePatternStr = FlickrEuropeAreaDao.dbDayPatternStr;
+			dbDatePatternStr = FlickrAreaDao.dbDayPatternStr;
 			break;
 		case HOUR:
-			dbDatePatternStr = FlickrEuropeAreaDao.dbHourPatternStr;
+			dbDatePatternStr = FlickrAreaDao.dbHourPatternStr;
 			break;
 		}
 		return dbDatePatternStr;
@@ -221,29 +257,29 @@ public abstract class FlickrEuropeAreaDao {
 
 		switch (queryLevel) {
 		case YEAR:
-			dataCountRegExPatter = Pattern.compile(FlickrEuropeAreaDao.yearRegExPatternStr);
+			dataCountRegExPatter = Pattern.compile(FlickrAreaDao.yearRegExPatternStr);
 			break;
 		case MONTH:
-			dataCountRegExPatter = Pattern.compile(FlickrEuropeAreaDao.monthRegExPatternStr);
+			dataCountRegExPatter = Pattern.compile(FlickrAreaDao.monthRegExPatternStr);
 			break;
 		case DAY:
-			dataCountRegExPatter = Pattern.compile(FlickrEuropeAreaDao.dayRegExPatternStr);
+			dataCountRegExPatter = Pattern.compile(FlickrAreaDao.dayRegExPatternStr);
 			break;
 		case HOUR:
-			dataCountRegExPatter = Pattern.compile(FlickrEuropeAreaDao.hourRegExPatternStr);
+			dataCountRegExPatter = Pattern.compile(FlickrAreaDao.hourRegExPatternStr);
 			break;
 		}
 		return dataCountRegExPatter;
 	}
 
 	protected final static Level judgeQueryLevel(String QueryStr){
-		if(QueryStr.matches(FlickrEuropeAreaDao.hourRegExPatternStr.split(":")[0])){
+		if(QueryStr.matches(FlickrAreaDao.hourRegExPatternStr.split(":")[0])){
 			return Level.HOUR;
-		}else if(QueryStr.matches(FlickrEuropeAreaDao.dayRegExPatternStr.split(":")[0])){
+		}else if(QueryStr.matches(FlickrAreaDao.dayRegExPatternStr.split(":")[0])){
 			return Level.DAY;
-		}else if(QueryStr.matches(FlickrEuropeAreaDao.monthRegExPatternStr.split(":")[0])){
+		}else if(QueryStr.matches(FlickrAreaDao.monthRegExPatternStr.split(":")[0])){
 			return Level.MONTH;
-		}else if(QueryStr.matches(FlickrEuropeAreaDao.yearRegExPatternStr.split(":")[0])){
+		}else if(QueryStr.matches(FlickrAreaDao.yearRegExPatternStr.split(":")[0])){
 			return Level.YEAR;
 		}else{
 			return null;
@@ -322,4 +358,5 @@ public abstract class FlickrEuropeAreaDao {
 
 	return sortedMap;
    }
+
 }

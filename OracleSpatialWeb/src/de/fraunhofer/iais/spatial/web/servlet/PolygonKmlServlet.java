@@ -14,9 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr;
+import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
 @Deprecated
@@ -28,7 +28,7 @@ public class PolygonKmlServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -6814809670117597713L;
 
-	private static FlickrEuropeAreaMgr areaMgr = null;
+	private static FlickrAreaMgr areaMgr = null;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,7 +54,7 @@ public class PolygonKmlServlet extends HttpServlet {
 			try {
 //				String filenamePrefix = StringUtil.genFilename(new Date());
 
-				FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
+				FlickrAreaDto areaDto = new FlickrAreaDto();
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
@@ -104,7 +104,7 @@ public class PolygonKmlServlet extends HttpServlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrEuropeAreaMgr", FlickrEuropeAreaMgr.class);
+		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaMgr", FlickrAreaMgr.class);
 //		areaMgr.fillCache();
 	}
 

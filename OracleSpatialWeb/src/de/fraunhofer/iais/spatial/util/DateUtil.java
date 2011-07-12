@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.time.DateUtils;
 
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 
 public class DateUtil {
 

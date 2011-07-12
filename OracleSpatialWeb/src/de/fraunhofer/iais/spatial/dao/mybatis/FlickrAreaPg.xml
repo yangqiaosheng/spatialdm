@@ -6,12 +6,12 @@
 <mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrAreaPg">
 
 	<!-- local cache: flushInterval: 24hours -->
- 	<cache eviction="LRU" size="2000" readOnly="true" flushInterval="86400000"></cache>
+ 	<cache eviction="LRU" size="256" readOnly="true" flushInterval="86400000"></cache>
 
 	<!-- Ehcache: configurated in classpath:ehcache.xml -->
 <!--   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
 
-	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID,
 			NAME,
@@ -21,13 +21,13 @@
 		from FLICKR_EUROPE_AREA_${radius} m
 	</select>
 
-	<select id="selectAllIds" resultType="int" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectAllIds" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID
 		from FLICKR_EUROPE_AREA_${radius} m
 	</select>
 
-	<select id="selectById" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="true">
+	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="true">
 		select
 			ID,
 			NAME,
@@ -38,7 +38,7 @@
 		where m.ID = #{areaid}
 	</select>
 
-	<select id="selectByGeom" resultType="FlickrArea" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectByGeom" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID,
 			NAME,
@@ -49,14 +49,14 @@
 		where ST_Intersects(m.geom, #{pgQueryGeom})
 	</select>
 
-	<select id="selectIdsByGeom" resultType="int" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectIdsByGeom" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID
 		from FLICKR_EUROPE_AREA_${radius} m
 		where ST_Intersects(m.geom, #{pgQueryGeom})
 	</select>
 
-	<select id="selectByGeomSize" resultType="int" parameterType="FlickrEuropeAreaDto" useCache="false">
+	<select id="selectByGeomSize" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			COUNT(*)
 		from FLICKR_EUROPE_AREA_${radius} m

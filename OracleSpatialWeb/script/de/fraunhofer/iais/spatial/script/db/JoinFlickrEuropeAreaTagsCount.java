@@ -19,8 +19,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class JoinFlickrEuropeAreaTagsCount {
@@ -170,7 +170,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 
 			areaId = selectAreaRs.getInt("id");
 
-			selectDateStmt.setString(1, FlickrEuropeAreaDao.judgeDbDateCountPatternStr(Level.HOUR));
+			selectDateStmt.setString(1, FlickrAreaDao.judgeDbDateCountPatternStr(Level.HOUR));
 			selectDateStmt.setInt(2, areaId);
 			selectDateStmt.setInt(3, TEMP_REGION_CHECKED_CODE);
 
@@ -232,7 +232,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 			String preCountStr = rs.getString("countStr");
 
 			if (preCountStr != null) {
-				FlickrEuropeAreaDao.parseHoursTagsCountDbString(preCountStr, countsMap);
+				FlickrAreaDao.parseHoursTagsCountDbString(preCountStr, countsMap);
 			}
 		}
 
@@ -242,7 +242,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 		// add countsMap and countsMap2 together
 		mergeTagsCountsMap(countsMap, countsMapToAdd);
 
-		String countStr = FlickrEuropeAreaDao.createDatesTagsCountDbString(countsMap);
+		String countStr = FlickrAreaDao.createDatesTagsCountDbString(countsMap);
 
 
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
@@ -274,7 +274,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 				SortedMap<String, Map<String, Integer>> daysTagsCount = new TreeMap<String, Map<String, Integer>>();
 
-				FlickrEuropeAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
+				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
 
 				for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
@@ -288,7 +288,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 
 				addToIndex(conn, daysTagsCount, Level.DAY.toString(), id, radius);
 
-				String dayStr = FlickrEuropeAreaDao.createDatesTagsCountDbString(daysTagsCount);
+				String dayStr = FlickrAreaDao.createDatesTagsCountDbString(daysTagsCount);
 				System.out.println("radius:" + radius + "|id:" + id + "!" + dayStr);
 			}
 		}
@@ -311,7 +311,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 				SortedMap<String, Map<String, Integer>> monthsTagsCount = new TreeMap<String, Map<String, Integer>>();
 
-				FlickrEuropeAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
+				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
 
 				for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
@@ -325,7 +325,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 
 				addToIndex(conn, monthsTagsCount, Level.MONTH.toString(), id, radius);
 
-				String monthStr = FlickrEuropeAreaDao.createDatesTagsCountDbString(monthsTagsCount);
+				String monthStr = FlickrAreaDao.createDatesTagsCountDbString(monthsTagsCount);
 				System.out.println("radius:" + radius + "|id:" + id + "!" + monthStr);
 			}
 		}
@@ -348,7 +348,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 				SortedMap<String, Map<String, Integer>> zearsTagsCount = new TreeMap<String, Map<String, Integer>>();
 
-				FlickrEuropeAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
+				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
 
 				for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
@@ -362,7 +362,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 
 				addToIndex(conn, zearsTagsCount, Level.YEAR.toString(), id, radius);
 
-				String yearStr = FlickrEuropeAreaDao.createDatesTagsCountDbString(zearsTagsCount);
+				String yearStr = FlickrAreaDao.createDatesTagsCountDbString(zearsTagsCount);
 				System.out.println("radius:" + radius + "|id:" + id + "!" + yearStr);
 			}
 		}
@@ -385,7 +385,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 				SortedMap<String, Map<String, Integer>> zearsTagsCount = new TreeMap<String, Map<String, Integer>>();
 
-				FlickrEuropeAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
+				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
 
 				for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
@@ -395,7 +395,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 
 				addToIndex(conn, zearsTagsCount, "total", id, radius);
 
-				String yearStr = FlickrEuropeAreaDao.createDatesTagsCountDbString(zearsTagsCount);
+				String yearStr = FlickrAreaDao.createDatesTagsCountDbString(zearsTagsCount);
 				System.out.println("radius:" + radius + "|id:" + id + "!" + yearStr);
 			}
 		}

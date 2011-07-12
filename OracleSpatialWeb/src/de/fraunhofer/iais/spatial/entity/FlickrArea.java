@@ -13,7 +13,7 @@ import com.google.common.collect.Maps;
  * @author zhi
  */
 
-public class FlickrArea {
+public class FlickrArea implements Serializable {
 
 	private static final long serialVersionUID = -5736041303318937777L;
 
@@ -32,6 +32,7 @@ public class FlickrArea {
 	private SortedMap<String, Integer> hoursCount = Maps.newTreeMap();
 	private SortedMap<String, Map<String, Integer>> hoursTagsCount = Maps.newTreeMap();
 
+	//Not thread safe when cached (read-only)
 	private transient Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 	private transient long selectedCount;
 	private transient Histograms histograms = new Histograms();

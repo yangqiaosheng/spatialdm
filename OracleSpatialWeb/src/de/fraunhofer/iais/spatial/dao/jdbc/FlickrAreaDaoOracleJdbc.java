@@ -17,13 +17,13 @@ import org.apache.commons.collections.CollectionUtils;
 
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
-import de.fraunhofer.iais.spatial.dao.FlickrEuropeAreaDao;
-import de.fraunhofer.iais.spatial.dto.FlickrEuropeAreaDto.Level;
+import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
-public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
+public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 
 	Pattern hourRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}@\\d{2}):(\\d+);");
 	Pattern dayRegExPattern = Pattern.compile("(\\d{4}-\\d{2}-\\d{2}):(\\d+);");
@@ -244,8 +244,8 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 	protected FlickrPhoto getPhoto(FlickrArea area, String queryStr, int idx) {
 
 		FlickrPhoto photo = null;
-		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel);
+		Level queryLevel = FlickrAreaDao.judgeQueryLevel(queryStr);
+		String oracleDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
 
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
@@ -279,8 +279,8 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
 		List<FlickrPhoto> photos = new ArrayList<FlickrPhoto>();
-		Level queryLevel = FlickrEuropeAreaDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrEuropeAreaDao.judgeDbDateCountPatternStr(queryLevel);
+		Level queryLevel = FlickrAreaDao.judgeQueryLevel(queryStr);
+		String oracleDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		String oracleToDateStr = "to_date('" + queryStr + "', '" + oracleDatePatternStr + "')";
 
 		Connection conn = db.getConn();
@@ -534,6 +534,30 @@ public class FlickrEuropeAreaDaoOracleJdbc extends FlickrEuropeAreaDao {
 	public long getTotalWorldPhotoNum() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<Integer> getAllAreaIds(Radius radius) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Integer> getAreaIdsByPoint(double x, double y, Radius radius) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Integer> getAreaIdsByPolygon(List<Point2D> polygon, Radius radius) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
