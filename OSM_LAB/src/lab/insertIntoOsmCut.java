@@ -51,7 +51,8 @@ public class insertIntoOsmCut {
 
 
 		Integer[] bufferSizes = { 5, 10, 30 };
-		String[] osmSuffixs = { "", "_2011" };
+//		String[] osmSuffixs = { "", "_2011" };
+		String[] osmSuffixs = { "_2011" };
 
 		for (String osmSuffix : osmSuffixs) {
 			String osmTableName = OSM_TABLE_NAME + osmSuffix;
@@ -68,7 +69,6 @@ public class insertIntoOsmCut {
 				logger.info("main(String[]) - escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
 			}
 		}
-
 
 	}
 
@@ -117,10 +117,10 @@ public class insertIntoOsmCut {
 				float osmSegLaenge =  bufferSelectRs.getFloat("osm_seglaenge");
 				STRUCT cutGeom = (STRUCT) bufferSelectRs.getObject("cut_geom");
 
-				int ls1 = LevenshteinDistance.computeLevenshteinDistance(osmName, navPrimName);
-				int ls2 = LevenshteinDistance.computeLevenshteinDistance(osmRef, navSekName);
-				int ls3 = LevenshteinDistance.computeLevenshteinDistance(osmName, navSekName);
-				int ls4 = LevenshteinDistance.computeLevenshteinDistance(osmRef, navPrimName);
+				int ls1 = LevenshteinDistance.computeLevenshteinDistance(osmName.toUpperCase(), navPrimName.toUpperCase());
+				int ls2 = LevenshteinDistance.computeLevenshteinDistance(osmRef.toUpperCase(), navSekName.toUpperCase());
+				int ls3 = LevenshteinDistance.computeLevenshteinDistance(osmName.toUpperCase(), navSekName.toUpperCase());
+				int ls4 = LevenshteinDistance.computeLevenshteinDistance(osmRef.toUpperCase(), navPrimName.toUpperCase());
 
 				System.out.println("osmID:" + osmId + "\t|navId:" + navId + "\t|osmSegLaenge:" + osmSegLaenge + "\t|navLaenge:" + navLaenge + "\t|ls1:" + ls1 + "\t|ls2:" + ls2 + "\t|ls3:" + ls3 + "\t|ls4:" + ls4);
 				System.out.println("cutGeom:" + cutGeom);
