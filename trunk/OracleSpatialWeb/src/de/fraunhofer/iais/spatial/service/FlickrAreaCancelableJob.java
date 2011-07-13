@@ -50,10 +50,6 @@ public class FlickrAreaCancelableJob {
 
 	/**
 	 * calculate a Summary Histograms DataSet for all FlickrArea
-	 * @param areas
-	 * @param areaDto
-	 * @return the Summary Histograms DataSets for all FlickrAreas
-	 * @throws InterruptedException
 	 */
 	public Histograms calculateSumHistogram(String idStr, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException {
 
