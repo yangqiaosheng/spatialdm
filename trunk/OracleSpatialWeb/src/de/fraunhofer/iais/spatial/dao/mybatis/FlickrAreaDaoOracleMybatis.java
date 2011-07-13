@@ -45,7 +45,6 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 	private void initArea(FlickrArea a, Radius radius) {
 		if (a != null) {
 			a.setRadius(radius);
-			a.setSelectedCount(0);
 			a.setTotalCount(getTotalCountWithinArea(a.getId(), a.getRadius()));
 			loadYearsCount(a);
 			loadMonthsCount(a);

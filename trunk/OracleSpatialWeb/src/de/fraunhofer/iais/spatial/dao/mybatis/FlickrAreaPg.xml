@@ -17,7 +17,8 @@
 			NAME,
 			GEOM,
 			AREA,
-			center(m.geom) as "center"
+			center(m.geom) as "center",
+			'R${radius}' as "radius"
 		from FLICKR_EUROPE_AREA_${radius} m
 	</select>
 
@@ -33,7 +34,8 @@
 			NAME,
 			GEOM,
 			AREA,
-			center(m.geom) as "center"
+			center(m.geom) as "center",
+			'R${radius}' as "radius"
 		from FLICKR_EUROPE_AREA_${radius} m
 		where m.ID = #{areaid}
 	</select>
@@ -44,7 +46,8 @@
 			NAME,
 			GEOM,
 			AREA,
-			center(m.geom) as "center"
+			center(m.geom) as "center",
+			'R${radius}' as "radius"
 		from FLICKR_EUROPE_AREA_${radius} m
 		where ST_Intersects(m.geom, #{pgQueryGeom})
 	</select>

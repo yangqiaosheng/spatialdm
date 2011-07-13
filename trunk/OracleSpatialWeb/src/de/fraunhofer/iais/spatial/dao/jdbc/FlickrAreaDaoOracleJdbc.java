@@ -478,7 +478,6 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 
 	private void initArea(FlickrArea a) {
 		if (a != null) {
-			a.setSelectedCount(0);
 			a.setTotalCount(getTotalCountWithinArea(a.getId(), a.getRadius()));
 			loadYearsCount(a);
 			loadMonthsCount(a);

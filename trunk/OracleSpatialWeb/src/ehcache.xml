@@ -85,11 +85,11 @@ used with JMX monitors.
 
     You can provide you own lookup class that implements the
     net.sf.ehcache.transaction.manager.TransactionManagerLookup interface.
-    -->
+
 
     <transactionManagerLookup class="net.sf.ehcache.transaction.manager.DefaultTransactionManagerLookup"
                               properties="jndiName=java:/TransactionManager" propertySeparator=";"/>
-
+ -->
 
     <!--
     CacheManagerEventListener
@@ -112,9 +112,8 @@ used with JMX monitors.
     depending on what their listener is doing.
 
     If no class is specified, no listener is created. There is no default.
-    -->
     <cacheManagerEventListenerFactory class="" properties=""/>
-
+ -->
 
     <!--
     CacheManagerPeerProvider
@@ -304,10 +303,9 @@ used with JMX monitors.
       messages to the listener. This should be long enough for the slowest message.
       If not specified it defaults to 120000ms.
 
-    -->
     <cacheManagerPeerListenerFactory
             class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"/>
-
+ -->
     <!--
     TerracottaConfig
     ========================
@@ -815,6 +813,8 @@ used with JMX monitors.
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU"
             statistics="false"
+            copyOnRead="false"
+            copyOnWrite="false"
             />
 
     <!--
@@ -830,7 +830,6 @@ used with JMX monitors.
     If there are more than 10000 elements it will overflow to the
     disk cache, which in this configuration will go to wherever java.io.tmp is
     defined on your system. On a standard Linux system this will be /tmp"
-    -->
     <cache name="sampleCache1"
            maxElementsInMemory="10000"
            maxElementsOnDisk="1000"
@@ -842,6 +841,7 @@ used with JMX monitors.
            memoryStoreEvictionPolicy="LFU"
            transactionalMode="off"
             />
+      -->
 
 
     <!--
@@ -849,20 +849,18 @@ used with JMX monitors.
     This cache has a maximum of 1000 elements in memory. There is no overflow to disk, so 1000
     is also the maximum cache size. Note that when a cache is eternal, timeToLive and
     timeToIdle are not used and do not need to be specified.
-    -->
     <cache name="sampleCache2"
            maxElementsInMemory="1000"
            eternal="true"
            overflowToDisk="false"
            memoryStoreEvictionPolicy="FIFO"
-            />
+     -->       />
 
 
     <!--
     Sample cache named sampleCache3. This cache overflows to disk. The disk store is
     persistent between cache and VM restarts. The disk expiry thread interval is set to 10
     minutes, overriding the default of 2 minutes.
-    -->
     <cache name="sampleCache3"
            maxElementsInMemory="500"
            eternal="false"
@@ -873,13 +871,12 @@ used with JMX monitors.
            diskExpiryThreadIntervalSeconds="1"
            memoryStoreEvictionPolicy="LFU"
             />
-
+	-->
 
     <!--
     Sample distributed cache named sampleReplicatedCache1.
     This cache replicates using defaults.
     It also bootstraps from the cluster, using default properties.
-    -->
     <cache name="sampleReplicatedCache1"
            maxElementsInMemory="10"
            eternal="false"
@@ -892,13 +889,12 @@ used with JMX monitors.
         <bootstrapCacheLoaderFactory
                 class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
     </cache>
-
+-->
 
     <!--
     Sample distributed cache named sampleReplicatedCache2.
     This cache replicates using specific properties.
     It only replicates updates and does so synchronously via copy
-    -->
     <cache name="sampleRepicatedCache2"
            maxElementsInMemory="10"
            eternal="false"
@@ -911,13 +907,13 @@ used with JMX monitors.
                             replicatePutsViaCopy=false, replicateUpdates=true,
                             replicateUpdatesViaCopy=true, replicateRemovals=false"/>
     </cache>
+	-->
 
     <!--
     Sample distributed cache named sampleReplicatedCache3.
     This cache replicates using defaults except that the asynchronous replication
     interval is set to 200ms.
     This one includes / and # which were illegal in ehcache 1.5.
-    -->
     <cache name="sampleReplicatedCache3"
            maxElementsInMemory="10"
            eternal="false"
@@ -928,7 +924,7 @@ used with JMX monitors.
                 class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
                 properties="asynchronousReplicationIntervalMillis=200"/>
     </cache>
-
+-->
     <!--
     Sample Terracotta clustered cache named sampleTerracottaCache.
     This cache uses Terracotta to cluster the contents of the cache.

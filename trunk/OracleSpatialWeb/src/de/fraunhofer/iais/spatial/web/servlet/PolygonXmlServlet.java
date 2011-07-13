@@ -19,8 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.google.common.collect.Lists;
+
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
@@ -87,6 +90,7 @@ public class PolygonXmlServlet extends HttpServlet {
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				List<FlickrArea> areas = null;
+				List<FlickrAreaResult> areaResults = Lists.newArrayList();
 				if (areaDto.getPolygon() != null) {
 					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
 				} else if (areaDto.getBoundaryRect() != null) {
@@ -100,8 +104,8 @@ public class PolygonXmlServlet extends HttpServlet {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
 
-				areaMgr.countSelected(areas, areaDto);
-				responseStr = createXml(areas, null, areaDto.getRadius(), areaMgr.getAreaDao().getTotalEuropePhotoNum());
+				areaMgr.countSelected(areaResults, areas, areaDto);
+				responseStr = createXml(areaResults, null, areaDto.getRadius(), areaMgr.getAreaDao().getTotalEuropePhotoNum());
 				request.getSession().setAttribute("areaDto", areaDto);
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
@@ -119,20 +123,21 @@ public class PolygonXmlServlet extends HttpServlet {
 		System.gc();
 	}
 
-	private String createXml(List<FlickrArea> areas, String filenamePrefix, Radius radius, long totalPhotoNum) throws UnsupportedEncodingException {
+	private String createXml(List<FlickrAreaResult> areaResults, String filenamePrefix, Radius radius, long totalPhotoNum) throws UnsupportedEncodingException {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
-		rootElement.setAttribute("polygonsNum", String.valueOf(areas.size()));
+		rootElement.setAttribute("polygonsNum", String.valueOf(areaResults.size()));
 		rootElement.setAttribute("radius", radius.toString());
 		rootElement.setAttribute("wholeDbPhotosNum", String.valueOf(totalPhotoNum));
 
-		for (FlickrArea area : areas) {
+		for (FlickrAreaResult areaResult : areaResults) {
+			FlickrArea area = areaResult.getArea();
 			Element polygonElement = new Element("polygon");
 			rootElement.addContent(polygonElement);
 			polygonElement.setAttribute("id", String.valueOf(area.getId()));
 			polygonElement.setAttribute("total", String.valueOf(area.getTotalCount()));
-			polygonElement.setAttribute("select", String.valueOf(area.getSelectCount()));
+			polygonElement.setAttribute("select", String.valueOf(areaResult.getSelectCount()));
 
 			Element lineElement = new Element("line");
 			polygonElement.addContent(lineElement);

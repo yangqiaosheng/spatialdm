@@ -36,6 +36,7 @@ import de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.DateUtil;
@@ -61,15 +62,18 @@ public class FlickrAreaMgr {
 	 * @param areas
 	 * @param areaDto
 	 */
-	public void calculateHistograms(List<FlickrArea> areas, FlickrAreaDto areaDto) {
+	public void calculateHistograms(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) {
 
 		int queryStrsLength = areaDto.getQueryStrsLength();
 		for (FlickrArea area : areas) {
-			Map<Integer, Integer> yearData = area.getHistograms().getYears();
-			Map<Integer, Integer> monthData = area.getHistograms().getMonths();
-			Map<Integer, Integer> dayData = area.getHistograms().getDays();
-			Map<Integer, Integer> hourData = area.getHistograms().getHours();
-			Map<Integer, Integer> weekdayData = area.getHistograms().getWeekdays();
+			FlickrAreaResult areaResult = new FlickrAreaResult(area);
+			areaResults.add(areaResult);
+
+			Map<Integer, Integer> yearData = areaResult.getHistograms().getYears();
+			Map<Integer, Integer> monthData = areaResult.getHistograms().getMonths();
+			Map<Integer, Integer> dayData = areaResult.getHistograms().getDays();
+			Map<Integer, Integer> hourData = areaResult.getHistograms().getHours();
+			Map<Integer, Integer> weekdayData = areaResult.getHistograms().getWeekdays();
 
 			Calendar calendar = DateUtil.createReferenceCalendar();
 			calendar.setLenient(false);
@@ -99,10 +103,13 @@ public class FlickrAreaMgr {
 		}
 	}
 
-	public void countSelected(List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
+	public void countSelected(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
 
 		for (FlickrArea area : areas) {
-			int num = 0;
+			FlickrAreaResult areaResult = new FlickrAreaResult(area);
+			areaResults.add(areaResult);
+
+			int selectCount = 0;
 			Map<String, Integer> counts = null;
 
 			switch (areaDto.getQueryLevel()) {
@@ -122,7 +129,7 @@ public class FlickrAreaMgr {
 
 			for (Map.Entry<String, Integer> e : counts.entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey())) {
-					num += e.getValue();
+					selectCount += e.getValue();
 				}
 			}
 
@@ -132,15 +139,19 @@ public class FlickrAreaMgr {
 //				}
 //			}
 
-			area.setSelectedCount(num);
+			areaResult.setSelectedCount(selectCount);
 		}
+
 	}
 
-	public void countTags(List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
+	public void countTags(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
 
 		for (FlickrArea area : areas) {
+			FlickrAreaResult areaResult = new FlickrAreaResult(area);
+			areaResults.add(areaResult);
+
 			Map<String, Map<String, Integer>> hoursTagsCount = null;
-			Map<String, Integer> tagsCount = area.getTagsCount();
+			Map<String, Integer> tagsCount = areaResult.getTagsCount();
 
 			hoursTagsCount = area.getHoursTagsCount();
 
@@ -639,13 +650,13 @@ public class FlickrAreaMgr {
 			ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
 		}
 
-	public String buildKmlFile(List<FlickrArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
+	public String buildKmlFile(List<FlickrAreaResult> areaResults, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = this.getClass().getResource("/../../").getPath();
 		if (StringUtils.isEmpty(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
 
-		Document document = createKmlDoc(areas, radius, remoteBasePath);
+		Document document = createKmlDoc(areaResults, radius, remoteBasePath);
 
 		if(filenamePrefix != null){
 			if(StringUtils.isNotEmpty(filenamePrefix)){
@@ -660,13 +671,13 @@ public class FlickrAreaMgr {
 		return XmlUtil.xml2String(document, false);
 	}
 
-	public String buildKmlString(List<FlickrArea> areas, Radius radius, String remoteBasePath) throws IOException {
-		Document document = createKmlDoc(areas, radius, remoteBasePath);
+	public String buildKmlString(List<FlickrAreaResult> areaResults, Radius radius, String remoteBasePath) throws IOException {
+		Document document = createKmlDoc(areaResults, radius, remoteBasePath);
 
 		return XmlUtil.xml2String(document, false);
 	}
 
-	private Document createKmlDoc(List<FlickrArea> areas, Radius radius, String remoteBasePath) {
+	private Document createKmlDoc(List<FlickrAreaResult> areaResults, Radius radius, String remoteBasePath) {
 		Document document = new Document();
 
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
@@ -679,7 +690,8 @@ public class FlickrAreaMgr {
 		rootElement.addContent(documentElement);
 
 		// GroundOverlay
-		for (FlickrArea area : areas) {
+		for (FlickrAreaResult areaResult : areaResults) {
+			FlickrArea area = areaResult.getArea();
 			if (area.getTotalCount() != 0) {
 				String name = String.valueOf(area.getId());
 				String description = "";
@@ -694,13 +706,13 @@ public class FlickrAreaMgr {
 				double r = 0;
 				String icon = "";
 
-				if (area.getSelectCount() < 100) {
+				if (areaResult.getSelectCount() < 100) {
 //					r = (double) Math.log10(area.getSelectCount() + 1) / 85.0 * scale;
 					icon = remoteBasePath + "images/circle_bl.ico";
-				} else if (area.getSelectCount() < 1000) {
+				} else if (areaResult.getSelectCount() < 1000) {
 //					r = (double) Math.log10(area.getSelectCount() + 1) / 80.0 * scale;
 					icon = remoteBasePath + "images/circle_gr.ico";
-				} else if (area.getSelectCount() < 10000) {
+				} else if (areaResult.getSelectCount() < 10000) {
 //					r = (double) Math.log10(area.getSelectCount() + 1) / 70.0 * scale;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
@@ -708,7 +720,7 @@ public class FlickrAreaMgr {
 					icon = remoteBasePath + "images/circle_or.ico";
 				}
 
-				r = (double) Math.log10(area.getSelectCount() + 1) / 50.0 * scale;
+				r = (double) Math.log10(areaResult.getSelectCount() + 1) / 50.0 * scale;
 
 				Element hrefElement = new Element("href", namespace).addContent(icon);
 				iconElement.addContent(hrefElement);
@@ -735,9 +747,10 @@ public class FlickrAreaMgr {
 		}
 
 		// Polygon
-		for (FlickrArea area : areas) {
-			String name = area.getSelectCount() + " / " + area.getTotalCount();
-			String description = buildKmlDescription(area);
+		for (FlickrAreaResult areaResult : areaResults) {
+			FlickrArea area = areaResult.getArea();
+			String name = areaResult.getSelectCount() + " / " + area.getTotalCount();
+			String description = buildKmlDescription(areaResult);
 
 //			String polyStyleColor = "440000"; //not transparent
 			String polyStyleColor = "000000"; //transparent
@@ -794,11 +807,11 @@ public class FlickrAreaMgr {
 
 			Element extendedDataElement = new Element("ExtendedData", namespace);
 			placemarkElement.addContent(extendedDataElement);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistograms().getWeekdays(), Level.WEEKDAY);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistograms().getYears(), Level.YEAR);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistograms().getMonths(), Level.MONTH);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistograms().getDays(), Level.DAY);
-			addKmlExtendedElement(extendedDataElement, namespace, area.getHistograms().getHours(), Level.HOUR);
+			addKmlExtendedElement(extendedDataElement, namespace, areaResult.getHistograms().getWeekdays(), Level.WEEKDAY);
+			addKmlExtendedElement(extendedDataElement, namespace, areaResult.getHistograms().getYears(), Level.YEAR);
+			addKmlExtendedElement(extendedDataElement, namespace, areaResult.getHistograms().getMonths(), Level.MONTH);
+			addKmlExtendedElement(extendedDataElement, namespace, areaResult.getHistograms().getDays(), Level.DAY);
+			addKmlExtendedElement(extendedDataElement, namespace, areaResult.getHistograms().getHours(), Level.HOUR);
 		}
 		return document;
 	}
@@ -813,13 +826,13 @@ public class FlickrAreaMgr {
 		}
 	}
 
-	private String buildKmlDescription(FlickrArea area) {
+	private String buildKmlDescription(FlickrAreaResult areaResult) {
 		int width = 640;
-		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getHistograms().getWeekdays(), Level.WEEKDAY);
-		String yearChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, area.getHistograms().getYears(), Level.YEAR);
-		String monthChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistograms().getMonths(), Level.MONTH);
-		String dayChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistograms().getDays(), Level.DAY);
-		String hourChartImg = createGoogleChartImg("Photos Distribution", width, 160, area.getHistograms().getHours(), Level.HOUR);
+		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, areaResult.getHistograms().getWeekdays(), Level.WEEKDAY);
+		String yearChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, areaResult.getHistograms().getYears(), Level.YEAR);
+		String monthChartImg = createGoogleChartImg("Photos Distribution", width, 160, areaResult.getHistograms().getMonths(), Level.MONTH);
+		String dayChartImg = createGoogleChartImg("Photos Distribution", width, 160, areaResult.getHistograms().getDays(), Level.DAY);
+		String hourChartImg = createGoogleChartImg("Photos Distribution", width, 160, areaResult.getHistograms().getHours(), Level.HOUR);
 
 		String description = weekdayChartImg + yearChartImg + "<BR>" + monthChartImg + "<BR>" + dayChartImg + "<BR>" + hourChartImg;
 		return description;

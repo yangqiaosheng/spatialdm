@@ -1,16 +1,12 @@
 package de.fraunhofer.iais.spatial.dao.mybatis;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import oracle.spatial.geometry.JGeometry;
-
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.IllegalDataException;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -20,7 +16,6 @@ import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
-import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
 public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
@@ -39,12 +34,11 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		this.sessionTemplate = sessionTemplate;
 	}
 
-	private void initArea(FlickrArea area, Radius radius) {
+	private void initArea(FlickrArea area) {
 
 		if (area.isCached() == false) {
 			//initialize the not cached object
 			area.setCached(true);
-			area.setRadius(radius);
 			area.setTotalCount(getTotalCountWithinArea(area.getId(), area.getRadius()));
 			/*
 			loadYearsCount(area);
@@ -52,16 +46,12 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 			*/
 			loadDaysCount(area);
 			loadHoursCount(area);
-		} else {
-			//initialize the cached object
-			area.setSelectedCount(0);
-			area.setHistograms(new Histograms());
 		}
 	}
 
-	private void initAreas(List<FlickrArea> areas, Radius radius) {
+	private void initAreas(List<FlickrArea> areas) {
 		for (FlickrArea a : areas) {
-			initArea(a, radius);
+			initArea(a);
 		}
 	}
 
@@ -136,7 +126,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		*/
 
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
-		for(int areaid : getAllAreaIds(radius)) {
+		for (int areaid : getAllAreaIds(radius)) {
 			areas.add(getAreaById(areaid, radius));
 		}
 
@@ -150,7 +140,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		areaDto.setRadius(radius);
 
 		FlickrArea area = (FlickrArea) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".selectById", areaDto);
-		initArea(area, radius);
+		initArea(area);
 
 		return area;
 	}
@@ -169,7 +159,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	@Deprecated
 	public List<FlickrArea> getAreasByPoint(double x, double y, Radius radius) {
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
-		for(int areaid : getAreaIdsByPoint(x, y, radius)) {
+		for (int areaid : getAreaIdsByPoint(x, y, radius)) {
 			areas.add(getAreaById(areaid, radius));
 		}
 		return areas;
@@ -179,19 +169,14 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	public int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius) {
 
 		FlickrAreaDto areaDto = new FlickrAreaDto();
-		String pgQueryGeom = "SRID=4326;polygon((" + x1 + " " + y1 + ", "
-												   + x2 + " " + y1 + ", "
-												   + x2 + " " + y2 + ", "
-												   + x1 + " " + y2 + ", "
-												   + x1 + " " + y1 + ""
-												   + "))";
+		String pgQueryGeom = "SRID=4326;polygon((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "" + "))";
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
 
 		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".selectByGeomSize", areaDto);
 		int num = 0;
-		if(numObj != null){
-			num = (Integer)numObj;
+		if (numObj != null) {
+			num = (Integer) numObj;
 		}
 		return num;
 	}
@@ -212,7 +197,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	public List<FlickrArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
 
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
-		for(int areaid : getAreaIdsByRect(x1, y1, x2, y2, radius)) {
+		for (int areaid : getAreaIdsByRect(x1, y1, x2, y2, radius)) {
 			areas.add(getAreaById(areaid, radius));
 		}
 
@@ -225,15 +210,14 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		String pgQueryGeom = "SRID=4326;polygon((";
 		for (Point2D p : polygon) {
-			pgQueryGeom += + p.getX() + " " + p.getY() + ", ";
+			pgQueryGeom += +p.getX() + " " + p.getY() + ", ";
 		}
 
 		pgQueryGeom = StringUtils.removeEnd(pgQueryGeom, ", ");
-		pgQueryGeom +=  "))";
+		pgQueryGeom += "))";
 
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
-
 
 		return (List<Integer>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectIdsByGeom", areaDto);
 	}
@@ -243,7 +227,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	public List<FlickrArea> getAreasByPolygon(List<Point2D> polygon, Radius radius) {
 
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
-		for(int areaid : getAreaIdsByPolygon(polygon, radius)) {
+		for (int areaid : getAreaIdsByPolygon(polygon, radius)) {
 			areas.add(getAreaById(areaid, radius));
 		}
 
@@ -256,40 +240,40 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME  + ".totalCount", areaDto);
+		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".totalCount", areaDto);
 		long num = 0;
-		if(numObj != null){
-			num = (Long)numObj;
+		if (numObj != null) {
+			num = (Long) numObj;
 		}
 		return num;
 	}
 
 	@Override
 	public long getTotalEuropePhotoNum() {
-		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalNum");
+		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME + ".totalNum");
 		long num = 0;
-		if(numObj != null){
-			num = (Long)numObj;
+		if (numObj != null) {
+			num = (Long) numObj;
 		}
 		return num;
 	}
 
 	@Override
 	public long getTotalWorldPhotoNum() {
-		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalWorldPhotoNum");
+		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME + ".totalWorldPhotoNum");
 		long num = 0;
-		if(numObj != null){
-			num = (Long)numObj;
+		if (numObj != null) {
+			num = (Long) numObj;
 		}
 		return num;
 	}
 
 	@Override
 	public long getTotalPeopleNum() {
-		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME  + ".totalPeopleNum");
+		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME + ".totalPeopleNum");
 		long num = 0;
-		if(numObj != null){
-			num = (Long)numObj;
+		if (numObj != null) {
+			num = (Long) numObj;
 		}
 		return num;
 	}
@@ -302,7 +286,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		String oracleDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		Map parameters = new HashMap();
 
-		if(queryLevel == Level.YEAR){
+		if (queryLevel == Level.YEAR) {
 			throw new IllegalDataException("TO_DATE('" + queryStr + "', 'YYYY') in Oracle will returns a wrong result!");
 		}
 
@@ -313,7 +297,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		parameters.put("oracleDatePatternStr", oracleDatePatternStr);
 		parameters.put("num", num);
 
-		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(FlickrPhoto.class.getName() + DB_NAME  + ".selectByDateQuery", parameters);
+		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(FlickrPhoto.class.getName() + DB_NAME + ".selectByDateQuery", parameters);
 		this.initPhotos(photos, area);
 
 		return photos;

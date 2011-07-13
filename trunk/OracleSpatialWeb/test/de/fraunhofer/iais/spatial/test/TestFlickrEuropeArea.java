@@ -42,11 +42,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.google.common.collect.Lists;
+
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.entity.Histograms;
@@ -514,8 +517,8 @@ public class TestFlickrEuropeArea {
 		String histrogramSessionId = StringUtil.genId();
 		SessionMutex sessionMutex = new SessionMutex(histrogramSessionId);
 		List<FlickrArea> areas = null;
-//		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
-		areas = areaCancelableJob.getAreasByRect(histrogramSessionId, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
+//		areas = areaCancelableJob.getAreasByRect(histrogramSessionId, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		long middle = System.currentTimeMillis();
 		Histograms sumHistrograms = areaCancelableJob.calculateSumHistogram(histrogramSessionId, sessionMutex, areas, areaDto);
 
@@ -537,16 +540,17 @@ public class TestFlickrEuropeArea {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
-		List<FlickrArea> as = null;
+		List<FlickrArea> areas = null;
+		List<FlickrAreaResult> areaResults = Lists.newArrayList();
 		if (areaDto.getBoundaryRect() == null) {
-			as = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 		} else {
-			as = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
 
-		areaMgr.countSelected(as, areaDto);
+		areaMgr.countSelected(areaResults, areas, areaDto);
 
-		System.out.println(areaMgr.buildKmlString(as, areaDto.getRadius(), ""));
+		System.out.println(areaMgr.buildKmlString(areaResults, areaDto.getRadius(), ""));
 		System.out.println(System.currentTimeMillis() - start);
 //		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
 	}

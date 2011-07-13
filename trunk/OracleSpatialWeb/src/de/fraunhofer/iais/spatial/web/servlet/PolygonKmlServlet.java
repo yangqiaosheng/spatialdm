@@ -14,8 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.google.common.collect.Lists;
+
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 
@@ -63,6 +66,7 @@ public class PolygonKmlServlet extends HttpServlet {
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				List<FlickrArea> areas = null;
+				List<FlickrAreaResult> areaResults = Lists.newArrayList();
 
 				if (areaDto.getPolygon() != null) {
 					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
@@ -77,8 +81,8 @@ public class PolygonKmlServlet extends HttpServlet {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
 
-				areaMgr.countSelected(areas, areaDto);
-				kmlStr = areaMgr.buildKmlFile(areas, null, areaDto.getRadius(), remoteBasePath, false);
+				areaMgr.countSelected(areaResults, areas, areaDto);
+				kmlStr = areaMgr.buildKmlFile(areaResults, null, areaDto.getRadius(), remoteBasePath, false);
 
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$

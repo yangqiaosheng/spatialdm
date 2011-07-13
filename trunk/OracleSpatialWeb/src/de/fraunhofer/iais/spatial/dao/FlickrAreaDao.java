@@ -60,6 +60,7 @@ public abstract class FlickrAreaDao {
 	 * Returns a List of all the FlickrArea instances
 	 * @return List<FlickrArea>
 	 */
+	@Deprecated
 	public abstract List<FlickrArea> getAllAreas(Radius radius);
 
 	/**
