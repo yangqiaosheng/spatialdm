@@ -19,8 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.google.common.collect.Lists;
+
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
@@ -94,7 +97,7 @@ public class ZoomKmlServlet extends HttpServlet {
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				List<FlickrArea> areas = null;
-
+				List<FlickrAreaResult> areaResults = Lists.newArrayList();
 				if (areaDto.getPolygon() != null) {
 					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
 				} else if (areaDto.getBoundaryRect() != null) {
@@ -107,9 +110,9 @@ public class ZoomKmlServlet extends HttpServlet {
 				} else {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
-				areaMgr.countSelected(areas, areaDto);
-				areaMgr.calculateHistograms(areas, areaDto);
-				areaMgr.buildKmlFile(areas, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, false);
+				areaMgr.countSelected(areaResults, areas, areaDto);
+				areaMgr.calculateHistograms(areaResults, areas, areaDto);
+				areaMgr.buildKmlFile(areaResults, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, false);
 
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);

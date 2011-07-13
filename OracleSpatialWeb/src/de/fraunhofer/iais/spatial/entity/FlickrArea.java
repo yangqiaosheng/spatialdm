@@ -23,7 +23,7 @@ public class FlickrArea implements Serializable {
 	private float area;
 	private Point2D center;
 	private List<Point2D> geom;
-	private boolean isCached = false;
+	private boolean isCached;
 
 	private long totalCount;
 	private SortedMap<String, Integer> yearsCount = Maps.newTreeMap();
@@ -31,11 +31,6 @@ public class FlickrArea implements Serializable {
 	private SortedMap<String, Integer> daysCount = Maps.newTreeMap();
 	private SortedMap<String, Integer> hoursCount = Maps.newTreeMap();
 	private SortedMap<String, Map<String, Integer>> hoursTagsCount = Maps.newTreeMap();
-
-	//Not thread safe when cached (read-only)
-	private transient Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
-	private transient long selectedCount;
-	private transient Histograms histograms = new Histograms();
 
 	public enum Radius {
 		R5000, R10000, R20000, R40000, R80000, R160000, R320000;
@@ -45,7 +40,6 @@ public class FlickrArea implements Serializable {
 			return this.name().substring(1);
 		}
 	}
-
 
 	public long getId() {
 		return id;
@@ -119,14 +113,6 @@ public class FlickrArea implements Serializable {
 		return hoursCount;
 	}
 
-	public long getSelectCount() {
-		return selectedCount;
-	}
-
-	public void setSelectedCount(long selectCount) {
-		this.selectedCount = selectCount;
-	}
-
 	public Radius getRadius() {
 		return radius;
 	}
@@ -135,20 +121,8 @@ public class FlickrArea implements Serializable {
 		this.radius = radius;
 	}
 
-	public Histograms getHistograms() {
-		return histograms;
-	}
-
-	public void setHistograms(Histograms histograms) {
-		this.histograms = histograms;
-	}
-
 	public SortedMap<String, Map<String, Integer>> getHoursTagsCount() {
 		return hoursTagsCount;
-	}
-
-	public Map<String, Integer> getTagsCount() {
-		return tagsCount;
 	}
 
 }
