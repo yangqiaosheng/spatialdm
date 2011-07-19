@@ -49,8 +49,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 	private static FlickrAreaMgr areaMgr = null;
 	private static FlickrAreaCancelableJob areaCancelableJob = null;
-	public static String histogramsSessionId = "HISTOGRAM_SESSION_ID";
-	public static String histogramsSessionLock = "HISTOGRAM_SESSION_LOCK";
+	final public static String HISTOGRAM_SESSION_ID = "HISTOGRAM_SESSION_ID";
+	final public static String HISTOGRAM_SESSION_LOCK = "HISTOGRAM_SESSION_LOCK";
 //	public static StringBuffer idStrBuf = null;
 
 	@Override
@@ -75,10 +75,10 @@ public class HistrogramsDataServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		SessionMutex sessionMutex = null;
 		synchronized (this) {
-			if(session.getAttribute(histogramsSessionId) == null){
-				session.setAttribute(histogramsSessionId, new SessionMutex(histrogramSessionIdStr));
+			if(session.getAttribute(HISTOGRAM_SESSION_ID) == null){
+				session.setAttribute(HISTOGRAM_SESSION_ID, new SessionMutex(histrogramSessionIdStr));
 			}
-			sessionMutex = (SessionMutex)session.getAttribute(histogramsSessionId);
+			sessionMutex = (SessionMutex)session.getAttribute(HISTOGRAM_SESSION_ID);
 			sessionMutex.setHistrogramSessionId(histrogramSessionIdStr);
 		}
 
@@ -109,11 +109,11 @@ public class HistrogramsDataServlet extends HttpServlet {
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
-				if(session.getAttribute(histogramsSessionLock) != null){
+				if(session.getAttribute(HISTOGRAM_SESSION_LOCK) != null){
 					int waitSec = 5;
 					for (int i = 1; i <= waitSec; i++) {
 						Thread.sleep(1000);
-						if (session.getAttribute(histogramsSessionLock) == null && sessionMutex.getHistogramSessionId().equals(histrogramSessionIdStr)) {
+						if (session.getAttribute(HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getHistogramSessionId().equals(histrogramSessionIdStr)) {
 							break;
 						} else {
 							if (i == waitSec) {
@@ -126,7 +126,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 					}
 				}
 
-				session.setAttribute(histogramsSessionLock, new SessionMutex(histrogramSessionIdStr));
+				session.setAttribute(HISTOGRAM_SESSION_LOCK, new SessionMutex(histrogramSessionIdStr));
 				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 
 				if (size > 2000) {
@@ -138,7 +138,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 				Histograms sumHistrograms = areaCancelableJob.calculateSumHistogram(histrogramSessionIdStr, sessionMutex, areas, areaDto);
 				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
 				messageElement.setText("SUCCESS");
-				session.removeAttribute(histogramsSessionId);
+				session.removeAttribute(HISTOGRAM_SESSION_ID);
 
 //				request.getSession().setAttribute("areaDto", areaDto);
 			} catch (TimeoutException e) {
@@ -155,7 +155,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} finally {
-				session.removeAttribute(histogramsSessionLock);
+				session.removeAttribute(HISTOGRAM_SESSION_LOCK);
 			}
 		}
 
