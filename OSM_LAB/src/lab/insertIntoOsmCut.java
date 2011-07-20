@@ -45,8 +45,6 @@ public class insertIntoOsmCut {
 		startDate = Calendar.getInstance();
 		startDate.setTimeInMillis(start);
 
-		long end = System.currentTimeMillis();
-		Calendar endDate = Calendar.getInstance();
 
 
 
@@ -61,7 +59,9 @@ public class insertIntoOsmCut {
 				String bufferTableName = BUFFER_TABLE_NAME + bufferSize;
 				String insertTableName = INSERT_TABLE_NAME + bufferSize + osmSuffix;
 				insert(osmTableName, bufferTableName, insertTableName);
-				endDate.setTimeInMillis(end);
+
+				Calendar endDate = Calendar.getInstance();
+				endDate.setTimeInMillis(System.currentTimeMillis());
 				long endtTableInsertTime = System.currentTimeMillis();
 				logger.info("osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName + "\t|cost time:" + (endtTableInsertTime - startTableInsertTime)/1000 + "s");
 				logger.info("start time:" + startDate.getTime()); //$NON-NLS-1$
