@@ -2,7 +2,7 @@ package de.fraunhofer.iais.spatial.entity;
 
 import java.util.Date;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Entity mapped to the table FLICKR_DE_WEST_TABLE and FLICKR_DE_WEST_TABLE_GEOM

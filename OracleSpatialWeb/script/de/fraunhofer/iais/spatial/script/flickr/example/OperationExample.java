@@ -2,18 +2,15 @@ package de.fraunhofer.iais.spatial.script.flickr.example;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.Flickr;
@@ -28,12 +25,9 @@ import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.Permission;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.Extras;
-import com.aetrion.flickr.photos.Note;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotosInterface;
-import com.aetrion.flickr.places.Location;
-import com.aetrion.flickr.places.Place;
 import com.aetrion.flickr.places.PlacesInterface;
 import com.aetrion.flickr.tags.Tag;
 

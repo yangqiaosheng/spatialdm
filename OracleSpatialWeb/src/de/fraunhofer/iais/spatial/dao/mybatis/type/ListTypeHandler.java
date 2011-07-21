@@ -17,7 +17,6 @@ import org.postgis.LinearRing;
 import org.postgis.MultiPolygon;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
-import org.postgis.Polygon;
 
 public class ListTypeHandler implements TypeHandler {
 

@@ -11,10 +11,6 @@ import oracle.sql.STRUCT;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
-import org.postgis.LinearRing;
-import org.postgis.MultiPolygon;
-import org.postgis.PGgeometry;
-import org.postgis.Point;
 import org.postgresql.geometric.PGpoint;
 
 public class Point2DTypeHandler implements TypeHandler {

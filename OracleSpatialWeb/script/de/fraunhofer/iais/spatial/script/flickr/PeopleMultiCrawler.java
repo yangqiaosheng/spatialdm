@@ -1,29 +1,19 @@
 package de.fraunhofer.iais.spatial.script.flickr;
 
-import org.apache.commons.lang.math.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLInvalidAuthorizationSpecException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
-import java.util.Random;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.aetrion.flickr.Flickr;
@@ -32,15 +22,9 @@ import com.aetrion.flickr.REST;
 import com.aetrion.flickr.RequestContext;
 import com.aetrion.flickr.auth.Auth;
 import com.aetrion.flickr.auth.Permission;
-import com.aetrion.flickr.contacts.Contact;
 import com.aetrion.flickr.contacts.ContactsInterface;
 import com.aetrion.flickr.groups.members.Member;
 import com.aetrion.flickr.groups.members.MembersList;
-import com.aetrion.flickr.people.PeopleInterface;
-import com.aetrion.flickr.photos.Extras;
-import com.aetrion.flickr.photos.GeoData;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotoList;
 
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
