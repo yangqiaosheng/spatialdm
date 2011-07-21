@@ -1,22 +1,15 @@
 package lab;
 
-import java.awt.geom.Point2D;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
-import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +42,8 @@ public class insertIntoOsmCut {
 
 
 		Integer[] bufferSizes = { 5, 10, 30 };
-//		String[] osmSuffixs = { "", "_2011" };
-		String[] osmSuffixs = { "_2011" };
+		String[] osmSuffixs = { "", "_2011" };
+//		String[] osmSuffixs = { "_2011" };
 
 		for (String osmSuffix : osmSuffixs) {
 			String osmTableName = OSM_TABLE_NAME + osmSuffix;

@@ -5,10 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimerTask;
 
-import org.apache.commons.lang.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.SystemPropertyUtils;
 
 import de.fraunhofer.iais.spatial.web.servlet.ZoomKmlServlet;
 
