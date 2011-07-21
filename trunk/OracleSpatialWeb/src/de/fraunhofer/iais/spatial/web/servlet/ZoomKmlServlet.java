@@ -84,7 +84,7 @@ public class ZoomKmlServlet extends HttpServlet {
 				FlickrAreaDto areaDto = null;
 				if ("true".equals(persist)) {
 					logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
-					areaDto = (FlickrAreaDto) SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
+					areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
 				} else {
 					areaDto = new FlickrAreaDto();
 				}

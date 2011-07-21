@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -72,7 +73,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 			logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level + " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				List<FlickrArea> areas = new ArrayList<FlickrArea>();
-				FlickrAreaDto areaDto = (FlickrAreaDto) request.getSession().getAttribute("areaDto");
+				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
