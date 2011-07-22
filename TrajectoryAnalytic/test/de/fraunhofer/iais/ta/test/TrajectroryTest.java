@@ -31,7 +31,7 @@ import com.vividsolutions.jts.io.oracle.OraWriter;
 
 import de.fraunhofer.iais.ta.GeoConfigContext;
 import de.fraunhofer.iais.ta.entity.Measurement;
-import de.fraunhofer.iais.ta.entity.Trajectory;
+import de.fraunhofer.iais.ta.entity.TrajectorySegment;
 import de.fraunhofer.iais.ta.util.DBUtil;
 
 
@@ -65,7 +65,7 @@ public class TrajectroryTest {
 		System.out.println("Title: " + ToStringBuilder.reflectionToString(reader.readNext()));
 		List<Measurement> measurements = Lists.newArrayList();
 
-		List<Trajectory> trajectories = Lists.newArrayList();
+		List<TrajectorySegment> trajectories = Lists.newArrayList();
 		Measurement preMeasurement = null;
 		for (Measurement measurement : measurements) {
 			if (preMeasurement != null) {
@@ -74,7 +74,7 @@ public class TrajectroryTest {
 				Coordinate fromCoordinate = preMeasurement.getCoordinate();
 				Coordinate toCoordinate = measurement.getCoordinate();
 				double length = toCoordinate.distance(fromCoordinate);
-				Trajectory trajectory = new Trajectory(trId, trN, 0, fromCoordinate, toCoordinate, length);
+				TrajectorySegment trajectory = new TrajectorySegment(trId, trN, 0, fromCoordinate, toCoordinate, length);
 				trajectories.add(trajectory);
 			}
 			preMeasurement = measurement;

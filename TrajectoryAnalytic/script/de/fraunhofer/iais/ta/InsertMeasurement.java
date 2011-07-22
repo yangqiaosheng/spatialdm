@@ -21,7 +21,7 @@ import com.vividsolutions.jts.io.WKTWriter;
 
 import de.fraunhofer.iais.ta.GeoConfigContext;
 import de.fraunhofer.iais.ta.entity.Measurement;
-import de.fraunhofer.iais.ta.entity.Trajectory;
+import de.fraunhofer.iais.ta.entity.TrajectorySegment;
 import de.fraunhofer.iais.ta.util.DBUtil;
 
 
@@ -44,7 +44,7 @@ public class InsertMeasurement {
 		Connection conn = db.getConn();
 
 		PreparedStatement insertPstmt = db.getPstmt(conn, "insert into measurement (tr_id, tr_n, p_idx, x, y, point, time) values (?, ?, ?, ?, ?, ST_GeographyFromText(?), ?)");
-		List<Trajectory> trajectories = Lists.newArrayList();
+		List<TrajectorySegment> trajectories = Lists.newArrayList();
 		Measurement preMeasurement = null;
 		try {
 			for (Measurement measurement : measurements) {
@@ -54,7 +54,7 @@ public class InsertMeasurement {
 					Coordinate fromCoordinate = preMeasurement.getCoordinate();
 					Coordinate toCoordinate = measurement.getCoordinate();
 					double length = toCoordinate.distance(fromCoordinate);
-					Trajectory trajectory = new Trajectory(trId, trN, 0, fromCoordinate, toCoordinate, length);
+					TrajectorySegment trajectory = new TrajectorySegment(trId, trN, 0, fromCoordinate, toCoordinate, length);
 					trajectories.add(trajectory);
 				}
 				preMeasurement = measurement;

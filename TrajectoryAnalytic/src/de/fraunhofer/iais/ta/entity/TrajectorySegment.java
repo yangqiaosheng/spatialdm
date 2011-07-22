@@ -4,7 +4,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.Point;
 
-public class Trajectory {
+public class TrajectorySegment {
 
 	private String trId;
 	private int trN;
@@ -14,7 +14,7 @@ public class Trajectory {
 	private GeometryCollection geom;
 	private double length;
 
-	public Trajectory(String trId, int trN, int speed, Coordinate fromCoordinate, Coordinate toCoordinate, double lenght) {
+	public TrajectorySegment(String trId, int trN, int speed, Coordinate fromCoordinate, Coordinate toCoordinate, double lenght) {
 		super();
 		this.trId = trId;
 		this.trN = trN;
