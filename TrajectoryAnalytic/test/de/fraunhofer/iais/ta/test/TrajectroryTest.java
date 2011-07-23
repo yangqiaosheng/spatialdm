@@ -6,28 +6,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import oracle.spatial.util.WKT;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Test;
 
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.common.collect.Lists;
-import com.mchange.v2.c3p0.impl.NewPooledConnection;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.WKTWriter;
-import com.vividsolutions.jts.io.oracle.OraWriter;
 
 import de.fraunhofer.iais.ta.GeoConfigContext;
 import de.fraunhofer.iais.ta.entity.Measurement;
