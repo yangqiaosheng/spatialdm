@@ -21,7 +21,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.WKTWriter;
 
 import de.fraunhofer.iais.ta.GeoConfigContext;
-import de.fraunhofer.iais.ta.entity.Measurement;
+import de.fraunhofer.iais.ta.entity.Persition;
 import de.fraunhofer.iais.ta.entity.TrajectorySegment;
 import de.fraunhofer.iais.ta.util.DBUtil;
 
@@ -54,11 +54,11 @@ public class TrajectroryTest {
 		CSVReader reader = new CSVReader(new FileReader("data/single_trajectory.csv"));
 		String[] nextLine;
 		System.out.println("Title: " + ToStringBuilder.reflectionToString(reader.readNext()));
-		List<Measurement> measurements = Lists.newArrayList();
+		List<Persition> measurements = Lists.newArrayList();
 
 		List<TrajectorySegment> trajectories = Lists.newArrayList();
-		Measurement preMeasurement = null;
-		for (Measurement measurement : measurements) {
+		Persition preMeasurement = null;
+		for (Persition measurement : measurements) {
 			if (preMeasurement != null) {
 				String trId = measurement.getTrId();
 				int trN = measurement.getTrN();
@@ -81,11 +81,11 @@ public class TrajectroryTest {
 		Connection conn = db.getConn();
 
 		PreparedStatement selectPstmt = db.getPstmt(conn, "select tr_id, tr_n, p_idx, x, y, time, speed from measurement");
-		List<Measurement> measurements = Lists.newArrayList();
+		List<Persition> measurements = Lists.newArrayList();
 		ResultSet selectRs = db.getRs(selectPstmt);
 		try {
 			while (selectRs.next()) {
-				Measurement measurement = initMeasurement(selectRs);
+				Persition measurement = initMeasurement(selectRs);
 				measurements.add(measurement);
 				System.out.println(ToStringBuilder.reflectionToString(measurement));
 			}
@@ -99,13 +99,13 @@ public class TrajectroryTest {
 
 	}
 
-	private Measurement initMeasurement(ResultSet rs) throws SQLException {
+	private Persition initMeasurement(ResultSet rs) throws SQLException {
 		String trId = rs.getString("tr_id");
 		int trN = rs.getInt("tr_n");
 		int pIdx = rs.getInt("p_idx");
 		Coordinate coordinate = new Coordinate(rs.getDouble("x"), rs.getDouble("y"));
 		Date time = rs.getTimestamp("time");
-		Measurement measurement = new Measurement(trId, trN, pIdx, time, coordinate);
+		Persition measurement = new Persition(trId, trN, pIdx, time, coordinate);
 		return measurement;
 	}
 

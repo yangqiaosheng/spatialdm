@@ -20,7 +20,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.io.WKTWriter;
 
 import de.fraunhofer.iais.ta.GeoConfigContext;
-import de.fraunhofer.iais.ta.entity.Measurement;
+import de.fraunhofer.iais.ta.entity.Persition;
 import de.fraunhofer.iais.ta.entity.TrajectorySegment;
 import de.fraunhofer.iais.ta.util.DBUtil;
 
@@ -34,9 +34,9 @@ public class InsertMeasurement {
 		CSVReader reader = new CSVReader(new FileReader("tr_0404_05_11_min_3km.csv"));
 		String[] nextLine;
 		System.out.println("Title: " + ToStringBuilder.reflectionToString(reader.readNext()));
-		List<Measurement> measurements = Lists.newArrayList();
+		List<Persition> measurements = Lists.newArrayList();
 		while ((nextLine = reader.readNext()) != null) {
-			Measurement measurement = intiMeasurement(nextLine);
+			Persition measurement = intiMeasurement(nextLine);
 			measurements.add(measurement);
 			System.out.println(ToStringBuilder.reflectionToString(measurement));
 		}
@@ -45,9 +45,9 @@ public class InsertMeasurement {
 
 		PreparedStatement insertPstmt = db.getPstmt(conn, "insert into measurement (tr_id, tr_n, p_idx, x, y, point, time) values (?, ?, ?, ?, ?, ST_GeographyFromText(?), ?)");
 		List<TrajectorySegment> trajectories = Lists.newArrayList();
-		Measurement preMeasurement = null;
+		Persition preMeasurement = null;
 		try {
-			for (Measurement measurement : measurements) {
+			for (Persition measurement : measurements) {
 				if (preMeasurement != null) {
 					String trId = measurement.getTrId();
 					int trN = measurement.getTrN();
@@ -60,7 +60,7 @@ public class InsertMeasurement {
 				preMeasurement = measurement;
 			}
 
-			for (Measurement measurement : measurements) {
+			for (Persition measurement : measurements) {
 				String trId = measurement.getTrId();
 				int trN = measurement.getTrN();
 				int pIdx = measurement.getpIdx();
@@ -87,13 +87,13 @@ public class InsertMeasurement {
 		}
 	}
 
-	private static Measurement intiMeasurement(String[] nextLine) throws ParseException {
+	private static Persition intiMeasurement(String[] nextLine) throws ParseException {
 		String trId = nextLine[0];
 		int trN = NumberUtils.toInt(nextLine[1]);
 		int pIdx = NumberUtils.toInt(nextLine[2]);
 		Coordinate coordinate = new Coordinate(NumberUtils.toDouble(nextLine[3]), NumberUtils.toDouble(nextLine[4]));
 		Date time = timeFormat.parse(nextLine[5]);
-		Measurement measurement = new Measurement(trId, trN, pIdx, time, coordinate);
+		Persition measurement = new Persition(trId, trN, pIdx, time, coordinate);
 		return measurement;
 	}
 

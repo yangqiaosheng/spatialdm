@@ -6,7 +6,7 @@ import java.util.Date;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
 
-public class Measurement {
+public class Persition {
 
 	private String trId;
 	private int trN;
@@ -14,7 +14,7 @@ public class Measurement {
 	private Date time;
 	private Coordinate coordinate;
 
-	public Measurement(String trId, int trN, int pIdx, Date time, Coordinate coordinate) {
+	public Persition(String trId, int trN, int pIdx, Date time, Coordinate coordinate) {
 		super();
 		this.trId = trId;
 		this.trN = trN;
