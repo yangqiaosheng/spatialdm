@@ -1195,6 +1195,6 @@ function sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram)
 
 	xmlHttp.setRequestHeader('Content-Type',
 			'application/x-www-form-urlencoded; charset=UTF-8');
-	xmlHttp.send("xml=" + encodeURIComponent(textToSend));
+	xmlHttp.send("xml=" + encodeURIComponent(textToSend)+ "&timestamp=" + new Date().getTime());
 	//alert("histogram"+textToSend);
 }

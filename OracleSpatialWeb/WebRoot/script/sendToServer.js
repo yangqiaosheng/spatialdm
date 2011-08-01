@@ -23,7 +23,7 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 	xmlHttp.open("POST", "SpatialXml");
 
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-	xmlHttp.send("xml=" + encodeURIComponent(textToSend));
+	xmlHttp.send("xml=" + encodeURIComponent(textToSend)+ "&timestamp=" + new Date().getTime());
 	//alert("calendar"+textToSend);
 }
 
@@ -67,7 +67,7 @@ function sendToServer_ScreenCenter_ScreenBounds(headerXML, bodyXML) {
 //	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SpatialXml");
 	xmlHttp.open("POST", "SpatialXml");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-	xmlHttp.send("persist=true&xml="+ encodeURIComponent(screenBounds_screenCenter));
+	xmlHttp.send("persist=true&xml="+ encodeURIComponent(screenBounds_screenCenter) + "&timestamp=" + new Date().getTime());
 }
 
 function sendToServerFromCarousel(ids, page_size, page) {

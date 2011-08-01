@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,7 +61,6 @@ public class TestFlickrEuropeArea {
 //	@Resource(name = "flickrAreaMgr")
 	private static FlickrAreaMgr areaMgr = null;
 //	@Resource(name = "flickrAreaCancelableJob")
-	private static FlickrAreaCancelableJob areaCancelableJob = null;
 
 	@BeforeClass
 	public static void initClass() throws NamingException {
@@ -73,7 +73,6 @@ public class TestFlickrEuropeArea {
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
 
 		areaMgr = context.getBean("flickrAreaMgr", FlickrAreaMgr.class);
-		areaCancelableJob = context.getBean("flickrAreaCancelableJob", FlickrAreaCancelableJob.class);
 	}
 
 	@Test
@@ -507,13 +506,13 @@ public class TestFlickrEuropeArea {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
 		long start = System.currentTimeMillis();
-		String histrogramSessionId = StringUtil.genId();
-		SessionMutex sessionMutex = new SessionMutex(histrogramSessionId);
+		Date timestamp = new Date();
+		SessionMutex sessionMutex = new SessionMutex(timestamp);
 		List<FlickrArea> areas = null;
 		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
 //		areas = areaCancelableJob.getAreasByRect(histrogramSessionId, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		long middle = System.currentTimeMillis();
-		Histograms sumHistrograms = areaCancelableJob.calculateSumHistogram(histrogramSessionId, sessionMutex, areas, areaDto);
+		Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);
 
 		Document document = new Document();
 		Element rootElement = new Element("response");
@@ -541,7 +540,10 @@ public class TestFlickrEuropeArea {
 			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
 
-		areaMgr.countSelected(areaResults, areas, areaDto);
+		Date timestamp = new Date();
+		SessionMutex sessionMutex = new SessionMutex(timestamp);
+
+		areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areas, areaDto);
 
 		System.out.println(areaMgr.buildKmlString(areaResults, areaDto.getRadius(), ""));
 		System.out.println(System.currentTimeMillis() - start);

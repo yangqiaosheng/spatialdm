@@ -34,6 +34,7 @@ import org.jdom.input.SAXBuilder;
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
+import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
@@ -46,16 +47,30 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class FlickrAreaMgr {
 
-	private FlickrAreaDao flickrAreaDao = new FlickrAreaDaoOracleJdbc();
+	private FlickrAreaCancelableJob areaCancelableJob;
+	private FlickrAreaDao areaDao;
+
+	public FlickrAreaCancelableJob getAreaCancelableJob() {
+		return areaCancelableJob;
+	}
+
+	public void setAreaCancelableJob(FlickrAreaCancelableJob areaCancelableJob) {
+		this.areaCancelableJob = areaCancelableJob;
+	}
 
 	public FlickrAreaDao getAreaDao() {
-		return flickrAreaDao;
+		return areaDao;
 	}
 
 	public void setAreaDao(FlickrAreaDao areaDao) {
-		this.flickrAreaDao = areaDao;
+		this.areaDao = areaDao;
 	}
 
+	public void countSelected(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
+		Date timestamp = new Date();
+		SessionMutex sessionMutex = new SessionMutex(timestamp);
+		this.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areas, areaDto);
+	}
 
 	/**
 	 * calculate the histograms DataSets for each FlickrArea
@@ -103,46 +118,6 @@ public class FlickrAreaMgr {
 		}
 	}
 
-	public void countSelected(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
-
-		for (FlickrArea area : areas) {
-			FlickrAreaResult areaResult = new FlickrAreaResult(area);
-			areaResults.add(areaResult);
-
-			int selectCount = 0;
-			Map<String, Integer> counts = null;
-
-			switch (areaDto.getQueryLevel()) {
-			case HOUR:
-				counts = area.getHoursCount();
-				break;
-			case DAY:
-				counts = area.getDaysCount();
-				break;
-			case MONTH:
-				counts = area.getMonthsCount();
-				break;
-			case YEAR:
-				counts = area.getYearsCount();
-				break;
-			}
-
-			for (Map.Entry<String, Integer> e : counts.entrySet()) {
-				if (areaDto.getQueryStrs().contains(e.getKey())) {
-					selectCount += e.getValue();
-				}
-			}
-
-//			for (String queryStr : areaDto.getQueryStrs()) {
-//				if (counts.containsKey(queryStr)) {
-//					num += counts.get(queryStr);
-//				}
-//			}
-
-			areaResult.setSelectedCount(selectCount);
-		}
-
-	}
 
 	public void countTags(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
 

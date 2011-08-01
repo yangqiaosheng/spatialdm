@@ -2,6 +2,8 @@ package de.fraunhofer.iais.spatial.web.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -47,7 +50,6 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 
 	private static FlickrAreaMgr areaMgr = null;
-	private static FlickrAreaCancelableJob areaCancelableJob = null;
 	final public static String HISTOGRAM_SESSION_ID = "HISTOGRAM_SESSION_ID";
 	final public static String HISTOGRAM_SESSION_LOCK = "HISTOGRAM_SESSION_LOCK";
 //	public static StringBuffer idStrBuf = null;
@@ -69,16 +71,20 @@ public class HistrogramsDataServlet extends HttpServlet {
 		 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String histrogramSessionIdStr = StringUtil.genId();
+		Date timestamp = new Date();
+		timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
+
 
 		HttpSession session = request.getSession();
 		SessionMutex sessionMutex = null;
 		synchronized (this) {
 			if(session.getAttribute(HISTOGRAM_SESSION_ID) == null){
-				session.setAttribute(HISTOGRAM_SESSION_ID, new SessionMutex(histrogramSessionIdStr));
+				session.setAttribute(HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
 			}
 			sessionMutex = (SessionMutex)session.getAttribute(HISTOGRAM_SESSION_ID);
-			sessionMutex.setHistrogramSessionId(histrogramSessionIdStr);
+			if(sessionMutex.getTimestamp().before(timestamp)){
+				sessionMutex.setTimestamp(timestamp);
+			}
 		}
 
 		response.setContentType("text/xml");
@@ -112,29 +118,30 @@ public class HistrogramsDataServlet extends HttpServlet {
 					int waitSec = 5;
 					for (int i = 1; i <= waitSec; i++) {
 						Thread.sleep(1000);
-						if (session.getAttribute(HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getHistogramSessionId().equals(histrogramSessionIdStr)) {
+						if (session.getAttribute(HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
 							break;
 						} else {
 							if (i == waitSec) {
 								throw new TimeoutException("Blocked until:" + waitSec + "s");
 							}
-							if (!sessionMutex.getHistogramSessionId().equals(histrogramSessionIdStr)) {
+							if (!sessionMutex.getTimestamp().equals(timestamp)) {
 								throw new InterruptedException("Interrupted before");
 							}
 						}
 					}
 				}
 
-				session.setAttribute(HISTOGRAM_SESSION_LOCK, new SessionMutex(histrogramSessionIdStr));
+				session.setAttribute(HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
+
 				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 
 				if (size > 2000) {
 					throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
 				}
 
-				List<FlickrArea> areas = areaCancelableJob.getAreasByRect(histrogramSessionIdStr, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+				List<FlickrArea> areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 
-				Histograms sumHistrograms = areaCancelableJob.calculateSumHistogram(histrogramSessionIdStr, sessionMutex, areas, areaDto);
+				Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);
 				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
 				messageElement.setText("SUCCESS");
 				session.removeAttribute(HISTOGRAM_SESSION_ID);
@@ -235,7 +242,5 @@ public class HistrogramsDataServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		areaMgr = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaMgr", FlickrAreaMgr.class);
-		areaCancelableJob = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext()).getBean("flickrAreaCancelableJob", FlickrAreaCancelableJob.class);
-
 	}
 }

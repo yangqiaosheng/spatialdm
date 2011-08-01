@@ -105,6 +105,7 @@
 	</bean>
 	<bean id="flickrAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrAreaMgr">
 		<property name="areaDao" ref="flickrAreaDaoPgMybatisImpl" />
+		<property name="areaCancelableJob" ref="flickrAreaCancelableJob" />
 	</bean>
 		<bean id="flickrAreaCancelableJob" class="de.fraunhofer.iais.spatial.service.FlickrAreaCancelableJob">
 		<property name="areaDao" ref="flickrAreaDaoPgMybatisImpl" />

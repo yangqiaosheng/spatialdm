@@ -2,6 +2,7 @@ package de.fraunhofer.iais.spatial.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.util.DateUtil;
@@ -28,20 +30,11 @@ public class FlickrAreaCancelableJob {
 		this.flickrAreaDao = areaDao;
 	}
 
-	public List<FlickrArea> getAreasByRect(String idStr, SessionMutex sessionMutex, double x1, double y1, double x2, double y2, Radius radius) throws InterruptedException {
+	public List<FlickrArea> getAreasByRect(Date sessionTimestamp, SessionMutex sessionMutex, double x1, double y1, double x2, double y2, Radius radius) throws InterruptedException {
 
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
 		for (int areaid : flickrAreaDao.getAreaIdsByRect(x1, y1, x2, y2, radius)) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e1) {
-			}
-
-			synchronized (this) {
-				if (!sessionMutex.getHistogramSessionId().equals(idStr)) {
-					throw new InterruptedException("Interrupted after");
-				}
-			}
+			checkInterruption(sessionTimestamp, sessionMutex);
 			areas.add(flickrAreaDao.getAreaById(areaid, radius));
 		}
 
@@ -51,7 +44,7 @@ public class FlickrAreaCancelableJob {
 	/**
 	 * calculate a Summary Histograms DataSet for all FlickrArea
 	 */
-	public Histograms calculateSumHistogram(String idStr, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException {
+	public Histograms calculateSumHistogram(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException {
 
 		Histograms sumHistrograms = new Histograms();
 
@@ -62,16 +55,7 @@ public class FlickrAreaCancelableJob {
 
 		Thread.sleep(30);
 		for (FlickrArea area : areas) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e1) {
-			}
-
-			synchronized (this) {
-				if (!sessionMutex.getHistogramSessionId().equals(idStr)) {
-					throw new InterruptedException("Interrupted after");
-				}
-			}
+			checkInterruption(sessionTimestamp, sessionMutex);
 
 			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey())) {
@@ -113,4 +97,61 @@ public class FlickrAreaCancelableJob {
 
 		return sumHistrograms;
 	}
+
+	public void countSelected(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
+
+		for (FlickrArea area : areas) {
+			checkInterruption(sessionTimestamp, sessionMutex);
+
+			FlickrAreaResult areaResult = new FlickrAreaResult(area);
+			areaResults.add(areaResult);
+
+			int selectCount = 0;
+			Map<String, Integer> counts = null;
+
+			switch (areaDto.getQueryLevel()) {
+			case HOUR:
+				counts = area.getHoursCount();
+				break;
+			case DAY:
+				counts = area.getDaysCount();
+				break;
+			case MONTH:
+				counts = area.getMonthsCount();
+				break;
+			case YEAR:
+				counts = area.getYearsCount();
+				break;
+			}
+
+			for (Map.Entry<String, Integer> e : counts.entrySet()) {
+				if (areaDto.getQueryStrs().contains(e.getKey())) {
+					selectCount += e.getValue();
+				}
+			}
+
+//			for (String queryStr : areaDto.getQueryStrs()) {
+//				if (counts.containsKey(queryStr)) {
+//					num += counts.get(queryStr);
+//				}
+//			}
+
+			areaResult.setSelectedCount(selectCount);
+		}
+
+	}
+
+	private void checkInterruption(Date sessionTimestamp, SessionMutex sessionMutex) throws InterruptedException {
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e1) {
+		}
+
+		synchronized (this) {
+			if (!sessionMutex.getTimestamp().equals(sessionTimestamp)) {
+				throw new InterruptedException("Interrupted after");
+			}
+		}
+	}
+
 }

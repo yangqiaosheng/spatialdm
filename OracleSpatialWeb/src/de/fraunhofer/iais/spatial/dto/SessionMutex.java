@@ -1,18 +1,21 @@
 package de.fraunhofer.iais.spatial.dto;
 
+import java.util.Date;
+
 public class SessionMutex {
-	private String histrogramSessionId;
+	private Date timestamp;
 
-	public SessionMutex(String histrogramSessionId) {
-		this.histrogramSessionId = histrogramSessionId;
+	public SessionMutex(Date timestamp) {
+		super();
+		this.timestamp = timestamp;
 	}
 
-	public String getHistogramSessionId() {
-		return histrogramSessionId;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public void setHistrogramSessionId(String histrogramSessionId) {
-		this.histrogramSessionId = histrogramSessionId;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 
