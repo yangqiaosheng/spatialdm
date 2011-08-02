@@ -27,7 +27,7 @@ import edu.cornell.cs.delaunay.jre1_6.Triangulation;
 public class VoronoiTest {
 
 	final private static int BATCH_SIZE = 100;
-	final private static String TABLE_NAME = "flickr_europe_1m";
+	final private static String TABLE_NAME = "flickr_europe_100000";
 	final static DBUtil db = new DBUtil("/jdbc_pg.properties", 3, 10);
 	final public double x1 = -13.119622;
 	final public double x2 = 35.287624;
@@ -72,6 +72,9 @@ public class VoronoiTest {
 		System.out.println("escape time: " + (end - start) / 1000.0 + "s");
 	}
 
+	/**
+	 * 1000,000 points: 14s(intel i3-580) 300M (win7-x86)
+	 */
 	@Test
 	public void testJtsVoronoi() {
 		long start = System.currentTimeMillis();
@@ -105,6 +108,9 @@ public class VoronoiTest {
 		System.out.println("escape time: " + (end - start) / 1000.0 + "s");
 	}
 
+	/**
+	 * 10000 points: 23.944s (intel i3-380)
+	 */
 	@Test
 	public void testCornellDelaunay() {
 		long start = System.currentTimeMillis();
@@ -120,15 +126,15 @@ public class VoronoiTest {
 		for(Coordinate point : points){
 			System.out.println((i++) + "   " + point);
 			dt.delaunayPlace(new Pnt(point.x, point.y));
-			if(i == 200)
-				break;
+//			if(i == 200)
+//				break;
 		}
 		Triangle.moreInfo = true;
 
-		for (Triangle triangle : dt) {
-			Pnt[] vertices = triangle.toArray(new Pnt[0]);
-			System.out.println("trangle: " + triangle + " |vertices: " + vertices);
-		}
+//		for (Triangle triangle : dt) {
+//			Pnt[] vertices = triangle.toArray(new Pnt[0]);
+//			System.out.println("trangle: " + triangle + " |vertices: " + vertices);
+//		}
 
 		long end = System.currentTimeMillis();
 		System.out.println("escape time: " + (end - start) / 1000.0 + "s");

@@ -278,7 +278,12 @@ public class Triangulation extends AbstractSet<Triangle> {
 		}
 
 		// Return one of the new triangles
-		return newTriangles.iterator().next();
+		if(newTriangles.size() > 0){
+			return newTriangles.iterator().next();
+		}else{
+			return null;
+		}
+
 	}
 
 	/**
