@@ -1,14 +1,12 @@
 package de.fraunhofer.iais.ta.geometry;
 
-
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-
-import de.fraunhofer.iais.ta.util.CoordinateTransformer;
+import com.vividsolutions.jts.geom.util.AffineTransformation;
+import com.vividsolutions.jts.math.Vector2D;
 
 public class ArrowGeometryCalculator {
 
@@ -18,23 +16,19 @@ public class ArrowGeometryCalculator {
 
 	}
 
-
 	public Polygon arrow(Coordinate fromCoordinate, Coordinate toCoordinate, float width, float fromMargin, float toMargin) {
 		Coordinate deltaVector = new Coordinate(toCoordinate.x - fromCoordinate.x, toCoordinate.y - fromCoordinate.y);
-		return arrow(
-				new Coordinate(fromCoordinate.x + deltaVector.x * fromMargin, fromCoordinate.y + deltaVector.y * fromMargin),
-				new Coordinate(fromCoordinate.x + deltaVector.x * (1 - toMargin), fromCoordinate.y + deltaVector.y * (1 - toMargin)),
+		return arrow(new Coordinate(fromCoordinate.x + deltaVector.x * fromMargin, fromCoordinate.y + deltaVector.y * fromMargin), new Coordinate(fromCoordinate.x + deltaVector.x * (1 - toMargin), fromCoordinate.y + deltaVector.y * (1 - toMargin)),
 				width);
 	}
 
 	public Polygon arrow(Coordinate fromCoordinate, Coordinate toCoordinate, float width) {
 		float bodyRatio = 0.8f;
 		Coordinate deltaVector = new Coordinate(toCoordinate.x - fromCoordinate.x, toCoordinate.y - fromCoordinate.y);
-		Coordinate clockwiseNormalVector = CoordinateTransformer.unitVector(CoordinateTransformer.clockwiseRotation(deltaVector, Math.PI / 2));
+		Coordinate clockwiseVector = AffineTransformation.rotationInstance(-Math.PI / 2).transform(deltaVector, new Coordinate());
+		Coordinate clockwiseNormalVector = Vector2D.create(clockwiseVector).normalize().toCoordinate();
 		GeometryFactory geometryFactory = new GeometryFactory();
-		Coordinate[] coordinates = new Coordinate[] {
-				new Coordinate(fromCoordinate.x, fromCoordinate.y),
-				new Coordinate(fromCoordinate.x + deltaVector.x, fromCoordinate.y + deltaVector.y),
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(fromCoordinate.x, fromCoordinate.y), new Coordinate(fromCoordinate.x + deltaVector.x, fromCoordinate.y + deltaVector.y),
 				new Coordinate(fromCoordinate.x + deltaVector.x * bodyRatio + clockwiseNormalVector.x * width * 2, fromCoordinate.y + deltaVector.y * bodyRatio + clockwiseNormalVector.y * width * 2),
 				new Coordinate(fromCoordinate.x + deltaVector.x * bodyRatio + clockwiseNormalVector.x * width, fromCoordinate.y + deltaVector.y * bodyRatio + clockwiseNormalVector.y * width),
 				new Coordinate(fromCoordinate.x + clockwiseNormalVector.x * width, fromCoordinate.y + clockwiseNormalVector.y * width), new Coordinate(fromCoordinate.x, fromCoordinate.y) };

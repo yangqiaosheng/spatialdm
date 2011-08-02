@@ -1,10 +1,7 @@
 package de.fraunhofer.iais.ta;
 
-import java.util.HashMap;
-
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.WKTWriter;
 
 public class GeoConfigContext {
 
