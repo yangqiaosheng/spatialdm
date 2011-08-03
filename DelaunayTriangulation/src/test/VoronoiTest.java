@@ -83,7 +83,7 @@ public class VoronoiTest {
 
 		VoronoiBuilder.setClipEnvelope(new Envelope(x1, x2, y1, y2));
 		Geometry geom = VoronoiBuilder.getDiagram(new GeometryFactory());
-		System.out.println("Voronoi Polygons:");
+		System.out.println("Voronoi Polygons:" + geom.getNumGeometries());
 //		System.out.println(new WKTWriter().writeFormatted(geom));
 //		System.out.println(geom.getGeometryN(0).toText());
 
@@ -94,12 +94,9 @@ public class VoronoiTest {
 	@Test
 	public void testJtsDelaunay() {
 		long start = System.currentTimeMillis();
-		VoronoiDiagramBuilder VoronoiBuilder = new VoronoiDiagramBuilder();
-		VoronoiBuilder.setSites(points);
-
-
 		DelaunayTriangulationBuilder delaunayBulider = new DelaunayTriangulationBuilder();
 		delaunayBulider.setSites(points);
+
 		Geometry triangulations = delaunayBulider.getTriangles(new GeometryFactory());
 		System.out.println("Delaunay Triangulations:");
 		System.out.println(new WKTWriter().writeFormatted(triangulations));
