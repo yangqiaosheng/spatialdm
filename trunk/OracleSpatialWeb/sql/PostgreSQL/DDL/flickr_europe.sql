@@ -18,17 +18,22 @@ CREATE TABLE flickr_europe
   woe_id character varying(20),
   accuracy integer,
   region_checked integer NOT NULL DEFAULT 0,
-  region_5000_id integer,
-  region_10000_id integer,
-  region_20000_id integer,
-  region_40000_id integer,
-  region_80000_id integer,
-  region_160000_id integer,
   region_320000_id integer,
+  region_160000_id integer,
+  region_80000_id integer,
+  region_40000_id integer,
+  region_20000_id integer,
+  region_10000_id integer,
+  region_5000_id integer,
+  region_2500_id integer,
+  region_1250_id integer,
+  region_750_id integer,
+  region_375_id integer,
   CONSTRAINT flickr_euorpe_pk PRIMARY KEY (photo_id),
   CONSTRAINT flickr_europe_user_fk FOREIGN KEY (user_id)
       REFERENCES flickr_people (user_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
+
   CONSTRAINT flickr_europe_r10000_fk FOREIGN KEY (region_10000_id)
       REFERENCES flickr_europe_area_10000 (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
@@ -50,6 +55,18 @@ CREATE TABLE flickr_europe
   CONSTRAINT flickr_europe_r80000_fk FOREIGN KEY (region_80000_id)
       REFERENCES flickr_europe_area_80000 (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT flickr_europe_r2500_fk FOREIGN KEY (region_2500_id)
+      REFERENCES flickr_europe_area_2500 (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT flickr_europe_r1250_fk FOREIGN KEY (region_1250_id)
+      REFERENCES flickr_europe_area_1250 (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT flickr_europe_r750_fk FOREIGN KEY (region_750_id)
+      REFERENCES flickr_europe_area_750 (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT flickr_europe_r375_fk FOREIGN KEY (region_375_id)
+      REFERENCES flickr_europe_area_375 (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
 )
 WITH (
   OIDS=FALSE

@@ -322,7 +322,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			for (Photo photo : europePhotos) {
 				if (!europePhotosId.contains(photo.getId())) {
 					insertPhoto(conn, photo, "FLICKR_EUROPE");
-					updatePhotoRegionInfo(conn, photo, radiusList);
+//					updatePhotoRegionInfo(conn, photo, radiusList);
 					europePhotosId.add(photo.getId());
 					addEuorpeNum++;
 				}else{
