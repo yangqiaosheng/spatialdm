@@ -1,21 +1,26 @@
 package test;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import util.DBUtil;
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTWriter;
 import com.vividsolutions.jts.triangulate.DelaunayTriangulationBuilder;
 import com.vividsolutions.jts.triangulate.VoronoiDiagramBuilder;
@@ -27,7 +32,7 @@ import edu.cornell.cs.delaunay.jre1_6.Triangulation;
 public class VoronoiTest {
 
 	final private static int BATCH_SIZE = 100;
-	final private static String TABLE_NAME = "flickr_europe_100000";
+	final private static String TABLE_NAME = "flickr_europe_1000";
 	final static DBUtil db = new DBUtil("/jdbc_pg.properties", 3, 10);
 	final public double x1 = -13.119622;
 	final public double x2 = 35.287624;
@@ -81,9 +86,13 @@ public class VoronoiTest {
 		VoronoiDiagramBuilder VoronoiBuilder = new VoronoiDiagramBuilder();
 		VoronoiBuilder.setSites(points);
 
-		VoronoiBuilder.setClipEnvelope(new Envelope(x1, x2, y1, y2));
-		Geometry geom = VoronoiBuilder.getDiagram(new GeometryFactory());
-		System.out.println("Voronoi Polygons:" + geom.getNumGeometries());
+//		VoronoiBuilder.setClipEnvelope(new Envelope(x1, x2, y1, y2));
+		Geometry geoms = VoronoiBuilder.getDiagram(new GeometryFactory());
+		System.out.println("Voronoi Polygons:" + geoms.getNumGeometries());
+		for(int i = 0 ; i < geoms.getNumGeometries() ; i++){
+			Polygon polygon = (Polygon) geoms.getGeometryN(i);
+			System.out.println(polygon.toText());
+		}
 //		System.out.println(new WKTWriter().writeFormatted(geom));
 //		System.out.println(geom.getGeometryN(0).toText());
 
@@ -135,5 +144,40 @@ public class VoronoiTest {
 
 		long end = System.currentTimeMillis();
 		System.out.println("escape time: " + (end - start) / 1000.0 + "s");
+	}
+
+	@Test
+	public void testVoronoiPolygonsFromPointClusters() throws IOException {
+		Set<Coordinate> coordinates = new HashSet<Coordinate>();
+		long t0 = System.currentTimeMillis();
+
+		CSVReader cr = new CSVReader(new FileReader("points_double.csv"));
+		String[] terms;
+		while ((terms = cr.readNext()) != null) {
+			Coordinate coordinate = new Coordinate(Long.parseLong(terms[0]), Long.parseLong(terms[1]));
+			Coordinate coordinate2 = new Coordinate(Double.parseDouble(terms[0]), Double.parseDouble(terms[1]));
+			System.out.println(coordinate);
+			System.out.println(coordinate2);
+			System.out.println();
+
+			coordinates.add(coordinate2);
+		}
+		cr.close();
+
+		VoronoiDiagramBuilder voronoiBuilder = new VoronoiDiagramBuilder();
+		voronoiBuilder.setSites(coordinates);
+
+		try {
+			Geometry geoms = voronoiBuilder.getDiagram(new GeometryFactory());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		DelaunayTriangulationBuilder delaunayBulider = new DelaunayTriangulationBuilder();
+		delaunayBulider.setSites(coordinates);
+
+		Geometry triangulations = delaunayBulider.getTriangles(new GeometryFactory());
+		System.out.println("Delaunay Triangulations:");
+		System.out.println(new WKTWriter().writeFormatted(triangulations));
+
 	}
 }
