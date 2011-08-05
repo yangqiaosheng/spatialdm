@@ -136,7 +136,7 @@ public class PolygonXmlServlet extends HttpServlet {
 
 				List<FlickrAreaResult> areaResults = Lists.newArrayList();
 				areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areas, areaDto);
-				responseStr = createXml(areaResults, null, areaDto.getRadius(), areaMgr.getAreaDao().getTotalEuropePhotoNum());
+				responseStr = createXml(areaResults, null, areaDto, areaMgr.getAreaDao().getTotalEuropePhotoNum());
 				request.getSession().setAttribute("areaDto", areaDto);
 				session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
 			} catch (TimeoutException e) {
@@ -166,12 +166,13 @@ public class PolygonXmlServlet extends HttpServlet {
 		System.gc();
 	}
 
-	private String createXml(List<FlickrAreaResult> areaResults, String filenamePrefix, Radius radius, long totalPhotoNum) throws UnsupportedEncodingException {
+	private String createXml(List<FlickrAreaResult> areaResults, String filenamePrefix, FlickrAreaDto areaDto, long totalPhotoNum) throws UnsupportedEncodingException {
 		Document document = new Document();
 		Element rootElement = new Element("polygons");
 		document.setRootElement(rootElement);
 		rootElement.setAttribute("polygonsNum", String.valueOf(areaResults.size()));
-		rootElement.setAttribute("radius", radius.toString());
+		rootElement.setAttribute("zoom", String.valueOf(areaDto.getZoom()));
+		rootElement.setAttribute("radius", areaDto.getRadius().toString());
 		rootElement.setAttribute("wholeDbPhotosNum", String.valueOf(totalPhotoNum));
 
 		for (FlickrAreaResult areaResult : areaResults) {
