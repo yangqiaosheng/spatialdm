@@ -1,11 +1,14 @@
 package de.fraunhofer.iais.ta.test;
 
+import java.awt.Color;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.geotools.geometry.jts.JTS;
+import org.jaitools.swing.JTSFrame;
 import org.junit.Test;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -25,6 +28,10 @@ public class GeometryCalculatorTest {
 		Polygon arrowPolygon2 = new ArrowGeometryCalculator().arrow(new Coordinate(1, 3), new Coordinate(25, 10), 3f, 0.1f, 0.2f);
 		System.out.println(arrowPolygon.toText());
 		System.out.println(arrowPolygon2.toText());
+
+		JTSFrame jtsFrame = new JTSFrame("JTS Frame");
+		jtsFrame.addGeometry(arrowPolygon2, Color.BLACK);
+		jtsFrame.setVisible(true);
 	}
 
 	@Test
