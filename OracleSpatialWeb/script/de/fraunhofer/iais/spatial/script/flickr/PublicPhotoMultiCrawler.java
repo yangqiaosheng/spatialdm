@@ -39,6 +39,8 @@ import com.aetrion.flickr.tags.Tag;
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class PublicPhotoMultiCrawler extends Thread {
+	private static final int PG_FETCH_SIZE = 2000;
+
 	/**
 	* Logger for this class
 	*/
@@ -61,9 +63,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static long numPhoto = 0;
 	static long numTotalQuery = 0;
 
-//	static DBUtil oracleDb = new DBUtil("/jdbc.properties", 7, 6);
-	static DBUtil oracleDb = new DBUtil("/jdbc_pg.properties", 18, 6);
-	static DBUtil pgDb = new DBUtil("/jdbc_pg.properties", 18, 6);
+	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 6);
 
 	boolean finished = false;
 
@@ -190,19 +190,19 @@ public class PublicPhotoMultiCrawler extends Thread {
 	}
 
 	private void selectPeople(int threadId, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
-		Connection conn = oracleDb.getConn();
+		Connection conn = db.getConn();
 //		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0");
 //		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(ora_hash(USER_ID), ?)) = ?");
-		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(hashtext(USER_ID), ?)) = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(hashtext(USER_ID), ?)) = ?");
 
 		conn.setAutoCommit(false);
-		pstmt.setFetchSize(2000);
+		pstmt.setFetchSize(PG_FETCH_SIZE);
 
 		pstmt.setInt(1, NUM_THREAD);
 		pstmt.setInt(2, threadId);
 		ResultSet rs = null;
 		try {
-			rs = oracleDb.getRs(pstmt);
+			rs = db.getRs(pstmt);
 			while (rs.next()) {
 
 				String userId = rs.getString("USER_ID");
@@ -218,9 +218,9 @@ public class PublicPhotoMultiCrawler extends Thread {
 			// process finished
 			finished = true;
 		} finally {
-			oracleDb.close(rs);
-			oracleDb.close(pstmt);
-			oracleDb.close(conn);
+			db.close(rs);
+			db.close(pstmt);
+			db.close(conn);
 		}
 	}
 
@@ -296,17 +296,17 @@ public class PublicPhotoMultiCrawler extends Thread {
 	private void flickrExceptionHandler(String userId, int page, Exception e, int photoCheckedFlag) throws SQLException {
 		logger.error("userID:" + userId + "|page:" + page, e);
 		logger.error("retrievePeoplesPhotos()", e); //$NON-NLS-1$
-		Connection conn = oracleDb.getConn();
+		Connection conn = db.getConn();
 		try {
 			updatePeoplesInfo(conn, userId, photoCheckedFlag, 0, 0);
 		} finally {
-			oracleDb.close(conn);
+			db.close(conn);
 		}
 	}
 
 	private boolean insertPhotos(PhotoList europePhotos, PhotoList worldPhotos, String userId) {
 		boolean success = true;
-		Connection conn = oracleDb.getConn();
+		Connection conn = db.getConn();
 
 		try {
 			conn.setAutoCommit(false);
@@ -353,13 +353,13 @@ public class PublicPhotoMultiCrawler extends Thread {
 				logger.error("insertPhotosToEurope()", e); //$NON-NLS-1$
 			}
 		} finally {
-			oracleDb.close(conn);
+			db.close(conn);
 		}
 		return success;
 	}
 
 	private void insertPhoto(Connection conn, Photo photo, String tableName) throws SQLException {
-		PreparedStatement pstmt = oracleDb
+		PreparedStatement pstmt = db
 				.getPstmt(
 						conn,
 						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, TAGS, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -395,7 +395,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			logger.error("Wrong input Photo:" + photo.toString());
 			throw e;
 		} finally {
-			oracleDb.close(pstmt);
+			db.close(pstmt);
 		}
 	}
 
@@ -410,40 +410,40 @@ public class PublicPhotoMultiCrawler extends Thread {
 			try {
 //				selectPstmt = oracleDb.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_EUROPE_AREA_" + radius
 //						+ "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
-				selectPstmt = oracleDb.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT("+x+" "+y+")'), t.geom::geometry)");
+				selectPstmt = db.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT("+x+" "+y+")'), t.geom::geometry)");
 //				selectPstmt.setDouble(1, x);
 //				selectPstmt.setDouble(2, y);
-				selectRs = oracleDb.getRs(selectPstmt);
+				selectRs = db.getRs(selectPstmt);
 				if (selectRs.next()) {
 					PreparedStatement updateRegionPstmt = null;
 					try {
-						updateRegionPstmt = oracleDb.getPstmt(conn, "update FLICKR_EUROPE set REGION_" + radius + "_ID = ? where PHOTO_ID = ?");
+						updateRegionPstmt = db.getPstmt(conn, "update FLICKR_EUROPE set REGION_" + radius + "_ID = ? where PHOTO_ID = ?");
 						updateRegionPstmt.setInt(1, Integer.parseInt(selectRs.getString("ID")));
 						updateRegionPstmt.setLong(2, Long.parseLong(photo.getId()));
 						updateRegionPstmt.executeUpdate();
 					} finally {
-						oracleDb.close(updateRegionPstmt);
+						db.close(updateRegionPstmt);
 					}
 				}
 			} finally {
-				oracleDb.close(selectPstmt);
-				oracleDb.close(selectRs);
+				db.close(selectPstmt);
+				db.close(selectRs);
 			}
 		}
 
 		PreparedStatement updateCheckedPstmt = null;
 		try {
-			updateCheckedPstmt = oracleDb.getPstmt(conn, "update FLICKR_EUROPE set REGION_CHECKED = 1 where PHOTO_ID = ?");
+			updateCheckedPstmt = db.getPstmt(conn, "update FLICKR_EUROPE set REGION_CHECKED = 1 where PHOTO_ID = ?");
 			updateCheckedPstmt.setLong(1, Long.parseLong(photo.getId()));
 			updateCheckedPstmt.executeUpdate();
 		} finally {
-			oracleDb.close(updateCheckedPstmt);
+			db.close(updateCheckedPstmt);
 		}
 	}
 
 	private void updatePeoplesInfo(Connection conn, String userId, int photoCheckedFlag, int addWorldNum, int addEuropeNum) throws SQLException {
-		PreparedStatement pstmt = oracleDb.getPstmt(conn, "update FLICKR_PEOPLE set PHOTO_UPDATE_CHECKED = ?, PHOTO_UPDATE_CHECKED_DATE = ?, WORLD_NUM = WORLD_NUM + ?, EUROPE_NUM = EUROPE_NUM + ? where USER_ID = ?");
-		PreparedStatement updatePeoplePhotoCheckedNumPstmt = oracleDb.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_photo_checked_num'");
+		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE set PHOTO_UPDATE_CHECKED = ?, PHOTO_UPDATE_CHECKED_DATE = ?, WORLD_NUM = WORLD_NUM + ?, EUROPE_NUM = EUROPE_NUM + ? where USER_ID = ?");
+		PreparedStatement updatePeoplePhotoCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_photo_checked_num'");
 		try {
 
 			int i = 1;
@@ -456,8 +456,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.executeUpdate();
 			updatePeoplePhotoCheckedNumPstmt.executeUpdate();
 		} finally {
-			oracleDb.close(updatePeoplePhotoCheckedNumPstmt);
-			oracleDb.close(pstmt);
+			db.close(updatePeoplePhotoCheckedNumPstmt);
+			db.close(pstmt);
 		}
 
 	}
