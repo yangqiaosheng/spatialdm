@@ -24,13 +24,17 @@ public class InitCountTable {
 
 	public static void main(String[] args) throws SQLException {
 		ArrayList<String> radiusList = new ArrayList<String>();
-		radiusList.add("5000");
-		radiusList.add("10000");
-		radiusList.add("20000");
-		radiusList.add("40000");
-		radiusList.add("80000");
-		radiusList.add("160000");
 		radiusList.add("320000");
+		radiusList.add("160000");
+		radiusList.add("80000");
+		radiusList.add("40000");
+		radiusList.add("20000");
+		radiusList.add("10000");
+		radiusList.add("5000");
+		radiusList.add("2500");
+		radiusList.add("1250");
+		radiusList.add("750");
+		radiusList.add("375");
 
 		Connection conn = db.getConn();
 
