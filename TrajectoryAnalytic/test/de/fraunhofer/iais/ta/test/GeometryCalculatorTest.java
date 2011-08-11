@@ -14,9 +14,14 @@ import org.junit.Test;
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.operation.buffer.BufferBuilder;
 
 import de.fraunhofer.iais.ta.geometry.ArrowGeometryCalculator;
 
@@ -31,6 +36,19 @@ public class GeometryCalculatorTest {
 
 		JTSFrame jtsFrame = new JTSFrame("JTS Frame");
 		jtsFrame.addGeometry(arrowPolygon2, Color.BLACK);
+		jtsFrame.setVisible(true);
+	}
+
+	@Test
+	public void bufferTest() {
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(10, 20),  new Coordinate(10, 30),  new Coordinate(20, 30)};
+		GeometryFactory geometryFactory = new GeometryFactory();
+		LineString path = geometryFactory.createLineString(coordinates);
+		System.out.println(path.toText());
+
+//		BufferBuilder bufferBuilder = new BufferBuilder(BufferParameters);
+		JTSFrame jtsFrame = new JTSFrame("JTS Frame");
+		jtsFrame.addGeometry(path, Color.BLACK);
 		jtsFrame.setVisible(true);
 	}
 
