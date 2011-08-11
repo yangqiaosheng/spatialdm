@@ -70,6 +70,7 @@ public class insertIntoOsmCut {
 		logger.info("startTableDate:" + startTableInsertDate.getTime() + "\t|osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName);
 		Connection selectConn = db.getConn();
 		Connection conn = db.getConn();
+		selectConn.setAutoCommit(false);
 		conn.setAutoCommit(false);
 		int selectedNum = 0;
 		int insertedNum = 0;
