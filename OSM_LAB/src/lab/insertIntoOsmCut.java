@@ -68,16 +68,14 @@ public class insertIntoOsmCut {
 	private static void insert(String osmTableName, String bufferTableName, String insertTableName) throws SQLException {
 		Calendar startTableInsertDate = Calendar.getInstance();
 		logger.info("startTableDate:" + startTableInsertDate.getTime() + "\t|osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName);
-		Connection selectConn = db.getConn();
 		Connection conn = db.getConn();
-		selectConn.setAutoCommit(false);
 		conn.setAutoCommit(false);
 		int selectedNum = 0;
 		int insertedNum = 0;
 
 		PreparedStatement osmCountStmt = db.getPstmt(conn, "select count(*) num from " + osmTableName);
-		PreparedStatement osmSelectStmt = db.getPstmt(selectConn, "select * from " + osmTableName);
-		osmSelectStmt.setFetchSize(BATCH_SIZE);
+		PreparedStatement osmSelectStmt = db.getPstmt(conn, "select * from " + osmTableName);
+//		osmSelectStmt.setFetchSize(BATCH_SIZE); only for PostGIS
 
 		ResultSet osmCountRs = db.getRs(osmCountStmt);
 		ResultSet osmSelectRs = db.getRs(osmSelectStmt);
@@ -168,7 +166,6 @@ public class insertIntoOsmCut {
 		db.close(osmSelectStmt);
 		db.close(osmCountStmt);
 		db.close(conn);
-		db.close(selectConn);
 	}
 
 }
