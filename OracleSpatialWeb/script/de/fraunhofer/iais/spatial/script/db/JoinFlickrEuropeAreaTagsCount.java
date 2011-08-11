@@ -147,7 +147,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = ?");
 		selectAreaStmt.setInt(1, TEMP_REGION_CHECKED_CODE);
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
-		PreparedStatement selectDateStmt = db.getPstmt(conn, "select DISTINCT to_char(t.TAKEN_DATE,?) d from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = ? order by d");
+		PreparedStatement selectDateStmt = db.getPstmt(conn, "select DISTINCT taken_date_hour from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = ? order by taken_date_hour");
 
 		//PostGIS: to_timestamp()
 		PreparedStatement selectTagsStmt = db.getPstmt(conn,
@@ -174,13 +174,12 @@ public class JoinFlickrEuropeAreaTagsCount {
 
 			areaId = selectAreaRs.getInt("id");
 
-			selectDateStmt.setString(1, FlickrAreaDao.judgeDbDateCountPatternStr(Level.HOUR));
-			selectDateStmt.setInt(2, areaId);
-			selectDateStmt.setInt(3, TEMP_REGION_CHECKED_CODE);
+			selectDateStmt.setInt(1, areaId);
+			selectDateStmt.setInt(2, TEMP_REGION_CHECKED_CODE);
 
 			ResultSet selectDateRs = db.getRs(selectDateStmt);
 			while (selectDateRs.next()) {
-				String dateStr = selectDateRs.getString("d");
+				String dateStr = selectDateRs.getString("taken_date_hour");
 				selectTagsStmt.setInt(1, areaId);
 				selectTagsStmt.setInt(2, TEMP_REGION_CHECKED_CODE);
 				selectTagsStmt.setString(3, dateStr);

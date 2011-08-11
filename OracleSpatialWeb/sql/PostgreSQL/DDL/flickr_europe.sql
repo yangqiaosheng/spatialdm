@@ -84,10 +84,15 @@ CREATE INDEX flickr_europe_lonlat_idx
 
 -- Index: flickr_europe_taken_date_idx
 
---CREATE INDEX flickr_europe_taken_date_idx
- -- ON flickr_europe
- -- USING btree
- -- (taken_date DESC);
+CREATE INDEX flickr_europe_taken_date_idx
+  ON flickr_europe
+  USING btree
+  (taken_date DESC);
+
+CREATE INDEX flickr_europe_taken_date_hour_idx
+  ON flickr_europe
+  USING btree
+  (taken_date_hour DESC);
 
 CREATE INDEX flickr_europe_r5000_id_idx
   ON flickr_europe
