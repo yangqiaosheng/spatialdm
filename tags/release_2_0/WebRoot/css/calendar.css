@@ -1,0 +1,13 @@
+.popupDatepicker {
+  width: 100%;
+}            
+#popupDatepicker1 {
+  width: 60%; /*how large I want to be the field for selection the time interval*/
+}            
+/*in the fields I include the picture and then I put this image in the proper place within the element*/
+#popupDatepicker1 + img {
+  position: relative;
+  left: -24px;
+  top: 0px;
+}
+            
