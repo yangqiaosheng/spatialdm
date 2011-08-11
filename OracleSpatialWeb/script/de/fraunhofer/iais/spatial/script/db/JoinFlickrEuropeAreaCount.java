@@ -425,15 +425,15 @@ public class JoinFlickrEuropeAreaCount {
 		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME);
 		selectStmt.setFetchSize(SELECT_BATCH_SIZE);
 		PreparedStatement selectAreaIdPstmt = null;
-		PreparedStatement updateStmt = null;
 		ResultSet countRs = db.getRs(countStmt);
 		ResultSet rs = db.getRs(selectStmt);
-		ResultSet areaIdRs = null;
+
 		int totalNum = 0;
 		try {
 			if (countRs.next()) {
 				totalNum = countRs.getInt("num");
 			}
+			db.close(countRs);
 
 			int updatedNum = 0;
 			while (rs.next()) {
@@ -443,27 +443,25 @@ public class JoinFlickrEuropeAreaCount {
 
 				System.out.println("totalNum/updatedNum: " + totalNum + "/" + updatedNum++);
 				selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from FLICKR_EUROPE_AREA t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
-
-				areaIdRs = db.getRs(selectAreaIdPstmt);
+				ResultSet areaIdRs = db.getRs(selectAreaIdPstmt);
 				while (areaIdRs.next()) {
 					int areaId = areaIdRs.getInt("id");
 					String radius = areaIdRs.getString("radius");
-					updateStmt = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set region_" + radius + "_id = ? where photo_id = ?");
+					PreparedStatement updateStmt = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set region_" + radius + "_id = ? where photo_id = ?");
 					updateStmt.setInt(1, areaId);
 					updateStmt.setLong(2, photoId);
 					updateStmt.executeUpdate();
+					db.close(updateStmt);
 					System.out.println("photo_id: " + photoId + "\\t|region_" + radius + "_id = " + areaId);
 				}
 				conn.commit();
+				db.close(areaIdRs);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			db.close(rs);
-			db.close(countRs);
-			db.close(areaIdRs);
 			db.close(selectAreaIdPstmt);
-			db.close(updateStmt);
 			db.close(selectStmt);
 			db.close(countStmt);
 			db.close(selectConn);
