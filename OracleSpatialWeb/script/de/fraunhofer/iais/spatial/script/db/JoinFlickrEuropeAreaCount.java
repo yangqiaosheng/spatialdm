@@ -457,7 +457,7 @@ public class JoinFlickrEuropeAreaCount {
 					updateStmt.setLong(2, photoId);
 					updateStmt.executeUpdate();
 					db.close(updateStmt);
-					System.out.println("photo_id: " + photoId + "\\t|region_" + radius + "_id = " + areaId);
+					System.out.println("photo_id: " + photoId + "\t|region_" + radius + "_id = " + areaId);
 				}
 				conn.commit();
 				db.close(areaIdRs);
