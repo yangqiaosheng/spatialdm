@@ -26,10 +26,8 @@ function initialize1()
 	  initboolSelected();// LoadPolygons.js 
 	  agregationPolygonsAdd();
 	  $('#EnabledOrDisabled').html(" Enabled <br/>");
-	  scaleLevelOnStart();	
-	  google.maps.event.addListener(map, "tilesloaded", function() {	    
-	    console.log("Map is fully loaded");
-	    addRemoveElementsFromHistogram();
+	  scaleLevelOnStart();
+	  google.maps.event.addListener(map, "tilesloaded", function() {	    	    
 	    askHistogram();// in Histogram
 	  });	    
 
@@ -47,12 +45,7 @@ function addRemoveElementsFromHistogram(){
 	    $("#histogramContent").append("<div id=parent3></div>");
 	    $("#histogramContent").append("<div id=parent4></div>");
 	    $("#histogramContent").append("<div id=parent5></div>");
-
-	   /* $("#chart1").remove();
-	    $("#chart2").remove();
-	    $("#chart3").remove();
-	    $("#chart4").remove();
-	    $("#chart5").remove(); */
+	  
 }
              
 function start() {	
@@ -61,20 +54,26 @@ function start() {
 }
 
 function scaleLevelOnStart(){
-	if (map.getZoom() < 8) {
-		$("#scaleLevel").html("1");	
+	if (map.getZoom() <= 5 ) {
+		$("#scaleLevel").html("1");
 	}
-	if ((map.getZoom() < 10) && (map.getZoom() >= 8)) {				
-		$("#scaleLevel").html("2");			
+	if (map.getZoom() == 6) {
+		$("#scaleLevel").html("2");
 	}
-	if ((map.getZoom() < 11) && (map.getZoom() >= 10)) {
-		$("#scaleLevel").html("3");				
+	if (map.getZoom() == 7) {
+		$("#scaleLevel").html("3");
 	}
-	if ((map.getZoom() < 12) && (map.getZoom() >= 11)) {				
+	if (map.getZoom() == 8) {
 		$("#scaleLevel").html("4");
 	}
-	if (map.getZoom() >= 12) {
+	if (map.getZoom() == 9) {
 		$("#scaleLevel").html("5");
+	}
+	if (map.getZoom() == 10) {
+		$("#scaleLevel").html("6");
+	}
+	if (map.getZoom() >= 11) {
+		$("#scaleLevel").html("7");
 	}	
 }
 
