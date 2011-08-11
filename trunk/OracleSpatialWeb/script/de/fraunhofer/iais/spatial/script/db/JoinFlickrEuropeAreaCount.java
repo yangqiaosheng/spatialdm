@@ -151,28 +151,30 @@ public class JoinFlickrEuropeAreaCount {
 	}
 
 	private void count(Connection conn, Level queryLevel, String radiusString) throws SQLException {
+		Date beginDate = new Date();
+		logger.info("count() beginDate" + beginDate);
+
 		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = ?");
 		selectAreaStmt.setInt(1, TEMP_REGION_CHECKED_CODE);
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 
-		PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select date_str, count(*) as num from (" + " select t.photo_id, to_char(t.TAKEN_DATE, ?) as date_str" + " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString
-				+ "_id = ? and t.REGION_CHECKED = ?) temp " + "group by date_str");
+		PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select taken_date_hour, count(*) as num from (" + " select t.photo_id, taken_date_hour" + " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString
+				+ "_id = ? and t.REGION_CHECKED = ?) temp " + "group by taken_date_hour");
 
 		int areaId = -1;
 		int checkedSize = 0;
 		while (selectAreaRs.next()) {
 			areaId = selectAreaRs.getInt("id");
 
-			selectFlickrStmt.setString(1, FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel));
-			selectFlickrStmt.setInt(2, areaId);
-			selectFlickrStmt.setInt(3, TEMP_REGION_CHECKED_CODE);
+			selectFlickrStmt.setInt(1, areaId);
+			selectFlickrStmt.setInt(2, TEMP_REGION_CHECKED_CODE);
 
 			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
 
 			Map<String, Integer> countsMap = new TreeMap<String, Integer>();
 
 			while (selectFlickrRs.next()) {
-				countsMap.put(selectFlickrRs.getString("date_str"), selectFlickrRs.getInt("num"));
+				countsMap.put(selectFlickrRs.getString("taken_date_hour"), selectFlickrRs.getInt("num"));
 			}
 
 			addToIndex(conn, countsMap, queryLevel, areaId, radiusString);
@@ -191,6 +193,9 @@ public class JoinFlickrEuropeAreaCount {
 		db.close(selectFlickrStmt);
 		db.close(selectAreaRs);
 		db.close(selectAreaStmt);
+
+		Date endDate = new Date();
+		logger.info("count() endDate" + endDate +" |cost:" + (endDate.getTime() - beginDate.getTime()) / 1000 + " seconds");
 	}
 
 	private void addToIndex(Connection conn, Map<String, Integer> countsMapToAdd, Level queryLevel, int id, String radius) throws SQLException {
