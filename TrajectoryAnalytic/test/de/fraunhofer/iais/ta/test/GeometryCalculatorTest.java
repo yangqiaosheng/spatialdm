@@ -4,28 +4,48 @@ import java.awt.Color;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.geotools.geometry.jts.JTS;
 import org.jaitools.swing.JTSFrame;
 import org.junit.Test;
 
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.operation.buffer.BufferBuilder;
 
 import de.fraunhofer.iais.ta.geometry.ArrowGeometryCalculator;
+import de.fraunhofer.iais.ta.geometry.FeatureGeometryCalculator;
 
 public class GeometryCalculatorTest {
+
+	public static void main(String[] args) {
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(10, 20),  new Coordinate(10, 30),  new Coordinate(20, 30)};
+		GeometryFactory geometryFactory = new GeometryFactory();
+		LineString path = geometryFactory.createLineString(coordinates);
+		System.out.println(path.toText());
+
+//		BufferBuilder bufferBuilder = new BufferBuilder(BufferParameters);
+		JTSFrame jtsFrame = new JTSFrame("JTS Frame");
+		jtsFrame.addGeometry(path.buffer(1.5d), Color.BLACK);
+		jtsFrame.setVisible(true);
+
+		Polygon trianglePolygon = new FeatureGeometryCalculator().triangle(new Coordinate(10, 20),  new Coordinate(10, 30), 1f);
+		List<Polygon> triangles = new FeatureGeometryCalculator().triangles(new Coordinate(10, 20),  new Coordinate(10, 30), 1f , 2, 1);
+		for(Polygon triangle : triangles){
+			jtsFrame.addGeometry(triangle, Color.RED);
+		}
+
+		Polygon triangleArrowPolygon = new FeatureGeometryCalculator().triangleArrow(new Coordinate(10, 20),  new Coordinate(10, 30), 1f, 0.2f);
+//		jtsFrame.addGeometry(triangleArrowPolygon, Color.BLACK);
+	}
 
 	@Test
 	public void arrowTest() {

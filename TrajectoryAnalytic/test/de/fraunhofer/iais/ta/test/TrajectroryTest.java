@@ -28,6 +28,9 @@ import de.fraunhofer.iais.ta.util.DBUtil;
 
 public class TrajectroryTest {
 
+	public static void main(String[] args) {
+
+	}
 
 	static DBUtil db = new DBUtil("/jdbc_pg.properties", 3, 10);
 
