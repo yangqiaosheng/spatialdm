@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
@@ -15,6 +16,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +37,7 @@ public class JoinFlickrEuropeAreaCount {
 	final static int BEGIN_REGION_CHECKED_CODE = 1;
 	final static int FINISH_REGION_CHECKED_CODE = 2;
 	final static int TEMP_REGION_CHECKED_CODE = -1;
-	final static String PHOTOS_TABLE_NAME = "FLICKR_EUROPE";
+	final static String PHOTOS_TABLE_NAME = "FLICKR_EUROPE_TOPVIEWED_1M";
 	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
 	static int rownum = 1;
 	static Calendar startDate;
@@ -76,7 +78,6 @@ public class JoinFlickrEuropeAreaCount {
 
 		Connection conn = db.getConn();
 		try {
-			updateRegionId();
 			conn.setAutoCommit(false);
 
 			int updateSize = 0;
@@ -407,73 +408,6 @@ public class JoinFlickrEuropeAreaCount {
 		db.close(updateStmt);
 		db.close(pset);
 		db.close(pstmt);
-	}
-
-	/*
-	private void insert(Connection conn, String countStr, String table, String column, int id, String radius) throws SQLException {
-		PreparedStatement stmt = db.getPstmt(conn, "insert into " + table + " (id, radius, " + column + ") values (?, ?, ?)");
-		stmt.setInt(1, id);
-		stmt.setString(2, radius);
-		stmt.setString(3, countStr);
-		stmt.executeUpdate();
-		db.close(stmt);
-	}*/
-
-	private void updateRegionId() throws SQLException {
-		Date beginDate = new Date();
-		logger.info("updateRegionId() beginDate" + beginDate);
-		Connection selectConn = db.getConn();
-		Connection conn = db.getConn();
-		selectConn.setAutoCommit(false);
-		conn.setAutoCommit(false);
-		PreparedStatement countStmt = db.getPstmt(conn, "select count(*) num from " + PHOTOS_TABLE_NAME);
-		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME);
-		selectStmt.setFetchSize(SELECT_BATCH_SIZE);
-		PreparedStatement selectAreaIdPstmt = null;
-		ResultSet countRs = db.getRs(countStmt);
-		ResultSet rs = db.getRs(selectStmt);
-
-		int totalNum = 0;
-		try {
-			if (countRs.next()) {
-				totalNum = countRs.getInt("num");
-			}
-			db.close(countRs);
-
-			int updatedNum = 0;
-			while (rs.next()) {
-				long photoId = rs.getLong("photo_id");
-				double longitude = rs.getLong("longitude");
-				double latitude = rs.getLong("latitude");
-
-				System.out.println("totalNum/updatedNum: " + totalNum + "/" + updatedNum++);
-				selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from FLICKR_EUROPE_AREA t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
-				ResultSet areaIdRs = db.getRs(selectAreaIdPstmt);
-				while (areaIdRs.next()) {
-					int areaId = areaIdRs.getInt("id");
-					String radius = areaIdRs.getString("radius");
-					PreparedStatement updateStmt = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set region_" + radius + "_id = ? where photo_id = ?");
-					updateStmt.setInt(1, areaId);
-					updateStmt.setLong(2, photoId);
-					updateStmt.executeUpdate();
-					db.close(updateStmt);
-					System.out.println("photo_id: " + photoId + "\t|region_" + radius + "_id = " + areaId);
-				}
-				conn.commit();
-				db.close(areaIdRs);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			db.close(rs);
-			db.close(selectAreaIdPstmt);
-			db.close(selectStmt);
-			db.close(countStmt);
-			db.close(selectConn);
-			db.close(conn);
-		}
-		Date endDate = new Date();
-		logger.info("updateRegionId() endDate" + endDate +" |cost:" + (endDate.getTime() - beginDate.getTime()) / 1000 + " seconds");
 	}
 
 }
