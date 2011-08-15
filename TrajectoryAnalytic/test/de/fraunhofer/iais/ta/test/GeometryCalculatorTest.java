@@ -40,11 +40,18 @@ public class GeometryCalculatorTest {
 		Polygon trianglePolygon = new FeatureGeometryCalculator().triangle(new Coordinate(10, 20),  new Coordinate(10, 30), 1f);
 		List<Polygon> triangles = new FeatureGeometryCalculator().triangles(new Coordinate(10, 20),  new Coordinate(10, 30), 1f , 2, 1);
 		for(Polygon triangle : triangles){
-			jtsFrame.addGeometry(triangle, Color.RED);
+//			jtsFrame.addGeometry(triangle, Color.RED);
 		}
 
-		Polygon triangleArrowPolygon = new FeatureGeometryCalculator().triangleArrow(new Coordinate(10, 20),  new Coordinate(10, 30), 1f, 0.2f);
-//		jtsFrame.addGeometry(triangleArrowPolygon, Color.BLACK);
+		Polygon peakPolygon = new FeatureGeometryCalculator().peak(new Coordinate(10, 20),  new Coordinate(10, 30), 1f, 0.2f);
+		Polygon peakPolygon2 = new FeatureGeometryCalculator().peak(new Coordinate(10, 20),  new Coordinate(10, 50), 1f, 3f, 7f);
+//		jtsFrame.addGeometry(peakPolygon, Color.BLACK);
+//		jtsFrame.addGeometry(peakPolygon2, Color.RED);
+
+		List<Polygon> peaks = new FeatureGeometryCalculator().peaks(new Coordinate(10, 20),  new Coordinate(10, 30), 1f , 0.2f, 2.2f, 0.3f);
+		for(Polygon peak : peaks){
+			jtsFrame.addGeometry(peak, Color.GREEN);
+		}
 	}
 
 	@Test
