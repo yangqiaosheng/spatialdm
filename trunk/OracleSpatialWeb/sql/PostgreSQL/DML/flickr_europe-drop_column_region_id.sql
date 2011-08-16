@@ -20,3 +20,5 @@ alter table flickr_europe
 drop column region_750_id;
 alter table flickr_europe 
 drop column region_375_id;
+alter table flickr_europe 
+drop column region_checked;
