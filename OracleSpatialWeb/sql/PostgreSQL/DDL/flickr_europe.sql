@@ -77,48 +77,64 @@ ALTER TABLE flickr_europe OWNER TO gennady_flickr;
 
 -- DROP INDEX flickr_europe_lonlat_idx;
 
-CREATE INDEX flickr_europe_lonlat_idx
+CREATE INDEX
   ON flickr_europe
   USING btree
   (longitude, latitude);
 
 -- Index: flickr_europe_taken_date_idx
 
-CREATE INDEX flickr_europe_taken_date_idx
+CREATE INDEX
   ON flickr_europe
   USING btree
   (taken_date DESC);
 
-CREATE INDEX flickr_europe_taken_date_hour_idx
+CREATE INDEX
   ON flickr_europe
   USING btree
   (taken_date_hour DESC);
 
-CREATE INDEX flickr_europe_r5000_id_idx
+CREATE INDEX
   ON flickr_europe
   USING btree
-  (taken_date DESC, region_5000_id);
-CREATE INDEX flickr_europe_r10000_id_idx
+  (region_375_id, taken_date DESC);
+CREATE INDEX
   ON flickr_europe
   USING btree
-  (taken_date DESC, region_10000_id);
-CREATE INDEX flickr_europe_r20000_id_idx
+  (region_750_id, taken_date DESC);
+CREATE INDEX
   ON flickr_europe
   USING btree
-  (taken_date DESC, region_20000_id);
-CREATE INDEX flickr_europe_r40000_id_idx
+  (region_1250_id, taken_date DESC);
+CREATE INDEX
   ON flickr_europe
   USING btree
-  (taken_date DESC, region_40000_id);
-CREATE INDEX flickr_europe_r80000_id_idx
+  (region_2500_id, taken_date DESC);
+CREATE INDEX
   ON flickr_europe
   USING btree
-  (taken_date DESC, region_80000_id);
-CREATE INDEX flickr_europe_r160000_id_idx
+  (region_5000_id, taken_date DESC);
+CREATE INDEX
   ON flickr_europe
   USING btree
-  (taken_date DESC, region_160000_id);
-CREATE INDEX flickr_europe_r320000_id_idx
+  (region_10000_id, taken_date DESC);
+CREATE INDEX
   ON flickr_europe
   USING btree
-  (taken_date DESC, region_320000_id);
+  (region_20000_id, taken_date DESC);
+CREATE INDEX
+  ON flickr_europe
+  USING btree
+  (region_40000_id, taken_date DESC);
+CREATE INDEX
+  ON flickr_europe
+  USING btree
+  (region_80000_id, taken_date DESC);
+CREATE INDEX
+  ON flickr_europe
+  USING btree
+  (region_160000_id, taken_date DESC);
+CREATE INDEX
+  ON flickr_europe
+  USING btree
+  (region_320000_id, taken_date DESC);
