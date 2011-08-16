@@ -1,4 +1,5 @@
---稍快
+--快， 利用临时表和索引的group by功能，避免多表连接
+
 
 alter table flickr_europe_without_region_id add primary key 
 (photo_id);
@@ -79,7 +80,8 @@ where f.photo_id = r.photo_id;
 alter table flickr_europe_with_region_id add primary key 
 (photo_id);
 --------------------------------------------------------------------------------------------------
---稍慢, 注意photo_id上必须有主键索引，否则很慢
+--慢, 尽管photo_id上必须有主键索引
+--太多表的链接join操作，数据量大时，性能急剧下降
 
 alter table flickr_europe_without_region_id add primary key 
 (photo_id);
