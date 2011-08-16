@@ -1,4 +1,8 @@
 --稍快
+
+alter table flickr_europe_without_region_id add primary key 
+(photo_id);
+
 create table flickr_europe_region_id as
 select f.photo_id, a.radius, a.id as region_id from flickr_europe_area a, flickr_europe f
 	where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT('||f.longitude||' '||f.latitude||')'), a.geom::geometry);
@@ -75,7 +79,11 @@ where f.photo_id = r.photo_id;
 alter table flickr_europe_with_region_id add primary key 
 (photo_id);
 --------------------------------------------------------------------------------------------------
---慢, 数据量大时性能下降厉害
+--稍慢, 注意photo_id上必须有主键索引，否则很慢
+
+alter table flickr_europe_without_region_id add primary key 
+(photo_id);
+
 create table flickr_europe_with_region_id as
 select t.*, 
        a1.id as region_320000_id,
