@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
@@ -14,6 +16,8 @@ import com.vividsolutions.jts.math.Vector2D;
 
 public class FeatureGeometryCalculator {
 
+	GeometryFactory geometryFactory = new GeometryFactory();
+
 	public Polygon arrow(Point fromPt, Point toPt, float width) {
 
 		return null;
@@ -22,6 +26,13 @@ public class FeatureGeometryCalculator {
 
 	public List<Polygon> triangles(Coordinate fromCoordinate, Coordinate toCoordinate, float width, float length, float space, float fromMargin, float toMargin) {
 		return null;
+	}
+
+	public Polygon boundary(Coordinate fromCoordinate, Coordinate toCoordinate, float width) {
+		Coordinate[] coordinates = new Coordinate[] {fromCoordinate,  toCoordinate};
+		LineString path = geometryFactory.createLineString(coordinates);
+
+		return (Polygon) path.buffer(width);
 	}
 
 	public List<Polygon> triangles(Coordinate fromCoordinate, Coordinate toCoordinate, float width, float triangleLength, float spaceLength) {
@@ -49,7 +60,6 @@ public class FeatureGeometryCalculator {
 		Coordinate deltaVector = new Coordinate(toCoordinate.x - fromCoordinate.x, toCoordinate.y - fromCoordinate.y);
 		Coordinate clockwiseVector = AffineTransformation.rotationInstance(-Math.PI / 2).transform(deltaVector, new Coordinate());
 		Coordinate clockwiseNormalVector = Vector2D.create(clockwiseVector).normalize().toCoordinate();
-		GeometryFactory geometryFactory = new GeometryFactory();
 
 		Coordinate[] coordinates = new Coordinate[] {
 				new Coordinate(fromCoordinate.x + deltaVector.x, fromCoordinate.y + deltaVector.y),
@@ -98,7 +108,6 @@ public class FeatureGeometryCalculator {
 		Coordinate deltaVector = new Coordinate(toCoordinate.x - fromCoordinate.x, toCoordinate.y - fromCoordinate.y);
 		Coordinate clockwiseVector = AffineTransformation.rotationInstance(-Math.PI / 2).transform(deltaVector, new Coordinate());
 		Coordinate clockwiseNormalVector = Vector2D.create(clockwiseVector).normalize().toCoordinate();
-		GeometryFactory geometryFactory = new GeometryFactory();
 
 		Coordinate[] coordinates = new Coordinate[] {
 				new Coordinate(fromCoordinate.x + deltaVector.x, fromCoordinate.y + deltaVector.y),
