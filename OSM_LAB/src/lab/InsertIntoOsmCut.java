@@ -23,13 +23,10 @@ public class InsertIntoOsmCut {
 	private static final Logger logger = LoggerFactory.getLogger(InsertIntoOsmCut.class);
 
 	final static int BATCH_SIZE = 1000;
-	final static String BUFFER_TABLE_NAME = "INA.D_BUFF";
+	final static String BUFFER_TABLE_NAME = "INA.D_BUFF5";
 	final static String OSM_TABLE_NAME = "INA.PLANET_OSM_LINE_NEW";
-	final static String INSERT_TABLE_NAME = "D_CUT_OSM";
-	static int rownum = 1;
+	final static String INSERT_TABLE_NAME = "D_CUT_OSM5";
 	static Calendar startDate;
-
-	static DBUtil db = new DBUtil("/jdbc.properties", 18, 3);
 
 	public static void main(String[] args) throws SQLException {
 		System.out.println(SystemUtils.getUserDir());
@@ -38,44 +35,36 @@ public class InsertIntoOsmCut {
 		startDate = Calendar.getInstance();
 		startDate.setTimeInMillis(start);
 
-		Integer[] bufferSizes = { 5, 10, 30 };
-		String[] osmSuffixs = { "", "_2011" };
-//		String[] osmSuffixs = { "_2011" };
+		String osmTableName = OSM_TABLE_NAME;
+		long startTableInsertTime = System.currentTimeMillis();
+		String bufferTableName = BUFFER_TABLE_NAME;
+		String insertTableName = INSERT_TABLE_NAME;
+		insert(osmTableName, bufferTableName, insertTableName);
 
-		for (String osmSuffix : osmSuffixs) {
-			String osmTableName = OSM_TABLE_NAME + osmSuffix;
-			for (int bufferSize : bufferSizes) {
-				long startTableInsertTime = System.currentTimeMillis();
-				String bufferTableName = BUFFER_TABLE_NAME + bufferSize;
-				String insertTableName = INSERT_TABLE_NAME + bufferSize + osmSuffix;
-				insert(osmTableName, bufferTableName, insertTableName);
-
-				Calendar endDate = Calendar.getInstance();
-				endDate.setTimeInMillis(System.currentTimeMillis());
-				long endtTableInsertTime = System.currentTimeMillis();
-				logger.info("osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName + "\t|cost time:" + (endtTableInsertTime - startTableInsertTime) / 1000 + "s");
-				logger.info("start time:" + startDate.getTime()); //$NON-NLS-1$
-				logger.info("endTableTime:" + endDate.getTime()); //$NON-NLS-1$
-				logger.info("main(String[]) - escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
-			}
-		}
+		Calendar endDate = Calendar.getInstance();
+		endDate.setTimeInMillis(System.currentTimeMillis());
+		long endtTableInsertTime = System.currentTimeMillis();
+		logger.info("osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName + "\t|cost time:" + (endtTableInsertTime - startTableInsertTime) / 1000 + "s");
+		logger.info("start time:" + startDate.getTime()); //$NON-NLS-1$
+		logger.info("endTableTime:" + endDate.getTime()); //$NON-NLS-1$
+		logger.info("main(String[]) - escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
 
 	}
 
 	private static void insert(String osmTableName, String bufferTableName, String insertTableName) throws SQLException {
 		Calendar startTableInsertDate = Calendar.getInstance();
 		logger.info("startTableDate:" + startTableInsertDate.getTime() + "\t|osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName);
-		Connection conn = db.getConn();
+		Connection conn = DBUtil.getConn();
 		conn.setAutoCommit(false);
 		int selectedNum = 0;
 		int insertedNum = 0;
 
-		PreparedStatement osmCountStmt = db.getPstmt(conn, "select count(*) num from " + osmTableName);
-		PreparedStatement osmSelectStmt = db.getPstmt(conn, "select * from " + osmTableName);
+		PreparedStatement osmCountStmt = DBUtil.getPstmt(conn, "select count(*) num from " + osmTableName);
+		PreparedStatement osmSelectStmt = DBUtil.getPstmt(conn, "select * from " + osmTableName);
 //		osmSelectStmt.setFetchSize(BATCH_SIZE); only for PostGIS
 
-		ResultSet osmCountRs = db.getRs(osmCountStmt);
-		ResultSet osmSelectRs = db.getRs(osmSelectStmt);
+		ResultSet osmCountRs = DBUtil.getRs(osmCountStmt);
+		ResultSet osmSelectRs = DBUtil.getRs(osmSelectStmt);
 
 		osmCountRs.next();
 		long totalNum = osmCountRs.getLong("num");
@@ -87,12 +76,12 @@ public class InsertIntoOsmCut {
 			String osmName = StringUtils.defaultString(osmSelectRs.getString("name"));
 			String osmRef = StringUtils.defaultString(osmSelectRs.getString("ref_"));
 			STRUCT osmGeom = (STRUCT) osmSelectRs.getObject("way");
-			PreparedStatement bufferSelectStmt = db.getPstmt(conn, "" + "select t.*, " + "SDO_GEOM.SDO_INTERSECTION(t.geo_object, ?, 0.005) cut_geom, "
+			PreparedStatement bufferSelectStmt = DBUtil.getPstmt(conn, "" + "select t.*, " + "SDO_GEOM.SDO_INTERSECTION(t.geo_object, ?, 0.005) cut_geom, "
 					+ "SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(t.geo_object, ?, 0.005), 0.005, 'UNIT=M') osm_seglaenge " + "from " + bufferTableName + " t where sdo_relate(t.geo_object, ?, 'mask=anyinteract') = 'TRUE'");
 			bufferSelectStmt.setObject(1, osmGeom);
 			bufferSelectStmt.setObject(2, osmGeom);
 			bufferSelectStmt.setObject(3, osmGeom);
-			ResultSet bufferSelectRs = db.getRs(bufferSelectStmt);
+			ResultSet bufferSelectRs = DBUtil.getRs(bufferSelectStmt);
 
 			while (bufferSelectRs.next()) {
 
@@ -113,11 +102,11 @@ public class InsertIntoOsmCut {
 
 				PreparedStatement pgInsertStmt = null;
 				if (cutGeom != null) {
-					pgInsertStmt = db.getPstmt(conn, "" + "insert into " + insertTableName + "(osm_id, nav_id, osm_name, osm_name2, nav_name, nav_name2, nav_laenge, osm_seglaenge, ls1, ls2, ls3, ls4, geoloc)"
+					pgInsertStmt = DBUtil.getPstmt(conn, "" + "insert into " + insertTableName + "(osm_id, nav_id, osm_name, osm_name2, nav_name, nav_name2, nav_laenge, osm_seglaenge, ls1, ls2, ls3, ls4, geoloc)"
 							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				} else {
-					pgInsertStmt = db
-							.getPstmt(conn, "" + "insert into " + insertTableName + "(osm_id, nav_id, osm_name, osm_name2, nav_name, nav_name2, nav_laenge, osm_seglaenge, ls1, ls2, ls3, ls4)" + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					pgInsertStmt = DBUtil.getPstmt(conn, "" + "insert into " + insertTableName + "(osm_id, nav_id, osm_name, osm_name2, nav_name, nav_name2, nav_laenge, osm_seglaenge, ls1, ls2, ls3, ls4)"
+							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				}
 
 				int i = 1;
@@ -140,21 +129,21 @@ public class InsertIntoOsmCut {
 				insertedNum += pgInsertStmt.executeUpdate();
 
 				conn.commit();
-				db.close(pgInsertStmt);
+				DBUtil.close(pgInsertStmt);
 			}
-			db.close(bufferSelectRs);
-			db.close(bufferSelectStmt);
+			DBUtil.close(bufferSelectRs);
+			DBUtil.close(bufferSelectStmt);
 
 			conn.commit();
 			logger.debug("startTableDate:" + startTableInsertDate.getTime() + "\t|osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + insertTableName);
 			logger.debug("totalNum:" + totalNum + "\t|selectedNum:" + selectedNum + "\t|insertedNum:" + insertedNum);
 		}
 
-		db.close(osmSelectRs);
-		db.close(osmCountRs);
-		db.close(osmSelectStmt);
-		db.close(osmCountStmt);
-		db.close(conn);
+		DBUtil.close(osmSelectRs);
+		DBUtil.close(osmCountRs);
+		DBUtil.close(osmSelectStmt);
+		DBUtil.close(osmCountStmt);
+		DBUtil.close(conn);
 	}
 
 }

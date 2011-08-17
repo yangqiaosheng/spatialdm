@@ -54,4 +54,5 @@ BEGIN
       WHERE sdo_relate(a.geo_object, v_geoloc, 'mask=anyinteract') = 'TRUE';
     END LOOP;
   END;
+  CLOSE c;
 END INSERT_D_CUT_OSM5;

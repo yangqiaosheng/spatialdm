@@ -164,8 +164,9 @@ Declare
              end,
              sdo_geom.sdo_intersection(a.geo_object, v_geoloc, 0.005)
         from d_buff5 a -- Puffertabelle aus den Navteq-Geometrien (5m, 10m, 30m)
-       where sdo_relate(a.geo_object, v_geoloc, 'mask=anyinteract') = 'TRUE';
-  end loop;
+       where INA.sdo_relate(a.geo_object, v_geoloc, 'mask=anyinteract') = 'TRUE';
+    end loop;
+  close c;
  end;
 
 
