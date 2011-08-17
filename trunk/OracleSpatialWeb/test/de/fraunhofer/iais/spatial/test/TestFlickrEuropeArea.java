@@ -171,7 +171,7 @@ public class TestFlickrEuropeArea {
 
 	@Test
 	public void testJdbcDao1() {
-		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R5000);
+		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R320000);
 
 		long totalNum = areaMgr.getAreaDao().getTotalEuropePhotoNum();
 		long totalNumPeople = areaMgr.getAreaDao().getTotalPeopleNum();
@@ -414,7 +414,7 @@ public class TestFlickrEuropeArea {
 				}
 			}
 		}
-		System.out.println(photosResponseXml(11349, Radius.R10000, areaDto, 100));
+		System.out.println(photosResponseXml(10, Radius.R320000, areaDto, 100));
 	}
 
 	private String photosResponseXml(int areaid, Radius radius, FlickrAreaDto areaDto, int num) {
