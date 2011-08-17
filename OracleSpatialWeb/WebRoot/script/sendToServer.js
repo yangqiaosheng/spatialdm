@@ -19,7 +19,8 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 		}
 	};
 
-	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SpatialXml");
+//	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SpatialXml");
+	xmlHttp.open("POST", "SpatialXml");
 	// xmlHttp.open("POST",
 	// "http://localhost:8080/OracleSpatialWeb/RequestKml");
 
@@ -65,7 +66,8 @@ function sendToServer_ScreenCenter_ScreenBounds(headerXML, bodyXML) {
 			}
 		}
 	};
-	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SpatialXml");
+//	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SpatialXml");
+	xmlHttp.open("POST", "SpatialXml");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	xmlHttp.send("persist=true&xml="+ encodeURIComponent(screenBounds_screenCenter)+ "&timestamp=" + new Date().getTime());
 }
@@ -79,9 +81,8 @@ function sendToServerFromCarousel(ids, page_size, page) {
 	} else {
 		document.write("browser not supported");
 	}
-	xmlHttp
-			.open("POST",
-					"http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SmallPhotoUrl");
+//	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SmallPhotoUrl");
+	xmlHttp.open("POST", "SmallPhotoUrl");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	xmlHttp.send("areaid=" + ids + "&page_size=" + page_size + "&page=" + page);
 	xmlHttp.onreadystatechange = function() {

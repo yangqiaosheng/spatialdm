@@ -7,6 +7,18 @@ public class FlickrAreaUtil {
 	public static int judgeZoom(Radius radius) {
 		int zoom = 0;
 		switch (radius) {
+		case R375:
+			zoom = 15;
+			break;
+		case R750:
+			zoom = 14;
+			break;
+		case R1250:
+			zoom = 13;
+			break;
+		case R2500:
+			zoom = 12;
+			break;
 		case R5000:
 			zoom = 11;
 			break;
@@ -47,8 +59,16 @@ public class FlickrAreaUtil {
 			radius = Radius.R20000;
 		} else if (zoom <= 10) {
 			radius = Radius.R10000;
-		} else if (zoom >= 11) {
+		} else if (zoom <= 11) {
 			radius = Radius.R5000;
+		} else if (zoom <= 12) {
+			radius = Radius.R2500;
+		} else if (zoom <= 13) {
+			radius = Radius.R1250;
+		} else if (zoom <= 14) {
+			radius = Radius.R750;
+		} else if (zoom >= 15) {
+			radius = Radius.R375;
 		}
 		return radius;
 	}
