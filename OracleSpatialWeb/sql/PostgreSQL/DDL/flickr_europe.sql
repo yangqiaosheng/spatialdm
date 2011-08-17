@@ -82,8 +82,6 @@ CREATE INDEX
   USING btree
   (longitude, latitude);
 
--- Index: flickr_europe_taken_date_idx
-
 CREATE INDEX
   ON flickr_europe
   USING btree
