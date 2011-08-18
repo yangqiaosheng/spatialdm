@@ -144,15 +144,21 @@ public class JoinFlickrEuropeAreaCount {
 	}
 
 	private void count(Connection conn, Level queryLevel, String radiusString) throws SQLException {
-		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = ?");
-		selectAreaStmt.setInt(1, TEMP_REGION_CHECKED_CODE);
+//		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = ?");
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t");
+//		selectAreaStmt.setInt(1, TEMP_REGION_CHECKED_CODE);
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 
 
+//		PreparedStatement selectFlickrStmt = db.getPstmt(conn,
+//				"select date_str, count(*) as num from ("
+//				+ " select t.photo_id, to_char(t.TAKEN_DATE, ?) as date_str"
+//				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = ?) temp "
+//				+ "group by date_str");
 		PreparedStatement selectFlickrStmt = db.getPstmt(conn,
 				"select date_str, count(*) as num from ("
 				+ " select t.photo_id, to_char(t.TAKEN_DATE, ?) as date_str"
-				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = ?) temp "
+				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?) temp "
 				+ "group by date_str");
 
 		int areaId = -1;
@@ -163,7 +169,7 @@ public class JoinFlickrEuropeAreaCount {
 
 			selectFlickrStmt.setString(1, FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel));
 			selectFlickrStmt.setInt(2, areaId);
-			selectFlickrStmt.setInt(3, TEMP_REGION_CHECKED_CODE);
+//			selectFlickrStmt.setInt(3, TEMP_REGION_CHECKED_CODE);
 
 			ResultSet selectFlickrRs = db.getRs(selectFlickrStmt);
 
