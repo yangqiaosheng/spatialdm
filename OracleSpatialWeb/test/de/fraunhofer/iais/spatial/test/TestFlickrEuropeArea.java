@@ -527,11 +527,11 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
-	public void testKml1() throws Exception {
+	public void testKml() throws Exception {
 		long start = System.currentTimeMillis();
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
-		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest3.xml"))), areaDto);
 		List<FlickrArea> areas = null;
 		List<FlickrAreaResult> areaResults = Lists.newArrayList();
 		if (areaDto.getBoundaryRect() == null) {
