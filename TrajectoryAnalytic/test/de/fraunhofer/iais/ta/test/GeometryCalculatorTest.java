@@ -34,8 +34,17 @@ public class GeometryCalculatorTest {
 
 //		BufferBuilder bufferBuilder = new BufferBuilder(BufferParameters);
 		JTSFrame jtsFrame = new JTSFrame("JTS Frame");
-		jtsFrame.addGeometry(path.buffer(1.5d), Color.BLACK);
+		Geometry buffer = path.buffer(1.5d);
+		for (Coordinate coordinate : buffer.getCoordinates()){
+			jtsFrame.addGeometry(geometryFactory.createPoint(coordinate).buffer(0.1d), Color.BLACK);
+		}
+		jtsFrame.addGeometry(geometryFactory.createPoint( buffer.getCoordinates()[5]).buffer(0.2d), Color.BLACK);
+
+		jtsFrame.addGeometry(buffer, Color.BLACK);
 		jtsFrame.setVisible(true);
+		jtsFrame.setSize(400, 300);
+
+		jtsFrame.addGeometry(path, Color.RED);
 
 		Polygon trianglePolygon = new FeatureGeometryCalculator().triangle(new Coordinate(10, 20),  new Coordinate(10, 30), 1f);
 		List<Polygon> triangles = new FeatureGeometryCalculator().triangles(new Coordinate(10, 20),  new Coordinate(10, 30), 1f , 2, 1);
@@ -52,6 +61,8 @@ public class GeometryCalculatorTest {
 		for(Polygon peak : peaks){
 			jtsFrame.addGeometry(peak, Color.GREEN);
 		}
+
+
 	}
 
 	@Test
