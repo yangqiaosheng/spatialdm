@@ -13,12 +13,12 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DBUtil {
+public class DbJdbcUtil {
 
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(DBUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(DbJdbcUtil.class);
 
 	private static Properties pros = null;
 
@@ -28,7 +28,7 @@ public class DBUtil {
 
 		pros = new Properties();
 		try {
-			pros.load(new FileReader(DBUtil.class.getResource("/jdbc.properties").getFile()));
+			pros.load(new FileReader(DbJdbcUtil.class.getResource("/jdbc.properties").getFile()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

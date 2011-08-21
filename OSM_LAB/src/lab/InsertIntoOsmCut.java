@@ -16,7 +16,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import util.DBUtil;
+import util.DbJdbcUtil;
 import util.LevenshteinDistance;
 
 public class InsertIntoOsmCut {
@@ -67,17 +67,17 @@ public class InsertIntoOsmCut {
 	private static void insert(String osmTableName, String bufferTableName, String outputTableName) throws SQLException {
 		Calendar startTableInsertDate = Calendar.getInstance();
 		logger.info("startTableDate:" + startTableInsertDate.getTime() + "\t|osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + outputTableName);
-		Connection conn = DBUtil.getConn();
+		Connection conn = DbJdbcUtil.getConn();
 		conn.setAutoCommit(false);
 		int selectedNum = 0;
 		int insertedNum = 0;
 
-		PreparedStatement osmCountStmt = DBUtil.getPstmt(conn, "select count(*) num from " + osmTableName);
-		PreparedStatement osmSelectStmt = DBUtil.getPstmt(conn, "select * from " + osmTableName);
+		PreparedStatement osmCountStmt = DbJdbcUtil.getPstmt(conn, "select count(*) num from " + osmTableName);
+		PreparedStatement osmSelectStmt = DbJdbcUtil.getPstmt(conn, "select * from " + osmTableName);
 //		osmSelectStmt.setFetchSize(BATCH_SIZE); only for PostGIS
 
-		ResultSet osmCountRs = DBUtil.getRs(osmCountStmt);
-		ResultSet osmSelectRs = DBUtil.getRs(osmSelectStmt);
+		ResultSet osmCountRs = DbJdbcUtil.getRs(osmCountStmt);
+		ResultSet osmSelectRs = DbJdbcUtil.getRs(osmSelectStmt);
 
 		osmCountRs.next();
 		long totalNum = osmCountRs.getLong("num");
@@ -89,12 +89,12 @@ public class InsertIntoOsmCut {
 			String osmName = StringUtils.defaultString(osmSelectRs.getString("name"));
 			String osmRef = StringUtils.defaultString(osmSelectRs.getString("ref_"));
 			STRUCT osmGeom = (STRUCT) osmSelectRs.getObject("way");
-			PreparedStatement bufferSelectStmt = DBUtil.getPstmt(conn, "" + "select t.*, " + "SDO_GEOM.SDO_INTERSECTION(t.geo_object, ?, 0.005) cut_geom, "
+			PreparedStatement bufferSelectStmt = DbJdbcUtil.getPstmt(conn, "" + "select t.*, " + "SDO_GEOM.SDO_INTERSECTION(t.geo_object, ?, 0.005) cut_geom, "
 					+ "SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(t.geo_object, ?, 0.005), 0.005, 'UNIT=M') osm_seglaenge " + "from " + bufferTableName + " t where sdo_relate(t.geo_object, ?, 'mask=anyinteract') = 'TRUE'");
 			bufferSelectStmt.setObject(1, osmGeom);
 			bufferSelectStmt.setObject(2, osmGeom);
 			bufferSelectStmt.setObject(3, osmGeom);
-			ResultSet bufferSelectRs = DBUtil.getRs(bufferSelectStmt);
+			ResultSet bufferSelectRs = DbJdbcUtil.getRs(bufferSelectStmt);
 
 			while (bufferSelectRs.next()) {
 
@@ -115,10 +115,10 @@ public class InsertIntoOsmCut {
 
 				PreparedStatement pgInsertStmt = null;
 				if (cutGeom != null) {
-					pgInsertStmt = DBUtil.getPstmt(conn, "" + "insert into " + outputTableName + "(osm_id, nav_id, osm_name, osm_name2, nav_name, nav_name2, nav_laenge, osm_seglaenge, ls1, ls2, ls3, ls4, geoloc)"
+					pgInsertStmt = DbJdbcUtil.getPstmt(conn, "" + "insert into " + outputTableName + "(osm_id, nav_id, osm_name, osm_name2, nav_name, nav_name2, nav_laenge, osm_seglaenge, ls1, ls2, ls3, ls4, geoloc)"
 							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				} else {
-					pgInsertStmt = DBUtil.getPstmt(conn, "" + "insert into " + outputTableName + "(osm_id, nav_id, osm_name, osm_name2, nav_name, nav_name2, nav_laenge, osm_seglaenge, ls1, ls2, ls3, ls4)"
+					pgInsertStmt = DbJdbcUtil.getPstmt(conn, "" + "insert into " + outputTableName + "(osm_id, nav_id, osm_name, osm_name2, nav_name, nav_name2, nav_laenge, osm_seglaenge, ls1, ls2, ls3, ls4)"
 							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				}
 
@@ -142,21 +142,21 @@ public class InsertIntoOsmCut {
 				insertedNum += pgInsertStmt.executeUpdate();
 
 				conn.commit();
-				DBUtil.close(pgInsertStmt);
+				DbJdbcUtil.close(pgInsertStmt);
 			}
-			DBUtil.close(bufferSelectRs);
-			DBUtil.close(bufferSelectStmt);
+			DbJdbcUtil.close(bufferSelectRs);
+			DbJdbcUtil.close(bufferSelectStmt);
 
 			conn.commit();
 			logger.debug("startTableDate:" + startTableInsertDate.getTime() + "\t|osmTableName:" + osmTableName + "\t|bufferTableName:" + bufferTableName + "\t|insertTableName:" + outputTableName);
 			logger.debug("totalNum:" + totalNum + "\t|selectedNum:" + selectedNum + "\t|insertedNum:" + insertedNum);
 		}
 
-		DBUtil.close(osmSelectRs);
-		DBUtil.close(osmCountRs);
-		DBUtil.close(osmSelectStmt);
-		DBUtil.close(osmCountStmt);
-		DBUtil.close(conn);
+		DbJdbcUtil.close(osmSelectRs);
+		DbJdbcUtil.close(osmCountRs);
+		DbJdbcUtil.close(osmSelectStmt);
+		DbJdbcUtil.close(osmCountStmt);
+		DbJdbcUtil.close(conn);
 	}
 
 }
