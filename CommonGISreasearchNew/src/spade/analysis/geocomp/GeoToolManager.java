@@ -164,9 +164,9 @@ public class GeoToolManager implements DataAnalyser {
 			TextField tf = new TextField(layer.getName(), 80);
 //			pan.add(tf);
 			// following text:"Layer name"
-			OKDialog dia = new OKDialog(win, res.getString("Layer_name"), false);
-			dia.addContent(pan);
-			dia.show();
+//			OKDialog dia = new OKDialog(win, res.getString("Layer_name"), false);
+//			dia.addContent(pan);
+//			dia.show();
 			String str = tf.getText();
 			if (str != null) {
 				str = str.trim();
@@ -195,9 +195,9 @@ public class GeoToolManager implements DataAnalyser {
 				TextField tf = new TextField(layer.getName(), 80);
 //				pan.add(tf);
 				// following text:"Layer name"
-				OKDialog dia = new OKDialog(win, res.getString("Layer_name"), false);
-				dia.addContent(pan);
-				dia.show();
+//				OKDialog dia = new OKDialog(win, res.getString("Layer_name"), false);
+//				dia.addContent(pan);
+//				dia.show();
 				String str = tf.getText();
 				if (str != null) {
 					str = str.trim();
