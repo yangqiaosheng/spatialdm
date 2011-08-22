@@ -32,8 +32,8 @@ public class JoinFlickrEuropeAreaCount {
 	final static int BEGIN_REGION_CHECKED_CODE = 1;
 	final static int FINISH_REGION_CHECKED_CODE = 2;
 	final static int TEMP_REGION_CHECKED_CODE = 1;
-	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_5m_region_id_taken_date_hour";
-	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_TOPVIEWED_5M_COUNT";
+	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_15m_region_id_taken_date_hour";
+	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
 	static int rownum = 1;
 	static Calendar startDate;
 

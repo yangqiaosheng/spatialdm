@@ -115,7 +115,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				if(session.getAttribute(HISTOGRAM_SESSION_LOCK) != null){
-					int waitSec = 5;
+					int waitSec = 15;
 					for (int i = 1; i <= waitSec; i++) {
 						Thread.sleep(1000);
 						if (session.getAttribute(HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
