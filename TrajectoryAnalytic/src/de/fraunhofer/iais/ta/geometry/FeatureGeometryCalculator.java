@@ -85,7 +85,7 @@ public class FeatureGeometryCalculator {
 		float bodyRatio = peakBodyLength / peakLength;
 		List<Polygon> polygons = new ArrayList<Polygon>();
 		for(int i = 0; i < num ; i++){
-			Coordinate from = new Coordinate(fromCoordinate.x + deltaNormalVector.x * ( margin / 2 + i * (spaceLength + peakBodyLength)), fromCoordinate.y + deltaNormalVector.y * ( margin / 2 + i * (spaceLength + peakBodyLength)));
+			Coordinate from = new Coordinate(fromCoordinate.x + deltaNormalVector.x * ( margin + i * (spaceLength + peakBodyLength)), fromCoordinate.y + deltaNormalVector.y * ( margin + i * (spaceLength + peakBodyLength)));
 			Coordinate to = new Coordinate(from.x + deltaNormalVector.x * peakLength, from.y + deltaNormalVector.y * peakLength);
 			Polygon trianglePolygon = new FeatureGeometryCalculator().peak(from, to, width, bodyRatio);
 			polygons.add(trianglePolygon);

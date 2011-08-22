@@ -53,8 +53,7 @@ public class InsertMeasurement {
 					int trN = measurement.getTrN();
 					Coordinate fromCoordinate = preMeasurement.getCoordinate();
 					Coordinate toCoordinate = measurement.getCoordinate();
-					double length = toCoordinate.distance(fromCoordinate);
-					TrajectorySegment trajectory = new TrajectorySegment(trId, trN, 0, fromCoordinate, toCoordinate, length);
+					TrajectorySegment trajectory = new TrajectorySegment(trId, trN, 0, fromCoordinate, toCoordinate);
 					trajectories.add(trajectory);
 				}
 				preMeasurement = measurement;

@@ -1,5 +1,7 @@
 package de.fraunhofer.iais.ta.test;
 
+import java.awt.Color;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jaitools.swing.JTSFrame;
 import org.junit.Test;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -19,17 +22,44 @@ import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.WKTWriter;
+import com.vividsolutions.jts.operation.union.UnionInteracting;
 
 import de.fraunhofer.iais.ta.GeoConfigContext;
 import de.fraunhofer.iais.ta.entity.Persition;
 import de.fraunhofer.iais.ta.entity.TrajectorySegment;
+import de.fraunhofer.iais.ta.service.TrajectoryRenderer;
 import de.fraunhofer.iais.ta.util.DBUtil;
 
 
 public class TrajectroryTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		CSVReader reader = new CSVReader(new FileReader("data/single_trajectory.csv"));
+		String[] nextLine;
+		System.out.println("Title: " + ToStringBuilder.reflectionToString(reader.readNext()));
+		List<Persition> measurements = Lists.newArrayList();
+		TrajectoryRenderer renderer = new  TrajectoryRenderer();
+		List<TrajectorySegment> trajectories = Lists.newArrayList();
+		Persition preMeasurement = null;
+		JTSFrame jtsFrame = new JTSFrame("JTS Frame");
+		for (Persition measurement : measurements) {
+			if (preMeasurement != null) {
+				String trId = measurement.getTrId();
+				int trN = measurement.getTrN();
+				Coordinate fromCoordinate = preMeasurement.getCoordinate();
+				Coordinate toCoordinate = measurement.getCoordinate();
+				TrajectorySegment trajectory = new TrajectorySegment(trId, trN, 0, fromCoordinate, toCoordinate);
+				renderer.renderTrajectorySegment(trajectory);
+				trajectories.add(trajectory);
+			}
+			preMeasurement = measurement;
+		}
 
+		for (TrajectorySegment trajectory : trajectories) {
+			jtsFrame.addGeometry(trajectory.getFeature().getBoundary(), Color.BLACK);
+		}
+		jtsFrame.setVisible(true);
+		jtsFrame.setSize(400, 300);
 	}
 
 	static DBUtil db = new DBUtil("/jdbc_pg.properties", 3, 10);
@@ -67,8 +97,7 @@ public class TrajectroryTest {
 				int trN = measurement.getTrN();
 				Coordinate fromCoordinate = preMeasurement.getCoordinate();
 				Coordinate toCoordinate = measurement.getCoordinate();
-				double length = toCoordinate.distance(fromCoordinate);
-				TrajectorySegment trajectory = new TrajectorySegment(trId, trN, 0, fromCoordinate, toCoordinate, length);
+				TrajectorySegment trajectory = new TrajectorySegment(trId, trN, 0, fromCoordinate, toCoordinate);
 				trajectories.add(trajectory);
 			}
 			preMeasurement = measurement;
