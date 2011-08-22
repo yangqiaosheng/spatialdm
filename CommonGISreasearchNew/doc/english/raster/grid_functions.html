@@ -1,0 +1,343 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="gennady">
+   <meta name="GENERATOR" content="Mozilla/4.77 [en] (Windows NT 5.0; U) [Netscape]">
+   <title>Analysis of raster data</title>
+</head>
+<body>
+
+<h1>
+<a NAME="top"></a>Work with raster (grid) data</h1>
+Raster (grid) geographic data are specified as regular grids with numeric
+values in the nodes. Characteristics of a raster are: number of columns,
+number of rows, cell sizes in X- and Y-dimensions, and geographical reference
+(often specified as co-ordinates of the upper-left corner of the grid).
+<ol>
+<li>
+<a href="#visualisation">Visualisation of raster data</a>.</li>
+
+<li>
+<a href="#transformation">Transformations of rasters</a>.</li>
+
+<li>
+<a href="#analysis">Analysis of raster data</a>.</li>
+
+<ol>
+<li>
+<a href="#combine">Combining rasters: find a sum of coniferous and broadleaved
+forests</a>.</li>
+
+<li>
+<a href="#query">Querying raster data: show forests on altitudes from 1000
+to 1500</a>.</li>
+
+<li>
+<a href="#derive">Deriving attributes of vector objects from raster data:
+aggregate forest data by EU countries</a>.</li>
+</ol>
+</ol>
+
+<h2>
+<a NAME="visualisation"></a>1. Visualisation of raster data</h2>
+In order to show raster data on a map, Descartes/CommonGIS constructs an
+image where each value from the raster is represented by some colour. The
+correspondence between values and colours is specified by a so-called "colour
+scale". Thus, in the figure below the values of elevation (map layer "relief")
+are encoded by shades of blue and yellow colours. Blue colour is used for
+values below zero and yellow for values above zero while zero values are
+shown by white colour. The encoding is explained in the legend on the right
+of the map.
+<p><img SRC="raster_on_map.gif" NOSAVE height=458 width=671>
+<p>Note that an application (configuration of map layers and tables to
+be loaded in the system) may include layers that are not loaded immediately.
+They are not shown in the map but only in the legend and marked in in with
+"minus" signs. When a raster layer has not yet been loaded, it is not assigned
+any colour scale. Therefore it appears in the legend like the layers "coniferous
+(2001)" and "broadleaved (2001)" in the picture above. When the user wishes
+to load such a layer, he/she needs to click on the "minus" sign of the
+corresponding legend item. The system will load the layer, assign a default
+colour scale to it, and draw in on the map. The "minus" sign in the legend
+will be turned to "plus", and the legend item itself will change to reflect
+the current encoding of values.
+<p>The user can choose different colour scales and manipulate parameters
+of visualisation, for example, transparency. In order to change the current
+colour scale for a layer, the user needs to double-click on the colour
+scale representation in the legend. In response, the system will display
+a dialogue for colour scale selection and varying colour scale parameters:
+<p><img SRC="cs_dialog.gif" NOSAVE height=432 width=288>
+<p>The appearance of the dialogue differs depending on what colour scale
+is currently selected. The invariant parts of the dialogue are the upper
+controls for setting the transparency and the limits on values to be shown
+and the lower collection of radio buttons for selection of the scale type.
+The middle part of the dialogue changes when another colour scale is selected.
+The set of available colour scales may differ depending on the system configuration.
+<p>The upper control of the dialogue (the slider) regulates the transparency
+of the image constructed from the grid. Note that transparent images look
+rather ugly under Java versions 1.1.*. In order to use Java versions 1.2.*
+with Web browsers, you will need to have a Java plug-in installed on your
+computer.
+<p>The controls below the transparency slider are used to restrict the
+range of values to be shown on the map. The values that do not fit within
+the limits are not represented on the map. The resulting image may look
+like in the figure below in which shades of green represent only the values
+of the raster "coniferous (2001)" that are higher than 10. In order to
+restrict the represented range of values, one may either drag the triangular
+delimiters or enter exact values in the text fields (do not forget to press
+the "Enter" key after you modified the value in a text field).
+<p><img SRC="raster_focus.gif" height=478 width=641>
+<p>Different colour scales may have their particular parameters and, hence,
+particular controls for manipulating them. Thus, the diverging colour scale
+(used for representing the rasters "relief" and "coniferous (2001)" in
+the examples above) allows the user to change the colours of its left (negative)
+and right (positive) ends and to move the position of the midpoint. For
+example, in the figure above green colour was chosen for positive values
+in the raster "coniferous (2001)".
+<p><a NAME="binary"></a>The <b>binary colour scale</b> was specially designed
+for binary rasters, i.e. rasters containing only values 0 and 1. Such rasters
+result from querying raster data. With the binary colour scale values 1
+are represented by some colour (that can be selected by the user) while
+zero values are not shown. In principle, this type of scale can be also
+used for non-binary rasters. In this case all positive values are shown
+in one and the same colour while zero and negative values are not shown.
+In the figure below the binary colour scale is used to visualise the raster
+layer "coniferous (2001)".
+<p><img SRC="binary_scale.gif" height=478 width=641>
+<p><i><a href="#top">go to top</a></i>
+<h2>
+<a NAME="transformation"></a>2. Transformation of rasters</h2>
+Raster data may have some features that make them inappropriate for analysis.
+For example, the raster "coniferous (2001)" contains some negative values
+(-106 and -1) that, probably, mean absence of data. Look how the layer
+appears with the diverging colour scale without putting limits on the values
+to show (we selected magenta colour for the negative part of the colour
+scale and green for the positive part):
+<p><img SRC="conifers.gif" height=446 width=641>
+<p>Suppose, for example, that we wish to calculate the mean value of coniferous
+for each EU country. Due to the presence of the values -106 inside the
+contours of the countries (see the enlarged contour of Finland below) the
+results of calculation will be wrong. For this kind of task it is appropriate
+to replace the negative values by zeros. This operation can be done in
+the system using its geocomputational tools.
+<p><img SRC="finnland.gif" height=329 width=391>
+<p>Here is the sequence of operations needed to replace the negative values
+in a raster with zeros:
+<p><b>1)</b>
+<br><img SRC="menu.gif" height=97 width=252>
+<p><b>2)</b>
+<br><img SRC="geotools.gif" height=438 width=632>
+<p>This dialogue lists the geocomputation tools available in the system.
+The set of the tools may differ depending on the system configuration.
+In order to invoke a tool, one needs to select the corresponding radio
+button and press the button "OK". After that the tool starts its work.
+It may display additional dialogues. In the case of transforming or combining
+rasters this will be the dialogue shown below.
+<p><b>3)</b>
+<br><img SRC="formula.gif" NOSAVE height=300 width=366><img SRC="functions.gif" height=300 width=366>
+<p>Enter the formula IF($2&lt;0,0,$2) in the field "Formula" at the bottom
+of the dialogue. Here $2 stands for "coniferous (2001)" (it is the 2nd
+item in the list "Fields" in the upper part of the dialogue). You can select
+the function IF(,,) from the list of functions and press the button "Insert"
+on the right of the choice element. The expression IF(,,) will appear in
+the formula field. The expression $2 will be automatically inserted in
+the formula field when you double-click on the second item in the list
+"Fields". Signs of arithmetic operations (in particular, "&lt;") can be
+entered by selecting them in the choice element called "Operations" and
+then pressing the button "Insert" on the right of it. One may also enter
+any symbols using the keyboard.
+<p><b>4) </b>When the formula is ready, press the button "OK". The tool
+will do the computations. The progress of the computations is shown in
+the status line (in the main window of the system, below the map). The
+result of the computations is a new layer to be added to the map. You will
+be requested to provide a name for the new layer (you may also agree to
+the default name generated by the system):
+<br><img SRC="name.gif" height=106 width=242>
+<p><a NAME="restrict"></a><b>5)</b> After this the new layer will be added
+to the map. The system will assign to it a default (grey) scale that can
+be changed by the user. For example, one may choose the diverging colour
+scale with green right end. In addition, one may remove zero values from
+the view by setting the lower limit of the represented value range to 0.01:
+<br><img SRC="diverging.gif" height=431 width=287>
+<p>The initial layer "coniferous (2001)" may be now switched off (by clicking
+on the "plus" sign in the legend) or even removed from the system. In the
+latter case the memory it occupied can be eventually used for other purposes.
+To remove a layer, select the item "Remove map layer" in the menu "File".
+<p>Other transformation operation that may be useful depending on the analysis
+tasks is smoothing. See, for example, the effect of smoothing the raster
+"relief":
+<p><img SRC="relief.gif" height=328 width=379><img SRC="relief_smoothed.gif" height=328 width=380>
+<p>It is also possible to change such parameters of a raster as the number
+of columns and rows (resolution), or cell size. This is done by selecting
+the tool "change parameters of a raster".
+<p><i><a href="#top">go to top</a></i>
+<h2>
+<a NAME="analysis"></a>3. Analysis of raster data</h2>
+Raster data can be analysed visually by representing them on the map using
+appropriate colour scales, overlaying them with vector layers, and manipulating
+the visualisation parameters such as transparency, the lower and upper
+limits of the represented value range, the midpoint of the diverging colour
+scale, and so on (see <a href="#visualisation">Visualisation of raster
+data</a>). The following operations are useful in visual analysis of raster
+data in combination with vector data:
+<ol>
+<li>
+Switch on/off drawing of map layers: click on "minus" and "plus" signs
+in the legend.</li>
+
+<li>
+Change the order of layer drawing: drag the layer icons up and down in
+the legend.</li>
+
+<li>
+Switch off filling areas (i.e. painting inside the contours) in vector
+layers: double-click on a layer icon activates a dialogue in which layer
+drawing parameters may be set.</li>
+</ol>
+In addition to the visual means of analysis, the system offers various
+computation-based tools for raster data. The list of tools available in
+the system is displayed after selection of the item "Geographic computations"
+in the menu "Calculate". This list may vary depending on the system configuration.
+Here we consider three tools: combine rasters, query raster data, and derive
+attributes of vector objects from raster data.
+<h3>
+<a NAME="combine"></a>3.1. Combining rasters: find a sum of coniferous
+and broadleaved forests</h3>
+Before analysing raster data it may be necessary to transform them (see
+<a href="#transformation">Transformations
+of rasters</a>). Suppose that the layers "coniferous (2001)" and "broadleaved
+(2001)" have been transformed by replacing negative values by zeros. The
+names of the layers after the transformation are "coniferous (transformed)"
+and "broadleaved (transformed)", respectively.
+<p>Assuming that the values in the rasters "coniferous" and "broadleaved"
+correspond to the parts of territory covered by coniferous and broadleaved
+forests, respectively, we would like to calculate the part of territory
+covered by both kinds of forests in total. For this purpose we select the
+tool "transform or combine rasters" (Menu "Calculate" > "Geographic computations"
+> tool selection dialogue). The tool displays its own dialogue for specifying
+the formula for the computation. We double-click on the item "coniferous
+(transformed)" in the list "Fields" in the upper part of the dialogue window,
+then select the operation "+ - arithmetic addition" in the choice element
+"Operations" and press the button "Insert" on the right of it, and, finally,
+double-click on the item "broadleaved (transformed)" in the list "Fields".
+As a result, the text edit field "Formula" at the bottom of the window
+contains something similar to $2+$3 (the numbers depend on the positions
+of the items "coniferous (transformed)" and "broadleaved (transformed)"
+in the list). After the formula is ready, we press OK. Of course, the tool
+allows to construct a large variety of formulas with the use of the functions
+and operations listed in the choice elements "Functions" and "Operations".
+<p>When the tool finishes the calculations, it proposes to give a name
+to the resulting new raster layer. We give it the name "forests total".
+The system, by default, represents the layer using the grey colour scale.
+We change it to the diverging scale, select green colour for the right
+end of the scale, and remove zero values from the view by setting the lower
+limit of the represented value range to 0.01 (see <a href="#restrict">above</a>).
+The result is shown in the figure below (we moved the vector layers to
+the top of the legend to make them drawn over the raster layers):
+<p><img SRC="forests.gif" height=489 width=693>
+<p>Note that in combining raster layers with different resolutions the
+cell size of the resulting raster will be set to the maximum cell size
+of the source rasters. If there is not enough memory for the resulting
+raster, the system will decrease its resolution until it fits to the available
+free memory.
+<h3>
+<a NAME="query"></a>3.2. Querying raster data: show forests on altitudes
+from 1000 to 1500</h3>
+In order to query the system about raster data, the query tool must be
+invoked (Menu "Calculate" > "Geographic computations" > tool selection
+dialogue > select "query raster data" > press "OK"). Like the <a href="#combine">tool
+for transforming and combining rasters</a>, the query tool displays a dialogue
+window in which the user can construct a query condition involving the
+raster layers loaded in the system. The condition may include comparison
+operators =, &lt;, &lt;=, >, >=, &lt;> (not equal), logical operations
+AND, OR, and NOT, and arithmetic operations +, -, *, and /. Sub-expressions
+may be enclosed in parentheses. Operation signs are inserted in the formula
+field when the user presses the corresponding buttons. One may also enter
+any symbols using the keyboard. Double-clicking on a layer name in the
+list of raster layers in the upper part of the window will result in appearing
+of the expression $&lt;n> in the formula field, where &lt;n> is the position
+(index) of the layer in the list. For example, in the dialogue shown below
+$1 corresponds to "relief", $2 to "coniferous (transformed)", $3 to "broadleaved
+(transformed)", and $4 to "forests total".
+<p><img SRC="query.gif" height=375 width=371>
+<p>In order to find all forests growing on the altitudes between 1000 and
+1500 m, we specify the following logical formula:
+<ul>
+<li>
+$4>0&amp;$1>=1000&amp;$1&lt;=1500 (i.e. forests total >0 AND relief>=1000
+AND relief &lt;=1500)</li>
+</ul>
+After the formula is ready, we press the button "OK". Since two raster
+layers with different territory extents participate in the formula, the
+system will ask us how to define the extent of the resulting layer: as
+intersection or as union of the source layers. Intersections means the
+largest rectangle included in all the rasters. Union means the smallest
+rectangle including all the rasters. In this case only intersection makes
+sense.
+<p><img SRC="intersect.gif" height=129 width=259>
+<p>After this the system performs the calculation. Note that the cell size
+of the resulting raster will be set to the maximum cell size of the source
+rasters. If there is not enough memory for the resulting raster, the system
+will decrease its resolution until it fits to the available free memory.
+<p>When the computation is finished, the system proposes to give a name
+to the new layer. We enter the name "forests on altitudes from 1000 to
+1500". After that the layer is shown on the map with the use of the <a href="#binary">binary
+colour scale</a> since this is a binary raster with values 1 for the cells
+satisfying the query and 0 for the cells that do not satisfy the query.
+The zero values are not shown on the map while the values 1 are shown,
+by default, in red colour.
+<p><img SRC="query_result.gif" height=489 width=693>
+<p>In order to change red to some other colour, double-click on the colour
+scale in the legend. This results in appearing of the dialogue shown below.
+<p><img SRC="binary_controls.gif" height=315 width=287>
+<p>After clicking on the "rainbow" icon you will be able to choose a different
+colour for the scale instead of red.
+<h3>
+<a NAME="derive"></a>3.3. Deriving attributes of vector objects from raster
+data: aggregate forest data by EU countries</h3>
+Using the vector layer "EU countries", we can now compute the area of forests
+growing on the altitudes from 1000 to 1500 m in each country of EU. for
+this purpose we invoke the tool "derive an attribute of vector objects
+from raster data" (Menu "Calculate" > "Geographic computations" > tool
+selection dialogue > select "derive an attribute of vector objects from
+raster data" > press "OK"). First of all the tool asks us to select a vector
+layer from the list of all currently loaded vector layers. We select the
+layer "EU countries". After that we must select the raster layer that will
+be used for computations. We select the layer "forests on altitudes from
+1000 to 1500" resulting from the query operation described <a href="#query">above</a>.
+Then the tool displays the dialogue shown below:
+<br>&nbsp;
+<table COLS=2 WIDTH="100%" >
+<tr>
+<td VALIGN=TOP><img SRC="attr_param.gif" BORDER=0 height=152 width=336></td>
+
+<td><img SRC="attr_param1.gif" BORDER=0 height=208 width=334></td>
+</tr>
+</table>
+
+<p>In this dialogue we select the function "Area". The checkbox "include
+partial zones" should be checked in this case, otherwise the system will
+not compute the area of the forests for such countries as Spain: this country
+includes islands lying beyond the extent of the raster. We enter the desired
+name of the new attribute, "Area of forests between 1000 and 1500 m altitude",
+in the edit field "Attribute name:". If we do not specify any name, the
+system will generate a default name. When we press the button "OK", the
+system performs the calculations and represents the results on the map:
+the countries are painted according to the values of the just derived attribute.
+<p>In a similar way we can derive the mean values of coverage by coniferous
+and by broadleaved for the countries. In both cases we select the function
+"Mean" in the above-described dialogue. To compare the values of the derived
+attributes "Mean coverage by coniferous" and "Mean coverage by broadleaved",
+it is convenient to represent these attributes on the map together using
+parallel bars (menu "Display" > "Display Wizard..." > select the table
+"EU countries" > select the two derived attributes > select the "parallel
+bars" visualisation method).
+<p><img SRC="bars.gif" height=495 width=684>
+<p>Attributes on the basis of raster data may be also derived for user-defined
+vector objects. The system allows the user to construct a new map layer
+by drawing geographical objects on the map using the mouse. The layer constructing/editing
+tool is activated through the menu "Tools" containing the item "edit or
+construct a map layer".
+<p><i><a href="#top">go to top</a></i>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//SoftQuad Software//DTD HoTMetaL PRO 6.0::19990601::extensions to HTML 4.0//EN" "hmpro6.dtd">
+<HTML> 
+  <HEAD> 
+	 <TITLE>Descartes - Introduction</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <P
+	  STYLE="font-size: xx-large; font-weight: bold; text-decoration: underline">Introduction</P>
+	 
+	 <P
+	  STYLE="font-size: x-large; text-decoration: underline; font-weight: bold">About:</P>
+	 
+	 <P>Descartes XXI (formerly IRIS)<BR>Intelligent System for Spatio- Temporal
+		Exploratory Data Analysis<BR>Version 2.016, 27/06/2001<BR>(c) Anrienko
+		1995-2001, GMD 1992-1001<BR>e-mail gennady.andrienko@gmd.de
+		<BR>http://borneo.gmd.de/and/</P> 
+	 <P>Development of the system was partly supported<BR>by EU-funded projects
+		<BR>CommonGIS (ESPRIT project 28983, 2000-2002) <BR>URLs
+		http://commongis.jrc.it/ <BR>and http://www.ccg.leeds.ac.uk/spin/<BR>Java
+		version 1.3.1, Windows NT, ver 4.0</P> 
+	 <P>The system includes pieces of software implemented by others:<BR>1. File
+		management utilities by IITP RAS, http://www.iitp.ru/<BR>2. Implementation of
+		the Open GIS simple feature specification by University of Bonn
+		http://www.guib.uni-bonn.de/exse/results/welcom.html<BR>3. Map print by
+		Dialogis GmbH, http://www.dialogis.de</P> 
+	 <P></P> 
+	 <P
+	  STYLE="font-size: x-large; font-weight: bold; text-decoration: underline">Description:</P>
+	 
+	 <P>Descartes, a Java based GIS (geographic information system) accessable
+		in the internet, supports the creation and interactive analysis of thematic
+		maps. The user can choose out of a set of spacial statistical values and
+		Descartes creates automatically a set of maps using cartographic knowledge
+		which visually include the values and their relationships.</P> 
+	 <P> It is a domain-independent software. Its domain-specific instantiations
+		are called applications. From the system's perspective, an application is a
+		number of files with data to visualize and analyze together with some service
+		files that inform the system how to handle the data. <BR>An application should
+		include data files of two kinds: <BR>&middot; tables with attribute data
+		referred to some spatial objects (districts, towns, countries, and so on). The
+		objects are denoted in the tables by their identifiers. A table should contain
+		a column with object identifiers;<BR> &middot; geographic layers, i.e. files
+		containing points, lines, or areas (polygons) in vector format. For each table
+		there should be a geographic layer containing the spatial objects from this
+		table. These objects should have in the geographic layer the same identifiers
+		as in the table. <BR>An application may include several tables referring to one
+		and the same geographic layer as well as to different layers. A table may not
+		refer to several geographic layers at once. There may be any number of
+		geographic layers in an application. The layers that do not contain objects
+		from a table may create a geographical background for data presentation. Which
+		layers are available in an application is presented in the legend of the map.
+		</P> 
+	 <P>In Descartes it is possible to build multiple displays representing
+		different attributes of the same data set or, possibly, the same attributes in
+		different ways. Thus, the user can open one or more maps and various kinds of
+		non-cartographic displays: dot plots, scatter plots, parallel coordinate plots.
+		All these displays are dynamically linked. Thus, when the user points with the
+		mouse on an object in one of the displays, the graphical elements corresponding
+		to this object (contour in a map, dot in a dot plot or a scatter plot, line in
+		a parallel coordinate plot) are simultaneously highlighted in all the displays.
+		<BR>More information on dynamical linking can be found <A
+		HREF="dynlink.html">here.</A></P> 
+	 <P><A HREF="Contents.htm" STYLE="font-size: larger; font-weight: bold">Back
+		to contents</A></P> 
+	 <P></P> </BODY>
+</HTML>

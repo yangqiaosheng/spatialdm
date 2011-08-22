@@ -1,0 +1,213 @@
+<HTML> 
+  <HEAD>
+	 <TITLE>Descartes - Descartes starten</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <P STYLE="font-size: x-large; font-weight: bold"><A NAME="RD0"
+		STYLE="font-size: x-large; font-style: normal; font-weight: bold"></A>Descartes
+		starten </P> 
+	 <P><A HREF="#RD1">So wird Descartes gestartet</A> <BR><A
+		HREF="#RD2">Datenformat</A> <BR><A HREF="#RD3">Anfangen</A> </P> 
+	 <P><A HREF="Inhalt.htm" STYLE="font-size: medium ">Zur&uuml;ck zum
+		Inhalt</A> </P> 
+	 <P
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="RD1"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline"></A>So
+		wird Descartes gestartet: </P> 
+	 <P>Descartes ist eine Javaapplikation, welche Java Runtime Environment (JRE)
+		(mindestens Version 1.1) ben&ouml;tigt. Die neueste Version (zur Zeit Java 2
+		Runtime Environment 1.3) kann kostenlos heruntergeladen werden unter:
+		<A
+		 HREF="http://java.sun.com/products/jdk/1.2/jre/index.html">http://java.sun.com/products/j2se/1.3/jre</A>
+		</P> 
+	 <P>Descartes kann mit einer *.bat Datei gestartet werden. Eine solche Datei
+		sieht etwa so aus:</P> 
+	 <TABLE FRAME="BORDER" WIDTH="100%" BGCOLOR="#CCFFCC" BORDER="BORDER"> 
+		<TR> 
+		  <TD ALIGN="CENTER" VALIGN="MIDDLE">c:\jre118\bin\jre -classpath
+			 DescartesXXI.jar; parser.jar; jasp.jar; sf4j.jar; jdom-b4.jar; sax2.jar
+			 ScatterData</TD> 
+		</TR> 
+	 </TABLE> 
+	 <P>Am Anfang steht der Pfad der JRE Startdatei. Dann folgen eine Reihe von
+		Bibliotheken (welche alle vom System gebraucht werden und in dem selben
+		Verzeichnis sein m&uuml;ssen) angef&uuml;hrt von "-classpath". "ScatterData" am
+		Ende bezeichnet den Namen der Klasse. </P> 
+	 <P>Wenn diese Datei dann gestartet wird, &ouml;ffnet sich ein Dos-Prompt
+		und Descartes &ouml;ffnet sich in einem neuen Fenster ohne Inhalt. </P> 
+	 <P>Als erstes m&uuml;ssen dann die Daten geladen werden, mit denen
+		gearbeitet werden soll. <BR>Dies geschieht mit -&gt;File-&gt;Load data. </P> 
+	 <P><A HREF="#RD0" STYLE="font-size: medium">Zum Anfang</A> </P> 
+	 <P
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="RD2"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline"></A>Datenformat:
+		</P> 
+	 <P>Descartes kann mit vielen verschiedenen Formaten umgehen: </P> 
+	 <P>files: DBF (dBase), CSV (Excel), GML (OpenGIS), ASCII <BR>clipboard:
+		Excel, WinWord <BR>database: ODBC, Oracle, ... </P> 
+	 <P>map specification: Liste der Schichten und ihren Parametern in einer
+		*.mwi Datei <BR>vector layer: SHP (ArcView, WKB or GML (OpenGIS), OVL
+		(Descartes) <BR>raster layer: raster (grid) data im FLT (Geo) Format
+		<BR>database: ODBC, Oracle, ... <BR>files: using DataServer </P> 
+	 <P>Ist die Attributdatei im Textformat, ben&ouml;tigt das System einige
+		Informationen: <BR>Es mu&szlig; wissen, wie die Werte von einander getrennt sind
+		(Vorauswahl), den Namen oder die Nummer des Feldes mit den Identifizierern
+		(notwendig), wo die Namen der "Entities" sind und wo im Text die Feldtypen und
+		Feldnamen sind (optional).</P> 
+	 <P ALIGN="CENTER"><BR><IMG SRC="LoadFromFile.gif" BORDER="0" HEIGHT="400"
+		WIDTH="400" ALIGN="MIDDLE" ALT="1"> <BR>Abb. 1 <BR>Daten aus einem Text
+		laden</P> In diesem Beispiel (Abb. 1) sind die Feldnamen in Reihe 1, die Werte
+	 sind getrennt durch "," und die Identifizierer sind im Feld 1. 
+	 <P>Die unterste Zeile des Kartenfensters (Abb. 2) zeigt an, ob die Tabelle
+		(Schicht) korrekt eingebunden wurde.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="MapImplementation.gif" BORDER="0" HEIGHT="499"
+		WIDTH="640" ALIGN="MIDDLE" ALT="2"> <BR>Abb. 2 <BR>Portugal Daten
+		implementiert</P> 
+	 <P>Die Geographischen Daten k&ouml;nnen Schicht f&uuml;r Schicht geladen
+		werden und ihre Parameter per Hand gew&auml;hlt werden, oder sie werden
+		zusammengefasst in einer *.mwi Datei geladen (entsteht durch abspeichern in
+		Descartes). </P> 
+	 <P>Es ist auch m&ouml;glich Descartes gleichzeitig mit allen Daten zu
+		starten. Daf&uuml;r sollte eine Datei geschrieben werden, welche so ausschauen
+		sollte: (Beispiel: fin.cnf, eine Karte von Helsinki) </P> 
+	 <TABLE BORDER="BORDER" WIDTH="100%" BGCOLOR="#CCFFCC"> 
+		<TR VALIGN="TOP"> 
+		  <TD VALIGN="TOP" WIDTH="29">1 <BR>2</TD> 
+		  <TD VALIGN="TOP" WIDTH="270">APPLICATION <BR>NAME="Helsinki
+			 Statistics"&nbsp;</TD> 
+		  <TD VALIGN="TOP" WIDTH="700">/* Anfang von APPLICATION <BR>/* Name der
+			 Application <BR>/* Gruppe von Bl&ouml;cken:</TD> 
+		</TR> 
+		<TR VALIGN="TOP"> 
+		  <TD VALIGN="TOP" WIDTH="29">3 <BR>4 <BR>5 <BR>6 <BR>7</TD> 
+		  <TD VALIGN="TOP" WIDTH="270">MAP <BR>ID="map1"&nbsp; <BR>NAME="Map of
+			 Helsinki"&nbsp; <BR>SOURCE="data/fin/fin.mwi"&nbsp; <BR>/MAP&nbsp;</TD> 
+		  <TD VALIGN="TOP" WIDTH="700">/* Anfang von MAP <BR>/* Interne
+			 Identifizierer um Karten unterscheiden zu k&ouml;nnen <BR>/* Name dieser Karte
+			 <BR>/* Ursprung der Karte im *.mwi Format <BR>/* Ende von MAP</TD> 
+		</TR> 
+		<TR VALIGN="TOP"> 
+		  <TD VALIGN="TOP" WIDTH="29">8 <BR>9 <BR>10 <BR>11 <BR>12 <BR>13 <BR>14
+			 <BR>15 <BR>16 <BR>17 <BR>18 <BR>19</TD> 
+		  <TD VALIGN="TOP" WIDTH="270">TABLE&nbsp; <BR>ID="table1"&nbsp;
+			 <BR>NAME="Population (total)"&nbsp; <BR>SOURCE="data/fin/pop.csv"&nbsp;
+			 <BR>FORMAT=ASCII&nbsp; <BR>MAP="map1"&nbsp; <BR>LAYER="fin.ovl"&nbsp;
+			 <BR>DELIMITER=";" <BR>FIELD_NAMES_IN_ROW=1 <BR>ID_FIELD_NAME="ID"&nbsp;
+			 <BR>NAME_FIELD_NAME="Name"&nbsp; <BR>/TABLE</TD> 
+		  <TD VALIGN="TOP" WIDTH="700">/* Anfang von TABLE&nbsp; <BR>/* Interne
+			 Identifizierer Tabellen zu unterscheiden <BR>/* Name dieser Tabelle <BR>/*
+			 Ursprung der Datei <BR>/* Bestimmt das Format der Daten (Um richtig zu lesen)
+			 <BR>/* Verkn&uuml;pfung zu "map1" <BR>/* Verkn&uuml;pfung der Schicht auf
+			 "map1" <BR>/* H&auml;ngt vom datenformat ab; hier: delimiter=Wertetrennung
+			 <BR>/* Nummer der Reihe mit den Feldnamen <BR>/* Nummer der Reihe mit den
+			 Identifizierern <BR>/* Name des Feldes der Namen der geographischen Objekten
+			 <BR>/* Ende von TABLE</TD> 
+		</TR> 
+		<TR VALIGN="TOP"> 
+		  <TD VALIGN="TOP" WIDTH="29">20</TD> 
+		  <TD VALIGN="TOP" WIDTH="270">/APPLICATION</TD> 
+		  <TD VALIGN="TOP" WIDTH="700">/* Ende von APPLICATION</TD> 
+		</TR> 
+	 </TABLE> 
+	 <P>In Zeile 6 ist es auch m&ouml;glich eine Schicht (*.ovl) statt einer
+		Karte (*.mwi) zu definieren. <BR>Es ist &uuml;blich *.cnf als Dateizusatz zu
+		benutzen, aber es ist dem Benutzer &uuml;berlassen. Diese Datei mu&szlig; in der
+		*.bat Datei aufgerufen werden. Einfach am Ende der Zeile den Dateinamen
+		anh&auml;ngen:</P> 
+	 <TABLE BORDER="BORDER" WIDTH="100%" BGCOLOR="#CCFFCC"> 
+		<TR> 
+		  <TD VALIGN="TOP" ALIGN="CENTER">c:\jre118\bin\jre -classpath
+			 DescartesXXI.jar; parser.jar; jasp.jar; sf4j.jar; jdom-b4.jar; sax2.jar
+			 ScatterData fin.cnf</TD> 
+		</TR> 
+	 </TABLE> 
+	 <P><A HREF="#RD0" STYLE="font-size: medium">Zum Anfang</A> </P> 
+	 <P
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="RD3"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline"></A>Anfangen:
+		</P> 
+	 <P>"Calculate" gibt die M&ouml;glichkeit ausgew&auml;hlte Daten mit
+		einander Rechnerisch zu verbinden. Sobald mehr als eine Tabelle (Schicht)
+		implementiert wurden, erscheint zuvor noch ein Fenster, von der die Tabelle
+		(Schicht) f&uuml;r die Kalkulationen ausgew&auml;hlt werden soll. <BR>Um nun
+		eine oder mehrere Attribute auszuw&auml;hlen, mu&szlig; man sie auf der linken
+		Seite mit Hilfe der Maus markieren. Mit dem Pfeil nach rechts zeigend, wird dann
+		das markierte Attribut auf die rechte Seite geschoben. Ein Doppelklick auf das
+		Attribut bewirkt das gleiche. Der zweite Pfeil, der nach links zeigt, entfernt
+		das auf der rechten Seite markierte Attribut (oder per Doppelklick). Die zwei
+		Pfeile unter den selektierten Attributen (rechts), bewirken eine Verschiebung
+		der Reihenfolge der Attribute, welche eventuell f&uuml;r die Art der
+		Darstellung (Achsen) wichtig ist. Mit "clear list" werden alle Attribute
+		abgew&auml;hlt und auf die linke Seite geschoben. <BR>Descartes stellt
+		verschiedene Berechnungsmethoden zur Verf&uuml;gung: <U>Arithmetic</U> (Sum of
+		columns, Percentages and ratios, Change, difference), <U>Statistics</U> (Average
+		among columns,Variance among columns, Count value occurrences), <U>Decision
+		support</U> (integrated criterion, Values -&gt; Order) und <U>Multivariate analysis</U>
+		(Similarity (distance), Similarity (classification), Dominant attribute
+		classification). <BR>Die Berechnungsmethoden f&uuml;r Arithmetik werden
+		<A HREF="KalkulationArithmetik.htm">hier</A> erkl&auml;rt, die f&uuml;r
+		Statistik <A HREF="KalkulationStatistik.htm">hier</A>, Entscheidungshilfe
+		<A HREF="KalkulationEntscheidungshilfe.htm">hier</A>, und mehrdimensionale
+		Analysis <A HREF="KalkulationMehrdimensionaleAnalysis.htm">hier</A>. <BR>&nbsp;
+		</P> 
+	 <P ALIGN="CENTER"><BR><IMG SRC="CalculationMethods.gif" BORDER="0"
+		HEIGHT="333" WIDTH="338" ALT="3"> <BR>Abb. 3 <BR>Berechnungsmethoden</P> 
+	 <P>"Display" und dann "Display Wizard" geben die M&ouml;glichkeit die Daten
+		zu visualisieren. Hier taucht wieder das gleiche Fenster wie bei "Calculate"
+		auf, um die darzustellenden Attribute auszuw&auml;hlen. Abh&auml;ngig von der
+		Anzahl der Attribute und ihren Werten gibt es verschiedene
+		Darstellungsmethoden: <BR>F&uuml;r Karten: Degrees of darkness, classification,
+		standalone bars, colors, parallel bars, pies, triangles, utility bars und
+		utility wheels. <BR>F&uuml;r Darstellungen: dot plot (horizontal), dot plot
+		(vertical), scatter plot, scatter plot matrix, parallel coordinates plot,
+		classifier (horizontal) and classifier (vertical). </P> 
+	 <P>Abb. 4 zeigt das Fenster aus dem die Visualisierungsmethoden
+		ausgew&auml;hlt werden k&ouml;nnen. </P> 
+	 <P ALIGN="CENTER"><IMG SRC="Display1Attribute.gif" BORDER="0" HEIGHT="325"
+		WIDTH="314" ALIGN="MIDDLE" ALT="4"> <BR>Abb. 4 <BR>Visualisierung eines
+		Attributs</P> 
+	 <P>Die kartographischen Visualisierungsmethoden <A
+		HREF="Karten.htm">hier</A> erkl&auml;rt. <BR>Und die f&uuml;r die
+		nichtkartographischen <A HREF="Diagramme.htm">hier</A>. </P> 
+	 <P>Descartes erm&ouml;glicht es mehrere Darstellung mit unterschiedlichen
+		Attributen der selben Informationsmenge, oder gar des selben Attributes in
+		unterschiedlicher Darstellungsweise zu erzeugen. Demnach kann der Benutzer eine
+		oder mehrere Karten und verschiedene Diagramme, wie dot
+		plots (Punktgraphen), scatter plots ("Scatter"-Graphen), oder parallel coordinate
+		plots (Graphen mit parallelen Koordinaten) gleichzeitig auf haben.
+		Alle diese Darstellungen sind dynamisch verbunden. D.h. wenn der Benutzer mit
+		der Maus auf ein Objekt in einen der Darstellungen zeigt, werden alle
+		graphischen Elemente des zugeh&ouml;rigen Objektes in s&auml;mtlichen
+		Darstellungen (Konturen in der Karte, Punkte in den Graphen, Linien in dem
+		Graphen mit parallelen Koordinaten) simultan hervorgehoben. </P> 
+	 <P>Das Descartes System unterst&uuml;tzt zwei Arten von Markierungen:
+		vor&uuml;bergehende und dauerhafte. Vor&uuml;bergehende ("mouse-over")
+		Markierungen treten auf, wenn der Mauszeiger auf einem Objekt positioniert wird
+		und verschwindet sofort wieder, wenn die Maus weg bewegt wird. Dauerhafte
+		Markierungen treten auf, wenn ein Objekt durch Mausklick oder durch Mausziehen
+		ausgew&auml;hlt wird und verschwindet erst wieder wenn der Benutzer es
+		ausdr&uuml;cklich abw&auml;hlt. Ein Mausklick auf ein markiertes Objekt
+		l&ouml;scht die Markierung. Ein Mausklick auf eine objektfreie Fl&auml;che in
+		jeder Darstellung l&ouml;scht die Markierungen aller Objekte. Descartes
+		verwendet wei&szlig; f&uuml;r die vor&uuml;bergehende Markierung und schwarz
+		f&uuml;r die dauerhafte. </P> 
+	 <P>Die Auswahl von dauerhafter Markierung durch Mausklick ist
+		standardm&auml;&szlig;ig in allen Diagrammen
+		eingeschaltet. In dem Kartenfenster kann das Mausziehen sowohl zum
+		Vergr&ouml;&szlig;ern als auch zum Verschieben des Kartenausschnittes verwendet
+		werden. Der Benutzer kann zwischen verschiedene Interpretationen des
+		Mausziehens in der Werkzeugleiste des Kartenfensters w&auml;hlen. (N&auml;heres
+		dazu <A HREF="Erscheinung.htm">hier</A> ) <BR>In einer Karte mit verschiedenen
+		Schichten k&ouml;nnen nur die Objekte der aktiven Schicht markiert werden. Eine
+		Schicht wird aktiviert indem der Benutzer in der Legende darauf klickt. Wenn
+		sich die aktiven Schichten &auml;ndern, verschwindet die Markierung. Sie
+		wird wieder angezeigt, sobald die entsprechende Schicht wieder aktiviert wird.
+		</P> 
+	 <P><A HREF="#RD0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <P><A HREF="Inhalt.htm" STYLE="font-size: large">Zur&uuml;ck zum Inhalt</A>
+		</P> </BODY>
+</HTML>

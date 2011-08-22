@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//SoftQuad Software//DTD HoTMetaL PRO 6.0::19990601::extensions to HTML 4.0//EN" "hmpro6.dtd">
+<HTML> 
+  <HEAD> 
+	 <TITLE>Descartes - Calculation as Decision support</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <P><A NAME="DS0" STYLE="font-weight: bold; font-size: x-large">Calculation
+		as Decision support</A></P> 
+	 <P><A HREF="#DS1">Integrated criterion</A><BR><A HREF="#DS2">Values -&gt;
+		Order</A></P> 
+	 <P>See also <A HREF="DecisionSupport.html">decision support</A>.</P> 
+	 <P><A HREF="Contents.htm" STYLE="font-weight: bold; font-size: larger">
+		Back to contents</A></P> 
+	 <P><A NAME="DS1"
+		STYLE="font-weight: bold; font-size: large; text-decoration: underline">Integrated
+		criterion:</A></P> 
+	 <P>One more application of parallel coordinates plot is evaluation of
+		objects on the basis of multiple criteria. There exist a number of
+		computational methods to support this activity. In one of them relative
+		importance of the criteria is expressed by assigning weights to them. Then an
+		integrated score is computed for each object as the weighted average value of
+		its performance according to each criterion. Two types of criteria need to be
+		distinguished: benefit criteria (bigger values are better) and cost criteria
+		(smaller values are better).<BR>Results of evaluation can be explored using a
+		parallel coordinates plot with axes for all criteria and for the integrated
+		scores (see figure 1). Axes for benefit criteria are oriented from left to
+		right, and axes for cost criteria have the opposite direction. Lengths of the
+		axes may be (optionally) made proportional to weights of the criteria. <BR>Such
+		a display significantly helps in understanding and verification of results of
+		the automatic evaluation. According to the construction of the plot, the more
+		to the right a line lies, the better is the object it represents. The
+		corresponding position on the final score axis will also be closer to the right
+		end of the axis. <BR>The visualization allows interactive analysis of
+		sensitivity of the final scores to changes of the weights. When any of the
+		weights are changed, the scores are immediately recomputed, and the results are
+		reflected in the plot. </P> 
+	 <P ALIGN="CENTER"><IMG SRC="CalculationDecisionSupport4.gif" WIDTH="629"
+		HEIGHT="400" BORDER="0"><BR>Figure 1<BR>Parallel coordinate plot for decision
+		support</P> 
+	 <P>The plot may be linked to a map showing locations of the objects. In
+		figure 2 the plot is linked to a map representing the integrated scores of the
+		options by degrees of darkness. The line and contours of the best option is
+		highlighted in the plot and in the map. The map may represent the final scores,
+		for example by painting, and change them in parallel with changes in the
+		plot.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="CalculationDecisionSupport5.gif" WIDTH="569"
+		HEIGHT="412" BORDER="0"><BR>Figure 2<BR>Visualization for decision support in
+		degrees of darkness according to the ranking</P> 
+	 <P>The check box "classify results" in the lower left corner of the plot
+		window represents ranking on the map by means of classification (see figure 3).
+		Classification is explained <A HREF="Maps.htm#M4">here</A>.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="CalculationDecisionSupportClassification.gif"
+		WIDTH="545" HEIGHT="408" BORDER="0"><BR>Figure 3<BR>Visualization of classified
+		decision support</P> 
+	 <P></P> 
+	 <P><A HREF="#DS0">Goto beginning </A></P> 
+	 <P><A NAME="DS2"
+		STYLE="font-weight: bold; font-size: large; text-decoration: underline">Values
+		-&gt; Order:</A></P> 
+	 <P>With this calculation method all values of the selected attribute is
+		ordered. A ranking of the objects is visualized in the map by degrees of
+		darkness (see figure 4). </P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationDecisionSupportOderValues.gif" WIDTH="604" HEIGHT="412"
+		BORDER="0"><BR>Figure 4<BR>Visualization of ordered values by degrees of
+		darkness</P> 
+	 <P>Another example is the birth rate (permille) in the provinces of
+		Portugal. Figure 5 shows the values of each province:</P> 
+	 <P ALIGN="CENTER"><IMG SRC="OderValue.gif" WIDTH="191" HEIGHT="254"
+		BORDER="0"><BR>Figure 5<BR>Portugal - Values of birth rate (permille) in the
+		provinces</P> 
+	 <P>A new attribute (ranking of the objects) is created (a new column is
+		added to the table) and displayed in degree of darkness on the map as shown in
+		figure 6.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="OderedValue.gif" WIDTH="640" HEIGHT="499"
+		BORDER="0"><BR>Figure 6<BR>Portugal - Order of birth rate (permille)</P> 
+	 <P></P> 
+	 <P><A HREF="#DS0">Goto beginning </A></P> 
+	 <P STYLE="font-size: large"><A HREF="Contents.htm">Back to contents</A></P>
+	 </BODY>
+</HTML>

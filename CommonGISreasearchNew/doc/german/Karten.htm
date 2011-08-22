@@ -1,0 +1,570 @@
+<HTML> 
+  <HEAD> 
+	 <TITLE>Descartes - Kartographische Visualisierung</TITLE> 
+  </HEAD> 
+  <BODY LINK="#0000ff" VLINK="#800080" BGCOLOR="#ccffcc"> 
+	 <P><A NAME="M0"
+		STYLE="font-size: x-large; font-weight: bold">Kartographische
+		Visualisierung</A></P> 
+	 <P><A HREF="#M1">Choroplethenkarten</A><BR> <A HREF="#M2">Degrees of
+		darkness </A><BR> <A HREF="#M3">Entfernung von Ausrei&szlig;ern aus der
+		Pr&auml;sentation</A><BR> <A HREF="#M4">Klassifikation</A><BR> <A
+		HREF="#M5">Standalone bars</A><BR> <A HREF="#M6">Color</A><BR> <A
+		HREF="#M7">Parallel bars</A><BR> <A HREF="#M8">Pies</A><BR> <A
+		HREF="#M9">Triangles</A><BR> <A HREF="#M10">Utility bars</A><BR> <A
+		HREF="#M11">Utility wheels </A></P> 
+	 <P><A HREF="Inhalt.htm" STYLE="font-size: medium">Zur&uuml;ck zum
+		Inhalt</A></P> 
+	 <P><A NAME="M1"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Choroplethenkarten:</A></P>
+	 
+	 <P>Die Visualisierungsmethode von Choroplethenkarten basiert darauf Werte
+		eines Attributes bezogen auf eine Fl&auml;che durch Farben oder Schattierungen
+		darzustellen. "Unclassed" (nicht klassifiziert) bedeutet, da&szlig; numerische
+		Attribute ohne vorherige Klassifizierung in Farbschattierungen umgewandelt
+		werden: der Grad der Dunkelheit ist (in etwa) proportional zum Wert, der
+		repr&auml;sentiert wird. Ein Vorteil von Choroplethenkarten ist der
+		&Uuml;berblick, den man &uuml;ber die r&auml;umliche Verteilung der Daten
+		bekommt. Da die gesamte Verteilung in einem Bild zusammengefa&szlig;t werden
+		kann, kann man auch zwei oder mehrere Verteilungen auf einmal mit
+		Choroplethenkarten betrachten. Solche Vergleiche machen Zusammenh&auml;nge
+		zwischen mehreren Variablen oft deutlicher: &Auml;hnlichkeiten werden durch
+		gleichartige Muster sichtbar.</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M2"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Degrees
+		of darkness:</A></P> 
+	 <P>In einer sogenannten nicht klassifizierten Choroplethenkarte werden
+		numerische Attributwerte in ann&auml;hernd proportionalen Farbschattierungen
+		dargestellt: Je gr&ouml;&szlig;er der Wert, desto dunkler die darstellende
+		Farbschattierung.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="DisplayByColor.gif" WIDTH="567" HEIGHT="499"
+		ALT="1"><BR> <A NAME="F1">Abb. 1</A><BR> Portugal - Degrees of darkness -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P>Manchmal ist bei einer solchen Karte eine zweiseitige, oder zweigeteilte
+		Farbskala dabei, um zwischen den Werten &uuml;ber und unter einem Referenzwert
+		(Mittelpunkt) zu unterscheiden: sie wird in unterschiedlichen Farben, zum
+		Beispiel braun und blau unterteilt. Eine extra Farbe, zum Beispiel wei&szlig;
+		repr&auml;sentiert Werte, die genau gleich dem Referenzwert sind. Descartes
+		erm&ouml;glicht es interaktiv den Referenzwert zu &auml;ndern und diese
+		&Auml;nderung direkt auf der Karte zu sehen. Diese Operation ("visual
+		comparison" genannt) verdeutlicht r&auml;umliche Strukturen, unterst&uuml;tzt
+		den geographischen Vergleich der Objekte, und erleichtert das Auffinden von
+		bestimmten Werten auf der Karte. Dazu verschiebt man den zweiseitigen Pfeil an
+		der Farbskala auf die gew&uuml;nschte Position (ist das Feld "dynamic map
+		update" aktiv, so erscheinen die Ver&auml;nderungen sofort auf der Karte), oder
+		man klickt auf ein Objekt mit dem Referenzwert (vorher noch "comapre by click
+		in" aktivieren und "this map" ausw&auml;hlen, wenn nur von der Karte ein
+		Referenzwert erscheinen soll).</P> 
+	 <P ALIGN="CENTER"><IMG SRC="CompareByColor.gif" WIDTH="567" HEIGHT="499"
+		ALT="2"><BR> Abb. 2<BR> Portugal - Degrees of darkness -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P>Um r&auml;umliche Strukturen und Tendenzen zu erkennen, kann man den
+		zweiseitigen Pfeil &uuml;ber die gesamte Skala ziehen. Beobachten Sie die von
+		zwei Farben erscheinende Struktur, unabh&auml;ngig von der Schattierung. Zum
+		Beispiel in Abb. 2 kann man sehen wie sich die Blauschattierungen (stimmt mit
+		niedrigen Werten &uuml;berein) zuerst auf die Regionen gr&ouml;&szlig;erer
+		St&auml;dte Portugals wie Lissabon und Porto verteilt, sich dann entlang der
+		K&uuml;ste und erst dann in das Innere des Landes ausbreitet.</P> 
+	 <P>Bestimmte Werte auf der Karte findet man wenn im Textfeld "Compare to"
+		einen Wert explizit angibt. Der Attributwert der Objekte welche dann in
+		wei&szlig; gezeichnet sind, stimmen genau mit dem angegebenen Wert
+		&uuml;berein.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="CompareValues.gif" WIDTH="601"
+		HEIGHT="469" ALT="3"><BR> Abb. 3<BR> Portugal - Degrees of darkness -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P>Um ein Objekt mit den anderen zu vergleichen, zum Beispiel mit seinen
+		Nachbarn, reicht ein Mausklick darauf. "Compare by click in" sollte aktiv sein.
+		Der Attributwert dieses Objektes wir dann zum Referenzwert. Die Objekte, welche
+		einen h&ouml;heren Wert haben werden in braun dargestellt, mit niedrigeren
+		Werte in blau. Diese Farben k&ouml;nnen aber auch ge&auml;ndert werden, indem
+		man auf die Farbtafel unter dem Textfeld "Min" klickt.</P> 
+	 <P>Der Punktegraph stellt die Verteilung der Werte dar. Bez&uuml;glich des
+		dargestellten Attributes steht ein Punkt f&uuml;r den Wert eines Objektes. Wenn
+		die Maus einen Punkt ber&uuml;hrt, so wird dieser, und alle andern
+		Darstellungsmethoden dieses Objektes, hervorgehoben. Abb. 4 zeigt eine
+		Beschreibung der dargestellten Elemente. Die Begrenzungssymbole (kleine blaue
+		Dreiecke genannt "delimiter") werden dazu benutzt um Ausrei&szlig;er aus der
+		Pr&auml;sentation zu entfernen. Dies wird im Folgenden noch n&auml;her
+		beschrieben.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="DotPlotExplained.gif" WIDTH="241" HEIGHT="302"
+		ALT="4"><BR> Abb. 4<BR> Dot plot Erkl&auml;rung</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M3"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Entfernung
+		von Ausrei&szlig;ern aus der Pr&auml;sentation:</A></P> 
+	 <P>Sehr oft enth&auml;lt die zu untersuchende Datenmenge ein paar sehr hohe
+		oder sehr niedrige Werte eines numerischen Attributs, w&auml;hrend die restlichen
+		Werte relativ nah beieinander liegen. Solche Werte werden Ausrei&szlig;er
+		genannt. Zum Beispiel die Geburtenrate in Europa liegt zwischen 10.56 und 14,51
+		pro 10000, wogegen ein einziges Land eine Geburtenrate von 21.70 vorweisen
+		kann. Karten, sowie andere geographische Darstellungen, die solche Daten
+		darstellen, sind nicht aussagekr&auml;ftig genug, da der Unterschied zwischen
+		den Werten nicht deutlich wahrnehmbar ist. Die Entfernung von Ausrei&szlig;ern
+		aus der Pr&auml;sentation erm&ouml;glicht es nah beieinander liegende Werte auf
+		eine detailliertere Schattierungsskala zu projizieren, um somit die Unterschiede
+		deutlicher zu machen.</P> 
+	 <P>Mit Descartes kann man die Ausrei&szlig;er so entfernen: Der Benutzer
+		mu&szlig; die dreieckigen Begrenzer (delimiter, auf der rechten Seite der
+		Karte) so verschieben, da&szlig; die unerw&uuml;nschten Werte au&szlig;erhalb
+		der grau schattierten Zone liegen. Die Ver&auml;nderungen werden direkt auf die
+		Karte &uuml;bertragen. Die neuen Extremwerte werden simultan angezeigt.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="OutlierRemoval.gif" WIDTH="601" HEIGHT="469"
+		ALT="5"><BR> Abb. 5<BR> Portugal - Entfernung von Ausrei&szlig;ern -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P>Abb. 5 pr&auml;sentiert den prozentualen Anteil der Frauen zur
+		Bev&ouml;lkerung in 1991. Es gibt einen Ausrei&szlig;er mit einem Wert von
+		86,11 (Dargestellt auf der Karte mit einer Grauschattierung und einem braunen
+		Dreieck). Auf der rechten Seite des Fensters sind zwei Punktegraphen dargestellt.
+		Der rechte zeigt de gesamten Wertebereich an, wogegen der linke den
+		pr&auml;sentierten Wertebereich vergr&ouml;&szlig;ert angibt (Abb. 6).
+		Descartes zeigt nun nur noch die Werte an, die zwischen den beiden Begrenzern
+		liegen (auf der Karte und im vergr&ouml;&szlig;erten Bereich).Im Beispiel wird
+		nun nach der Entfernung des Ausrei&szlig;ers der h&ouml;chste Wert (56,94 -
+		angezeigt im Textfenster "Max") mit der dunkelsten Braunschattierung
+		dargestellt.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="DotPlotRemoveal.gif" WIDTH="244" HEIGHT="302"
+		ALT="6"><BR> Abb. 6<BR> Dot plot Beschreibung</P> 
+	 <P>Die Entfernung von Ausrei&szlig;ern ist auch in anderen
+		Visualisierungsmethoden (standalone bars, bar charts, etc.) m&ouml;glich.</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M4"
+		STYLE="font-weight: bold; font-size: large; text-decoration: underline">Klassifikation:</A></P>
+	 
+	 <P>Eine weit verbreitete Methode kartographische Karten mit numerischen
+		Attributen darzustellen, ist eine klassifizierte Zeichnung. Bei dieser Methode wird der
+		Wertebereich des Attributs in Intervalle unterteilt, welchen verschiedene
+		Farben zugeordnet sind. Die zugeh&ouml;rigen geographischen Objekte werden
+		ebenso auf der Karte in der jeweiligen Farbe gezeichnet.</P> 
+	 <P>Die Hilfsprogramme enthalten direkte Manipulationselemente
+		willk&uuml;rliche Grenzen zu setzen, Graphen welche die statistische Verteilung
+		der Attributwerte darstellen, Hilfsmittel zur automatischen Klassifizierung,
+		Berechnung von statistischen Qualit&auml;t der Klassifikation und verschiedene
+		Farbpl&auml;ne, die zur Darstellung der Klassen auf einer Choroplethenkarte
+		angewendet werden k&ouml;nnen. </P> 
+	 <P>Historisch gesehen, wurde Klassifikation zur Minimierung der
+		Farbenanzahl benutzt, welche f&uuml;r die Darstellung der Datenwerte auf der
+		Karte n&ouml;tig waren. Dieses Ziel und die Aufgabe die Subjektivit&auml;t der
+		Datendarstellung zu minimieren f&uuml;hrten zu der Entwicklung von 3 weit
+		verbreiteten Methoden von Datenklassifizierung (Abb. 7): <BR> 1) Klassifikation
+		in gleich gro&szlig;e Intervalle; <BR> 2) Klassifikation mit einer
+		Gleichverteilung der Objekten in den Klassen; <BR> 3) Statistisch optimale
+		Klassifikation. </P> 
+	 <P ALIGN="CENTER"><IMG SRC="ClassificationEqualIntervalMap.gif" WIDTH="200"
+		HEIGHT="240" ALT="7a"><IMG SRC="ClassificationEqualClassesMap.gif" WIDTH="200"
+		HEIGHT="240" ALT="7b"><IMG SRC="ClassificationOptimalMap.gif" WIDTH="200"
+		HEIGHT="240" ALT="7c"><BR> Abb. 7<BR> Portugal - Varianten der Klassifikation
+		von "%_Of_Pop_by_age_&gt;=65": gleich gro&szlig;e Intervalle, gleich verteilte
+		Klassifikation, und statistisch optimale Klassifikation</P> 
+	 <P>Es ist in Kartographie wohlbekannt, da&szlig; eine unterschiedliche
+		Anzahl der Klassen und der Umbr&uuml;che die Information der Karte
+		gr&uuml;ndlich &auml;ndern k&ouml;nnen. Dies wird zum Beispiel bei dem Vergleich der Choroplethenkarten in Abb. 7 deutlich. Diese Karten resultieren aus 3
+		verschiedenen Variationen der Klassifikation in 3 Klassen von Regionen in
+		Portugal je nach Wert des Attributs "%_Of_Pop_by_age_&gt;=65". Dennoch ist es
+		schwer zu glauben, da&szlig; die selben Daten benutzt wurden. Der Effekt von
+		Klassifikation kann verdeutlicht werden, wenn diese Karten mit nicht
+		klassifizierten Choroplethenkarten des selben Attributs darstellt werden (<A
+		HREF="#F1">Abb. 1</A>). </P> 
+	 <P>Es gibt folgende Hilfsprogramme zur Klassendefinition:<BR> 1)
+		Automatische Klassifizierung: Klassifikation in gleich gro&szlig;e Intervalle,
+		Klassifikation mit einer Gleichverteilung der Objekten in den Klassen,
+		Statistisch optimale Klassifikation. Diese Methoden k&ouml;nnen auf zwei Weisen
+		benutzt werden: Der Benutzer kann entweder die gew&uuml;nschte Anzahl der
+		Klassen angeben, oder die gew&uuml;nschte Qualit&auml;t. Letzeres entscheidet
+		selbst &uuml;ber die Anzahl der Klassen. Um diese Methoden dann anzuwenden
+		klickt man auf "run".<BR> 2) Eine Texteingabe welche die momentanen Werte der
+		Umbr&uuml;che angibt. Umbr&uuml;che k&ouml;nnen an dieser Eingabe
+		ver&auml;ndert, entfernt, oder hinzugef&uuml;gt werden.<BR> 3) Ein
+		zusammengesetzter Schieber, welcher visuell die relativen Positionen der
+		Klassenumbr&uuml;che innerhalb des Minimal- und Maximalwertes des Attributes
+		und die momentan benutzten Farben anzeigt (Abb. 8). Ein Punktegraph geh&ouml;rt
+		zur Anzeige dazu, welche die statistische Verteilung der Attributwerte
+		angibt.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="classification1.gif" WIDTH="601" HEIGHT="469"
+		ALT="8"><BR> Abb. 8<BR> Portugal - Klassifikation - %_of_Pop_by_age_&gt;=65</P>
+	 
+	 <P>Der zusammengesetzte Schieber ist eine direkte Manipulationssteuerung.
+		Die Zeiger k&ouml;nnen bewegt werden und ver&auml;ndern somit auch die
+		Klassifikation. Wenn ein Zeiger einen benachbarten Zeiger ann&auml;hert. so
+		wird dieser entfernt (d.h. zwei aufeinanderfolgende Klassen werden
+		zusammengefa&szlig;t). Wenn auf eine freie Fl&auml;che zwischen zwei Zeiger
+		geklickt wird, so wird ein neuer Zeiger hinzugef&uuml;gt, der diese Klasse in
+		zwei neue Klassen unterteilt.<BR> Der zusammensetzte Schieber hat eine
+		spezielle Funktion: W&auml;hrend des Prozesses des Bewegens eines Zeigers,
+		werden nur die Objekte der zwei sich &auml;ndernden Klassen auf der Karte
+		angezeigt. Alle anderen Objekte werden in einem neutralen grau gezeichnet. Dies
+		erm&ouml;glicht es, sich auf die resultierenden &Auml;nderungen der
+		r&auml;umlichen Muster besser zu konzentrieren.<BR> Alle Bilder werden sofort
+		 nach jeder Ver&auml;nderung der Klassen, insbesondere w&auml;hrend
+		der Bewegung eines Zeigers, aktualisiert.</P> 
+	 <P>Als Ergebnis einer jeden Klassifizierung ist mit dem Verlust von
+		Genauigkeit zu rechnen. Der Genauigkeitsverlust (n&auml;mlich der statistische
+		Fehler durch die Klassifizierung) kann gemessen werden. Der gesamte Fehler
+		einer Klassifizierung ist als Summe von internen Fehlern f&uuml;r jede Klasse,
+		E=&Sigma;Ek, zu verstehen. Der interne Klassenfehler Ek h&auml;ngt von der
+		gew&auml;hlten Norm ab. Es werden 3 Normen eingef&uuml;hrt namens "mean
+		measure", "median measure", und "entropy measure".<BR> Die erste Norm wird als
+		quadratische Abweichung vom Klassenmittelpunkt Ek= &Sigma;(Xi-Xk)^2
+		berechnet, wobei Xk der Klassenmittelpunkt ist. Die zweite Norm wird als Summe
+		von absoluten Abweichungen vom Klassenmedian berechnet,
+		Ek=&Sigma;abs(Xi-Xk), wobei Xk der Klassenmedian ist. Diese Norm ist im
+		Vergleich zu der ersten Norm weniger von Verteilung (Ausrei&szlig;er)
+		beeinflu&szlig;bar, da die Randdaten weniger Einflu&szlig; auf den Median als
+		auf den Mittelwert. Die dritte Norm beruht auf die Abweichung vom Mittelwert
+		welche mit einer Logarithmusfunktion des informationstheoretischen Ansatz
+		berechnet wird, Ek=&Sigma;abs(Xi-Xk)log(abs( Xi-Xk+1)). Falls die
+		Abweichung klein ist, w&auml;chst die Funkton zun&auml;chst wie der Mittlere
+		quadratische Abstand (die erste Norm), w&auml;hrend sie f&uuml;r gro&szlig;e
+		Abweichungen sehr viel langsamer w&auml;chst, so da&szlig; die Ausrei&szlig;er
+		den Gesamtfehler weniger beeinflussen. </P> 
+	 <P>F&uuml;r jede Klassifikation vom System produziert, oder vom Benutzer
+		modifiziert, werden 2 Qualit&auml;tsindikatoren berechnet. Die erste
+		repr&auml;sentiert den Verlust der Genauigkeit durch die Klassifikation. Die
+		zweite ist das Verh&auml;ltnis des ersten Wertes und des Wertes f&uuml;r die
+		statistisch optimale Klassifikation mit der selben Anzahl von Klassen. Demnach
+		dr&uuml;ckt der erste Indikator aus, wie weit die Klassifikation sich von den
+		original Daten entfernt und der zweite wie weit sie sich von der optimalen
+		Klassifikation entfernt ist. Um die optimale Klassifikation zu finden, wird ein
+		Algorithmus benutzt, welcher eine spezielle iterative Organisation welche
+		Klassifizierungen von vorhergehenden Schritten effizient auf den n&auml;chsten
+		Schritt anwendet.<BR> Beide Qualit&auml;tsindikatoren werden als Nummer
+		gemessen an einer Skala von 0% bis 100% und als Grafik (Abb. 9) dargestellt.
+		Die Indikatoren werden automatisch aktualisiert, nach jeder Ver&auml;nderung
+		der Klassen.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ClassificationError.gif" WIDTH="221"
+		HEIGHT="100" ALT="9"><BR> Abb. 9<BR> Pr&auml;sentation der statistischen
+		Qualit&auml;t einer Klassifizierung</P> 
+	 <P>Bei der Klassifizierung von r&auml;umlichen Daten sollte ein Analytiker
+		die Daten aus zwei Perspektiven betrachten, den statistischen und
+		r&auml;umlichen, sowie die Eigenheiten der Verteilung der Daten. Dies bedeutet,
+		da&szlig; der Analytiker mindestens zwei Ziele gleichzeitig verfolgen
+		mu&szlig;. Das erste ist die Variation der Daten in jeder Klasse zu minimieren
+		und die Unterschiede zwischen den Klassen zu maximieren. Das zweite Ziel ist es
+		die Gebiete in die kleinste m&ouml;gliche Anzahl von koh&auml;renten Regionen
+		mit einer m&ouml;glichst geringen Datenvariation zu unterteilen. Der Analytiker
+		braucht Hilfsmittel welche ihm/ihr erlauben die Balance zwischen diesen Zielen
+		auf der Suche nach akzeptablen Kompromi&szlig;l&ouml;sungen zu bewahren.
+		Wohingegen der Algorithmus der statistischen optimalen Klassifikation nur dem
+		ersten Ziel gerecht wird und die r&auml;umlichen Aspekte der Daten au&szlig;en
+		vor l&auml;&szlig;t, und somit dem zweiten Ziel nicht nachkommt. Deswegen ist
+		die oben beschriebene "Freihand" Klassifikation so wichtig:
+		Klassenumbr&uuml;che k&ouml;nnen verschoben werden und die Ver&auml;nderungen
+		k&ouml;nnen auf der Karte beobachtet werden. Eine visuelle Darstellung der
+		statistischen Werteverteilung kann dem Analytiker helfen die statistischen
+		Kriterien im Laufe der interaktiven Klassifizierung zu finden. Der Punktegraph neben dem zusammengesetzten Schieber kann daf&uuml;r hilfreich sein, aber das
+		&Uuml;berlappen der Punktsymbole kann das Verst&auml;ndnis der Verteilung
+		tr&uuml;ben. </P> 
+	 <P>Eine weitere Methode der graphischen Pr&auml;sentation von statistischer
+		Verteilung, ist die "cumulative frequency curve" (anwachsende
+		H&auml;ufigkeitskurve) oder "ogive". In solch einem Graphen werden auf der
+		horizontalen Achse die Attributwerte dargestellt. Die vertikale Position eines
+		jeden Punktes der Kurve entspricht der Anzahl der Objekte mit Attributwerten
+		kleiner oder gleich dem Wert, welher von der horizontalen Position
+		dieses Punktes repr&auml;sentiert wird. Eigenheiten von Werteverteilungen k&ouml;nnen von der Form der
+		"ogive" wahrgenommen werden. Steile Segmente entsprechen Anh&auml;ufungen von
+		nah beieinander liegenden Werten. Die H&ouml;he eines solchen Segmentes zeigt
+		die Anzahl der nah beieinander liegenden Werte. Horizontale Segmente
+		entsprechen der "nat&uuml;rlichen Umbr&uuml;che" in der Sequenz der Werte.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="CumulativeFrequencyCurve.gif" WIDTH="600"
+		HEIGHT="463" ALT="10"><BR> Abb. 10<BR> Cumulative frequency curve</P> 
+	 <P>Es ist wichtig, da&szlig; die cumulative frequency curve keine
+		fr&uuml;here Klassifizierung ben&ouml;tigt. Jedoch kann es Resultate einer
+		Klassifikation mit zus&auml;tzlichen graphischen Elementen darstellen. Dadurch
+		eignet sich die horizontale Achse des Graphen dazu die Klassenumbr&uuml;che
+		anzuzeigen. Hierf&uuml;r benutzt Descartes segmentierte Barren, deren Segmente
+		die Klassenintervalle darstellen. Die Segmente sind in der Farbe der
+		Klasse bezeichnet. Die Positionen der Umbr&uuml;che werden auf die Kurve
+		projiziert und die zugeh&ouml;rigen Punkte der Kurve projizieren die
+		Umbr&uuml;che wiederum auf die vertikale Achse. Die Unterteilung der vertikalen
+		Achse wird auch in den Farben der Klassifizierung wiedergegeben. Die L&auml;nge
+		der Segmente sind proportional zu der Anzahl der Objekte in der entsprechenden
+		Klassen. Mit solch einer Konstruktion kann man einfach die Gr&ouml;&szlig;en
+		der Klasse besser vergleichen. Zum Beispiel die Klassenumbr&uuml;chen in Abb.
+		11 unterteilen die gesamte Menge der Objekte in 3 Gruppen von
+		ungef&auml;hr gleicher Gr&ouml;&szlig;e, welche durch gleich gro&szlig;e
+		L&auml;ngen der Achsensegmente auf der vertikalen Achse verdeutlicht wird.
+		</P> 
+	 <P ALIGN="CENTER"><IMG SRC="CumulativeFrequencyCurveClassified.gif"
+		WIDTH="478" HEIGHT="348" ALT="11"><BR> Abb. 11<BR> Klassen in einer cumulative
+		frequency Kurve</P> 
+	 <P>Die Nutzung der Karte und der cumulative frequency Kurve, zusammen mit
+		dem Hilfsmittel der Klassifikation, erlaubt dem Benutzer die Balance zwischen
+		statistischen und geographischen Kriterien zu halten. Zum Beispiel, nach der
+		Betrachtung des Graphen in Abb. 11 k&ouml;nnte man den unteren Umbruch von dem
+		geballten Gebiet (dargestellt durch ein steiles Segment der Kurve) zu dem
+		horizontalen Segment links davon schieben wollen. Diese Operation würde die Klassifikation vom
+		statistischen Standpunkt aus verbessern. Wenn ein Umbruch bei einer flacheren
+		Steigung ist, k&ouml;nnte es angemessen sein die Grenze um diese Position herum
+		zu verschieben, um ein einfacheres r&auml;umliches Muster zu erhalten. Es ist
+		auch m&ouml;glich w&auml;hrend des Verschiebens der Umbr&uuml;che sein
+		Augenmerk auf die vertikale Achse zu richten und Klassen mit der
+		gew&uuml;nschten Gr&ouml;&szlig;e zu erhalten (Anzahl der Objekte). </P> 
+	 <P>Bei bestimmten Anwendungsbereichen k&ouml;nnten zus&auml;tzliche
+		Klassifikationskriterien zu der Verkn&uuml;pfung mit statistischen und
+		geographischen Kriterien eine Rolle spielen. Zum Beispiel, in demographischen Analysen
+		kann es wichtig sein Klassen von Bezirken zu produzieren, welche sich nicht zu
+		sehr von der Gesamtzahl der Bev&ouml;lkerung die dort wohnt, unterscheidet.</P>
+	 
+	 <P>Es ist m&ouml;glich die Idee der cumulative frequency Kurve zu
+		verallgemeinern und &auml;hnliche Graphen zu erstellen, welche beliebig viele
+		Attributwerte summieren. Beispiele solcher Attribute sind Gebiete,
+		Populationsgr&ouml;&szlig;en, Bruttosozialprodukt, Anzahl der Haushalte, etc.
+		Eine verallgemeinerte cumulative Kurve kann folgenderma&szlig;en erstellt
+		werden: Sei auf der horizontalen Achse das Attribut A und auf der vertikalen
+		das Attribut B abgebildet. Die Kurve weist jedem Wert x von A die Summe der
+		Werte von B zu, welche f&uuml;r die Objekte mit den Werten von A berechnet
+		wurden und kleiner oder gleich x sind. Demnach entspricht der maximale Wert von
+		A der Summe der B-Werte aller jeweiligen Objekte. Seien zum Beispiel die
+		Bezirke von Leichestershire bez&uuml;glich der Anzahl der Autos pro Kopf
+		klassifiziert und eine verallgemeinerte cumulative Kurve stelle das Attribut
+		"Total population" (absolute Bev&ouml;lkerung) dar. Dann w&uuml;rde die
+		vertikale Position von x Autos pro Kopf die Anzahl der Personen, die in einem
+		Bezirk mit mehr als x Autos pro Kopf wohnen, widerspiegeln.</P> 
+	 <P>Das Klassifikationsprogramm von Descartes erlaubt das Hinzuf&uuml;gen
+		einer verallgemeinerten Kurve f&uuml;r jedes quantitative Attribut zu der
+		"cumulative frequency curve" Darstellung. Die Kurven werden &uuml;bereinander
+		in dem selben Fenster (siehe Abb. 12) gezeichnet. Um die Kurven besser zu unterscheiden
+		werden sie in unterschiedlichen Farben dargestellt. Die horizontale Achse
+		bleibt f&uuml;r alle gleich. Die vertikalen Achsen werden nebeneinander auf der
+		linken Seite des Graphen gezeigt. Jede der vertikalen Achse ist in die selbe
+		Anzahl von Segmenten unterteilt, aber die Positionen der Umbr&uuml;che sind im
+		allgemeinen verschieden. Dies wird in Abb. 12 deutlich. Es zeigt da&szlig; 34 %
+		aller Bezirke in die untere Klasse der Klassifikation passen. Sie beanspruchen
+		nur 10 % der Gesamtfl&auml;che, enthalten aber 50 % der gesamten
+		Bev&ouml;lkerung.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="CumulativeFrequencyCurveGeneralized.gif"
+		WIDTH="276" HEIGHT="238" ALT="12"><BR> Abb. 12<BR> Verallgemeinerte cumulative
+		Kurven werden f&uuml;r die Attribute "Area" (Bezirk) und "Total population
+		(absolut Bev&ouml;lkerung) erstellt. Die Klassifikation wird auf der Basis des
+		Attributs "Number of cars per capita" (Anzahl der Autos pro Kopf)
+		durchgef&uuml;hrt.</P> 
+	 <P>Mit solch einem Werkzeug ist es einfach die Kriterien wie
+		Gleichverteilung der Bev&ouml;lkerung unter den Klassen, oder ungef&auml;hr
+		gleich gro&szlig;e, von den Klassen besetzte Bereiche, oder andere spezifische
+		Kriterien, welche von diesem oder jenem angewendeten Bereich abh&auml;ngen,
+		darstellen. Um Klassen ungef&auml;hr gleich gro&szlig; bez&uuml;glich der
+		Bev&ouml;lkerung zu machen, sollte sich ein Analytiker auf den Proze&szlig; der
+		Umbruchverschiebung auf der Achse bez&uuml;glich der Gesamtbev&ouml;lkerung
+		konzentrieren und versuchen die Position des Zeigers so zu setzten, da&szlig;
+		die Achse in gleich lange Segmente eingeteilt ist.</P> 
+	 <P>Nebst dieser M&ouml;glichkeit, k&ouml;nnen verallgemeinerte cumulative
+		Kurven dazu benutzt werden Verkn&uuml;pfungen zwischen verschiedenen
+		Charakteristika der Klassifizierten Objekte zu finden. Dies soll anhand eines
+		Beispiels an der Arbeitslosigkeit von Leichestershire deutlich gemacht werden.
+		Es werden die Attribute "Number of unemployment" (Anzahl der Arbeitslosen) und
+		"Total populaiton" (absolute Bev&ouml;lkerung) zur Berechnung des prozentualen
+		Anteils der Arbeitslosen an der Bev&ouml;lkerung in jedem Bezirk benutzt. Dann
+		soll dieses neue Attribut die Basis der Klassifikation sein. Das
+		Klassifikationswerkzeug zeigt an, da&szlig; die Proportionen von Arbeitslosen in
+		der Bev&ouml;lkerung zwischen 0.9% und 13.62% variiert. Betrachtet man nun die
+		Werte &uuml;ber 4% als recht hoch, so k&ouml;nnte man nachschauen, in welchen
+		Bezirken dieser Grenzwert &uuml;berschritten wird. Daf&uuml;r wird die Zahl 4
+		als Klassenumbruch eingetragen, wodurch alle Bezirke in 2 Klassen unterteilt
+		werden: Mit bis zu 4% Arbeitslosen in der Bev&ouml;lkerung und mehr als 4%. Die
+		cumulative Kurve zeigt, da&szlig; nur 18% aller Bezirke zu der oberen Klasse
+		geh&ouml;ren (Abb. 13). Die Karte zeigt eine klare r&auml;umliche
+		Anh&auml;ufung solcher Bezirke im Zentrum der Region. Man erkennt, da&szlig;
+		diese Bezirke einen eher kleinen Teil der ganzen Region einnehmen. Wenn jedoch
+		das Attribut "Total population" (absolute Bev&ouml;lkerung) zur Darstellung der
+		cumulative Kurve ausgew&auml;hlt wird, so sieht man, da&szlig; 33% der gesamten
+		Bev&ouml;lkerung von Leicestershire in diesen Bezirken mit hohem
+		Arbeitslosenanteil lebt.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="CumulativeFrequencyCurveexample.gif"
+		WIDTH="604" HEIGHT="221" ALT="13"><BR> Abb. 13<BR> Die Benutzung von
+		verallgemeinerten cumulative Kurven zur Erforschung der Arbeitslosenzahlen in
+		Leicestershire</P> 
+	 <P>Es ist auch interessant zu erfahren, ob es einen Link zwischen
+		Arbeitslosigkeit und der Verteilung von nationalen Minderheiten vorhanden ist.
+		Zur cumulative Kurvendarstellung wurde das Attribut BLAFR hinzugef&uuml;gt,
+		welches die absolute Anzahl der Personen von Afrika in den Bezirken darstellt.
+		In Abb. 13 kann man deutlich sehen, da&szlig; sich die Kurve f&uuml;r diese
+		Bev&ouml;lkerungsgruppe deutlich von der f&uuml;r die gesamte Bev&ouml;lkerung
+		unterscheidet. Ebenso kann man sehen, da&szlig; die Achsen, welche dieses
+		Attribut darstellen, in andere Proportionen als die f&uuml;r die H&auml;ufigkeit
+		und f&uuml;r die gesamte Bev&ouml;lkerung unterteilt ist. Nur 28% der Personen
+		mit afrikanischer Abstammung leben in Bezirken mit weniger Arbeitslosen und,
+		daher, leben 72% in Bezirken mit mehr als 4% Arbeitslose in der
+		Bev&ouml;lkerung. Der Unterschied ist sogar noch deutlicher f&uuml;r Menschen
+		indischer Abstammung (dargestellt mit dem Attribut EGINDIAN). Man kann
+		erkennen, da&szlig; 81% dieser Menschen in Regionen mit hoher Arbeitslosenquote
+		leben. </P> 
+	 <P>Wenn man die Arbeitslosenzahlen weiter untersucht indem man den
+		Klassenumbruch so verschiebt, da&szlig; die Bev&ouml;lkerung in zwei gleich
+		gro&szlig;e Klassen unterteilt wird, bekommt man ein Ergebnis wie in Abb. 14.
+		Der neue Wert des Klassenumbruchs liegt bei 2.89. Dies bedeutet, da&szlig; 50%
+		der Bev&ouml;lkerung in Bezirken mit mehr als 2.89% Arbeitslosen leben. Diese
+		Bezirke, wie man auf der Karte erkennen kann, nehmen einen relativ kleinen Teil
+		der Region ein. Demnach ist die Bev&ouml;lkerungsdichte in ihnen h&ouml;her als
+		in den restlichen Bezirken. Scheinbar sind dies meistens
+		Gro&szlig;stadtbezirke. Die Karte zeigt auch, da&szlig; die Bezirke mit hoher
+		Arbeitslosenquote r&auml;umlich geb&uuml;ndelt sind. Die bereits erw&auml;hnten
+		nationalen Minderheiten sind nun auf folgender Weise in den Klassen verteilt:
+		nur 14% der Inder und 18% der Afrikaner leben in Bezirken mit niedriger
+		Arbeitslosenquote und demnach wohnen 86% und 82% jeweils in den Bezirken mit
+		mehr als 2.89% Arbeitslosen in der Bev&ouml;lkerung. </P> 
+	 <P ALIGN="CENTER"><IMG SRC="CumulativeFrequencyCurveExample2.gif"
+		WIDTH="604" HEIGHT="221" ALT="14"><BR> Abb. 14<BR> Die cumulative Kurve stellt
+		die Trennung der Bezirke in zwei Klassen mit gleicher Bev&ouml;lkerung dar.</P>
+	 
+	 <P>Dieses analytische Beispiel demonstriert, da&szlig; verallgemeinerte
+		cumulative Kurven die Klassifikation mit mehreren Kriterien erleichtert,
+		sondern auch Verbindungen in diesen Daten aufdecken. Man sollte jedoch
+		beachten, da&szlig; diese Technik nur f&uuml;r Attribute verwendet werden kann,
+		deren Werte &uuml;ber die Menge der zugeh&ouml;rigen Objekte aufsummiert werden
+		k&ouml;nnen. Zum Beispiel w&auml;re es falsch diese Technik auf Prozentzahlen,
+		Durchschnittswerte, Verh&auml;ltnisse, Werte pro Kopf, etc. anzuwenden.</P> 
+	 <P>Innerhalb des Systems k&ouml;nnen mehrere graphische Darstellungen
+		gleichzeitig auf dem Bildschirm abgebildet sein. Neben Karten k&ouml;nnen dies
+		Punktegraphen, "Scatter"-Graphen und Graphen mit parallelen Koordinaten sein. Die Darstellungen
+		k&ouml;nnen verschiedene Attribute des selben Objektes oder des selben
+		Attributs in verschiedenen Arten oder Kombinationen darstellen. Mit einer
+		Klassifikation ist es m&ouml;glich die Klassenfarben auf andere Darstellungen
+		zu &uuml;bertragen. Als Ergebnis werden Punkte eines Punktegraphen, oder eines
+		"Scatter"-Graphen, und Linien eines Graphen mit parallelen Koordinaten in den Farben der
+		Klasse respektive der Objekte dargestellt. Diese Eigenschaft, bekannt als
+		"brushing", ist sehr n&uuml;tzlich Verbindungen zwischen Attributen zu
+		studieren. Daf&uuml;r sollte "broadcast classification" aktiviert sein. </P> 
+	 <P>Das kleine Dreieck (Zeiger) zwischen dem zusammengesetzten Schieber und
+		dem Textfeld zeigt die Referenzklasse an. Mitglieder dieser Klassen erscheinen
+		in wei&szlig;. Die mit niedrigeren Werten werden z.B. in Blauschattierungen und
+		die mit gr&ouml;&szlig;eren Werte in Rotschattierungen dargestellt. Die
+		Referenzklasse kann ver&auml;ndert werden, indem der Zeiger verschoben wird.</P>
+	 
+	 <P ALIGN="CENTER"><IMG SRC="Classification.gif" WIDTH="603" HEIGHT="396"
+		ALT="15"><BR> Abb. 15<BR> Portugal - Klassifikation -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P>Ist einmal eine gew&uuml;nschte Klassifikation erreicht, so kann sie als
+		ein neues Attribut der Schicht (Tabelle) hinzugef&uuml;gt werden. Jedem Objekt
+		wird dann eine Zahl zugeordnet, welche der jeweiligen Klasse entspricht. Auf
+		dieses neue Attribut k&ouml;nnten wiederum neue Methoden angewendet werden.</P>
+	 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M5"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Standalone
+		bars:</A></P> 
+	 <P>Mit diesem Werkzeug wird jeder Wert eines Attributes mit einem einzelnen
+		Balken dargestellt, dessen H&ouml;he proportional zum Wert ist. Die Farbe kann
+		ver&auml;ndert werden, indem man auf das K&auml;stchen neben dem Attributsnamen
+		klickt. Standalone bars k&ouml;nnen so manipuliert werden, da&szlig; ein
+		Vergleich zu einem Wert oder einem Objekt sichtbar wird. Um einen Wert mit den
+		anderen zu vergleichen schiebt man den doppelseitigen Pfeil links neben dem Punktegraphen nach oben oder unten, oder man setzt den Wert in dem Textfeld "Compare
+		to". Positive Werte werden oberhalb einer Linie gezeichnet, negative in der selben Farbe darunter (Abb. 16).</P> 
+	 <P ALIGN="CENTER"><IMG SRC="StandaloneBar1.gif" WIDTH="601" HEIGHT="469"
+		ALT="16"><BR> Abb. 16<BR> Portugal, S&uuml;den - Standalone bars - %_of
+		_students_at_university_1991</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M6"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Color:</A></P>
+	 
+	 <P>Manchmal bestehen Attribute nicht aus numerischen Werten und eine
+		Ordnung kann nicht erfolgen. Dann kann jeder Wert in einer Verschiedenen Farbe
+		dargestellt werden. Diese Farben k&ouml;nnen auch ver&auml;ndert werden, indem
+		auf das farbige K&auml;stchen neben den Attributwerten geklickt wird. Ist das kleine
+		K&auml;stchen daneben nicht aktiviert, dann wird dieser Wert auch nicht auf der
+		Karte dargestellt (dunkel graue Objekte). In Abb. 17 werden die verschiedenen
+		Religionen in Europa dargestellt, wobei "Lutheran" nicht aktiv ist und somit in
+		dunkel grau dargestellt wird (siehe Island, Norwegen, D&auml;nemark, etc.).</P> 
+	 <P ALIGN="CENTER"><IMG SRC="Color.gif" WIDTH="601" HEIGHT="469"
+		ALT="17"><BR> Abb. 17<BR> Europa - Color - Religionen</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M7"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Parallel
+		bars:</A></P> 
+	 <P>Mit dieser Vergleichsmethode die ausgew&auml;hlten Attribute werden in
+		Balken nebeneinander dargestellt. Es ist nicht m&ouml;glich einen oder mehrere
+		davon zu betonen, wie in anderen Methoden (z.B. utility bars; erkl&auml;rt
+		<A HREF="#M10">hier</A>). Die Farbver&auml;nderung oder das Vergleichen mit
+		speziellen Werten wird hier wie in den anderen Methoden gehandhabt.</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M8"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Pies:</A></P>
+	 
+	 <P>Wenn es sinnvoll ist Attribute zusammenzusetzen, da sie sich
+		aufsummieren lassen, sind pie charts eine gute Visualisierungsmethode. Zum
+		Beispiel ergibt das aufsummieren aller Altersgruppen die gesamte Population der
+		jeweiligen Region. </P> 
+	 <P ALIGN="CENTER"><IMG SRC="Pies4.gif" WIDTH="601" HEIGHT="469"
+		ALT="18"><BR> Abb. 18<BR> Portugal - utility wheels -Altersgruppen</P> 
+	 <P>Die Reihenfolge der Attribute kann durch Ziehen mit der Maus
+		ver&auml;ndert werden. Ein kleiner gr&uuml;ner Pfeil zeigt an, wo das Attribut
+		plaziert wird, wenn es losgelassen wird. Die Farben k&ouml;nnen auch hier
+		wieder durch klicken auf den farbigen K&auml;stchen ge&auml;ndert werden. Um
+		den Durchmesser des Kreises proportional zur Summe darzustellen aktiviere man das
+		K&auml;stchen "Diameter proportional to sum". Unter diesem K&auml;stchen ist
+		ein Balken, der fokussieren kann. Dabei werden gro&szlig;e Kreise entfernt und
+		kleinere werden vergr&ouml;&szlig;ert und somit besser sichtbar. Diese Aktion
+		macht besonders Sinn, wenn die Durchmesser proportional zur Summe sind.</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A></P> 
+	 <P><A NAME="M9"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Triangles:</A></P>
+	 
+	 <P>Zwei ausgew&auml;hlte Attribute k&ouml;nnen durch Dreiecke visualisiert
+		werden. Welche Achse zu welchem Attribut geh&ouml;rt, wird in dem mittleren
+		Teil der Legende durch kleine doppelseitige Pfeile dargestellt. Das Beispiel in
+		Abb. 19 kann man wie folgt erkennen: vertikal (hoch/runter): Beginner level
+		runs in % (Anf&auml;ngerpisten in %); horizontal (rechts/links): Price for ski
+		pass (6 days) (Preis f&uuml;r Skipa&szlig; f&uuml;r 6 Tage). Die Zahlen neben
+		den Dreiecken in der Legende sind die Extremwerte jedes Attributes. Rechts
+		werden die Werte f&uuml;r das vertikal aufgetragene Attribut angezeigt,
+		darunter die f&uuml;r das horizontal aufgetragene Attribut. Die vier Dreiecke
+		zeigen die extremen Formen, welche ein Dreieck annehmen k&ouml;nnte: <BR> oben
+		links: Maximum an Anf&auml;ngerpisten und Minimum des Preises;<BR> unten links:
+		Minimum beider Attribute;<BR> oben rechts: Maximum beider Attribute;<BR> unten
+		rechts: Minimum der Anf&auml;ngerpisten und Maximum des Preises.<BR> Jemand, der zum ersten mal Skifahren geht und dabei m&ouml;glichst wenig
+		Zahlen m&ouml;chte, sollte auf hohe, schmale Dreiecke achten. Vermutlich
+		w&auml;re das dann La Forclaz (schwarzer Kreis beim Mauszeiger).</P> 
+	 <P ALIGN="CENTER"><IMG SRC="Triangle1.gif" WIDTH="601" HEIGHT="514"
+		ALT="19"><BR> Abb. 19<BR> Wallis - Triangles</P> 
+	 <P>Die Eigenschaften der Dreiecke kann durch ein Doppelklick auf die
+		Dreiecke in der Legende ge&auml;ndert werden. Diese w&auml;ren, Farbe, minimale
+		und maximale H&ouml;he und Weite.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="TriangleSettings.gif" WIDTH="254" HEIGHT="400"
+		ALT="20"><BR> Abb. 20<BR> Dreieckseigenschften</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M10"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Utility
+		bars:</A></P> 
+	 <P>Die Visualisierung von utility bars ist den standalone bars sehr
+		&auml;hnlich, nur k&ouml;nnen mehrere Attribute mit Hilfe
+		des Textfeldes unten rechts hinzugef&uuml;gt werden. Verschiedene Attribute werden in verschiedenen
+		Farben dargestellt, welche durch Doppelklick auf das farbige K&auml;stchen
+		ge&auml;ndert werden k&ouml;nnen. Das Vergleichen eines Objektes mit anderen
+		kann durch Ausw&auml;hlen von der "Select object for comparison" Liste
+		geschehen oder mit "compare by click in". </P> 
+	 <P>Jedem Attribut k&ouml;nnen verschiedene Gewichte zugeordnet werden. Dazu
+		mu&szlig; der Schieber unter dem Attributnamen verschoben werden. Das momentane
+		Gewicht wird rechts davon angezeigt. Der Knopf "Set equal weights" gibt allen
+		Attributen die gleichen Gewichte. Der Pfeil links von dem Attributnamen gibt
+		an, ob das Attribut maximiert oder minimiert werden soll. Zeigt der Pfeil nach
+		oben rechts, so soll maximiert werden (Profit: gr&ouml;&szlig;ere Werte sind
+		besser). Zeigt er nach unten rechts, so soll minimiert werden: (Kosten, kleinere
+		Werte sind besser).</P> 
+	 <P>Je nach Gewicht und Optimierungsrichtung (Min oder Max), berechnet
+		Descartes die Ergebnisse durch Integration &uuml;ber die Fl&auml;che des
+		Rahmens der Balken und sortiert diese mit prozentualen Werten. In dem grauen
+		Balken &uuml;ber den Gewichtregelungen, kann man entscheiden, welche utility
+		bars auf der Karte angezeigt werden. Dazu mehr unter
+		<A HREF="Entscheidungshilfe.htm">Entscheidungshilfe</A>.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="UtilityBar.gif" WIDTH="601" HEIGHT="569"
+		ALT="21"><BR> Abb. 21<BR> Wallis - utility bars</P> 
+	 <P>Um die Parameter der Diagramme zu &auml;ndern klickt man auf "Setup
+		diagrams" (siehe Abb. 22). Hier kann die maximale H&ouml;he und Weite angegeben
+		werden. Ein Rahmen, eine d&uuml;nne Linie um die Maximalwerte kann mit "Frame
+		the sign" aktiviert werden. Die Reihenfolge der einzelnen Balken kann
+		vorgeschrieben werden: "preserved": beh&auml;lt die Reihenfolge bei,
+		"descending": sortiert nach Verminderung der H&ouml;he, "ascending": sortiert
+		nach Anstieg der H&ouml;he.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="utilityBarSettings.gif" WIDTH="249"
+		HEIGHT="390" ALT="22"><BR> Abb. 22<BR> Utility bar Eigenschaften</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A NAME="M11"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Utility
+		wheels:</A></P> 
+	 <P>Utility wheels sind genau wie utility bars. Die Manipulationsmethoden
+		sind die gleichen, au&szlig;er, da&szlig; anstatt Balken Kreise auf der Karte
+		dargestellt werden. Der Radius eines Kreises Entspricht der H&ouml;he eines
+		Balkens und der Winkel der Breite. </P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P> 
+	 <P><A HREF="Inhalt.htm" STYLE="font-size: large">Zur&uuml;ck zum
+		Inhalt</A></P> </BODY>
+</HTML>

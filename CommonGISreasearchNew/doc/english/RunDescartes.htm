@@ -1,0 +1,243 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.77 [en] (Windows NT 5.0; U) [Netscape]">
+   <title>Descartes - Run Descartes</title>
+</head>
+<body bgcolor="#CCFFCC">
+
+<h2>
+<a NAME="RD0" STYLE="font-size: x-large; font-style: normal; font-weight: bold"></a>Run
+Descartes</h2>
+
+<p><br><a href="#RD1">How to run Descartes</a>
+<br><a href="#RD2">Data format</a>
+<br><a href="#applications">Applications</a>
+<br><a href="#RD3">First start</a>
+<br><a href="#linking">Multiple data displays and their linking</a>
+<p><a href="Contents.htm" STYLE="font-weight: bold; font-size: larger">Back
+to contents</a>
+<br>&nbsp;
+<h3>
+<a NAME="RD1" STYLE="font-size: large; font-weight: bold; text-decoration: underline"></a>How
+to run Descartes:</h3>
+
+<p><br>Descartes is a Java application and needs Java Runtime Environment
+(JRE) (at least Version 1.1) to run. The latest version (currently Java
+2 Runtime Environment 1.3) can be downloaded for free at: <a href="http://java.sun.com/products/jdk/1.2/jre/index.html">http://java.sun.com/products/j2se/1.3/jre</a>
+<p>Descartes can be activated with a *.bat file that looks like this:
+<br>&nbsp;
+<table BORDER WIDTH="100%" BGCOLOR="#CCFFCC" >
+<tr>
+<td ALIGN=CENTER>d:\jdk122\bin\java -classpath CommonGIS.jar;d:\jdk122\lib\rt.jar
+esda_main.RunDescartes</td>
+</tr>
+</table>
+
+<br>&nbsp;
+<table WIDTH="100%" >
+<tr>
+<td>d:\jdk122\bin\java</td>
+
+<td>The path to the Java interpreter (may be different on your computer)</td>
+</tr>
+
+<tr>
+<td>-classpath</td>
+
+<td>A keyword indicating for the Java interpreter that the list of classes
+to load follows</td>
+</tr>
+
+<tr>
+<td>CommonGIS.jar</td>
+
+<td>An archive with classes of Descartes (CommonGIS); may have a different
+name</td>
+</tr>
+
+<tr>
+<td>d:\jdk122\lib\rt.jar</td>
+
+<td>The library of standard Java classes corresponding to the version of
+Java interpreter used</td>
+</tr>
+
+<tr>
+<td>esda_main.RunDescartes</td>
+
+<td>The main class of Descartes (CommonGIS) that starts the work of the
+system</td>
+</tr>
+</table>
+
+<p>When this file is launched a Dos-Prompt is started and Descartes is
+started with a blank window.
+<p>First thing to do is to load the data you want to work with.
+<br>This is done with File ->Load data or <a href="#applications">File
+->Load application</a>
+<p><a href="#RD0">Goto beginning</a>
+<br>&nbsp;
+<h3>
+<a NAME="RD2" STYLE="font-size: large; font-weight: bold; text-decoration: underline"></a>Data
+format:</h3>
+
+<p><br>Descartes can work with different formates of data:
+<ul>
+<li>
+files:</li>
+
+<ul>
+<li>
+thematic data: DBF (dBase), ASCII with delimiters, in particular, CSV -
+comma-separated values (Excel)</li>
+
+<li>
+vector geographic data: GML (OpenGIS), WKB (OpenGIS), Shape (ArcGIS), MIF/MID
+(MapInfo)</li>
+
+<li>
+raster geographic data: ADF and BIL (ArcGIS)</li>
+
+<li>
+geo-referenced images: GIF, JPEG, TIFF</li>
+</ul>
+
+<li>
+clipboard: Excel, WinWord (thematic data)</li>
+
+<li>
+database: ODBC (thematic data), Oracle (thematic and vector geographic
+data)</li>
+</ul>
+Besides, Descartes works with its own OVL format for vector data that is
+optimized for smaller file sizes and, hence, faster transmission over the
+Internet.
+<p>In order to load data from a file in text format, the system needs some
+additional information:
+<br>It needs to know how the values are separated are (preselected), the
+name or number of the field with identifiers (necessary), where the names
+of entities are and where in the text the field types and the field names
+are found (optional).
+<center>
+<p><img SRC="LoadFromFile.gif" BORDER=0 height=400 width=400 align=CENTER>
+<br>Figure 1
+<br>Loading data from text format</center>
+
+<p>In this example the field names are to be found in line 1, the Values
+are separated by "," and the Identifiers are in field 1.
+<p>The bottom line of the map window shows whether the table (layer) was
+loaded correctly or not:
+<center>
+<p><img SRC="MapImplementation.gif" BORDER=0 height=499 width=640 align=CENTER>
+<br>Figure 2
+<br>Portugal data implemented</center>
+
+<p>The geographic data can either be added layer by layer and their parameters
+selected by hand, or they have been already put together in an *.app file
+(by previous saving).
+<p><a href="#RD0">Goto beginning</a>
+<h3>
+<a NAME="applications"></a>Applications</h3>
+DescartesXXI (CommonGIS) can load geographic and thematic data according
+to a specification given in a special ASCII file having the extension <b>*.app</b>.
+For downward compatibility, DescartesXXI can also deal with <b>*.mwi</b>
+files, the map configuration files of the earlier versions of the Descartes
+system (the older format was suited only for geographic data). Creation
+of such a specification file can be considered as defining some Descartes
+application; therefore we shall further call them application files.
+<p>The Descartes system may be started with giving the path to an application
+file as an argument, for example:
+<br>&nbsp;
+<table BORDER WIDTH="100%" BGCOLOR="#CCFFCC" >
+<tr>
+<td ALIGN=CENTER>d:\jdk122\bin\java -classpath CommonGIS.jar;d:\jdk122\lib\rt.jar
+esda_main.RunDescartes data\wallis\wallis.app</td>
+</tr>
+</table>
+
+<p>In this case the system will immediately load the data specified in
+the application file after its start. Otherwise, an application can be
+loaded using the command “Load application” of the menu “File” (this works
+only in a local variant of the system).
+<p>An application file lists map layers and tables to be loaded and provides
+important information for loading such as the data source or the table
+column with object identifiers. An application file also specifies layer
+properties such as color or line thickness.
+<p>There is no need to describe the internal syntax of the application
+specification language because Descartes applications can be built interactively.
+For this purpose a user starts the local version of the system, loads into
+the system one by one the necessary layers and tables, defines the appearance
+of the layers on the map and decides which layers must be loaded at start-up
+time and which will wait until the user explicitly selects them (such layers
+must be “switched off” but not removed!). After that the user selects the
+command “Save application” in the “File” menu, and the system will automatically
+write the corresponding application description in a user-specified file.
+Next time when starting the system the user can load the so created application.
+<p>It should be noted that, when dealing with applications, Descartes applies,
+whenever possible, so-called delayed data loading. This means that geographic
+data for a layer that is initially switched off will not be loaded until
+the user explicitly switches the layer on. Similarly, thematic data are
+not loaded until the user first addresses a table, for example, wishes
+to view this table or visualize attributes from it. However, if data for
+a table are stored together with geographic data for some layer (i.e. in
+the same data source), and this layer is initially switched on, the table
+will be loaded simultaneously with loading the layer.
+<p><a href="#RD0">Goto beginning</a>
+<br>&nbsp;
+<h3>
+<a NAME="RD3" STYLE="font-size: large; font-weight: bold; text-decoration: underline"></a>First
+start:</h3>
+To visualize a selection of data, click on "Display", then "Display Wizard".
+In response, a window for choosing the attributes appears. Descartes has
+different visualization methods depending on the number of attributes and
+their values:
+<br>For maps: Degrees of darkness, classification, standalone bars, colors,
+parallel bars, pies, triangles, utility bars and utility wheels.
+<br>For charts: dot plot (horizontal), dot plot (vertical), scatter plot,
+scatter plot matrix, parallel coordinates plot, classifier (horizontal)
+and classifier (vertical).
+<p>Figure 3 shows the window where the visualization method can be chosen
+from.
+<center>
+<p><img SRC="Display1Attribute.gif" BORDER=0 height=325 width=314 align=CENTER>
+<br>Figure 3
+<br>Visualizing one attribute</center>
+
+<p>The visualization methods for maps are explained <a href="Maps.htm">here.</a>
+<br>And those for charts <a href="Charts.htm">here.</a><a href="#RD0"></a>
+<p><a href="#RD0">Goto beginning</a>
+<h3>
+<a NAME="linking"></a>Multiple data displays and their linking</h3>
+In Descartes it is possible to build multiple displays representing different
+attributes of the same data set or, possibly, the same attributes in different
+ways. Thus, the user can open one or more maps and various kinds of non-cartographic
+displays: dot plots, scatter plots, parallel coordinate plots. All these
+displays are dynamically linked. Thus, when the user points with the mouse
+on an object in one of the displays, the graphical elements corresponding
+to this object (contour in a map, dot in a dot plot or a scatter plot,
+line in a parallel coordinate plot) are simultaneously highlighted in all
+the displays.
+<p>Descartes supports two kinds of highlighting: transient and durable.
+Transient ("mouse-over") highlighting occurs when the mouse cursor is positioned
+over an object and is switched off immediately after the mouse is moved
+aside. Durable highlighting occurs when an object is selected by clicking
+or dragging the mouse and lasts until the user explicitly cancels it. Click
+on a durably highlighted object cancels its highlighting. Click in an object-free
+area of any display cancels highlighting of all objects. Descartes uses
+white color for transient highlighting and black for durable highlighting.
+<p>Selection by mouse dragging is automatically enabled in all noncartographic
+displays. In a map window mouse dragging can be used as well for zooming
+and shifting of the viewport. The user can switch between different interpretations
+of mouse dragging using button switches in the tool bar of the map window.
+<br>In a map with several layers only objects of the active layer can be
+affected by highlighting. To make a layer active, the user should click
+on it in the legend. When the active layer changes, highlighting of objects
+from the previously active layer is cancelled. It will appear again when
+this layer is activated once more.
+<p><a href="#RD0">Goto beginning</a>
+<p><a href="Contents.htm" STYLE="font-size: larger; font-weight: bold">Back
+to contents</a>
+</body>
+</html>

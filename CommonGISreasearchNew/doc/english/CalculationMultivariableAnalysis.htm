@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//SoftQuad Software//DTD HoTMetaL PRO 6.0::19990601::extensions to HTML 4.0//EN" "hmpro6.dtd">
+<HTML> 
+  <HEAD> 
+	 <TITLE>Descartes - Calculation as Multivariable analysis</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <P> <A NAME="MA0" STYLE="font-weight: bold; font-size: x-large">Calculation
+		as Multivariable analysis</A></P> 
+	 <P><A HREF="#MA1">Similarity (distance)</A><BR><A HREF="#MA2">Similarity
+		(classification)</A><BR><A HREF="#MA3">Dominant attribute
+		classification</A></P> 
+	 <P><A HREF="Contents.htm" STYLE="font-weight: bold; font-size: larger">
+		Back to contents</A></P> 
+	 <P>
+		<A NAME="MA1"
+		 STYLE="font-weight: bold; font-size: large; text-decoration: underline">Similarity
+		(distance)</A></P> 
+	 <P>An interesting and useful kind of data analysis can be done on the base
+		of calculation of the degree of similarity, or of the distance between objects
+		in the multidimensional attribute space. Analysis of similarity can help
+		understand the distribution of characteristics over a set of objects.<BR>The
+		referenz object(s) are selected out of a list of all objects (figure 1). It is
+		also possible to select them by mouse click on the map when the corresponding
+		layer is active (red box in the maplegend).</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance8.gif"
+		WIDTH="189" HEIGHT="314" BORDER="0"><BR>Figure 1<BR>Selection of reference
+		object(s)</P> 
+	 <P>Descartes has several methods of calculation of distance between objects
+		implemented based on various types of metrics . The results of calculation can
+		be illustrated on a parallel coordinates plot containing, besides axes for the
+		source attributes, an axis with the distance (Figure 2). One can easily find
+		the line representing the reference object and compare it with the lines of
+		other objects. One possibility is to mark this particular line on the plot with
+		transient or durable highlighting. Another possibility is to transform the plot
+		so that the reference line becomes straight.<BR>In the latter case all axes are
+		shifted without changing their scales. This representation method helps to
+		understand and verify the results of distance calculation. The closer a line is
+		to the straight reference line, the similar it is to the reference object. The
+		user has an opportunity to tune the method of calculation by setting up its
+		parameters including the metrics to be used. Any change of the parameters
+		immediately results in change of the appearance of the plot. </P> 
+	 <P>The different available metrices are:<BR>L1:
+		Dist(A,B)=Sum(Abs(Ai-Bi))<BR>L2: Dist(A,B)=Sqrt(Sum(Ai-Bi)^2))<BR>C:
+		Dist(A,B)=Max(Abs(Ai-Bi))<BR>T: Special metric for time series data. It
+		reflects number of time moments with similar change of values. Do not use with
+		non-temporal data! </P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance10.gif" WIDTH="753"
+		HEIGHT="379" BORDER="0"><BR>Figure 2<BR>Parallel coordinate plot for similarity
+		measured with distance</P> 
+	 <P>The map window also changes. The objects (in figure 3: the skiing
+		resorts) are colored in degrees of darkness (description see
+		<A HREF="Maps.htm#M2">here</A>).</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance9.gif"
+		WIDTH="640" HEIGHT="499" BORDER="0"><BR>Figure 3<BR>Visualization of
+		similarities measured with distance</P> 
+	 <P><A HREF="#MA0">Goto beginning </A></P> 
+	 <P>
+		<A NAME="MA2"
+		 STYLE="font-weight: bold; font-size: large; text-decoration: underline">Similarity
+		(classification)</A></P> 
+	 <P>On the basis of calculation of distances one may do another exploratory
+		data analysis task: classify objects into two classes represented by their
+		samples.<BR>The procedure of classification is done in the following
+		way:<BR>For each object the system computes distances DI and DII to the given
+		samples of the classes I and II. If for some object min(DI,DII)&gt;d0 where d0
+		is some specified threshold, this object is not ascribed to any of the classes
+		(it is too different from both samples). Otherwise, the object is included in
+		the class I if DI&lt;DII or to the class II if DI&gt;DII. The user can select
+		different metrics for computing distances as well as vary values of the
+		parameters. To change d0 move the slider in "distance threshold for
+		classification". The current value can be read off at the right of the
+		scale.<BR>The task of similarity-based classification may be also supported
+		with a parallel coordinates plot. The plot contains axes for all source
+		attributes, the distances to the classes I and II, and the results of
+		classification. The latter are encoded by numbers: -1 stands for class I and 1
+		for class II, and 0 for non-classified objects. The aces are transformed so
+		that the lines for the two samples are straight (this is possible only if
+		values of all attributes for these two objects are different). The scale of
+		each axis is determined by the difference between the values of the attribute
+		for sample I and sample II. The orientation of an axis may change to
+		right-to-left in order to make the value for sample I be located on the left of
+		that for sample II. The appearance of the plot is shown in figure 4.<BR>The so
+		transformed plot illustrates well the results of the classification. If some
+		line lies close to the line of one of the samples, the corresponding object
+		belongs to the class the sample represents. If some line differs very much form
+		the lines of both samples, the object remains unclassified.</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance11.gif" WIDTH="1110"
+		HEIGHT="403" BORDER="0"><BR>Figure 4<BR>Parallel coordinate plot for classified
+		similarity</P> 
+	 <P>In a case of analysis of geographically referenced data the results of
+		classification are also represented on a map (see figure 5). The objects are
+		painted in different colors depending on whether they belong to class I,. class
+		II, or are unclassified.<BR> The lines in the figure are colored in blue and
+		red, because the check box "Broadcast classification" is checked in the map
+		window (figure 5).</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance12.gif" WIDTH="649"
+		HEIGHT="412" BORDER="0"><BR>Figure 5<BR>Visualization of classified
+		similarities</P> 
+	 <P><A HREF="#MA0">Goto beginning </A></P> 
+	 <P>
+		<A NAME="MA3"
+		 STYLE="font-weight: bold; font-size: large; text-decoration: underline">Dominant
+		attribute classification</A></P> 
+	 <P>This method gives the dominant selected criteria of every object
+		depending on the minimum or maximum (can be changed in the parallel coordinate
+		window, figure 6).</P> 
+	 <P></P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisDominantAttribute2.gif" WIDTH="749"
+		HEIGHT="375" BORDER="0"><BR>Figure 6<BR>Parallel coordinate plot for dominant
+		attribute calculation</P> 
+	 <P> The look of the plot can be changed by normalization:</P> 
+	 <TABLE WIDTH="100%" BGCOLOR="#CCFFCC" BORDER="1"> 
+		<TR> 
+		  <TD>No normalization (absolute values)</TD> 
+		  <TD>Attributes are presented on a single scale of their absolute values
+			 without any normalization</TD> 
+		</TR> 
+		<TR> 
+		  <TD>0 (min) ... 1 (max)</TD> 
+		  <TD>Attributes are normalized onto a scale from 0.0 to 1.0 such that
+			 0.0 corresponds to the minimum value and 1.0 corresponds to the maximum of each
+			 attribute</TD> 
+		</TR> 
+		<TR> 
+		  <TD>Median and quartiles</TD> 
+		  <TD>Attributes are presented on a scale with the medial values of each
+			 attribute aligned in the centre and the quartiles also aligned</TD> 
+		</TR> 
+		<TR> 
+		  <TD>Mean and standard deviation</TD> 
+		  <TD>Attributes are presented on a scale with the mean values of each
+			 attribute aligned in the centre and the means +/-1 standard deviation also
+			 aligned</TD> 
+		</TR> 
+	 </TABLE> 
+	 <P>For each object the dominant attribute is displayed by a certain color.
+		The colors can be changed by clicking on the colored box in the manipulation
+		tag (right). And the check boxes next to them can turn this attribute on and
+		off (affects all windows).</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisDominantAttribute1.gif" WIDTH="649"
+		HEIGHT="412" BORDER="0"><BR>Figure 7<BR>Visualization of the dominant attribute
+		calculation</P> 
+	 <P>When the check box "Broadcast classification" is checked, then all dots
+		and all lines in all charts have the same color as those on this map. </P> 
+	 <P><A HREF="#MA0">Goto beginning </A></P> 
+	 <P STYLE="font-size: large"><A HREF="Contents.htm">Back to contents</A></P>
+	 </BODY>
+</HTML>

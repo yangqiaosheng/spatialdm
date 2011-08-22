@@ -1,0 +1,398 @@
+<HTML> 
+  <HEAD> 
+	 <TITLE>Descartes - Entscheidungshilfe</TITLE> 
+  </HEAD> 
+  <BODY LINK="#0000ff" VLINK="#800080" BGCOLOR="#ccffcc"> 
+	 <H1 STYLE="font-size: x-large; font-weight: bold">Entscheidungshilfe mit
+		Descartes</H1> 
+	 <H2 STYLE="font-size: large; font-weight: bold"><A
+		NAME="top"></A>Inhalt</H2> 
+	 <OL> 
+		<LI><A HREF="#general">Allgemeine Hinweise und Erkl&auml;rung relevanter
+		  Konzepte</A></LI> 
+		<LI><A HREF="#start_ideal">Wie man die "Ideal point" Methode
+		  startet</A></LI> 
+		<LI><A HREF="#start_utility">Wie man eine Pr&auml;sentation mit "Utility
+		  bars" oder "Utility wheels" bekommt</A></LI> 
+		<LI><A HREF="#set_types">Die Schnittstelle f&uuml;r Typeinstellungen und
+		  Gewichtung von Kriterien</A></LI> 
+		<LI><A HREF="#utility_signs">"Utility signs"</A></LI> 
+	 </OL> 
+	 <OL> 
+		<LI><A HREF="#focusing">Fokussierung der besten Optionen</A></LI> 
+		<LI><A HREF="#utility_comparison">Visueller Vergleich von Optionen mit
+		  "Utility bars"</A></LI> 
+		<LI><A HREF="#how_compare_utility">Wie macht man "visual
+		  comparison"</A></LI> 
+	 </OL> 
+	 <UL> 
+		<LI><A HREF="#ideal_point">"Ideal point" Methode</A> </LI> 
+	 </UL> 
+	 <OL> 
+		<LI><A HREF="#parallel">Darstellung mit parallelen Koordinaten</A></LI> 
+	 </OL> 
+	 <P><A NAME="general"></A>In Descartes gibt es 3 Werkzeuge der
+		Entscheidungshilfe: </P> 
+	 <UL> 
+		<LI>"Ideal Point" Methode (basiert auf Berechnungen) </LI> 
+		<LI><A HREF="#utility_signs">"Utility Bars"</A> Methode der
+		  kartographischen Visualisierung </LI> 
+		<LI><A HREF="#utility_signs">"Utility Wheels"</A> Methode der
+		  kartographischen Visualisierung </LI> 
+	 </UL> 
+	 <P>Bei Entscheidungsfindungen handelt eine Person mit
+		Wahlm&ouml;glichkeiten, charakterisiert durch eine Reihe von Attributen. Einige
+		dieser Attribute k&ouml;nnen als Entscheidungs<B>kriterien</B> benutzt werden.
+		Descartes nimmt an, da&szlig; Kriterien immer numerische Attribute sind. Falls
+		ein qualitatives Attribut verwendet werden soll, sollte eine
+		Priorit&auml;tenreihenfolge der Werte erfolgen, welche dann mit Zahlen, wie 1,
+		2, 3, ... oder -1, 0, 1 versehen werden soll. </P> 
+	 <P><A NAME="criteria_types"></A>Es gibt 2 <B>Typen von Kriterien</B>:
+		Profitkriterien und Kostenkriterien. Falls hohe Attributwerte eine
+		Wahlm&ouml;glichkeit besser machen (eher geeignet), ist dieses Attribut ein
+		<B>Profitkriterium</B>. Falls hohe Attributwerte weniger w&uuml;nschenswert
+		sind (weniger geeignet) als niedrige, so ist es ein <B>Kostenkriterium</B>.
+		</P> 
+	 <P><A NAME="criteria_weights"></A>Kriterien haben f&uuml;r einen
+		Entscheidungsfinder verschiedene relative Wichtigkeiten. In Descartes werden
+		relative Wichtigkeiten von Kriterien in speziellen so genannten
+		<B>Kriteriengewichte</B> spezifiziert. Gewichte sind reelle Zahlen zwischen 0
+		und 1. Die Summe der Gewichte aller entscheidungsrelevanter Kriterien ist immer
+		gleich 1. Das Gewicht 0 bedeutet da&szlig; das Kriterium keine Bedeutung
+		f&uuml;r den Entscheidungsfinder hat. </P> 
+	 <P>Wahlm&ouml;glichkeiten k&ouml;nnen r&auml;umlich verteilt sein.
+		Descartes gibt die Position solcher M&ouml;glichkeiten auf der/den Karten an. </P> 
+	 <H2
+	  STYLE="text-decoration: underline; font-size: large; font-weight: bold"><A
+		NAME="start_ideal"></A>Wie man die "Ideal point" Methode startet</H2> 
+	 <OL> 
+		<LI>In der Komandoleiste des Hauptfensters w&auml;hle man
+		  "Calculate"</LI> 
+		<LI>Falls zwei oder mehrere Tabellen vorhanden sind, wird man gefragt
+		  eine f&uuml;r die Kalkulation auszuw&auml;hlen. Man w&auml;hle die Tabelle aus,
+		  welche die Wahlm&ouml;glichkeiten enth&auml;lt.</LI> 
+		<LI>Ein Dialog erscheint und verlangt die Auswahl von Attributen. Man
+		  w&auml;hle die entscheidungsrelevanten Attribute aus. Das geschieht wenn man
+		  sie doppelklickt, oder eins nach dem anderen anw&auml;hlt und anschlie&szlig;end
+		  auf den Knopf mit dem Pfeil nach rechts klickt. Diese Operation verschiebt das
+		  Attribut auf die Liste auf der rechten Seite. Ein Attribut abw&auml;hlen
+		  geschieht wieder durch einen Doppelklick, oder durch Anw&auml;hlen und
+		  anschlie&szlig;endem Klick auf den Knopf nach links zeigend. Wenn alle
+		  notwendigen Attribute ausgew&auml;hlt sind, klickt man auf den "OK" Knopf.</LI>
+		
+		<LI>Als Kalkulationsmethode w&auml;hle man "Integrated criterion"
+		  aus.</LI> 
+		<LI>Das System f&uuml;gt der Tabelle zwei Attribute zu: "Evaluation
+		  score" und "Ranking" und erm&ouml;glicht die Namen dieser Attribute zu
+		  &auml;ndern. Normaler Weise ist dies aber nicht n&ouml;tig. Wenn es dennoch
+		  erw&uuml;nscht ist, k&ouml;nnen neue Namen in die Textfelder mit den
+		  automatisch generierten Namen eingegeben werden. Danach klickt man auf "OK".
+		  Falls die Namen nicht ver&auml;ndert wurden, einfach nur auf "OK" klicken.</LI>
+		
+		<LI>Ein neues Fenster mit der "Ideal point" Methode erscheint.
+		  Gleichzeitig erscheint die von dem System erzeugte Rangfolge auf der Karte. Man
+		  verwende die linke Seite des Fensters um <A HREF="#set_types">die Typen und
+		  relativen Wichtigkeiten (Gewichte)</A> der Kriterien zu setzen. Alle
+		  Ver&auml;nderungen, die vorgenommen werden, werden sofort auf der Karte
+		  sichtbar.</LI> 
+	 </OL> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <H2
+	  STYLE="font-weight: bold; font-size: large; text-decoration: underline"><A
+		NAME="start_utility"></A>Wie man eine Pr&auml;sentation mit "Utility bars" oder
+		"Utility wheels" bekommt</H2> 
+	 <OL> 
+		<LI>In der Komandoleiste des Hauptfensters w&auml;hle man "Display" aus
+		  und anschlie&szlig;end "Display wizard".</LI> 
+		<LI>Falls zwei oder mehrere Tabellen vorhanden sind, wird man gefragt
+		  eine auszuw&auml;hlen. Man w&auml;hle die Tabelle aus, welche die
+		  Wahlm&ouml;glichkeiten enth&auml;lt.</LI> 
+		<LI>Ein Dialog erscheint und verlangt die Auswahl von Attributen. Man
+		  w&auml;hle die entscheidungsrelevanten Attribute aus. Das geschieht wenn man
+		  sie doppelklickt oder eins nach dem anderen anw&auml;hlt und anschlie&szlig;end
+		  auf den Knopf mit dem Pfeil nach rechts klickt. Diese Operation verschiebt das
+		  Attribut auf die Liste auf der rechten Seite. Ein Attribut abw&auml;hlen
+		  geschieht wieder durch einen doppelklick, oder durch anw&auml;hlen und
+		  anschlie&szlig;endem Klick auf den Knopf nach links zeigend. Wenn alle
+		  notwendigen Attribute ausgew&auml;hlt sind, klickt man auf den "OK" Knopf.</LI>
+		
+		<LI>Ein weiterer Dialog erscheint, um die Visualisierungsmethode
+		  auszuw&auml;hlen. Man w&auml;hle "utility bars" oder "utility wheels" und
+		  klickt auf "OK".</LI> 
+		<LI>Die ausgew&auml;hlten Attribute werden auf der Karte mit Hilfe der
+		  <A HREF="#utility_signs">"Utility bars" oder "Utility wheels"</A> Methode
+		  dargestellt. Zur selben Zeit erscheint in einem Teilfenster rechts von der
+		  Karte ein neues Karteifenster namens "Manipulate". Speziell in diesem
+		  Karteifenster kann man <A HREF="#set_types">die Typen und relativen
+		  Wichtigkeiten (Gewichte) aller</A> Kriterien setzen. Alle Ver&auml;nderungen
+		  werden sofort auf der Karte sichtbar.</LI> 
+	 </OL> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <H2
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="set_types"></A>Die Schnittstelle f&uuml;r Typeinstellungen und Gewichtung
+		von Kriterien</H2> 
+	 <P>S&auml;mtliche vorgeschlagene Entscheidungsfindungshilfen, erlauben dem
+		Benutzer die Typen jedes Kriteriums zu bestimmen und die relative Wichtigkeit
+		(Gewicht) der Kriterien zu setzen. Die Benutzeroberfl&auml;che der
+		Spezifikation des Typs und der Festlegung der Wichtigkeit (Gewicht) eines
+		Entscheidungskriteriums, wird in der Abbildung dargestellt. </P> 
+	 <P> <IMG SRC="weights.gif" WIDTH="223" HEIGHT="382" ALT="1"></P> 
+	 <P> Die Pfeile geben den <A HREF="#criteria_types">Kriterientyp an</A> und
+		erlauben eine &Auml;nderung durch den Benutzer. Der nach oben rechts zeigende
+		Pfeil, neben jedem Gewichtungsbalken, kennzeichnet ein Profitkriterium, der nach
+		unten rechts zeigende Pfeil entspricht einem Kostenkriterium. Anfangs nimmt das
+		System an, da&szlig; alle Kriterien Profitkriterien sind. Um die
+		Standardeinstellung eines Kriteriums herum zu drehen, klickt man auf den Pfeil
+		mit der Maus. Nach oben rechts zeigende Pfeile werden zu unten rechts zeigende
+		und umgekehrt. </P> 
+	 <P>Unter jedem Kriterienname ist ein Schieber, der dem Benutzer erlaubt das
+		<A HREF="#criteria_weights">Kriteriengewicht</A> innerhalb eines
+		Werteintervalls von (0, 1) auszuw&auml;hlen bzw. anzupassen. Um die Gewichtung
+		zu ver&auml;ndern, schiebt man mit der Maus den Zeiger entlang der horizontalen
+		Achse. Die Ver&auml;nderung eines Gewichtes zieht eine automatische
+		Ver&auml;nderung der anderen Gewichte mit sich. Sie werden proportional zu
+		ihren Werten ge&auml;ndert, so da&szlig; die Summe aller Gewichte immer gleich
+		1 ist. </P> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <H2
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="utility_signs"></A>Utility signs</H2> 
+	 <P>"Utility signs" (Diagramme) unterst&uuml;tzen die visuelle Auswertung
+		r&auml;umlich verteilter Optionen und sucht nach passenden Optionen auf einer
+		Karte. In Descartes gibt es zwei Varianten von utility signs: utility bar
+		charts (Balkendiagramme) und utility wheels (Kreisdiagramme). </P> 
+	 <P><IMG SRC="bar+pie.gif" WIDTH="270" HEIGHT="59" ALT="2"></P> 
+	 <P> Ein Diagramm besteht aus einigen grafischen Elementen (siehe obige
+		Abbildung): Balken und Kreissegmente. Jedes Element entspricht einem
+		betrachtenden Attribut (Entscheidungskriterien). Eine Dimension eines Elementes
+		(H&ouml;he der Balken und Radius der Kreissegmente) repr&auml;sentiert den
+		Attributwert des dargestellten Objektes. Falls das Attribut ein Profitkriterium
+		ist, ist die Gr&ouml;&szlig;e proportional zum Wert, bei einem Kostenkriterium
+		wird die inverse Proportion angezeigt. Demnach werden bessere Werte immer durch
+		gr&ouml;&szlig;ere Gr&ouml;&szlig;en dargestellt. Die anderen Dimensionen
+		(Breite der Balken und Winkel der Kreissegmente) spiegeln die Wichtigkeit des
+		Kriteriums wieder. Wenn der Benutzer interaktiv die Gewichte der Kriterien
+		&auml;ndert, werden die Diagramme sofort neu gezeichnet. <BR> Bei der
+		Konstruktion eines Diagramms, die Gesamtfl&auml;che ihrer Elemente steht
+		ungef&auml;hr f&uuml;r die "G&uuml;te", oder die "N&uuml;tzlichkeit", des
+		entsprechenden Objektes. Somit braucht ein Entscheidungsfinder auf der Karte
+		das Diagramm mit der gr&ouml;&szlig;ten Fl&auml;che heraussuchen. </P> 
+	 <P>Um die Fl&auml;chen der Diagramme einfacher zu vergleichen und somit den
+		visuellen Vergleich der Optionen zu erleichtern, k&ouml;nnen die Diagramme mit
+		einem Rahmen versehen werden, der die maximale Fl&auml;che kennzeichnet (siehe
+		obige Abbildung, rechts). Diese Fl&auml;che entspricht dem bestm&ouml;glichem
+		Wert aller Attribute. </P> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <H3
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="focusing"></A>Fokussierung der besten Optionen</H3> 
+	 <P>Zur Erleichterung der visuellen Suche auf der Karte nach der besten
+		Option, gibt es ein interaktives Bedienungselement (auf der rechten Seite der
+		Karte in dem "Manipulate" Karteifenster), welches dem Benutzer erlaubt
+		Diagramme erst ab einem bestimmten Fl&auml;chenwert darzustellen (angegeben im
+		prozentualen Verh&auml;ltnis zur maximalen Fl&auml;che). Dieser Wert wird durch
+		Ziehen des linken Dreiecks mit der Maus ver&auml;ndert.</P> 
+	 <P> <IMG SRC="utility_focuser.gif" WIDTH="228" HEIGHT="56" ALT="3"></P> 
+	 <P> Folglich zeigt die unten abgebildete Karte nur noch Diagramme mit einer
+		Fl&auml;che von nicht weniger als 50% der maximal erreichbaren Fl&auml;che an. Man
+		beachte, da&szlig; die <A HREF="#set_types">Manipulation der Gewichtung von
+		Kriterien</A> die Fl&auml;che der Diagramme ver&auml;ndert und somit manche
+		bereits sichtbaren Diagramme verschwinden und nicht sichtbare Diagramme wieder
+		erscheinen lassen kann. </P> 
+	 <P> <IMG SRC="utility_bars.gif" WIDTH="603" HEIGHT="405" ALT="4"></P> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <H3
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="utility_comparison"></A>Visueller Vergleich von Optionen mit "Utility
+		bars"</H3> 
+	 <P>Man kann die G&uuml;te (Grad der Angemessenheit) der durch
+		Balkendiagramme dargestellten Optionen mit Hilfe der "visual comparison"
+		Funktion vergleichen. </P> 
+	 <P> <IMG SRC="utility_compare_signs.gif" WIDTH="215" HEIGHT="144"
+		ALT="5"></P> 
+	 <P> Im "visual comparison" Modus (siehe obere Abbildung) wurde interaktiv
+		eine Option als Referenzoption ausgew&auml;hlt, repr&auml;sentiert in der Karte
+		durch eine horizontale Linie. Die verbleibenden Optionen werden auf eine
+		besondere Weise dargestellt: Der Attributwert einer Option wird durch einen
+		nach oben gerichteten Balken angezeigt, falls dieses Attribut dem selben
+		Attribut der Referenzoption vorzuziehen ist. Weniger vorzuziehende Werte werden
+		mit einem nach unten gerichteten Balken angezeigt. Man beachte, da&szlig;
+		h&ouml;here Attributwerte vorzuziehen sind, wenn sie <A
+		HREF="#criteria_types">Profitkriterium</A> sind und weniger vorzuziehen, wenn
+		sie <A HREF="#criteria_types">Kostenkriterium</A> sind. Die H&ouml;he der
+		Balken gibt den Grad der Angemessenheit an. Die Breite der Balken, wie gewohnt,
+		sind proportional zu der <A HREF="#criteria_weights">relativen Wichtigkeit
+		(Gewicht) des Kriteriums</A>. </P> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <H3
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="how_compare_utility"></A>Wie macht man "visual comparison"?</H3> 
+	 <P>Es gibt zwei Wege "visual comparison" (Visueller Vergleich) zu
+		realisieren. </P> 
+	 <P><B>1)</B> Auf der rechten Seite der Karte, in dem Karteifenster
+		"Manipulation" ist eine Auswahlliste mit den Namen der Optionen. Anfangs ist
+		der Text "Select object for comparison" (W&auml;hle Objekt zum Vergleichen aus)
+		sichtbar. Wenn der Pfeilknopf rechts davon gedr&uuml;ckt wird, bekommt man die
+		gesamte Liste zu sehen und kann eine Option davon ausw&auml;hlen. Nach der
+		Auswahl ist der entsprechende Name der Referenzoption sichtbar (siehe unten).
+		</P> 
+	 <P><IMG SRC="utility_compare_map.gif" WIDTH="596" HEIGHT="269" ALT="6"></P>
+	 
+	 <P><B>2)</B> Vergleich durch anklicken eines Objektes auf der Karte. Unter
+		der Auswahlliste in dem Manipulationsbereich befindet sich ein K&auml;stchen
+		"compare by click in" (Vergleich durch klicken) (siehe obige Abbildung). Dieses
+		K&auml;stchen mu&szlig; aktiviert sein. Dann wird die Option, welche man
+		anklickt, zur Referenzoption und die Karte wird sofort aktualisiert. Der Name
+		der Option wird in der Kopfzeile der Auswahlliste angezeigt. Wenn ein
+		Objektfreier Bereich angeklickt wird, so wird das Referenzobjekt wieder
+		abgew&auml;hlt und die Balken werden wieder "normal" dargestellt. </P> 
+	 <P>Unter dem K&auml;stchen "compare by click in" ist eine Auswahlliste, wo
+		man zwischen "this map" (diese Karte) (Standard Auswahl) und "any display"
+		(irgendeine Darstellung) ausw&auml;hlen kann. Im Falle von "any display"
+		reagiert das visuelle Vergleichswerkzeug auf jeden Mausklick in irgendeinem von
+		Descartes ge&ouml;ffneten Fenster (z.B. eine andere Karte, "Scatter"-Graph, etc.).
+		</P> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <H2
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline"><A
+		NAME="ideal_point"></A>"Ideal point" Methode</H2> 
+	 <P>Descartes kann eine Rangfolge von Optionen mit "multiple criteria",
+		entsprechend der sogenannten "Ideal point" Methode, berechnen, welche auch in
+		der Entscheidungsfindungs-Theorie bekannt ist. Wie bei "Utility signs", benutzt
+		die Methode die <A HREF="#criteria_weights">Gewichte</A> welche den Kriterien
+		von dem Entscheidungsfinder zugewiesen wurden. Die <A
+		HREF="#set_types">Schnittstelle der Gewichteinstellungen</A> ist die Selbe wie
+		die f&uuml;r die "Utility signs". Ergebnisse der Vergleiche werden in einem
+		Graphen mit parallelen Koordinaten zusammen mit den Ursprungsdaten dargestellt. </P> 
+	 <H3
+	  STYLE="text-decoration: underline; font-weight: bold; font-size: large"><A
+		NAME="parallel"></A>Darstellung mit parallelen Koordinaten</H3> 
+	 <P>Ein Graph mit parallelen Koordinaten wird benutzt, falls es n&ouml;tig ist
+		mehrere Attribute (normalerweise mehr als zwei) gleichzeitig zu betrachten. Er
+		beinhaltet mehrere horizontale Achsen, eine Achse pro betrachtendes Attribut.
+		Die L&auml;nge der Achsen spiegeln den Wertebereich des entsprechendem Attribut
+		wieder. So kann ein Attributwert auf jeder Position der Achse dargestellt
+		werden. Ein Objekt wird durch eine gebrochene Linie ("value path"; "Wertepfad")
+		beschrieben, welches die Positionen der benachbarten Achsen entsprechend den
+		Attributwerten dieses Objekts (siehe untere Abbildung) verbindet.</P> 
+	 <P><BR> <IMG SRC="pcp_standard.gif" WIDTH="324" HEIGHT="387" ALT="7"></P> 
+	 <P>Der Graph ist in Descartes dynamisch
+		mit der Karte und den anderen Darstellung verkn&uuml;pft. Wenn der Mauszeiger
+		auf eine Option auf der Karte zeigt, wird dieses Objekt auf der Karte
+		hervorgehoben und ebenso der entsprechende Wertepfad in dem Graphen. Und umgekehrt, wenn ein Segment des Wertepfad ber&uuml;hrt wird, so wird
+		die gesamte Linie in dem Gaphen und die zugeh&ouml;rige Option auf der
+		Karte hervorgehoben. Solch eine Wertepfad/Karte Integration erleichtert die
+		Auswertung beliebiger Optionen mit Bezug auf alle Kriterien. Zus&auml;tzlich
+		kann die Hervorhebung fixiert werden, indem man auf ein Objekt auf der Karte,
+		oder auf eine Linie der Darstellung klickt. Das selektierte Objekt verbleibt
+		hervorgehoben wenn der Mauszeiger aus der Darstellung heraustritt, oder auf ein
+		anderes Objekt zeigt. Dies erm&ouml;glicht den Vergleich von zwei oder mehreren
+		Wertepfaden der Entscheidungsoptionen. Die verbleibende Hervorhebung
+		unterscheidet sich von der vorr&uuml;bergehenden in der Farbe (schwarz
+		beziehungsweise wei&szlig;).</P> 
+	 <P>Ein Graph mit parallelen Koordinaten, benutzt in
+		Entscheidungshilfen, ist speziell zur Beschreibung von Eigenheiten der
+		Entscheidungsfindungsaufgaben konstruiert worden: Verschiedene Richtungen der
+		Kriterien (Profit oder Kosten) und verschiedene Variationen der Gewichtung. Bei
+		der Variante des Graphen mit parallelen Koordinaten werden zur Entscheidungsfindung
+		die Achsenorientierung von Profit- und Kostenkriterien unterschiedlich
+		dargestellt: von links nach rechts und umgekehrt. Die Orientierung wird mit
+		Pfeilen angegeben. Mit solch einer L&ouml;sung befinden sich die besten Werte
+		jedes Attributes auf der rechten und die schlechteren auf der linken Seite.
+		Dies erm&ouml;glicht eine einfache visuelle Beurteilung der spezifischen
+		Optionen: je weiter rechts die Linie ist, desto besser ist diese Option.</P> 
+	 <P>Der Unterschied in der relativen Gewichtung der Kriterien wird durch die
+		unterschiedliche L&auml;nge der Achsen deutlich: Je wichtiger das Kriterium
+		ist, desto l&auml;nger ist die zugeh&ouml;rige Achse (siehe folgende
+		Abbildung). Aufgrund dieser Transformation werden die Linien der Optionen,
+		welche andere in wichtigeren Kriterien &uuml;bertreffen, visuell nach rechts in
+		Richtung der ("guten") senkrechten Achse geschoben.</P> 
+	 <P><IMG SRC="pcp-ds.gif" WIDTH="553" HEIGHT="398" ALT="8"></P> 
+	 <P>Neben den Charakteristika der Optionen bez&uuml;glich der Kriterien,
+		zeigt der Graph mit parallelen Koordinaten des "Ideal point" Fensters
+		auch die Ergebnisse der Berechnungen: Die Zusammenfassung der
+		Auswertungsergebnisse der Optionen (durch die momentane Gewichtung der
+		Kriterien gegeben) und die Rangfolge der Optionen bez&uuml;glich der
+		Ergebnisse. Die Ergebnisse und die Rangfolge werden in den letzten zwei Achsen
+		der Darstellung pr&auml;sentiert: die Ergebnisse auf der vorletzten Achse und
+		die Rangfolge auf der letzten. Die Ergebnisachse ist von rechts nach links
+		orientiert, da h&ouml;here Werte besser sind, und die Rangfolgenachse von
+		rechts nach links geht (die beste Option ist die erste in der Rangfolge und die
+		Schlechteste ist die letzte). Solch eine Darstellung erleichtert wesentlich das
+		Verst&auml;ndnis und &Uuml;berpr&uuml;fung des Ausgangs der automatischen
+		Auswertung. Es erlaubt ebenso eine interaktive Analyse der Empfindlichkeit des
+	Gesamtergebnisses, wenn die Gewichtung ver&auml;ndert wird. Wenn irgendwelche
+		Gewichte ver&auml;ndert werden, werden die Ergebnisse sofort neu berechnet und
+		in der Darstellung angezeigt.</P> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <H3
+	  STYLE="font-size: large; font-weight: bold; text-decoration: underline">Verbindung
+		zwischen dem "Ideal point" Fenster und der Karte</H3> 
+	 <P>Sobald das "Ideal point" Fenster gestartet wird, werden die Ergebnisse
+		der Berechnungen durch die "Ideal point" Methode (insbesondere die Rangfolge der
+		Optionen) sofort auf der Karte angezeigt und welche dann dynamisch auf
+		alle Ver&auml;nderungen innerhalb des Fensters reagiert (Gewichtung, Richtung der
+		Kriterien, hinzuf&uuml;gen/entfernen von Kriterien, etc.).</P> 
+	 <P>Es gibt zwei Methoden, welche zur Darstellung der Rangfolge benutzt
+		werden k&ouml;nnen:</P> 
+	 <UL> 
+		<LI>Proportionale Farbschattierung</LI> 
+		<LI>Klassifizierte Karte</LI> 
+	 </UL> 
+	 <P>Welche dieser Methoden benutzt werden sollte, h&auml;ngt von dem
+		K&auml;stchen "Classify results" in dem "Ideal point" Fenster ab. Wenn dieses
+		K&auml;stchen aktiviert wurde, wird die Klassifikation benutzt, andernfalls die
+		proportionale Farbschattierungs-Methode.</P> 
+	 <H4>Pr&auml;sentation der Rangfolge durch proportionale
+		Farbschattierung</H4> 
+	 <P>In dieser Pr&auml;sentationsmethode werden numerische Attribute durch
+		proportionale Farbschattierungen kodiert: je h&ouml;her der Wert, desto dunkler
+		die darstellende Schattierung. Demnach werden bessere Optionen (mit kleinem
+		Wert des "Rangfolge"-Attributs) in helleren, und schlechtere Optionen in
+		dunkleren Farben dargestellt (siehe Abb. unten). </P>
+	 <P> <IMG SRC="ranking_continuous.gif" WIDTH="574" HEIGHT="382" ALT="9"></P>
+	 <P> Eine zweiseitige, oder divergierende Farbskala kann dazu benutzt werden
+		Werte &uuml;ber und unter einen bestimmten Referenzwert (midpoint)
+		darzustellen: sie werden in zwei verschiedenen Farben abgebildet, z.B. in braun
+		und blau. Eine spezielle Farbe, z.B. wei&szlig;, wird f&uuml;r die Werte
+		benutzt, die genau gleich dem Referenzwert sind. Das System gibt die
+		M&ouml;glichkeit, den Referenzwert interaktiv zu ver&auml;ndern,um somit die
+		Auswirkungen auf der Karte sofort zu sehen. Diese Operation (namens "visual
+		comparison", visueller Vergleich) kann den Vergleich von Optionen und die
+		Erkennung von der besten Optionen erleichtern. So kann z.B. der Referenzwert
+		auf 5.5 (oder jede Zahl zwischen 5 und 6) gesetzt werden, welches dann die
+		besten 5 Optionen von den Restlichen isoliert: sie werden in einer anderen
+		Farbe, standardm&auml;&szlig;ig blau, dargestellt (siehe unten).</P>
+	 <P> <IMG SRC="ranking_compare.gif" WIDTH="571" HEIGHT="382" ALT="10"></P> 
+	 <P>Es gibt mehrere M&ouml;glichkeiten interaktive den Referenzwert zu
+		setzten: </P> 
+	 <OL> 
+		<LI>Allm&auml;hlich zieht man den Schieber (ein zweiseitiger Pfeil auf
+		  der Farbskala des Manipulationsbereiches) nach oben oder unten. Um den Schieber
+		  erscheinen zu lassen, klickt man irgendwo auf die Farbskala. Falls es
+		  erw&uuml;nscht ist die Ver&auml;nderungen durch die Bewegung des Schiebers
+		  dynamisch auf die Karte zu projezieren, sollte das K&auml;stchen namens
+		  "dynamic map update" aktiviert sein, denn andernfalls wird die Karte erst wieder
+		  aktualisiert, wenn man mit dem Ziehen des Schiebers fertig ist.</LI> 
+		<LI>In das Textfeld "Compare to" (&uuml;ber der Schieberleiste) gibt man
+		  den Wert ein und dr&uuml;ckt die "Enter" Taste.</LI> 
+		<LI>Um eine Objekt mit den andern zu vergleichen klickt man in der Karte
+		  darauf. Der zugeh&ouml;rige Wert wird zum Referenzwert. Objekte mit
+		  h&ouml;heren Werten werden in braun, die mit niedrigeren Werten in blau und das
+		  Objekt selbst wird in wei&szlig; dargestellt. Diese Operation ist dann
+		  m&ouml;glich, wenn das K&auml;stchen "compare by click in" aktiviert ist.</LI> 
+	 </OL> 
+	 <P><A HREF="#top" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A> </P>
+	 
+	 <P><A HREF="Inhalt.htm" STYLE="font-size: large">Zur&uuml;ck zum Inhalt</A>
+		</P> </BODY>
+</HTML>

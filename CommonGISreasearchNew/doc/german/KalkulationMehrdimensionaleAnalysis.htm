@@ -1,0 +1,163 @@
+<HTML> 
+  <HEAD> 
+	 <TITLE>Descartes - Kalkulation als multivariable Analysis</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <P> <A NAME="MA0" STYLE="font-weight: bold; font-size: x-large">Kalkulation
+		als multivariable Analysis</A></P> 
+	 <P><A HREF="#MA1">Similarity (distance) - &Auml;hnlichkeiten
+		(Abstand)</A><BR><A HREF="#MA2">Similarity (classification) -
+		&Auml;hnlichkeiten (Klassifikation)</A><BR><A HREF="#MA3">Dominant attribute
+		classification - Klassifikation nach dominierenden Attributen</A></P> 
+	 <P><A HREF="Inhalt.htm" STYLE="font-size: medium"> Zur&uuml;ck zum
+		Inhalt</A></P> 
+	 <P>
+		<A NAME="MA1"
+		 STYLE="font-weight: bold; font-size: large; text-decoration: underline">Similarity
+		(distance)</A></P> 
+	 <P>Eine interessante und n&uuml;tzliche Art der Datenanalyse basiert auf der Berechnung des &Auml;hnlichkeitsgrads oder des Abstandes der Objekte
+		in dem mehrdimensionalen Attributraum. Die &Auml;hnlichkeitsanalyse kann die
+		Verteilung der Charakteristika auf einer Objektmenge verst&auml;ndlicher
+		machen.<BR>Die Referenzobjekte werden aus einer Liste mit allen Objekten
+		ausgew&auml;hlt (Abb. 1). Es ist auch m&ouml;glich sie aus der Karte heraus per
+		Mausklick auszuw&auml;hlen, wenn die entsprechende Schicht aktiv ist (roter
+		Kasten in der Legende).</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance8.gif"
+		WIDTH="189" HEIGHT="314" BORDER="0" ALT="1"><BR>Abb. 1<BR>Auswahl der
+		Referenzobjekte</P> 
+	 <P>Descartes bietet mehrere Kalkulationsmethoden des Abstandes zwischen
+		Objekten, basierend auf verschiedenen Metriken. Die Berechnungsergebnisse
+		k&ouml;nnen an einem Graphen mit parallelen Koordinaten mit Achsen f&uuml;r die
+		Ursprungsattributen und einer Achse f&uuml;r den Abstand (Abb. 2). Man kann
+		leicht die Linie des Referenzobjektes finden und sie mit den Linien der anderen
+		Objekte vergleichen. Eine M&ouml;glichkeit daf&uuml;r ist die dauerhafte und
+		vor&uuml;bergehende Markierung. De&szlig; weiteren kann das Diagramm so
+		ver&auml;ndert werden, da&szlig; das Referenzobjekt durch eine gerade Linie
+		pr&auml;sentiert wird.<BR>Im letzteren Fall werden alle Achsen verschoben, ohne
+		ihren Ma&szlig;stab zu ver&auml;ndern. Diese Pr&auml;sentationsmethode
+		erleichtert das Verst&auml;ndnis und die Untersuchung der Berechnungsergebnisse.
+		Je n&auml;her eine Linie der geraden Referenzlinie ist, desto &auml;hnlicher
+		ist es dem Referenzobjekt. Der Benutzer hat die M&ouml;glichkeit die Parameter,
+		z.B. die zugrunde liegende Metrik der Berechnung zu ver&auml;ndern. Jede
+		Ver&auml;nderung wird sofort auf dem Diagramm sichtbar.</P> 
+	 <P>Die verschiedenen verf&uuml;gbaren Metriken sind: <BR>L1:
+		Dist(A,B)=Sum(Abs(Ai-Bi))<BR>L2: Dist(A,B)=Sqrt(Sum(Ai-Bi)^2))<BR>C:
+		Dist(A,B)=Max(Abs(Ai-Bi))<BR>T: Spezielle Metrik f&uuml;r Zeitreihen. Sie gibt
+		die Anzahl der Momente, in denen eine &auml;hnliche Wert&auml;nderung
+		stattgefunden hat. Diese Metrik sollte ausschlie&szlig;lich auf Zeitreihen
+		angewendet werden!</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance10.gif" WIDTH="753"
+		HEIGHT="379" BORDER="0" ALT="2"><BR>Abb. 2<BR>"Parallel coordinate plot"
+		f&uuml;r &Auml;hnlichkeitsberechnungen durch den Abstand</P> 
+	 <P>Das Kartenfenster &auml;ndert sich ebenfalls. Die Objekte (in Abb. 3:
+		Skiregionen) sind in Farbschattierungen abgebildet (n&auml;here Beschreibung
+		<A HREF="Karten.htm#M2">hier</A>).</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance9.gif"
+		WIDTH="640" HEIGHT="499" BORDER="0" ALT="3"><BR>Abb. 3<BR>Visualisierung der
+		mit Abstand berechneten &Auml;hnlichkeiten</P> 
+	 <P><A HREF="#MA0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P>
+	 
+	 <P>
+		<A NAME="MA2"
+		 STYLE="font-weight: bold; font-size: large; text-decoration: underline">Similarity
+		(classification)</A></P> 
+	 <P>Auf der Basis der Abstandsberechnungen kann man nun eine weitere
+		untersuchende Datenanalyse Aufgabe angehen: Klassifizierung von Objekten in
+		zwei Klassen, vertreten durch Repr&auml;sentanten.<BR>Das Verfahren der
+		Klassifikation wird auf folgende Weise durchgef&uuml;hrt:<BR>Zu jedem Objekt
+		berechnet das System die Abst&auml;nde DI und DII zu den Repr&auml;sentanten
+		der zwei Klassen I und II. Falls f&uuml;r ein Objekt min(DI,II)&gt;d0 gilt, mit
+		Grenzwert d0, so wird dies keine der zwei Klassen zugeteilt (es ist beiden
+		Repr&auml;sentanten nicht &auml;hnlich). Andernfalls wird das Objekt der Klasse
+		I zugeteilt, wenn DI&lt;DII, oder der Klasse II, wenn DI&gt;II. Man kann
+		zwischen verschiedenen Metriken f&uuml;r die Berechnung der Abst&auml;nde
+		w&auml;hlen und die Parameterwerte &auml;ndern. Um d0 zu setzten kann man den
+		Schieber bei "distance threshold for classification" verschiebt. Der momentane
+		Wert kann rechts von der Skala abgelesen werden.<BR>Das Verfahren der
+		&auml;hnlichkeitsbasierten Klassifikation kann vom einem Graphen mit parallelen Koordinaten
+		unterst&uuml;tzt werden. Das Diagramm enth&auml;lt Achsen f&uuml;r alle
+		urspr&uuml;nglichen Attribute, dem Abstand zu den Klassen I und II, sowie das
+		Ergebnis der Klassifikation. Letzeres wird mit Zahlen versehen: -1 steht
+		f&uuml;r die Klasse I, 1 f&uuml;r die Klasse II und 0 f&uuml;r
+		nichtklassifizierte Objekte. Die Achsen sind so formatiert, da&szlig; die
+		Linien der zwei Repr&auml;sentanten der Klassen gerade sind (dies ist
+		m&ouml;glich falls alle Werte aller Attribute dieser zwei Objekte verschieden
+		sind). Die Skala jeder Achse ist durch die Differenz der Attributwerte
+		der Referenzobjekte I und II begrenzt. Die Orientierung einer Achse kann schon mal von
+		rechts nach links gehen, um den Refernzwert des Referenzobjektes I links von
+		dem Referenzobjekt II abbilden zu k&ouml;nnen. Die Erscheinung des Diagramms
+		wird in Abb. 4 gezeigt.<BR>Das so transformierte Diagramm zeigt die Resultate
+		der Klassifikation auf einfache Weise. Falls eine Linie in der N&auml;he der
+		Linie eines Referenzobjektes ist, so geh&ouml;rt das Objekt auch zu der selben
+		Klasse. Falls eine Linie sehr von den Linien beider Referenzobjekte abweicht,
+		so ist dieses Objekt nichtklassifiziert.</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance11.gif" WIDTH="1110"
+		HEIGHT="403" BORDER="0" ALT="4"><BR>Abb. 4<BR>"Parallel coordinate plot" der
+		Klassifikation durch &Auml;hnlichkeit</P> 
+	 <P>Werden geographisch zugeordnete Daten analysiert, so kann man das
+		Ergebnis der Klassifikation auch auf der Karte betrachten (siehe Abb. 5). Die
+		Objekte werden in den verschiedenen Farben der Klassen I, II oder gar keiner
+		(grau) dargestellt.<BR>Die Linien in der Abb. 4 sind blau und rot, da das
+		K&auml;stchen "Broadcast classifikation" (&Uuml;bertrage Klassifikation)
+		aktiviert in Abb. 5 aktiviert worden ist.</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisSimilarityDistance12.gif" WIDTH="649"
+		HEIGHT="412" BORDER="0" ALT="5"><BR>Abb. 5<BR>Visualisierung der Klassifikation
+		durch &Auml;hnlichkeit</P> 
+	 <P><A HREF="#MA0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang </A></P>
+	 
+	 <P>
+		<A NAME="MA3"
+		 STYLE="font-weight: bold; font-size: large; text-decoration: underline">Dominant
+		attribute classification</A> </P>
+	 <P>Diese Methode ermittelt das dominierende Kriterium (Minimum oder
+		Maximum) von jedem Objekt (Abb. 6).</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisDominantAttribute2.gif" WIDTH="749"
+		HEIGHT="375" BORDER="0" ALT="6"><BR>Abb. 6<BR>"Parallel coordinate plot" des
+		dominierenden Attribut</P> 
+	 <P>Die Erscheinung des Diagramms kann durch Normierung ver&auml;ndert
+		werden:</P> 
+	 <TABLE WIDTH="100%" BGCOLOR="#CCFFCC" BORDER="1"> 
+		<TR  BGCOLOR="#CCFFCC"> 
+		  <TD>No normalization (absolute values)</TD> 
+		  <TD>Attribute werden auf einer einzelnen Skala mit ihrem absoluten
+			 Werten, ohne Normierung, dargestellt.</TD> 
+		</TR> 
+		<TR  BGCOLOR="#CCFFCC"> 
+		  <TD>0 (min) ... 1 (max)</TD> 
+		  <TD>Attribute werden auf eine Skala von 0.0 bis 1.0 projiziert. 0.0
+			 entspricht dem Minimum und 1.0 dem Maximum jedes Attributes.</TD> 
+		</TR> 
+		<TR  BGCOLOR="#CCFFCC"> 
+		  <TD>Median and quartiles</TD> 
+		  <TD>Attribute werden auf einer Skala dargestellt, wo der Mittelwert und
+			 die Viertelwerte jedes Attribute ausgerichtet sind.</TD> 
+		</TR> 
+		<TR  BGCOLOR="#CCFFCC"> 
+		  <TD>Mean and standard deviation</TD> 
+		  <TD>Attribute werden auf eine Skala projiziert wo die Mittelwerte jedes
+			 Attributs in der Mitte ausgerichtet sind und wo die mittleren
+			 Standardabweichungen +/-1 ebenso ausgerichtet sind.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <P>F&uuml;r jedes Objekt wird das dominierende Attribut in einer bestimmten
+		Farbe abgebildet. Die Farben k&ouml;nnen durch einen Mausklick auf das farbige
+		K&auml;stchen in dem Manipulationskarteifenster ge&auml;ndert werden. Das
+		K&auml;stchen daneben kann einzelne Attribute an-, oder ausschalten (betrifft
+		alle Fenster).</P> 
+	 <P ALIGN="CENTER"><IMG
+		SRC="CalculationMultivariateAnalysisDominantAttribute1.gif" WIDTH="649"
+		HEIGHT="412" BORDER="0" ALT="7"><BR>Abb. 7<BR>Visualisierung der dominierenden
+		Attributsberechnung</P> 
+	 <P>Ist das K&auml;stchen "Broadcast classification" aktiviert, so werden
+		alle Punkte oder Linien aller Diagramme die selben Farben haben, wie auf dieser
+		Karte.</P> 
+	 <P><A HREF="#MA0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A></P> 
+	 <P STYLE="font-size: large"><A HREF="Inhalt.htm"
+		STYLE="font-size: large">Zur&uuml;ck zum Inhalt</A></P> </BODY>
+</HTML>

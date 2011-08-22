@@ -1,0 +1,202 @@
+<HTML> 
+  <HEAD> 
+	 <TITLE>Descartes - Nichtkartographische Visualisierung</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <P> <A NAME="M0"
+		STYLE="font-weight: bold; font-size: x-large">Nichtkartographische
+		Visualisierung:</A></P> 
+	 <P><A HREF="#C6">Allgemeine Informationen</A><BR><A HREF="#C1">Dot plot
+		(horizontal and vertical) - Punktediagramm (horizontal und vertikal)</A><BR><A
+		HREF="#C2">Scatter plot - "Streu"-Graphen</A><BR><A HREF="#C3">Scatter plot
+		matrix - Matrix aus "Streu"-Graphen</A><BR><A HREF="#C4">Parallel coordinates
+		plot - Diagramm mit parallelen Koordinaten</A><BR><A HREF="#C5">Classifier
+		(horizontal and vertical) - Klassifizierer (horizontal und vertikal)</A></P> 
+	 <P><A HREF="Inhalt.htm" STYLE="font-size: medium"> Zur&uuml;ck zum
+		Inhalt</A></P> 
+	 <P><A NAME="C6"
+		STYLE="text-decoration: underline; font-weight: bold; font-size: large">Allgemeine
+		Informationen</A></P> 
+	 <P STYLE="text-decoration: underline">Markierungen</P> 
+	 <P>Das Diagramm reagiert auf Mausoperationen. Sobald die Maus auf eine
+		Linie oder einen Punkt zeigt, werden sie markiert. Daraus ergibt sich die
+		M&ouml;glichkeit, die Werte des zugeh&ouml;rigen Objekts einzusch&auml;tzen und
+		seine Attribute mit den Attributen aller Objekte zu vergleichen.<BR>Das Klicken
+		auf eine Linie oder einen Punkt bewirkt eine dauerhafte Markierung (bis sie
+		explizit aufgehoben wird). Somit k&ouml;nnen ausgew&auml;hlte Objekte mit
+		anderen Objekten verglichen werden. Zus&auml;tzlich kann man nun auf andere
+		Objekte zeigen, welche dann vor&uuml;bergehend markiert werden. Die zu
+		vergleichenden Objekte k&ouml;nnen dann leicht unterschieden werden, da sich die
+		vor&uuml;bergehende und die dauerhafte Markierung in der Farbe unterscheidet
+		(schwarz und wei&szlig;).<BR>In Descartes sind alle Diagramme miteinander
+		verbunden, so da&szlig; eine Markierung in einer Darstellung gleichzeitig in
+		allen Darstellungen erfolgt. Somit k&ouml;nnen die Objekte von allen
+		Perspektiven aus untersucht werden.<BR>Das Untersuchen von Daten beinhaltet
+		des &ouml;fteren die Aufgabe des Vergleichens von Attributwerten
+		ausgew&auml;hlter Objekte, sowie von den Werteintervallen einiger Attribute.
+		Solche Aufgaben werden relevant, wenn die zu untersuchenden Attribute auch
+		vergleichbar sind, d.h. wenn sie im selben Ma&szlig;stab angegeben sind, oder
+		semantisch verbunden sind. Beispiele solcher Daten sind Fl&auml;chendeckende-,
+		oder Fl&auml;chennutzungsstatistiken, Aufteilung der Bev&ouml;lkerung in
+		Altersgruppen, Besch&auml;ftigung, oder Familienstand, Geburten-, oder
+		Sterberaten, etc.<BR>Das System erlaubt einfaches Wechseln zwischen den
+		verschiedenen Skalierungsarten der parallelen Koordinaten.</P> 
+	 <P>Mehr Informationen der Entscheidungshilfe werden auf
+		<A HREF="Entscheidungshilfe.htm">dieser Seite</A> gegeben.</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A></P> 
+	 <P
+	  STYLE="font-weight: bold; text-decoration: underline; font-size: x-large"><A
+		NAME="C1"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Dot
+		plot (horizontal and vertical)</A></P> 
+	 <P>Eine Art Attribute darzustellen ist mit Hilfe von "dot plots"
+		(Punktgraphen), entweder horizontal (Abb. 1), oder vertikal (Abb. 2). Der
+		Graph ist ein Balken mit &auml;quidistanten Linien, welche den Balken in 10
+		Abschnitte unterteilen. Jeder Wert wird durch einen kleinen Kreis abgebildet.
+		An jedem Ende des Graphen werden die jeweiligen Extremwerte in schwarzen Zahlen
+		angegeben. Die dreieckigen Begrenzer an den Enden des Balkens erlauben den
+		anzeigenden Wertebereich auszuw&auml;hlen. Dieser Bereich kann aufgrund einer
+		Art Vergr&ouml;&szlig;erung n&auml;her betrachtet werden, welches ein paar
+		Transformationen beinhaltet. Die Werte au&szlig;erhalb dieses Intervalls werden
+		auf dem Graphen nicht mehr angezeigt. Die Punkte sind dann nicht mehr so
+		geballt und die Verteilung kann deutlicher erkannt werden. Es wird einfacher
+		sich auf die zu untersuchenden Werte zu konzentrieren (siehe Abb. 1). Nur die
+		horizontale Darstellung zeigt die Grenzen des Intervalls an (unter dem Graphen
+		in blauen Zahlen).</P> 
+	 <P ALIGN="CENTER"><IMG SRC="HorizontalPlot.gif" WIDTH="538" HEIGHT="187"
+		BORDER="0" ALT="1"><BR>Abb. 1<BR>Portugal - Horizontaler Punktgraph -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P></P> 
+	 <P ALIGN="CENTER"><IMG SRC="VerticalPlot.gif" WIDTH="169" HEIGHT="457"
+		BORDER="0" ALT="2"><BR>Abb. 2<BR>Portugal - Vertikaler Punktgraph -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P></P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A></P> 
+	 <P
+	  STYLE="font-weight: bold; text-decoration: underline; font-size: x-large"><A
+		NAME="C2" STYLE="font-size: large; font-weight: bold">Scatter plot</A></P> 
+	 <P>Der "scatter plot" ("Scatter"-Graph) hat eine 10x10 Rasterung. Die Position eines Punktes
+		kann mit den X und Y Koordinaten der Rasterung angegeben werden. Somit nehmen X
+		und Y Werte zwischen 1 und 10 an.<BR>Mehrere Punkte k&ouml;nnen durch
+		Mausziehen auf einmal markiert werden. Falls ein paar Punkte dadurch nicht
+		erfa&szlig;t worden sind, k&ouml;nnen sie mit einem Mausklick der Markierung noch
+		hinzugef&uuml;gt werden, oder so auch wieder entfernt werden. Die Markierung
+		aller Punkte kann mit einem Klick auf eine objektfreie Fl&auml;che aufgehoben
+		werden. </P> 
+	 <P ALIGN="CENTER"><IMG SRC="ScatterPlot.gif" WIDTH="222" HEIGHT="271"
+		BORDER="0" ALT="3"><BR>Abb. 3<BR>Portugal - Scatter plot</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A></P> 
+	 <P
+	  STYLE="font-weight: bold; text-decoration: underline; font-size: x-large"><A
+		NAME="C3"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Scatter
+		plot matrix</A></P> 
+	 <P>Diese Matrix ist eine quadratische Matrix, mit den Namen der Attribute
+		auf der Diagonalen und "Scatter"-Graphen &uuml;berall sonst. Die Achsen der
+		Graphen werden durch die Eintr&auml;ge der Diagonalen gegeben. Zum Beispiel
+		Abbildung 4: die Achsen des Graphen an der Position (Zeile 2, Spalte 1) sind
+		durch "% of Pop by age 15-24" auf der horizontalen und "total employed in
+		Industrie 1991" auf der diagonalen gegeben. Die Graphen k&ouml;nnen wie ein
+		normaler "Scatter"-Graph manipuliert werden.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ScatterPlotMatrix.gif" WIDTH="705" HEIGHT="597"
+		BORDER="0" ALT="4"><BR>Abb. 4<BR>Portugal - Scatter plot matrix</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A></P> 
+	 <P
+	  STYLE="font-weight: bold; text-decoration: underline; font-size: x-large"><A
+		NAME="C4"
+		STYLE="font-size: large; font-weight: bold; text-decoration: underline">Parallel
+		coordinates plot</A></P> 
+	 <P>Die Achsen eines Graphen mit parallelen Koordinaten k&ouml;nnen entweder
+		horizontal oder vertikal ausgerichtet sein. Die Orientierung hat keinen
+		Einflu&szlig; auf die Interpretation und die Nutzung des Diagramms. In dieser
+		Implementation sind die Achsen horizontal und untereinander plaziert.<BR>In
+		der Standardform des Graphen (mit der Ausrichung:
+		"Individual Min and Max") entspricht die Position am weitesten links dem
+		Minimum des jeweiligen Attributes, und die am weitesten rechts dem Maximum.
+		Diese Positionen auf den Achsen sind untereinander in Linie gebracht (Abb.
+		5).</P>
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates1.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0" ALT="5"><BR>Abb. 5<BR>Europa - "Parallel coordinates
+		plot"- Individual Min and Max - Altersgruppen</P> 
+	 <P>F&uuml;r die Aufgabe des Vergleichs der Werte und des Wertebereichs ist
+		die Standardform des Diagramms unpassend. Die Achsen sollten so skaliert sein,
+		da&szlig; die gleichen Positionen auf den Achsen gleiche Werte
+		repr&auml;sentieren. Solch eine Skalierung ist in Abb. 6 abgebildet. Das
+		Diagramm zeigt die gleichen Daten, wie in Abb. 5: Prozentualer Anteil der
+		Bev&ouml;lkerung Europas in 3 Altersgruppen (0-14 Jahre, 15-64 Jahre und mehr
+		als 65 Jahre). Man kann deutlich erkennen, da&szlig; der Anteil der 15-64
+		j&auml;hrigen in allen L&auml;ndern am gr&ouml;&szlig;ten ist. Solch ein
+		extremer Fall wurde ausgew&auml;hlt, um den Unterschied der vorgeschlagenen
+		Skalierungen zum "Standard" zu demonstrieren.</P>
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates2.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0" ALT="6"><BR>Abb. 6<BR>Europa - "Parallel coordinates
+		plot"- Common Min and Max - Altersgruppen</P> 
+	 <P>Ein wichtiger Punkt in der Erforschungsanalysis ist die Untersuchung der
+		Beziehungen von Attributen. Dies involviert den Vergleich von
+		Wertever&auml;nderungen verschiedener Attribute und die Suche nach Beziehungen
+		zwischen den Attributen. Ein Graph mit parallelen Koorinaten unterst&uuml;tzt diese
+		Aufgabe. Auf diese Weise sind die Attribute benachbarte Linien, welche fast
+		parallel verlaufen, positiv korreliert. Falls fast alle Linien entweder eine
+		nordost-s&uuml;dwest oder eine nordwest-s&uuml;dost Orientierung haben, sind
+		die Attribute negativ korreliert. Offensichtlich kann man die Reihenfolge der
+		Attributachsen ver&auml;ndern um solche korrelierten Attribute zu finden. Es
+		k&ouml;nnte auch n&uuml;tzlich sein die Achsen zu vertauschen.<BR>Eine weitere
+		M&ouml;glichkeit Objekte miteinander zu vergleichen geschieht durch "Selected
+		object(s)" (ausgew&auml;hlte Objekte) (Abb. 7). Hier werden die Linien der
+		ausgew&auml;hlten Objekte zentriert und die Achsenskalierungen angepa&szlig;t. Wenn
+		mehrere Objekte ausgew&auml;hlt worden sind, berechnet Descartes den
+		Durchschnitt und verwendet diesen.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates8.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0" ALT="7"><BR>Abb. 7<BR>Europa - "Parallel coordinates
+		plot" - Selected object(s) - Altersgruppen</P> 
+	 <P>Jedoch kann die kanonische Form des Graphen
+		unpassend sein, wenn die Daten Ausrei&szlig;er hat, d.h. Werte, die von den
+		anderen, geb&uuml;ndelten Werten weit entfernt sind. Das Vorhandensein von
+		Ausrei&szlig;ern erschwert die Aufgabe, in Beziehung stehende Attribute zu
+		finden, sowie Objekte zu vergleichen. In solch einem Fall k&ouml;nnen zwei
+		Methoden angewendet werden: 1.) Normierung durch "median and quartiles"; und
+		2.) Normierung durch "mean and standard deviation".<BR>Eine weiter Variante der
+		Achsenskalierung wird in Abb. 8 gezeigt. Die Achsen sind so angeordnet,
+		da&szlig; die Mittelwerte und der erste und zweite "quartile" aller Attribute
+		auf der selben vertikalen Linie liegen. Die Positionen der restlichen Werte
+		werden durch linearer Interpolation gefunden.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates6.gif" WIDTH="561"
+		HEIGHT="537" BORDER="0" ALT="8"><BR>Abb. 8<BR>Europa - "Parallel coordinates
+		plot" - Medians and Quartiles - Altersgruppen</P> 
+	 <P>In Abb. 9 sind die Positionen am weitesten links und am weitesten rechts
+		auf den Achsen sind &uuml;bereinander gereiht, welches manchmal den Vergleich
+		einiger Attribute erleichtert.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates5.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0" ALT="9"><BR>Abb. 9<BR>Europa - "Parallel coordinates
+		plot" - Min-Max, Medians and Quartiles - Altersgruppen</P> 
+	 <P>Auf &auml;hnlicher Weise wird in der zweiten Variante die Werte
+		<B STYLE="text-decoration:overline">X </B>,
+		<B STYLE="text-decoration: overline">X</B>-&otilde; und
+		<B STYLE="text-decoration: overline">X</B>+&otilde; f&uuml;r die
+		Achsenskalierung benutzt (hier sind <B
+		STYLE="text-decoration: overline">X</B> das arithmetische Mittel und
+		&otilde; die Standardabweichung). Diese Variante wird in Abb. 10 gezeigt. Nebst
+		der Neutralisation der Ausrei&szlig;er, sind beide Variationen der Skalierungen
+		f&uuml;r die Untersuchung genereller Charakteristika der
+		Wertever&auml;nderungen zu gebrauchen.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates4.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0" ALT="10"><BR>Abb. 10 <BR>Europa - "Parallel coordinates
+		plot" - Means and Std. deviations - Altersgruppen</P> 
+	 <P>Abbildung 11 zeigt ein unpassendes Beispiel f&uuml;r
+		Standardverteilung...</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates9.gif" WIDTH="561"
+		HEIGHT="537" BORDER="0" ALT="11"><BR>Abb. 11<BR>Europa - "Parallel coordinates
+		plot" - Standard deviation - Altersgruppen</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A></P> 
+	 <P><A NAME="C5"
+		STYLE="font-weight: bold; font-size: large; text-decoration: underline">Classifier
+		(horizontal and vertical)</A></P> 
+	 <P>Klassifizierer werden in einem separaten Fenster ge&ouml;ffnet, in dem
+		entweder ein horizontaler oder vertikaler Balken abgebildet ist. Diese
+		nichtkartographische Visualisierungsmethode wird genauso verwendet wie die
+		Klassifizierungsmethode, welche <A HREF="Karten.htm#M4">hier</A> beschrieben
+		wird.</P> 
+	 <P><A HREF="#M0" STYLE="font-size: medium">Zur&uuml;ck zum Anfang</A></P> 
+	 <P STYLE="font-size: large"><A HREF="Inhalt.htm"
+		STYLE="font-size: large">Zur&uuml;ck zum Inhalt</A></P> </BODY>
+</HTML>

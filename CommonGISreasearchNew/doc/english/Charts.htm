@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//SoftQuad Software//DTD HoTMetaL PRO 6.0::19990601::extensions to HTML 4.0//EN" "hmpro6.dtd">
+<HTML> 
+  <HEAD> 
+	 <TITLE>Descartes - Noncartographic visualization</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <P> <A NAME="M0"
+		STYLE="font-weight: bold; font-size: xx-large">Noncartographic
+		visualization:</A></P> 
+	 <P><A HREF="#C6">General Information</A><BR><A HREF="#C1">Dot plot
+		(horizontal and vertical)</A><BR><A HREF="#C2">Scatter plot</A><BR><A
+		HREF="#C3">Scatter plot matrix</A><BR><A HREF="#C4">Parallel coordinates
+		plot</A><BR><A HREF="#C5">Classifier (horizontal and vertical)</A></P> 
+	 <P><A HREF="Contents.htm" STYLE="font-weight: bold; font-size: larger">
+		Back to contents</A></P> 
+	 <P><A NAME="C6"
+		STYLE="text-decoration: underline; font-weight: bold; font-size: x-large">General
+		information</A></P> 
+	 <P STYLE="text-decoration: underline">Highlighting</P> 
+	 <P>The plot is reactive to mouse operations. When the mouse points on some
+		line or dot, it is highlighted. This gives an opportunity to estimate attribute
+		values associated with the corresponding object and compare characteristics of
+		this object to the distribution of characteristics over the whole set of
+		objects. <BR>Clicking on a line or dot makes it permanently highlighted (until
+		explicit cancellation). This enables pairwise comparison of the selected object
+		with other objects. Therefore also point on other objects with the mouse. The
+		two objects being compared can be well distinguished as permanent and
+		"mouse-on" types of highlighting differ in color (black and white). <BR>In the
+		Descartes system a any plot may be dynamically linked to other displays such as
+		a map or other plots. This means that objects are highlighted simultaneously in
+		all the displays when one selects them in any of the displays. Due to this one
+		can explore the set of objects from many perspectives. <BR>Data exploration
+		often involves tasks of comparison of attribute values for selected objects and
+		comparison of value ranges of several attributes. Such tasks are usually
+		relevant to cases when the attributes under investigation are comparable, i.e.
+		measured in the same units and semantically related. Examples of such data are
+		land cover or land use statistics, division of population according to age
+		groups, employment, or marital status, birth and death rates, etc. <BR>The
+		system allows easily switching between the different variants of scaling of
+		parallel coordinates.</P> 
+	 <P>Some more information on decision support is given on
+		<A HREF="DecisionSupport.html">this page</A>.</P> 
+	 <P><A HREF="#M0">Go to beginning </A></P> 
+	 <P></P> 
+	 <P
+	  STYLE="font-weight: bold; text-decoration: underline; font-size: x-large"><A
+		NAME="C1">Dot plot (horizontal and vertical):</A></P> 
+	 <P>One possibility of visualizing attributes is done with dot plots, either
+		horizontal (figure 1) or vertical (figure 2). The plot is a bar with
+		equidistant lines that divides the bar into 10 units. Each value is presented
+		with a little circle. At both ends of the plot the extremal values are
+		indicated in black numbers. The triangle-shaped delimiters on either end of the
+		bar allow the selection of a part of the value range represented by the slider
+		unit. This part can be considered in more detail due to a kind of "zooming"
+		that involves some transformations. The values that don't fit into the selected
+		interval are not shown on the plot. As a result, the dots become less
+		cluttered, the distribution of values within the interval is seen clearer. It
+		becomes easier to focus on the values from the studied interval (see figure 1).
+		Only the horizontal representation indicates the boundaries of the interval
+		(beneath the plot in blue).</P> 
+	 <P ALIGN="CENTER"><IMG SRC="HorizontalPlot.gif" WIDTH="538" HEIGHT="187"
+		BORDER="0"><BR>Figure 1<BR>Portugal - Dot plot horizontal -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P></P> 
+	 <P ALIGN="CENTER"><IMG SRC="VerticalPlot.gif" WIDTH="169" HEIGHT="457"
+		BORDER="0"><BR>Figure 2<BR>Portugal - Dot plot vertical -
+		%_of_Pop_by_age_&gt;=65</P> 
+	 <P></P> 
+	 <P><A HREF="#M0">Go to beginning </A></P> 
+	 <P
+	 STYLE="font-weight: bold; text-decoration: underline; font-size: x-large"><A
+		NAME="C2">Scatter plot:</A></P> 
+	 <P>The scatter plot has a 10x10 grid. Position of a dot on the scatter plot
+		can be indicated using the X- and Y-coordinates according to the grid, that is,
+		X and Y can take values form 1 to 10.<BR>Selecting several dots at once can be
+		done by mouse dragging. It it failed to enclose some of the dots in the
+		selection frame, in can add them to the selection by clicking on them. Or they
+		can be deactivated by clicking on them again. All selected dots are deactivated
+		again by mouse click in an object free part of the scatter plot area or of the
+		map</P> 
+	 <P></P> 
+	 <P ALIGN="CENTER"><IMG SRC="ScatterPlot.gif" WIDTH="222" HEIGHT="271"
+		BORDER="0"><BR>Figure 3<BR>Portugal - Scatter plot</P> 
+	 <P></P> 
+	 <P><A HREF="#M0">Goto beginning </A></P> 
+	 <P
+	 STYLE="font-weight: bold; text-decoration: underline; font-size: x-large"><A
+		NAME="C3">Scatter plot matrix:</A></P> 
+	 <P>The scatter plot matrix is a square matrix where the names of the
+		attributes are on the diagonal and scatter plots every where else. The axes of
+		the plots are given through the entries in the diagonal. For example in figure
+		4 the plot on position (row 2, column 1) has "% of Pop by age 15-24" on the
+		horizontal axis and "total employed in Industrie 1991" on the vertical axis.
+		The plots can be manipulated just like normal scatter plots. </P> 
+	 <P ALIGN="CENTER"><IMG SRC="ScatterPlotMatrix.gif" WIDTH="705" HEIGHT="597"
+		BORDER="0"><BR>Figure 4<BR>Portugal - Scatter plot matrix</P> 
+	 <P></P> 
+	 <P><A HREF="#M0">Go to beginning </A></P> 
+	 <P
+	 STYLE="font-weight: bold; text-decoration: underline; font-size: x-large"><A
+		NAME="C4">Parallel coordinates plot:</A></P> 
+	 <P>A parallel coordinates plot may have either horizontal or vertical
+		orientation of the attribute axis. The orientation has no influence on
+		interpretation of the plot and its use. In this implementation the axes are
+		horizontal and placed one below another.<BR>In the standard form of parallel
+		coordinates plot ("Individual Min and Max" is selected as alignment, below the
+		plot) the leftmost position of each axis corresponds to the minimum value of
+		the respective attribute, and the rightmost to the maximum value. The leftmost
+		and the rightmost positions of the axes are aligned (see figure 5). </P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates1.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0"><BR>Figure 5<BR>Europe - Parallel coordinates -
+		Individual Min and Max - Age groups</P> 
+	 <P>For the tasks of comparison of values and value ranges the standard form
+		of the plot is inappropriate. The axes need to be scaled so that the same
+		positions correspond to exactly the same number on all the axes. Such scaling
+		is illustrated by figure 6. The plot represents the same data as in figure 5:
+		percentages of people in three age groups (0-14 years, 15-64 years, and 65 and
+		more years) in countries of Europe. It is well visible that the part of the
+		middle-age population is bigger in all countries than parts of other age
+		groups. Such an extreme case was selected in order to demonstrate clearly the
+		difference of the suggested scaling method from the "standard" form of parallel
+		coordinates plot.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates2.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0"><BR>Figure 6<BR>Europe - Parallel coordinates - Common
+		Min and Max - Age groups</P> 
+	 <P>An important activity in exploratory analysis is investigation of
+		relationships among attributes. It involves comparison of value variation of
+		different attributes and seeking for correlation between attributes. A parallel
+		coordinates plot can effectively support these tasks. Thus, if the lines
+		between two neighboring axes are nearly parallel to each other, the attributes
+		are positively correlated. If almost all the lines have either north-east to
+		south-west or north-west to south-east orientation, the attributes are
+		negatively correlated. Evidently, in order to detect such pairs of correlated
+		attributes, one can change the order of the attribute axes. It may be also
+		helpful to "flip" some of the axes. <BR>Another possibility to compare objects
+		is done by "Selected object(s)" (figure 7). Here the selected object is
+		centered and the axes are adjusted in scale. When more objects are selected
+		Descartes calculates the average and uses that.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates8.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0"><BR>Figure 7<BR>Europe - Parallel coordinates -
+		Selected object(s) - Age groups</P> 
+	 <P>However, the canonical form of parallel coordinates plot may become
+		inconvenient if the data contain outliers, i.e. values standing far apart from
+		the bulk of values. Presence of outliers complicates the tasks of detecting
+		correlated pairs of attributes as well as the tasks of comparison of objects.
+		For such cases two methods of scaling of the axes are suggested: 1.)
+		normalization by median and quartiles; 2.) normalization by mean and standard
+		deviation. <BR>An additional variant of scaling is shown in figure 8. The axes
+		are positioned so that median values of all attributes are on the same vertical
+		line and are scaled so that the first and the second quartiles are also
+		aligned. Positions of the rest of the values are found by linear
+		interpolation.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates6.gif" WIDTH="561"
+		HEIGHT="537" BORDER="0"><BR>Figure 8<BR>Europe - Parallel coordinates - Medians
+		and Quartiles - Age groups</P> 
+	 <P> In figure 9 the the leftmost and the rightmost positions of the axes
+		are aligned which sometimes may facilitate the comparison of some
+		attributes.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates5.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0"><BR>Figure 9<BR>Europe - Parallel coordinates -
+		Min-Max, Medians and Quartiles - Age groups</P> 
+	 <P>In a similar way, in the second variant the values
+		<B STYLE="text-decoration:overline"> &Chi; </B>,
+		<B STYLE="text-decoration: overline">&Chi;</B>-&sigma; and
+		<B STYLE="text-decoration: overline">&Chi;</B>+&sigma; are used for axes
+		scaling (here <B STYLE="text-decoration: overline">&Chi;</B> is the arithmetic
+		mean and &sigma; is the standard deviation). This variant is shown in figure
+		10. Besides neutralizing the impact of outliers, both variant of scaling are
+		good for investigation of general characteristics of value variation.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates4.gif" WIDTH="562"
+		HEIGHT="539" BORDER="0"><BR>Figure 10</P> 
+	 <P ALIGN="CENTER">Europe - Parallel coordinates - Means and Std. deviations
+		- Age groups</P> 
+	 <P>Figure 11 gives an inconvenient example of Standard deviation...</P> 
+	 <P ALIGN="CENTER"><IMG SRC="ParallelCoordinates9.gif" WIDTH="561"
+		HEIGHT="537" BORDER="0"><BR>Figure 11<BR>Europe - Parallel coordinates -
+		Standard deviation - Age groups</P> 
+	 <P></P> 
+	 <P><A HREF="#M0">Go to beginning </A></P> 
+	 <P><A NAME="C5"
+		STYLE="font-weight: bold; font-size: x-large; text-decoration: underline">Classifier
+		(horizontal and vertical):</A></P> 
+	 <P>Classifier are opened in a separate window showing either a horizontal
+		bar, or a vertical bar. This noncartographic visualization method is used like
+		the classification method described <A HREF="Maps.htm#M4">here</A>.</P> 
+	 <P><A HREF="#M0">Go to beginning </A></P> 
+	 <P STYLE="font-size: large"><A HREF="Contents.htm">Back to contents</A></P>
+	 </BODY>
+</HTML>

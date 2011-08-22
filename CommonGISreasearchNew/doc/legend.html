@@ -1,0 +1,76 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Natalia Andrienko">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (Win98; I) [Netscape]">
+   <title>Map legend</title>
+</head>
+<body>
+
+<h1>
+<font size=+2>Editing of the visual properties of map layers and the order
+of the layers in a map</font></h1>
+A map window contains a subwindow with the map legend. The legend (see
+Figure 1) shows the layers the map consists of, the status (drawn or hidden)
+of each layer, the visual properties such as colour or line thickness,
+the order of the layers in the map, and the active layer. The active layer
+is the layer the objects of which react to mouse events, that is, pointing
+on an object with the mouse cursor or clicking on an object.
+<p><img SRC="legend.gif" height=97 width=182>
+<br>Figure 1. An example map legend.
+<p>For each map layer there is an item in the legend that consists of the
+following elements:
+<ul>
+<li>
+"Plus" or "minus" icon indicating whether the layer is drawn or not. The
+icon is sensitive to mouse clicks. Upon a mouse click the icon is changed
+to the opposite (that is, plus to minus and vice versa), and so does the
+drawing status of the layer.</li>
+
+<li>
+An image representing the type of the objects in the layer (point, line,
+or area) and their current visual propeties. For example, in Figure 1 the
+layer "Cities" consists of point objects, the layer "Roads" - of linear
+objects, and the layer "Counties" - of areal objects.</li>
+
+<li>
+The name of the layer.</li>
+</ul>
+When visualisation of thematic data is added to a map, the legend item
+of the corresponding map layer is extended to include the explanation of
+the symbols used for the visualisation.
+<p>Through the legend it is possible to do following interactive operations:
+<br>&nbsp;
+<table BORDER WIDTH="100%" >
+<tr>
+<td>switch on/off drawing of a layer</td>
+
+<td>click on the "minus" or "plus" icon</td>
+</tr>
+
+<tr>
+<td>change the active layer</td>
+
+<td>click on the legend item of the layer that should become active (but
+not on the "plus" icon)</td>
+</tr>
+
+<tr>
+<td>change the order of drawing of the layers</td>
+
+<td>drag the legend items to the desired positions. Note that layers shown
+at the bottom of the legend are drawn first, and the layers at the top
+are drawn last</td>
+</tr>
+
+<tr>
+<td>change the visual properties of a layer</td>
+
+<td>double-click on the corresponding legend item. A dialog for editing
+of the visual properties will appear on the screen.</td>
+</tr>
+</table>
+
+</body>
+</html>

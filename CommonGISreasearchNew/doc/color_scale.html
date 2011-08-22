@@ -1,0 +1,29 @@
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Ivan Denissovitch">
+   <title>Color scales</title>
+</head>
+<body>
+<h1>
+Choosing color scale parameters</h1>
+With this dialog you can vary interpolation parameters for current region
+<h3>
+1) Color space</h3>
+<b>RGB</b> - classical color space of three components (Red, Green, Blue). The system interpolates each of them independently
+<p><img SRC="RGB.jpg"></p>
+<b>HSB</b> - Hue, Saturation, Brightness. Hue treated as a range, not as angle for circular representation, so with this color space you could never cross pure red. This color space is good for producing rainbow-looking scales.
+<p><img SRC="HSB.jpg"></p>
+<b>RHSB</b> - "Reversed" HSB - the same as HSB, but Hue <b>always</b> crosses red. With this color space you can get blue-red-yellow transition between colors, for example.
+<p><img SRC="RHSB.jpg"></p>
+<h3>
+2) Interpolation function</h3>
+You can choose between Linear, Logarithmic and Exponent functions for color interpolation. This option could be helpful for some maps to get more pleasant color transitions to recognize value changes easily.
+<p><img SRC="interp_func.gif"></p>
+<h3>
+3) Division of range into a number of constant color "steps"</h3>
+For some tasks it's better to decrease the number of colors on a map. This field gives you such an opportunity. If you enter a positive value here you'll get step transition between colors. 
+The colors of first and last step are exactly the same as the colors for beginning and the end of current region.<br>
+Values 0 and 1 are special: 0 means smooth transition and 1 means that the whole current region is painted in one color which is the color of lower end of the region.
+</body>
+</html>

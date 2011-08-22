@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML> 
+  <HEAD>
+	 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	 <META NAME="Author" CONTENT="Natalia Andrienko">
+	 <META NAME="GENERATOR"
+	  CONTENT="Mozilla/4.77 [en] (Windows NT 5.0; U) [Netscape]"> 
+	 <TITLE>Descartes - Dynamic linking</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <H1> Dynamically linked data displays</H1> In Descartes it is possible to
+	 build multiple displays representing different attributes of the same data set
+	 or, possibly, the same attributes in different ways. Thus, the user can open
+	 one or more maps and various kinds of non-cartographic displays: dot plots,
+	 scatter plots, parallel coordinate plots. All these displays are dynamically
+	 linked. Thus, when the user points with the mouse on an object in one of the
+	 displays, the graphical elements corresponding to this object (contour in a
+	 map, dot in a dot plot or a scatter plot, line in a parallel coordinate plot)
+	 are simultaneously highlighted in all the displays. 
+	 <P>The Descartes system supports two kinds of highlighting: transient and
+		durable. Transient ("mouse-over") highlighting occurs when the mouse cursor is
+		positioned over an object and is switched off immediately after the mouse is
+		moved aside. Durable highlighting occurs when an object is selected by clicking
+		or dragging the mouse and lasts until the user explicitly cancels it. Click on
+		a durably highlighted object cancels its highlighting. Click in an object-free
+		area of any display cancels highlighting of all objects. Descartes uses white
+		color for transient highlighting and black for durable highlighting. </P> 
+	 <P><U>Important notes</U>: </P> 
+	 <UL> 
+		<LI> Selection of objects to be durably highlighted by mouse clicking is
+		  automatically enabled. However, a user may wish that some map manipulator, such
+		  as the visual comparison tool, react to mouse clicking events. When the user
+		  selects this option, the manipulator captures the mouse click events, and they
+		  are no more used for highlighting. The user can explicitly switch the
+		  interpretation of mouse click events back to highlighting using the appropriate
+		  controls in the manipulator area.</LI> 
+		<LI> Selection by mouse dragging is automatically enabled in all
+		  non-cartographic displays. In a map window mouse dragging can be used as well
+		  for zooming and shifting of the viewport. The user can switch between different
+		  interpretations of mouse dragging using button switches in the tool bar of the
+		  map window.</LI> 
+		<LI> In a map with several layers only objects of the active layer can be
+		  affected by highlighting. To make a layer active, the user should click on it
+		  in the legend. When the active layer changes, highlighting of objects from the
+		  previously active layer is cancelled. It will appear again when this layer is
+		  activated once more.</LI> 
+	 </UL> 
+	 <P>For example, having on the screen a map and a scatter plot, an analyst
+		can highlight dots in the scatter plot she finds interesting and look on the
+		map where the corresponding objects are located. She can also select objects in
+		the map and analyze their positions among other objects in the scatter
+		plot.</P> 
+	 <P><A HREF="Contents.htm" STYLE="font-size: larger; font-weight: bold">Back
+		to contents</A></P> </BODY>
+</HTML>

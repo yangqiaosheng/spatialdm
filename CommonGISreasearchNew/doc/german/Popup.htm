@@ -1,0 +1,85 @@
+<HTML> 
+  <HEAD>
+	 <TITLE>Descartes - Attributwerte anzeigen</TITLE> 
+  </HEAD> 
+  <BODY BGCOLOR="#CCFFCC"> 
+	 <H1> <FONT SIZE="+2"
+		STYLE="font-size: x-large; font-weight: bold">Attributwerte
+		anzeigen</FONT></H1> 
+	 <P>Viele graphische Anzeigen die von dem System produziert werden, stellen
+		einige Objekte mit zugeh&ouml;rigen thematischen Daten dar (Werte verschiedener
+		Attribute). Zum Beispiel werden auf einer Karte solche Objekte mit linearen
+		oder r&auml;umlichen Symbolen, oder geometrischen Zeichen oder Ikonen
+		dargestellt. In einem "Scatter"-Graph oder einem Punktegraph werden Objekte mittels
+		kleinen Kreisen, in einem Graphen mit parallelen Koordinatenparallel coordinates plot mittels gebrochenen Linien
+		repr&auml;sentiert.</P> 
+	 <P>Es gibt zwei Wege Attributwerte eines Objektes zu betrachten. Erstens
+		k&ouml;nnen die Werte in einem popup Fenster angezeigt werden, welches
+		erscheint, wenn der Mauszeiger auf eines graphisches Element zeigt, das ein
+		Objekt repr&auml;sentiert (siehe Abb. 1).</P> 
+	 <P ALIGN="CENTER"><IMG SRC="attr_popup.gif" HEIGHT="152" WIDTH="261"
+		ALT="1"> <BR>Abb. 1<BR>Darstellung eines Attributwertes in einem popup
+		Fensters. Der Mauszeiger deutet auf ein Objekt auf der Karte. Das popup Fenster
+		zeigt die dazugeh&ouml;rigen Werte des Objektes an.</P> 
+	 <P>Zweitens kann der Benutzer ein sogenanntes "persistent object view"
+		&ouml;ffnen (Abb. 2). Wenn der Benutzer ein Objekt aus irgend einer Darstellung
+		ausw&auml;hlt, wird der zugeh&ouml;rige Attributswert dem "persistent object
+		view" hinzugef&uuml;gt und verbleibt angezeigt, bis der Benutzer das Object
+		explizit wieder abw&auml;hlt. So ist das "persistent object view" von der
+		Mausbewegung unabh&auml;ngig und kann die Daten mehrer selektierte Objekte
+		gleichzeitig anzeigen. An- und Abwahl eines Objektes geschieht durch Mausclick
+		oder durch die Einschliessung mit einem rechteckigen Auswahlfensters. Auf der
+		Kartre in Abb. 2 werden markierte Objekte mit einem schwarzen Kreis
+		dargestellt. Ausgew&auml;hlte Objekte werden in allen graphischen Darstellungen
+		speziell markiert, damit sie von den anderen Objekten besser zu unterscheiden
+		sind.</P> 
+	 <P ALIGN="CENTER"><IMG SRC="attrPersist.gif" HEIGHT="399" WIDTH="674"
+		ALT="2"> <BR>Abb 2<BR>Darstellung von Attributwerten in einem "persistent
+		object view" integriert in einem Subfenster des Kartenfensters. Momentan
+		selektierte Objekte werden mit einem schwarzen Kreis markiert. Im "object view"
+		werden die zugeh&ouml;rigen Attributwerte angezeigt.</P> 
+	 <P>Die Einstellung des popup Fensters oder des "persistent object view"
+		geschieht &uuml;ber die Men&uuml;leiste (options-&gt;show record options).</P> 
+	 <P>Einige wichtige Hinweise zur Darstellung der Attributwerte in einem
+		popup Fenster:</P> 
+	 <UL> 
+		<LI> Die Darstellung der Attributwerde in einem popup Fenser ist
+		  standardm&auml;&szlig;ig eingeschaltet.</LI> 
+		<LI> Das Fenster wird nur angezeigt, solange die Maus auf das Objekt in
+		  einigen Darstellungen zeigt und verschwindet wieder, sobald die Maus bewegt
+		  wird.</LI> 
+		<LI>Das Fenster zeigt nur Attributwerte an, die in der Darstellung in der
+		  sich die Maus befindet, auch visualiziert werden. So werden zum Beispiel bei der
+		  Mausber&uuml;hrung eines Punktes (Kreises) in einem scatter plot, auch nur die
+		  zwei dargestellten Attribute angezeigt.</LI> 
+		<LI>In einer Karte werden nur die Daten der Aktiven Schicht angezeigt. Um
+		  die Daten anderer Schichten anzeigen zu lassen, mu&szlig; diese Schicht aktiviert
+		  werden.</LI> 
+	 </UL> Wichgite Hinweise zum "persistent object view": 
+	 <UL> 
+		<LI>"Persistent object view" ist standardm&auml;&szlig;ig ausgeschaltet.
+		  Es kann unter options-&gt;show record options eingeschaltet weren.</LI> 
+		<LI> Objekte, die im "object view" dargestellt werden sollen, k&ouml;nnen
+		  von allen Darstellungen aus selektiert werden.</LI> 
+		<LI> An- und Abw&auml;hlen eines Objektes durch Mausklick (<I>in jeder
+		  Darstellung</I>) ist ausgeschaltet, wenn der Mausklick f&uuml;r
+		  Kartenmanipulation, wie "visueller Vergleich", benutzt wird. Analog ist das
+		  selektieren mit einem Auswahlfenster ausgeschaltet, wenn das Mausziehen zum
+		  Vergr&ouml;&szlig;ern und Verschieben benutzt wird. Die Interpretation der
+		  Mausaktionen ver&auml;ndert man in der "tool bar" des Kartenfensters.</LI> 
+		<LI>Die Auswahl eines Objektes von der Kartes geschieht nur in der
+		  aktiven Schicht. </LI> 
+		<LI>Es gibt zwei Modi des "persistent object view": zeige momentan
+		  visualizierte Attribute an (in allen Darstellungen die auf dem Bildschirm zu
+		  sehen sind) oder zeige nur die vom Benutzer spezifizierten Attribute. Im ersten
+		  Modus werden die Attribute vom "object view" automatisch hinzugef&uuml;gt oder
+		  entfernt wenn neue Darstellungen erzeugt oder geschlossen werden. Im zweiten
+		  Modus verbleiben bereits selektierte Attribute im "object view"
+		  bis sie explizit abgew&auml;hlt werden. Um zwischen den beiden Modi zu wechseln
+		  und um die anzuzeigenden Attribute auszuw&auml;hlen sollte man das
+		  Einstellungsfenster unter options-&gt;show record options benutzen.</LI> 
+	 </UL> 
+	 <P><A HREF="Inhalt.htm" STYLE="font-size: large">Zur&uuml;ck zum
+		Inhalt</A></P> 
+	 <P></P> </BODY>
+</HTML>
