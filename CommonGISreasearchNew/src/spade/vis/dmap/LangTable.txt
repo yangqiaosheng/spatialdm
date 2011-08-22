@@ -1,0 +1,53 @@
+%cancel
+*english:
+Cancel
+*german:
+Abbrechen
+
+%line_c
+*english:
+Change line color
+*german:
+Farbe der Linien ändern
+
+%fill_c
+*english:
+Change fill color
+*german:
+Farbe der Füllung ändern
+
+%draw
+*english:
+draw lines
+*german:
+Linien zeichnen
+
+%fill
+*english:
+fill contours
+*german:
+Konturen ausfüllen
+
+%thickness
+*english:
+Select line thickness
+*german:
+Dicke der Linien auswählen
+
+%put_labels
+*english:
+Put labels on the map
+*german:
+Namen auf der Karte schreiben
+
+%label_c
+*english:
+Change color of labels
+*german:
+Farbe der Namen ändern
+
+%select
+*english:
+Select color
+*german:
+Farbe auswählen
