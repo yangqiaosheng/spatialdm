@@ -504,13 +504,13 @@ public class TestFlickrEuropeArea {
 	@Test
 	public void testHistogram() throws JDOMException, IOException, ParseException, InterruptedException {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
-		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest2.xml"))), areaDto);
+		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest3.xml"))), areaDto);
 		long start = System.currentTimeMillis();
 		Date timestamp = new Date();
 		SessionMutex sessionMutex = new SessionMutex(timestamp);
 		List<FlickrArea> areas = null;
-		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
-//		areas = areaCancelableJob.getAreasByRect(histrogramSessionId, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+//		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
+		areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		long middle = System.currentTimeMillis();
 		Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);
 
