@@ -29,10 +29,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrEuropeAreaTagsCount.class);
 
-	final static int BATCH_SIZE = 500000;
-	final static int BEGIN_REGION_CHECKED_CODE = 1;
-	final static int FINISH_REGION_CHECKED_CODE = 2;
-	final static int TEMP_REGION_CHECKED_CODE = -1;
+//	final static int BATCH_SIZE = 500000;
 	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_1m_with_region_id";
 	final static String COUNTS_TABLE_NAME = "flickr_europe_topviewed_1m_tags_count";
 	static int rownum = 1;
@@ -60,25 +57,25 @@ public class JoinFlickrEuropeAreaTagsCount {
 	public void begin(){
 
 		ArrayList<String> radiusList = new ArrayList<String>();
+//		radiusList.add("375");
+//		radiusList.add("750");
+//		radiusList.add("1250");
+//		radiusList.add("2500");
+//		radiusList.add("5000");
+//		radiusList.add("10000");
+//		radiusList.add("20000");
+//		radiusList.add("40000");
+//		radiusList.add("80000");
+//		radiusList.add("160000");
 		radiusList.add("320000");
-		radiusList.add("160000");
-		radiusList.add("80000");
-		radiusList.add("40000");
-		radiusList.add("20000");
-		radiusList.add("10000");
-		radiusList.add("5000");
-		radiusList.add("2500");
-		radiusList.add("1250");
-		radiusList.add("750");
-		radiusList.add("375");
 
 		Connection conn = db.getConn();
 		try {
 			conn.setAutoCommit(false);
 
 
-			int updateSize = 0;
-			do {
+//			int updateSize = 0;
+//			do {
 				// REGION_CHECKED = -1 : building the index
 				/* Oracle */
 //				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
@@ -94,20 +91,11 @@ public class JoinFlickrEuropeAreaTagsCount {
 //				updateStmt1.setInt(3, 1 + BATCH_SIZE);
 //				updateStmt1.setInt(4, 1);
 //
-//				/* PostGIS
-				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
-						"update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where photo_id in (" +
-							"select photo_id from " + PHOTOS_TABLE_NAME + " t where t.region_checked = ? " +
-							"limit ? )");
-				updateStmt1.setInt(1, TEMP_REGION_CHECKED_CODE);
-				updateStmt1.setInt(2, BEGIN_REGION_CHECKED_CODE);
-				updateStmt1.setInt(3, BATCH_SIZE);
-//				*/
-				updateSize = updateStmt1.executeUpdate();
-				rownum += updateSize;
-//
-				db.close(updateStmt1);
-				conn.commit();
+//				updateSize = updateStmt1.executeUpdate();
+//				rownum += updateSize;
+////
+//				db.close(updateStmt1);
+//				conn.commit();
 
 				for (String radius : radiusList) {
 					countHoursTags(conn, radius);
@@ -115,13 +103,13 @@ public class JoinFlickrEuropeAreaTagsCount {
 				}
 
 //				 REGION_CHECKED = 2 : already indexed
-				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
-				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
-				updateStmt2.setInt(2, TEMP_REGION_CHECKED_CODE);
-				updateStmt2.executeUpdate();
-				db.close(updateStmt2);
-				conn.commit();
-			} while(updateSize == BATCH_SIZE);
+//				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
+//				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
+//				updateStmt2.setInt(2, TEMP_REGION_CHECKED_CODE);
+//				updateStmt2.executeUpdate();
+//				db.close(updateStmt2);
+//				conn.commit();
+//			} while(updateSize == BATCH_SIZE);
 
 			countDay(conn);
 			conn.commit();
@@ -144,16 +132,14 @@ public class JoinFlickrEuropeAreaTagsCount {
 	}
 
 	private void countHoursTags(Connection conn, String radiusString) throws SQLException {
-		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t where t.REGION_CHECKED = ?");
-		selectAreaStmt.setInt(1, TEMP_REGION_CHECKED_CODE);
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTOS_TABLE_NAME + " t");
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
-		PreparedStatement selectDateStmt = db.getPstmt(conn, "select DISTINCT taken_date_hour from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? and t.REGION_CHECKED = ? order by taken_date_hour");
+		PreparedStatement selectDateStmt = db.getPstmt(conn, "select DISTINCT to_char(t.TAKEN_DATE,?) d from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? order by d");
 
 		//PostGIS: to_timestamp()
 		PreparedStatement selectTagsStmt = db.getPstmt(conn,
 				"select tags from " + PHOTOS_TABLE_NAME + " t " +
 					"where t.region_" + radiusString + "_id = ? and " +
-						  "t.REGION_CHECKED = ? and " +
 						  "t.taken_date >= to_timestamp(?,'yyyy-MM-dd@HH24') and " +
 						  "t.taken_date <= to_timestamp(?,'yyyy-MM-dd@HH24') + interval '1' " + Level.HOUR);
 
@@ -174,16 +160,15 @@ public class JoinFlickrEuropeAreaTagsCount {
 
 			areaId = selectAreaRs.getInt("id");
 
-			selectDateStmt.setInt(1, areaId);
-			selectDateStmt.setInt(2, TEMP_REGION_CHECKED_CODE);
+			selectDateStmt.setString(1, FlickrAreaDao.judgeDbDateCountPatternStr(Level.HOUR));
+			selectDateStmt.setInt(2, areaId);
 
 			ResultSet selectDateRs = db.getRs(selectDateStmt);
 			while (selectDateRs.next()) {
-				String dateStr = selectDateRs.getString("taken_date_hour");
+				String dateStr = selectDateRs.getString("d");
 				selectTagsStmt.setInt(1, areaId);
-				selectTagsStmt.setInt(2, TEMP_REGION_CHECKED_CODE);
+				selectTagsStmt.setString(2, dateStr);
 				selectTagsStmt.setString(3, dateStr);
-				selectTagsStmt.setString(4, dateStr);
 
 				ResultSet selectTagsRs = db.getRs(selectTagsStmt);
 
@@ -212,6 +197,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 			logger.debug("rownum to:" + rownum);
 			logger.debug("hoursTagsCount:" + hoursTagsCount);
 			logger.debug("start time:" + startDate.getTime());
+			conn.commit();
 		}
 
 		logger.info("radius:" + radiusString + "|level:" + Level.HOUR + "|already checked:" + checkedSize);
