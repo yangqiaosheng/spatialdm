@@ -33,8 +33,8 @@ public class JoinFlickrEuropeAreaTagsCount {
 	final static int BEGIN_REGION_CHECKED_CODE = 1;
 	final static int FINISH_REGION_CHECKED_CODE = 2;
 	final static int TEMP_REGION_CHECKED_CODE = -1;
-	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_5m_with_region_id";
-	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_TAGS_COUNT";
+	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_1m_with_region_id";
+	final static String COUNTS_TABLE_NAME = "flickr_europe_topviewed_1m_tags_count";
 	static int rownum = 1;
 	static Calendar startDate;
 
