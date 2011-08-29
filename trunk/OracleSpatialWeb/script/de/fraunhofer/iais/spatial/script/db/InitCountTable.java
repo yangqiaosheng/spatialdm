@@ -19,7 +19,7 @@ public class InitCountTable {
 	 */
 	final static String AREA_TABLE_NAME = "FLICKR_EUROPE_AREA_";
 //	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_TOPVIEWED_5M_COUNT";
-	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_TAGS_COUNT";
+	final static String COUNTS_TABLE_NAME = "flickr_europe_topviewed_5m_TAGS_COUNT";
 	static DBUtil db = new DBUtil("/jdbc_pg.properties", 1, 1);
 
 	public static void main(String[] args) throws SQLException {
