@@ -39,7 +39,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		if (area.isCached() == false) {
 			//initialize the not cached object
 			area.setCached(true);
-			area.setTotalCount(getTotalCountWithinArea(area.getId(), area.getRadius()));
+			area.setTotalCount(getTotalCountWithinArea(area.getId()));
 			/*
 			loadYearsCount(area);
 			loadMonthsCount(area);
@@ -61,7 +61,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		}
 	}
 
-	private void loadHoursTagsCount(FlickrArea area) {
+	public void loadHoursTagsCount(FlickrArea area) {
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hoursTagsCount", area);
 		if (count != null) {
@@ -235,10 +235,9 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	}
 
 	@Override
-	public long getTotalCountWithinArea(long areaid, Radius radius) {
+	public long getTotalCountWithinArea(long areaid) {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaDto.setAreaid(areaid);
-		areaDto.setRadius(radius);
 
 		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".totalCount", areaDto);
 		long num = 0;

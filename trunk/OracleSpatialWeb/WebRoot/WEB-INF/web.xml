@@ -170,6 +170,17 @@
 	</servlet-mapping>
 
 	<servlet>
+		<description>return the tags</description>
+		<display-name>Tag</display-name>
+		<servlet-name>Tag</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.TagServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Tag</servlet-name>
+		<url-pattern>/Tag</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<description>return the url for SmallPhoto</description>
 		<display-name>SmallPhotoUrl</display-name>
 		<servlet-name>SmallPhotoUrl</servlet-name>

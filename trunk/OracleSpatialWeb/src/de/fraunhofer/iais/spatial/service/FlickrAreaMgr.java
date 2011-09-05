@@ -31,6 +31,8 @@ import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 
+import com.google.common.collect.Lists;
+
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
 import de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
@@ -119,28 +121,41 @@ public class FlickrAreaMgr {
 	}
 
 
-	public void countTags(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
-
+	public List<FlickrAreaResult> countTags(List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
+		List<FlickrAreaResult> areaResults = Lists.newArrayList();
 		for (FlickrArea area : areas) {
-			FlickrAreaResult areaResult = new FlickrAreaResult(area);
-			areaResults.add(areaResult);
+			areaResults.add(countTag(area, areaDto));
+		}
 
-			Map<String, Map<String, Integer>> hoursTagsCount = null;
-			Map<String, Integer> tagsCount = areaResult.getTagsCount();
+		return areaResults;
+	}
 
-			hoursTagsCount = area.getHoursTagsCount();
+	public FlickrAreaResult countTag(FlickrArea area, FlickrAreaDto areaDto) {
 
-			for (String queryStr : areaDto.getQueryStrs()) {
-				if (hoursTagsCount.containsKey(queryStr)) {
-					Map<String, Integer> tags = hoursTagsCount.get(queryStr);
-					for (Map.Entry<String, Integer> e : tags.entrySet()) {
-						int previousValue = MapUtils.getIntValue(tagsCount, tagsCount);
-						tagsCount.put(e.getKey(), previousValue + e.getValue());
-					}
+		FlickrAreaResult areaResult = new FlickrAreaResult(area);
+
+		Map<String, Map<String, Integer>> hoursTagsCount = null;
+		Map<String, Integer> tagsCount = areaResult.getTagsCount();
+
+		if (MapUtils.isEmpty(area.getHoursTagsCount())) {
+			areaDao.loadHoursTagsCount(area);
+		}
+		hoursTagsCount = area.getHoursTagsCount();
+		System.out.println(hoursTagsCount);
+
+		for (String queryStr : areaDto.getQueryStrs()) {
+			if (hoursTagsCount.containsKey(queryStr)) {
+				Map<String, Integer> tags = hoursTagsCount.get(queryStr);
+				for (Map.Entry<String, Integer> e : tags.entrySet()) {
+					int previousValue = MapUtils.getIntValue(tagsCount, tagsCount);
+					tagsCount.put(e.getKey(), previousValue + e.getValue());
 				}
 			}
 		}
+		return areaResult;
 	}
+
+
 
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest(String xml, FlickrAreaDto areaDto) throws JDOMException, IOException, ParseException {

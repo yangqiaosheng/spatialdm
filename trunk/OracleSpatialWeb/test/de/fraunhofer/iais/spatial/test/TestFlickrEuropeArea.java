@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -163,7 +165,7 @@ public class TestFlickrEuropeArea {
 
 	@Test
 	public void testJdbcDao0() {
-		long total = areaMgr.getAreaDao().getTotalCountWithinArea(1, FlickrArea.Radius.R5000);
+		long total = areaMgr.getAreaDao().getTotalCountWithinArea(1);
 
 		System.out.println("total:" + total);
 	}
@@ -218,40 +220,72 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
+	public void testTag() {
+		long start = System.currentTimeMillis();
+
+		FlickrAreaDto areaDto = new FlickrAreaDto();
+		areaDto.setQueryLevel(Level.HOUR);
+		Set<String> queryStr = areaDto.getQueryStrs();
+		queryStr.add("2006-01-01@00");
+		queryStr.add("2006-10-07@17");
+		queryStr.add("2009-05-03@11");
+		FlickrArea area = new FlickrArea();
+		area.setId(3646);
+		System.out.println(tagsResponseXml(area, areaDto, 30));
+		System.out.println(System.currentTimeMillis() - start);
+	}
+
+	private String tagsResponseXml(FlickrArea area, FlickrAreaDto areaDto, int size) {
+
+		FlickrAreaResult areaResult = areaMgr.countTag(area, areaDto);
+
+		List<Map.Entry<String, Integer>> entries = Lists.newLinkedList(areaResult.getTagsCount().entrySet());
+
+		//sort list based on comparator
+		Collections.sort(entries, new Comparator<Map.Entry<String, Integer>>() {
+			@Override
+			public int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
+				return e2.getValue() - e1.getValue();
+			}
+		});
+
+		Document document = new Document();
+		Element tagsElement = new Element("tags");
+		document.setRootElement(tagsElement);
+
+		int num = 0;
+		for(Map.Entry<String, Integer> entry : entries){
+			if(num++ > size){
+				break;
+			}
+			Element tagElement = new Element("tag");
+			tagsElement.addContent(tagElement);
+			tagElement.setAttribute("name", entry.getKey());
+			tagElement.setAttribute("num", String.valueOf(entry.getValue()));
+		}
+
+		return XmlUtil.xml2String(document, false);
+	}
+
+	@Test
 	public void testPhoto2() {
 		long start = System.currentTimeMillis();
 
 		FlickrAreaDto areaDto = new FlickrAreaDto();
-		areaDto.setQueryLevel(Level.DAY);
-		Set<String> queryStr = areaDto.getQueryStrs();
-		queryStr.add("2007-08-04");
-
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23338, Radius.R80000), areaDto, 1, 20);
-		for (FlickrPhoto p : photos) {
-			System.out.println(p);
-		}
-
-		System.out.println(System.currentTimeMillis() - start);
-	}
-
-	@Test
-	public void testPhoto3() {
-		long start = System.currentTimeMillis();
-
-		FlickrAreaDto areaDto = new FlickrAreaDto();
-		Set<String> hours = areaDto.getQueryStrs();
-		hours.add("2007-08-11@13");
-		hours.add("2007-08-11@11");
-		hours.add("2007-05-09@13");
 		areaDto.setQueryLevel(Level.HOUR);
+		Set<String> queryStr = areaDto.getQueryStrs();
+		queryStr.add("2006-01-01@00");
+		queryStr.add("2006-10-07@17");
+		queryStr.add("2009-05-03@11");
 
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(22006, Radius.R40000), areaDto, 1, 20);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(3646, Radius.R40000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
 			System.out.println(p);
 		}
 
 		System.out.println(System.currentTimeMillis() - start);
 	}
+
 
 	@Test
 	public void testPhoto4() {
@@ -274,7 +308,7 @@ public class TestFlickrEuropeArea {
 			}
 		}
 
-		List<FlickrPhoto> photos0 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(24669, Radius.R320000), areaDto, 1, 20);
+		List<FlickrPhoto> photos0 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(3646, Radius.R40000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos0) {
 			System.out.println(p);
 		}

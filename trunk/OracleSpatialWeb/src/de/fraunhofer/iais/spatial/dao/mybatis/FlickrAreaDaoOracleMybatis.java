@@ -45,7 +45,7 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 	private void initArea(FlickrArea a, Radius radius) {
 		if (a != null) {
 			a.setRadius(radius);
-			a.setTotalCount(getTotalCountWithinArea(a.getId(), a.getRadius()));
+			a.setTotalCount(getTotalCountWithinArea(a.getId()));
 			loadYearsCount(a);
 			loadMonthsCount(a);
 			loadDaysCount(a);
@@ -65,7 +65,7 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 		}
 	}
 
-	private void loadHoursTagsCount(FlickrArea area) {
+	public void loadHoursTagsCount(FlickrArea area) {
 		if (MapUtils.isNotEmpty(area.getHoursTagsCount()))
 			return; // cached
 
@@ -208,10 +208,9 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 	}
 
 	@Override
-	public long getTotalCountWithinArea(long areaid, Radius radius) {
+	public long getTotalCountWithinArea(long areaid) {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaDto.setAreaid(areaid);
-		areaDto.setRadius(radius);
 
 		Object numObj = sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME  + ".totalCount", areaDto);
 		int num = 0;

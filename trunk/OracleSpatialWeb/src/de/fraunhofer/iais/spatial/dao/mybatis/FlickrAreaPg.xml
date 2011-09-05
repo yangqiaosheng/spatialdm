@@ -69,37 +69,37 @@
 	<select id="hoursTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select hour
 		from FLICKR_EUROPE_TAGS_COUNT
-		where ID = #{id} and RADIUS = #{radius}
+		where ID = #{id}
 	</select>
 
 	<select id="hoursCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select hour
 		from FLICKR_EUROPE_COUNT
-		where ID = #{id} and RADIUS = ${radius}
+		where ID = #{id}
 	</select>
 
 	<select id="daysCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select day
 		from FLICKR_EUROPE_COUNT
-		where ID = #{id} and RADIUS = ${radius}
+		where ID = #{id}
 	</select>
 
 	<select id="monthsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select month
 		from FLICKR_EUROPE_COUNT
-		where ID = #{id} and RADIUS = ${radius}
+		where ID = #{id}
 	</select>
 
 	<select id="yearsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select year
 		from FLICKR_EUROPE_COUNT
-		where ID = #{id} and RADIUS = ${radius}
+		where ID = #{id}
 	</select>
 
 	<select id="totalCount" resultType="long" parameterType="FlickrArea" useCache="false">
 		select total
 		from FLICKR_EUROPE_COUNT
-		where ID = #{areaid} and RADIUS = ${radius}
+		where ID = #{areaid}
 	</select>
 
 </mapper>

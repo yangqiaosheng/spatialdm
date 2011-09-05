@@ -216,7 +216,7 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getTotalCount(java.lang.String, Radius)
 	 */
 	@Override
-	public long getTotalCountWithinArea(long areaid, Radius radius) {
+	public long getTotalCountWithinArea(long areaid) {
 		Connection conn = db.getConn();
 		PreparedStatement selectStmt = null;
 		ResultSet rs = null;
@@ -224,7 +224,6 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 		try {
 			selectStmt = db.getPstmt(conn, "select TOTAL from FLICKR_DE_WEST_TABLE_COUNT where id = ? and radius = ?");
 			selectStmt.setLong(1, areaid);
-			selectStmt.setInt(2, Integer.parseInt(radius.toString()));
 			rs = db.getRs(selectStmt);
 			if (rs.next()) {
 				num = rs.getInt("total");
@@ -476,7 +475,7 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 
 	private void initArea(FlickrArea a) {
 		if (a != null) {
-			a.setTotalCount(getTotalCountWithinArea(a.getId(), a.getRadius()));
+			a.setTotalCount(getTotalCountWithinArea(a.getId()));
 			loadYearsCount(a);
 			loadMonthsCount(a);
 			loadDaysCount(a);
@@ -555,6 +554,12 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void loadHoursTagsCount(FlickrArea area) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
