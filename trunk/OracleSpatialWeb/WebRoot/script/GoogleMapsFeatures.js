@@ -18,16 +18,16 @@ function initialize1()
 	    navigationControlOptions: {position: google.maps.ControlPosition.RIGHT},
 	    mapTypeId: google.maps.MapTypeId.ROADMAP
 	  };
-	  map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);			   
-	  //activateZoom(true);  	
+	  map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 	  
-	  google.maps.event.addListener(map, "rightclick", function(event){showContextMenu(event.latLng);});
-	  google.maps.event.addListener(map, "click", function(event){hideContextMenu();});	 	
+	 // google.maps.event.addListener(map, "rightclick", function(event){showContextMenu(event.latLng);});
+	 // google.maps.event.addListener(map, "click", function(event){hideContextMenu();});	 	
 	  initboolSelected();// LoadPolygons.js 
 	  agregationPolygonsAdd();
 	  $('#EnabledOrDisabled').html(" Enabled <br/>");
 	  scaleLevelOnStart();
-	  google.maps.event.addListener(map, "tilesloaded", function() {	    	    
+	  google.maps.event.addListener(map, "idle", function() {
+	    //console.log("now");
 	    askHistogram();// in Histogram
 	  });	    
 
@@ -38,14 +38,12 @@ function addRemoveElementsFromHistogram(){
 	    $("#parent3").remove();
 	    $("#parent4").remove();
 	    $("#parent5").remove();
-	    $("#button20").remove();
-
+	    $("#absButton").remove();
 	    $("#histogramContent").append("<div id=parent1></div>");
 	    $("#histogramContent").append("<div id=parent2></div>");
 	    $("#histogramContent").append("<div id=parent3></div>");
 	    $("#histogramContent").append("<div id=parent4></div>");
-	    $("#histogramContent").append("<div id=parent5></div>");
-	  
+	    $("#histogramContent").append("<div id=parent5></div>");	 
 }
              
 function start() {	
@@ -72,9 +70,21 @@ function scaleLevelOnStart(){
 	if (map.getZoom() == 10) {
 		$("#scaleLevel").html("6");
 	}
-	if (map.getZoom() >= 11) {
+	if (map.getZoom() == 11) {
 		$("#scaleLevel").html("7");
-	}	
+	}
+	if (map.getZoom() == 12) {
+		$("#scaleLevel").html("8");
+	}
+	if (map.getZoom() == 13) {
+		$("#scaleLevel").html("9");
+	}
+	if (map.getZoom() == 14) {
+		$("#scaleLevel").html("10");
+	}
+	if (map.getZoom() >= 15) {
+		$("#scaleLevel").html("11");
+	}
 }
 
 

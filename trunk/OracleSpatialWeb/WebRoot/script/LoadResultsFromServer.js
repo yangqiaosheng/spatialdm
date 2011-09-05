@@ -34,22 +34,26 @@ var beforeLoad = 7;
 var globalPolygonSelected = -1;
 
 function scrollEvtHandler(obj) {
-	lastCarousel = obj.last;
-	if (obj.last > g_carouselTotalSize - beforeLoad) {
-		timeofUpload++;
-		page = page + 1;
-		sendToServerFromCarousel(ids, page_size, page);
-	}
+ 	//console.log("SmallPhotos 1");
+	//console.log("SmallPhotos 1 g_carouselTotalSize: "+g_carouselTotalSize);
+ 	lastCarousel = obj.last;
+ 	if ((obj.last > g_carouselTotalSize - beforeLoad)&&(g_carouselTotalSize - beforeLoad)>0) {
+ 		timeofUpload++;
+ 		page = page + 1;
+ 		sendToServerFromCarousel(ids, page_size, page);
+ 	}
 }
 
-function loadTheCarousel(k, g_jcarousel, smallUrl) {
+function loadTheCarousel(k, g_jcarousel, smallUrl) {	
 	for ( var i = 1; i <= smallUrl.length; i++) {
 		g_jcarousel.addItem(mycarousel_getItemHTML(i, k, smallUrl[i - 1]));
 		g_jcarousel.render();
 		g_jcarousel.show();
 		assignEventsForTheCarouselItems(i, k, i + k);
 	}
+        $('#numberOfItems').empty().html("<span> Number of pictures selected: " + sel[globalPolygonSelected] + "idpoligon= "+ globalPolygonSelected+ " </span>");//globalvar
 }
+
 
 function assignEventsForTheCarouselItems(i, k, t) {
 	var itemSubObj = $("#subitem" + t);
@@ -94,6 +98,7 @@ function mycarousel_getItemHTML(i, k, item) {
 			+ smallUrl[i - 1] + "' height=100% /></a></div></li>";
 }
 
+//this function is called from the sendToServer
 function carouselLoadPictures(xml) {
 	setTheParameters();
 	readXml(xml);
@@ -110,13 +115,13 @@ function carouselLoadPictures(xml) {
 			},
 			numVisible : one_stepCarousel,
 			scrollInc : one_stepCarousel
-		});		
-		g_jcarousel.addListener("afterScroll", scrollEvtHandler);		
+		});
+		g_jcarousel.addListener("afterScroll", scrollEvtHandler);				
 		g_jcarousel.render();
 		g_jcarousel.show();
 		g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
-		timeofUpload++;
-		//$("#numberInbterval").html(" ");
+		//console.log("g_carouselTotalSize: "+g_carouselTotalSize);
+		timeofUpload++;	
 		loadTheCarousel(0, g_jcarousel, smallUrl);
 		booleanF2 = true;
 	}
@@ -184,7 +189,7 @@ function cleanPhotos() {
 	smallUrlTotal = new Array();
 	contorTotal = 0;
 	setTheParameters();
-	g_carouselTotalSize = 0;
+	//g_carouselTotalSize = 0;
 	lastCarousel = 0;
 	page = 1;
 	booleanF = false;
@@ -196,7 +201,19 @@ function getId() {
 }
 
 function setCarousel(ids) {
+	g_carouselTotalSize = 0;
+	//console.log("SmallPhotos 2");
 	$("#maxContainer").removeClass('invisible').addClass('visible');
 	page = 1;
 	sendToServerFromCarousel(ids, page_size, page);
 }
+
+
+
+
+
+
+
+/*cloud Carousel not yet*/
+
+

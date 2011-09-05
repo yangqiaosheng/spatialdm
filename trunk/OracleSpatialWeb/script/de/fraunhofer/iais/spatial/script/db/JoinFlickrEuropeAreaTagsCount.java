@@ -29,9 +29,9 @@ public class JoinFlickrEuropeAreaTagsCount {
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrEuropeAreaTagsCount.class);
 
-//	final static int BATCH_SIZE = 500000;
+	final static int BATCH_SIZE = 1;
 	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_1m_with_region_id";
-	final static String COUNTS_TABLE_NAME = "flickr_europe_topviewed_1m_tags_count";
+	final static String COUNTS_TABLE_NAME = "flickr_europe_topviewed_1m_tags_count_20";
 	static int rownum = 1;
 	static Calendar startDate;
 
@@ -67,12 +67,13 @@ public class JoinFlickrEuropeAreaTagsCount {
 //		radiusList.add("40000");
 //		radiusList.add("80000");
 //		radiusList.add("160000");
-		radiusList.add("320000");
+//		radiusList.add("320000");
 
 		Connection conn = db.getConn();
+		Connection selectConn = db.getConn();
 		try {
 			conn.setAutoCommit(false);
-
+			selectConn.setAutoCommit(false);
 
 //			int updateSize = 0;
 //			do {
@@ -111,13 +112,13 @@ public class JoinFlickrEuropeAreaTagsCount {
 //				conn.commit();
 //			} while(updateSize == BATCH_SIZE);
 
-			countDay(conn);
+			countDay(selectConn);
 			conn.commit();
-			countMonth(conn);
+			countMonth(selectConn);
 			conn.commit();
-			countYear(conn);
+			countYear(selectConn);
 			conn.commit();
-			countTotal(conn);
+			countTotal(selectConn);
 			conn.commit();
 		} catch (SQLException e) {
 			logger.error("begin()", e); //$NON-NLS-1$
@@ -250,8 +251,9 @@ public class JoinFlickrEuropeAreaTagsCount {
 
 	private void countDay(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		ResultSet pset = db.getRs(personStmt);
+		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		stmt.setFetchSize(BATCH_SIZE);
+		ResultSet pset = db.getRs(stmt);
 
 
 		while (pset.next()) {
@@ -282,13 +284,14 @@ public class JoinFlickrEuropeAreaTagsCount {
 			}
 		}
 		db.close(pset);
-		db.close(personStmt);
+		db.close(stmt);
 	}
 
 	private void countMonth(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		ResultSet pset = db.getRs(personStmt);
+		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		stmt.setFetchSize(BATCH_SIZE);
+		ResultSet pset = db.getRs(stmt);
 
 
 		while (pset.next()) {
@@ -319,13 +322,14 @@ public class JoinFlickrEuropeAreaTagsCount {
 			}
 		}
 		db.close(pset);
-		db.close(personStmt);
+		db.close(stmt);
 	}
 
 	private void countYear(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		ResultSet pset = db.getRs(personStmt);
+		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		stmt.setFetchSize(BATCH_SIZE);
+		ResultSet pset = db.getRs(stmt);
 
 
 		while (pset.next()) {
@@ -356,13 +360,14 @@ public class JoinFlickrEuropeAreaTagsCount {
 			}
 		}
 		db.close(pset);
-		db.close(personStmt);
+		db.close(stmt);
 	}
 
 	private void countTotal(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		ResultSet pset = db.getRs(personStmt);
+		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		stmt.setFetchSize(BATCH_SIZE);
+		ResultSet pset = db.getRs(stmt);
 
 
 		while (pset.next()) {
@@ -389,7 +394,7 @@ public class JoinFlickrEuropeAreaTagsCount {
 			}
 		}
 		db.close(pset);
-		db.close(personStmt);
+		db.close(stmt);
 	}
 
 	/*
