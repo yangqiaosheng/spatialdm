@@ -30,8 +30,8 @@ public class JoinFlickrEuropeAreaTagsCount {
 	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrEuropeAreaTagsCount.class);
 
 	final static int BATCH_SIZE = 1;
-	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_1m_with_region_id";
-	final static String COUNTS_TABLE_NAME = "flickr_europe_topviewed_1m_tags_count_20";
+	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_10000_with_region_id";
+	final static String COUNTS_TABLE_NAME = "flickr_europe_topviewed_10000_tags_count";
 	static int rownum = 1;
 	static Calendar startDate;
 
@@ -57,17 +57,17 @@ public class JoinFlickrEuropeAreaTagsCount {
 	public void begin(){
 
 		ArrayList<String> radiusList = new ArrayList<String>();
-//		radiusList.add("375");
-//		radiusList.add("750");
-//		radiusList.add("1250");
-//		radiusList.add("2500");
-//		radiusList.add("5000");
-//		radiusList.add("10000");
-//		radiusList.add("20000");
-//		radiusList.add("40000");
-//		radiusList.add("80000");
-//		radiusList.add("160000");
-//		radiusList.add("320000");
+		radiusList.add("375");
+		radiusList.add("750");
+		radiusList.add("1250");
+		radiusList.add("2500");
+		radiusList.add("5000");
+		radiusList.add("10000");
+		radiusList.add("20000");
+		radiusList.add("40000");
+		radiusList.add("80000");
+		radiusList.add("160000");
+		radiusList.add("320000");
 
 		Connection conn = db.getConn();
 		Connection selectConn = db.getConn();
