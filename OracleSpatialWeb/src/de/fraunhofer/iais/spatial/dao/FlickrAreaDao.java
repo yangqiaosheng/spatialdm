@@ -132,12 +132,17 @@ public abstract class FlickrAreaDao {
 	public abstract List<FlickrArea> getAreasByPolygon(List<Point2D> polygon, Radius radius);
 
 	/**
+	 *
+	 * @param area
+	 */
+	public abstract void loadHoursTagsCount(FlickrArea area);
+
+	/**
 	 * get the total amount of photos uploaded within this area
 	 * @param areaid
-	 * @param radius
 	 * @return long - number of photos
 	 */
-	public abstract long getTotalCountWithinArea(long areaid, Radius radius);
+	public abstract long getTotalCountWithinArea(long areaid);
 
 	/**
 	 * get the total amount of photos stored in the database
