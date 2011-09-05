@@ -26,7 +26,6 @@ $(document).ready(function() {
 });
 
 function selectedCalendarDays() {
-
 	var bounds = map.getBounds();
 	var center = map.getCenter();
 	var zoomLevel = map.getZoom();
@@ -43,6 +42,7 @@ function selectedCalendarDays() {
 	sendToServerCalendarData(headerXML, bodyXML);
 }
 function refreshCalendar() {
+	removeCircles();
 	deleteHistory();
 	$('#inlineDatepicker').datepick('clear'); // Close a pop up datepicker and clear its field 
 	$('#inlineDatepicker').datepick('destroy'); // Remove datepicker functionality 

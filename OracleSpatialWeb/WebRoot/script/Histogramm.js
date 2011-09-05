@@ -8,7 +8,7 @@ var daysMax;
 var hourMax;
 var weekDayMax;
 
-// because we can't devide with 0:
+// because we can't devide with 0: 
 var globalDataY = [];
 var maxY = 1;
 var globalDataM = [];
@@ -24,6 +24,38 @@ var ApplyPolygons = false;
 var YEAR = true;
 var once = true;
 
+
+
+var myArray1;
+var myArray2;
+var myArray3;
+var myArray4;
+var myArray5;
+
+var globalYear = [];
+var spanElementInfo = [];
+var spanElement = [];
+var globalMonth = [];
+var globalDay =[];
+var globalHour =[];
+var globalWeek = [];
+
+
+
+
+var classWidth;
+var strokeColor;
+var color;
+var tooltip;
+var borderStyle;
+var borderWidth;
+var verticalAlign;
+var information;
+var both;
+var bothId;
+var hystogrammDiv;
+var hystogrammDivInfo;
+
 function setArray(param) {
 	if ((param == 7) && (YEAR == true)) {
 		var myArray = [];
@@ -32,7 +64,7 @@ function setArray(param) {
 		if (YEAR) {
 			YEAR = false;
 			for ( var i = 0; i < param; i++) {
-				dataArray[i] = globalDataY[i];
+				dataArray[i] = globalDataY[i]; 
 			}
 			for ( var i = 0; i < param; i++) {
 				dataRepresentation[i] = (50 * dataArray[i]) / maxY;
@@ -165,8 +197,8 @@ function setArray(param) {
 		var dataArray = [];
 		var dataRepresentation = [];
 
-		for ( var i = 0; i < param-1; i++) {
-			dataArray[i] = globalDataW[i+1]; // data extraction
+		for ( var i = 0; i < param-1; i++) {			
+			dataArray[i] = globalDataW[i+1]; // data extraction			
 		}
 		dataArray[i] = globalDataW[0];
 		for ( var i = 0; i < param; i++) {
@@ -241,93 +273,93 @@ function loadHistogram(xml) {
 function init() {
 
 	var opts1 = {
-		color : "#FFFF00",
+		color : "#FFFFAA",
 		strokeColor : 'rgb(16,	78, 139)',
 		tooltip : true,
 		classWidth : '28.428571px',
 		borderStyle : 'solid',
 		borderWidth : '1px',
-		verticalAlign : 'text-bottom'
-	// fontSize : '12px'
+		verticalAlign : 'text-bottom'	
 	};
 
 	var opts2 = {
-		color : "#FFFF00",
+		color : "#FFFFAA",
 		strokeColor : 'rgb(16,	78, 139)',
 		tooltip : true,
 		classWidth : '16.166666px',
 		borderStyle : 'solid',
 		borderWidth : '1px',
-		verticalAlign : 'text-bottom'
-	// fontSize : '12px'
+		verticalAlign : 'text-bottom'	
 	};
 
 	var opts3 = {
-		color : "#FFFF00",
+		color : "#FFFFAA",
 		strokeColor : 'rgb(16,	78, 139)',
 		tooltip : true,
 		classWidth : '5.6451612px',
 		borderStyle : 'solid',
 		borderWidth : '1px',
 		verticalAlign : 'text-bottom'
-	// fontSize : '12px'
 	};
 
 	var opts4 = {
-		color : "#FFFF00",
+		color : "#FFFFAA",
 		strokeColor : 'rgb(16,	78, 139)',
 		tooltip : true,
 		classWidth : '7.583333px',
 		borderStyle : 'solid',
 		borderWidth : '1px',
 		verticalAlign : 'text-bottom'
-	// fontSize : '12px'
 	};
 
 	var opts5 = {
-		color : "#FFFF00",
+		color : "#FFFFAA",
 		strokeColor : 'rgb(16,	78, 139)',
 		tooltip : true,
 		classWidth : '28.428571px',
 		borderStyle : 'solid',
 		borderWidth : '1px',
-		verticalAlign : 'text-bottom'
-	// fontSize : '12px'
+		verticalAlign : 'text-bottom'	
 	};
 
-	var myArray1 = setArray(7); // years
-	var myArray2 = setArray(12); // months
-	var myArray3 = setArray(31); // days
-	var myArray4 = setArray(24);// hours
-	var myArray5 = setArray(7);// weekdays
+	myArray1 = setArray(7); // years
+	myArray2 = setArray(12); // months
+	myArray3 = setArray(31); // days
+	myArray4 = setArray(24);// hours
+	myArray5 = setArray(7);// weekdays
 
 	var model1 = new HistogrammModel(myArray1, true, false, false, false, false);
-	var model2 = new HistogrammModel(myArray2, false, true, false, false, false);
-	var model3 = new HistogrammModel(myArray3, false, false, true, false, false);
-	var model4 = new HistogrammModel(myArray4, false, false, false, true, false);
-	var model5 = new HistogrammModel(myArray5, false, false, false, false, true);
+ 	var model2 = new HistogrammModel(myArray2, false, true, false, false, false);
+ 	var model3 = new HistogrammModel(myArray3, false, false, true, false, false);
+ 	var model4 = new HistogrammModel(myArray4, false, false, false, true, false);
+ 	var model5 = new HistogrammModel(myArray5, false, false, false, false, true);
 
 	var view1 = new Histogramm(model1, opts1);
+	$("#parent1").empty().html("");
 	view1.render1(document.getElementById('parent1'), myArray1);
 
-	var view2 = new Histogramm(model2, opts2);
-	view2.render2(document.getElementById('parent2'), myArray2);
-
-	var view3 = new Histogramm(model3, opts3);
-	view3.render3(document.getElementById('parent3'), myArray3);
-
-	var view4 = new Histogramm(model4, opts4);
-	view4.render4(document.getElementById('parent4'), myArray4);
-
+ 	var view2 = new Histogramm(model2, opts2);
+	$("#parent2").empty().html("");
+ 	view2.render2(document.getElementById('parent2'), myArray2);
+// 
+ 	var view3 = new Histogramm(model3, opts3);
+	$("#parent3").empty().html("");
+ 	view3.render3(document.getElementById('parent3'), myArray3);
+// 
+ 	var view4 = new Histogramm(model4, opts4);
+	$("#parent4").empty().html("");
+ 	view4.render4(document.getElementById('parent4'), myArray4);
+// 
 	var view5 = new Histogramm(model5, opts5);
-	view5.render5(document.getElementById('parent5'), myArray5);
-
+	$("#parent5").empty().html("");
+ 	view5.render5(document.getElementById('parent5'), myArray5);
+	
 	if (ApplyPolygons == false) {
 		ApplyPolygons = true;
 		headerXMLHistogram = createHeaderXML();
 		bodyXMLHistogram = timeController1XMLHistogram_Selected();
 		if (jQuery("#AggregationCheckBox").attr("checked") == true){
-		  sendToServerCalendarData(headerXMLHistogram, bodyXMLHistogram);
+		  sendToServerCalendarData(headerXMLHistogram, bodyXMLHistogram);		
 		}else{}
 	}
 }
@@ -343,23 +375,60 @@ function Histogramm(model, options) {
 	this.borderWidth = this.options.borderWidth;
 	this.verticalAlign = this.options.verticalAlign;
 }
-function activateToolTipSimple(spanElementInfo, spanElement, subSpan, index, arrayX, classNumber, numberPhotos){
+
+function BubbleUpWindow(cls, subSpan){
+	 $(cls).bt(""+subSpan.innerHTML+"",  {
+		      padding: 10,
+		      width: 130,
+		      spikeLength: 40,
+		      spikeGirth: 20,
+		      cornerRadius: 20,
+		      fill:'#ccffff',
+		      strokeWidth: 3,
+		      strokeStyle: '#CC0',
+		      positions: 'top',
+		      shrinkToFit: true,
+		      cssStyles: {color: '#000000', fontWeight: 'bold'}
+		    });
+}
+
+function OnMouseOver(cls, spanElementInfo, spanElement, t , subSpan, index, arrayX, numberPhotos){
 	spanElementInfo.onmouseover = function() {
-		if ((numberPhotos == 0)&&(arrayX[index].label == 0)){
-		    spanElementInfo.style.background = '#FFFF00';
-		    spanElement.style.background = '#FFFF00';
-		    subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
-		}else if ((numberPhotos != 0)&&(arrayX[index].label == 0)){
-		    spanElementInfo.style.background = '#DDDDDD';
-		    spanElement.style.background = '#DDDDDD';
-		    subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
+		if (arrayX[index].label == 0){
+		    if (numberPhotos == 0){
+		      spanElementInfo.style.background = '#FFFFAA';
+		      spanElement.style.background = '#FFFFAA';
+		      subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
+		      BubbleUpWindow(cls, subSpan);
+		    }else{
+		       spanElementInfo.style.background = '#DDDDDD';
+		       spanElement.style.background = '#DDDDDD';
+		       subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
+		       BubbleUpWindow(cls ,subSpan);
+		    }
+		}else{
+		     if (numberPhotos == 0){
+		     spanElementInfo.style.background = '#DDDDDD';
+		       spanElement.style.background = '#DDDDDD';
+		       subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
+		       BubbleUpWindow(cls ,subSpan);
+		    }else{
+		      spanElementInfo.style.background = '#FFFFAA';
+		      spanElement.style.background = '#FFFFAA';
+		      subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
+		      BubbleUpWindow(cls, subSpan);
+		    }
 		}
+		
 	};
+}
+
+function OnMouseOut(spanElementInfo, spanElement, t , subSpan, index, arrayX, numberPhotos){
 	spanElementInfo.onmouseout = function() {
 		if (arrayX[index].label == 0) {
 			if (numberPhotos != 0){
-			  spanElementInfo.style.background = "#FFFF00";
-			  spanElement.style.background = "#FFFF00";
+			  spanElementInfo.style.background = "#FFFFAA";
+			  spanElement.style.background = "#FFFFAA";
 			}else{
 			  spanElementInfo.style.background = "#DDDDDD";
 			  spanElement.style.background = "#DDDDDD";
@@ -369,132 +438,73 @@ function activateToolTipSimple(spanElementInfo, spanElement, subSpan, index, arr
 			  spanElementInfo.style.background = "#DDDDDD";
 			  spanElement.style.background = "#DDDDDD";
 			}else{
-			  spanElementInfo.style.background = "#FFFF00";
-			  spanElement.style.background = "#FFFF00";
+			  spanElementInfo.style.background = "#FFFFAA";
+			  spanElement.style.background = "#FFFFAA";
 			}
 		}
 		subSpan.innerHTML = "";
 	};
-	spanElementInfo.onclick = function() {
+}
+function OnClick(spanElementInfo, spanElement, t , subSpan, index, arrayX, numberPhotos){
+	 spanElementInfo.onclick = function() {
 		if (arrayX[index].label == 0) {
 			if (numberPhotos == 0){
-			    spanElementInfo.style.background = '#FFFF00';
-			    spanElement.style.background = '#FFFF00';
+			    spanElementInfo.style.background = '#FFFFAA';
+			    spanElement.style.background = '#FFFFAA';
 			    arrayX[index].label++;
 			    globalArray[arrayX[index].indexVal]++
 			    arrayX[index].label = arrayX[index].label%2; // instead of 1
-			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
+			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;			    
 			    if (once == true) {
-				    $("#histogramContent").append("<button id='button20' onclick='javascript:askHistogramSelected();'> Submit </button>");
+				    $("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 				    once = false;
 			    }
 			}else{
 			    spanElementInfo.style.background = '#DDDDDD';
-			    spanElement.style.background = '#DDDDDD';
+			    spanElement.style.background = '#DDDDDD';			   
 			    arrayX[index].label++;
 			    globalArray[arrayX[index].indexVal]++
 			    arrayX[index].label = arrayX[index].label%2; // instead of 1
-			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
+			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;			  
 			    if (once == true) {
-				    $("#histogramContent").append("<button id='button20' onclick='javascript:askHistogramSelected();'> Submit </button>");
+				    $("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 				    once = false;
 			    }
 			}
 		}else {
 			if (numberPhotos == 0){
-			  spanElementInfo.style.background = "#FFFF00";
-			  spanElement.style.background = "#FFFF00";
+			  spanElementInfo.style.background = "#FFFFAA";
+			  spanElement.style.background = "#FFFFAA";			  
 			  arrayX[index].label++;
 			  globalArray[arrayX[index].indexVal]++
 			  arrayX[index].label = arrayX[index].label%2;
-			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
+			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;			
 			}else{
 			  spanElementInfo.style.background = "#DDDDDD";
-			  spanElement.style.background = "#DDDDDD";
+			  spanElement.style.background = "#DDDDDD";			  
 			  arrayX[index].label++;
 			  globalArray[arrayX[index].indexVal]++
 			  arrayX[index].label = arrayX[index].label%2;
-			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
+			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;			 
 		      }
 		}
 	};
-	spanElement.onmouseover = function() {
-		if ((numberPhotos == 0)&&(arrayX[index].label == 0)){
-		    spanElementInfo.style.background = '#FFFF00';
-		    spanElement.style.background = '#FFFF00';
-		    subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
-		}else if ((numberPhotos != 0)&&(arrayX[index].label == 0)){
-		    spanElementInfo.style.background = '#DDDDDD';
-		    spanElement.style.background = '#DDDDDD';
-		    subSpan.innerHTML = "#pictures:" + arrayX[index].value2;
-		}
-	};
-	spanElement.onmouseout = function() {
-		if (arrayX[index].label == 0) {
-			if (numberPhotos != 0){
-			  spanElementInfo.style.background = "#FFFF00";
-			  spanElement.style.background = "#FFFF00";
-			}else{
-			  spanElementInfo.style.background = "#DDDDDD";
-			  spanElement.style.background = "#DDDDDD";
-			}
-		} else {
-			if (numberPhotos != 0){
-			  spanElementInfo.style.background = "#DDDDDD";
-			  spanElement.style.background = "#DDDDDD";
-			}else{
-			  spanElementInfo.style.background = "#FFFF00";
-			  spanElement.style.background = "#FFFF00";
-			}
-		}
-		subSpan.innerHTML = "";
-	};
-	spanElement.onclick = function() {
-		if (arrayX[index].label == 0) {
-			if (numberPhotos == 0){
-			    spanElementInfo.style.background = '#FFFF00';
-			    spanElement.style.background = '#FFFF00';
-			    arrayX[index].label++;
-			    globalArray[arrayX[index].indexVal]++
-			    arrayX[index].label = arrayX[index].label%2; // instead of 1
-			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
-			    if (once == true) {
-				    $("#histogramContent").append("<button id='button20' onclick='javascript:askHistogramSelected();'> Submit </button>");
-				    once = false;
-			    }
-			}else{
-			    spanElementInfo.style.background = '#DDDDDD';
-			    spanElement.style.background = '#DDDDDD';
-			    arrayX[index].label++;
-			    globalArray[arrayX[index].indexVal]++
-			    arrayX[index].label = arrayX[index].label%2; // instead of 1
-			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
-			    if (once == true) {
-				    $("#histogramContent").append("<button id='button20' onclick='javascript:askHistogramSelected();'> Submit </button>");
-				    once = false;
-			    }
-			}
-		}else {
-			if (numberPhotos == 0){
-			  spanElementInfo.style.background = "#FFFF00";
-			  spanElement.style.background = "#FFFF00";
-			  arrayX[index].label++;
-			  globalArray[arrayX[index].indexVal]++
-			  arrayX[index].label = arrayX[index].label%2;
-			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
-			}else{
-			  spanElementInfo.style.background = "#DDDDDD";
-			  spanElement.style.background = "#DDDDDD";
-			  arrayX[index].label++;
-			  globalArray[arrayX[index].indexVal]++
-			  arrayX[index].label = arrayX[index].label%2;
-			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
-		      }
-		}
-	};
+}
+
+function activateToolTipSimple(t , subSpan, index, arrayX, numberPhotos){
+	var k = index +t;	
+	OnMouseOver(".spanElementInfo", spanElementInfo[k], spanElement[k], t , subSpan, index, arrayX, numberPhotos);
+	OnMouseOut(spanElementInfo[k], spanElement[k], t , subSpan, index, arrayX, numberPhotos);    
+	OnClick(spanElementInfo[k], spanElement[k], t , subSpan, index, arrayX, numberPhotos);
+
+	OnMouseOver(".spanElement", spanElement[k], spanElementInfo[k], t , subSpan, index, arrayX, numberPhotos);
+	OnMouseOut(spanElement[k], spanElementInfo[k], t , subSpan, index, arrayX, numberPhotos);    
+	OnClick(spanElement[k], spanElementInfo[k], t , subSpan, index, arrayX, numberPhotos);
 };
 
 function askHistogramSelected() {
+	deleteHistory();
+	removeCircles();
 	addRemoveElementsFromHistogram();
 	resetParameters();
 	headerXMLHistogram = createHeaderXML();
@@ -548,7 +558,7 @@ function timeController1XMLHistogram_Selected() {
 	// the week
 	text1 = text1 + "<weekdays>";
 	for ( var i = 74; i <= 79; i++) {
-		if (globalArray[i] == 0) {
+		if (globalArray[i] == 0) {			
 			text1 = text1 + "<weekday>" + nameString[i + 2] + "</weekday>";
 		}
 	}
@@ -561,851 +571,1215 @@ function timeController1XMLHistogram_Selected() {
 	//alert("text1 HA: "+text1);
 	return text1;
 }
+function setElementsForRender(thisL){
+	classWidth = thisL.options.classWidth;
+	strokeColor = thisL.options.strokeColor;
+	color = thisL.options.color;	
+	tooltip = thisL.options.tooltip;
+	borderStyle = thisL.options.borderStyle;
+	borderWidth = thisL.options.borderWidth;
+	verticalAlign = thisL.options.verticalAlign;
+	information = document.createElement("div");
+	information.className = "histogramInfoButtons1";	
+	information.style.display = "block";
+	information.style.cssFloat = "left";
+}
 
+function setElementsForRenderSecondo(thisL, i, k){
+		both = document.createElement('div');
+		both.style.display = "block";
+		both.style.cssFloat = "left";	
+		both.style.bottom = "0px";
+		bothId = 'both';
+		both.id = bothId+""+globId;
+		globId++;
+		hystogrammDiv = document.createElement('div');
+		hystogrammDiv.className = "histogramDiv";
+		hystogrammDivInfo = document.createElement('div');	
+		spanElementInfo[k] = document.createElement('div');	
+		spanElement[k] = document.createElement('span');
+		hystogrammDivInfo.className = "hystogrammDivInfo";		
+		spanElement[k].className = "spanElement";	
+		spanElement[k].id="spanElement"+k;	
+		spanElement[k].style.borderColor = strokeColor;
+		spanElement[k].style.borderStyle = borderStyle;	
+		spanElement[k].style.borderBottomWidth = borderWidth;
+		spanElement[k].style.borderTopWidth = borderWidth;						
+		spanElement[k].style.borderRightWidth = borderWidth;
+		spanElement[k].style.borderLeftWidth = borderWidth;
+		spanElement[k].style.verticalAlign = verticalAlign;		
+		if (thisL.model.data[i].value==0){
+		    spanElement[k].style.padding = "0px " + "0px" + " 0px " + "0px";  
+		    spanElement[k].style.borderRightWidth = '0px';
+		    spanElement[k].style.borderLeftWidth = '0px';
+		    spanElement[k].style.borderTopWidth = '0px';
+		    spanElement[k].style.borderBottomWidth = '0px';
+		    spanElement[k].style.backgroundColor = '#DDDDDD';
+		}else{
+		    spanElement[k].style.padding = thisL.model.data[i].value + "px " +classWidth + " 0px " +classWidth;  
+		    spanElement[k].style.backgroundColor = color;
+		}
+}
+
+function setElementsForRenderThird(thisL, i, k){
+		var spanElementInfoClass = 'spanElementInfo';
+		spanElementInfo[k].className = spanElementInfoClass;
+		spanElementInfo[k].id = "spanElementInfo"+k;
+		spanElementInfo[k].style.borderColor = strokeColor;
+		spanElementInfo[k].style.borderStyle = borderStyle;
+		spanElementInfo[k].style.display = "block";
+		spanElementInfo[k].style.cssFloat = "left";
+		spanElementInfo[k].style.borderBottomWidth = borderWidth;
+		spanElementInfo[k].style.borderTopWidth = borderWidth;
+		spanElementInfo[k].style.borderRightWidth = borderWidth;
+		spanElementInfo[k].style.borderLeftWidth = borderWidth;
+		if (thisL.model.data[i].value==0){
+		    spanElementInfo[k].style.backgroundColor = '#DDDDDD';
+		    spanElementInfo[k].style.marginTop="16px";
+		}else{
+		    spanElementInfo[k].style.backgroundColor = color;
+		}
+		spanElementInfo[k].style.verticalAlign = verticalAlign;
+
+}
 Histogramm.prototype.render1 = function(parent, arrayX) {
-
-	var classWidth = this.options.classWidth;
-	var strokeColor = this.options.strokeColor;
-	var color = this.options.color;
-	var tooltip = this.options.tooltip;
-	var borderStyle = this.options.borderStyle;
-	var borderWidth = this.options.borderWidth;
-	var verticalAlign = this.options.verticalAlign;
-
+ 	setElementsForRender(this);	
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
-		var both = document.createElement('div');
-		both.style.display = "block";
-		both.style.cssFloat = "left";
-		var bothId = 'both';
-		both.id = bothId+""+globId;
-		globId++;
-		var hystogrammDiv = document.createElement('div');
-		hystogrammDiv.className = "histogramDiv";
-		var hystogrammDivInfo = document.createElement('div');
-		var spanElementInfo = document.createElement('div');
-		var spanElement = document.createElement('span');
-		spanElement.className = "spanElement";
-		spanElement.style.borderColor = strokeColor;
-		spanElement.style.borderStyle = borderStyle;
-		spanElement.style.borderBottomWidth = borderWidth;
-		spanElement.style.borderTopWidth = borderWidth;
-		spanElement.style.borderRightWidth = borderWidth;
-		spanElement.style.borderLeftWidth = borderWidth;
-		spanElement.style.verticalAlign = verticalAlign;
-		if (this.model.data[i].value==0){
-		    spanElement.style.padding = "0px " + "0px" + " 0px " + "0.01px";
-		    spanElement.style.borderRightWidth = '0px';
-		    spanElement.style.borderLeftWidth = '0px';
-		    spanElement.style.borderTopWidth = '0px';
-		    spanElement.style.borderBottomWidth = '0px';
-		    spanElement.style.backgroundColor = '#DDDDDD';
-		}else{
-		    spanElement.style.padding = this.model.data[i].value + "px " +classWidth + " 0px " +classWidth;
-		    spanElement.style.backgroundColor = color;
-		}
-
+		var k=i;
+		setElementsForRenderSecondo(this, i, k);
+		globalYear[i] = this.model.data[i].value;
 		if ((this.model.getNumberOfClasses() == 7) && (this.model.getIndexValueOfBool() == 1)) {
-			var spanElementInfoClass = 'spanElementInfo';
-			spanElementInfo.className = spanElementInfoClass;
-			spanElementInfo.style.borderColor = strokeColor;
-			spanElementInfo.style.borderStyle = borderStyle;
-			spanElementInfo.style.display = "block";
-			spanElementInfo.style.cssFloat = "left";
-			spanElementInfo.style.borderBottomWidth = borderWidth;
-			spanElementInfo.style.borderTopWidth = borderWidth;
-			spanElementInfo.style.borderRightWidth = borderWidth;
-			spanElementInfo.style.borderLeftWidth = borderWidth;
-			if (this.model.data[i].value==0){
-			    spanElementInfo.style.backgroundColor = '#DDDDDD';
-			}else{
-			  spanElementInfo.style.backgroundColor = color;
-			}
-			spanElementInfo.style.verticalAlign = verticalAlign;
+			setElementsForRenderThird(this, i, k);
 			switch (i) {
 			case 0:
-				spanElementInfo.innerHTML = '2005';
-				spanElementInfo.style.width = "56.8571428px";// 25.714285px
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[i].innerHTML = '2005';
+				spanElementInfo[i].style.width = "56.8571428px";
+				spanElementInfo[i].style.textAlign = "center";				
 				break;
 			case 1:
-				spanElementInfo.innerHTML = '2006';
-				spanElementInfo.style.width = "56.8571428px";// 25.714285px
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[i].innerHTML = '2006';
+				spanElementInfo[i].style.width = "56.8571428px";
+				spanElementInfo[i].style.textAlign = "center";				
 				break;
 			case 2:
-				spanElementInfo.innerHTML = '2007';
-				spanElementInfo.style.width = "56.8571428px";// 25.714285px
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[i].innerHTML = '2007';
+				spanElementInfo[i].style.width = "56.8571428px";
+				spanElementInfo[i].style.textAlign = "center";				
 				break;
 			case 3:
-				spanElementInfo.innerHTML = '2008';
-				spanElementInfo.style.width = "56.8571428px";// 25.714285px
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[i].innerHTML = '2008';
+				spanElementInfo[i].style.width = "56.8571428px";
+				spanElementInfo[i].style.textAlign = "center";				
 				break;
 			case 4:
-				spanElementInfo.innerHTML = '2009';
-				spanElementInfo.style.width = "56.8571428px";// 25.714285px
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[i].innerHTML = '2009';
+				spanElementInfo[i].style.width = "56.8571428px";
+				spanElementInfo[i].style.textAlign = "center";				
 				break;
 			case 5:
-				spanElementInfo.innerHTML = '2010';
-				spanElementInfo.style.width = "56.8571428px";// 25.714285px
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[i].innerHTML = '2010';
+				spanElementInfo[i].style.width = "56.8571428px";
+				spanElementInfo[i].style.textAlign = "center";				
 				break;
 			case 6:
-				spanElementInfo.innerHTML = '2011';
-				spanElementInfo.style.width = "56.8571428px";// 25.714285px
-				spanElementInfo.style.textAlign = "center";
-				break;
-			}
+				spanElementInfo[i].innerHTML = '2011';
+				spanElementInfo[i].style.width = "56.8571428px";
+				spanElementInfo[i].style.textAlign = "center";
+				break; 
+			}		
 		    var subSpan = document.createElement('span');
-		    spanElement.appendChild(subSpan);
-		    if (tooltip == true) {
-			//activateToolTip(spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses());
-			activateToolTipSimple(spanElementInfo, spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses(), this.model.data[i].value);
+		    subSpan.className ="Menu"+i;
+		    //spanElement[i].appendChild(subSpan);		    
+		    if (tooltip == true) {			
+			activateToolTipSimple(0, subSpan, i, arrayX, this.model.data[i].value);
 		    }
-		    hystogrammDiv.appendChild(spanElement);
-		    hystogrammDivInfo.appendChild(spanElementInfo);
+		    hystogrammDiv.appendChild(spanElement[i]);
+		    hystogrammDivInfo.appendChild(spanElementInfo[i]);
 		    both.appendChild(hystogrammDiv);
-		    both.appendChild(hystogrammDivInfo);
-		  }
+		    both.appendChild(hystogrammDivInfo);		   
+		  } 
 	  parent.appendChild(both);
+	  if (i==this.model.getNumberOfClasses()-1){
+	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllYear();'></div> <div><input type='button' value='-' class='histogramInfoButton' onclick='javascript:de_selectAllYear();'></div> <div><input type='button' value='+ -' class='histogramInfoButton' onclick='javascript:mirrorAllYear();'></div>";
+	    parent.appendChild(information);  
+	  }
 	}
 };
 
 
-Histogramm.prototype.render2 = function(parent, arrayX) {
-
-	var classWidth = this.options.classWidth;
-	var strokeColor = this.options.strokeColor;
-	var color = this.options.color;
-	var tooltip = this.options.tooltip;
-	var borderStyle = this.options.borderStyle;
-	var borderWidth = this.options.borderWidth;
-	var verticalAlign = this.options.verticalAlign;
-
+Histogramm.prototype.render2 = function(parent, arrayX) {	
+	setElementsForRender(this);	
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
-		var both = document.createElement('div');
-		both.style.display = "block";
-		both.style.cssFloat = "left";
-		var bothId = 'both';
-		both.id = bothId+""+globId;
-		globId++;
-		var hystogrammDiv = document.createElement('div');
-		hystogrammDiv.className = "histogramDiv";
-		var hystogrammDivInfo = document.createElement('div');
-		var spanElementInfo = document.createElement('div');
-		var spanElement = document.createElement('span');
-		spanElement.className = "spanElement";
-		spanElement.style.borderColor = strokeColor;
-		spanElement.style.borderStyle = borderStyle;
-		spanElement.style.borderBottomWidth = borderWidth;
-		spanElement.style.borderTopWidth = borderWidth;
-		spanElement.style.borderRightWidth = borderWidth;
-		spanElement.style.borderLeftWidth = borderWidth;
-		spanElement.style.verticalAlign = verticalAlign;
-		if (this.model.data[i].value==0){
-		    spanElement.style.padding = "0px " + "0px" + " 0px " + "0.01px";
-		    spanElement.style.borderRightWidth = '0px';
-		    spanElement.style.borderLeftWidth = '0px';
-		    spanElement.style.borderTopWidth = '0px';
-		    spanElement.style.borderBottomWidth = '0px';
-		    spanElement.style.backgroundColor = '#DDDDDD';
-		}else{
-		    spanElement.style.padding = this.model.data[i].value + "px " +classWidth + " 0px " +classWidth;
-		    spanElement.style.backgroundColor = color;
-		}
-
-
-
-		if (this.model.getNumberOfClasses() == 12) {
-			var spanElementInfoClass = 'spanElementInfo';
-			spanElementInfo.className = spanElementInfoClass;
-			spanElementInfo.style.borderColor = strokeColor;
-			spanElementInfo.style.borderStyle = borderStyle;
-			spanElementInfo.style.display = "block";
-			spanElementInfo.style.cssFloat = "left";
-			spanElementInfo.style.borderBottomWidth = borderWidth;
-			spanElementInfo.style.borderTopWidth = borderWidth;
-			spanElementInfo.style.borderRightWidth = borderWidth;
-			spanElementInfo.style.borderLeftWidth = borderWidth;
-			if (this.model.data[i].value==0){
-			    spanElementInfo.style.backgroundColor = '#DDDDDD';
-			}else{
-			    spanElementInfo.style.backgroundColor = color;
-			}
-			spanElementInfo.style.verticalAlign = verticalAlign;
+		var k=i+7;
+	        setElementsForRenderSecondo(this, i, k);
+		globalMonth[i] = this.model.data[i].value;
+		if ((this.model.getNumberOfClasses() == 12)&& (this.model.getIndexValueOfBool() == 2)) {
+			setElementsForRenderThird(this, i, k);
 			switch (i) {
 			case 0:
-				spanElementInfo.innerHTML = 'Jan';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Jan';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 1:
-				spanElementInfo.innerHTML = 'Feb';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Feb';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 2:
-				spanElementInfo.innerHTML = 'Mar';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Mar';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 3:
-				spanElementInfo.innerHTML = 'Apr';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Apr';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 4:
-				spanElementInfo.innerHTML = 'May';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'May';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 5:
-				spanElementInfo.innerHTML = 'Jun';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Jun';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 6:
-				spanElementInfo.innerHTML = 'Jul';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Jul';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 7:
-				spanElementInfo.innerHTML = 'Aug';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Aug';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 8:
-				spanElementInfo.innerHTML = 'Sep';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Sep';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 9:
-				spanElementInfo.innerHTML = 'Oct';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Oct';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 10:
-				spanElementInfo.innerHTML = 'Nov';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Nov';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 11:
-				spanElementInfo.innerHTML = 'Dec';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "32.333332px";
+				spanElementInfo[k].innerHTML = 'Dec';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "32.333332px";
 				break;
 
-			}
+			}			
 		    var subSpan = document.createElement('span');
-		    spanElement.appendChild(subSpan);
-		    if (tooltip == true) {
-			//activateToolTip(spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses());
-			activateToolTipSimple(spanElementInfo, spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses(), this.model.data[i].value);
+		    subSpan.className ="Menu";
+		    //both.appendChild(subSpan);
+		    if (tooltip == true) {			
+			activateToolTipSimple(7, subSpan, i, arrayX, this.model.data[i].value);
 		    }
-		    hystogrammDiv.appendChild(spanElement);
-		    hystogrammDivInfo.appendChild(spanElementInfo);
+		    hystogrammDiv.appendChild(spanElement[k]);
+		    hystogrammDivInfo.appendChild(spanElementInfo[k]);
 		    both.appendChild(hystogrammDiv);
 		    both.appendChild(hystogrammDivInfo);
-		  }
+		  } 
 	  parent.appendChild(both);
+	  if (i==this.model.getNumberOfClasses()-1){
+	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllMonths();'></div> <div><input type='button' value='-' class='histogramInfoButton'  onclick='javascript:de_selectAllMonths()'></div> <div><input type='button' value='+ -' class='histogramInfoButton' onclick='javascript:mirrorAllMonths();'></div>";
+	    parent.appendChild(information);  
+	  }
 	}
 };
 
-Histogramm.prototype.render3 = function(parent, arrayX) {
-
-	var classWidth = this.options.classWidth;
-	var strokeColor = this.options.strokeColor;
-	var color = this.options.color;
-	var tooltip = this.options.tooltip;
-	var borderStyle = this.options.borderStyle;
-	var borderWidth = this.options.borderWidth;
-	var verticalAlign = this.options.verticalAlign;
-
+Histogramm.prototype.render3 = function(parent, arrayX) {	
+	setElementsForRender(this);	
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
-		var both = document.createElement('div');
-		both.style.display = "block";
-		both.style.cssFloat = "left";
-		var bothId = 'both';
-		both.id = bothId+""+globId;
-		globId++;
-		var hystogrammDiv = document.createElement('div');
-		hystogrammDiv.className = "histogramDiv";
-		var hystogrammDivInfo = document.createElement('div');
-		var spanElementInfo = document.createElement('div');
-		var spanElement = document.createElement('span');
-		spanElement.className = "spanElement";
-		spanElement.style.borderColor = strokeColor;
-		spanElement.style.borderStyle = borderStyle;
-		spanElement.style.borderBottomWidth = borderWidth;
-		spanElement.style.borderTopWidth = borderWidth;
-		spanElement.style.borderRightWidth = borderWidth;
-		spanElement.style.borderLeftWidth = borderWidth;
-		spanElement.style.verticalAlign = verticalAlign;
-		if (this.model.data[i].value==0){
-		    spanElement.style.padding = "0px " + "0px" + " 0px " + "0.01px";
-		    spanElement.style.borderRightWidth = '0px';
-		    spanElement.style.borderLeftWidth = '0px';
-		    spanElement.style.borderTopWidth = '0px';
-		    spanElement.style.borderBottomWidth = '0px';
-		    spanElement.style.backgroundColor = '#DDDDDD';
-		}else{
-		    spanElement.style.padding = this.model.data[i].value + "px " +classWidth + " 0px " +classWidth;
-		    spanElement.style.backgroundColor = color;
-		}
-
+		var k=i+19;
+	        setElementsForRenderSecondo(this, i, k);
+		globalDay[i] = this.model.data[i].value;
 		if (this.model.getNumberOfClasses() == 31) {
-			var spanElementInfoClass = 'spanElementInfo';
-			spanElementInfo.className = spanElementInfoClass;
-			spanElementInfo.style.borderColor = strokeColor;
-			spanElementInfo.style.borderStyle = borderStyle;
-			spanElementInfo.style.display = "block";
-			spanElementInfo.style.cssFloat = "left";
-			spanElementInfo.style.borderBottomWidth = borderWidth;
-			spanElementInfo.style.borderTopWidth = borderWidth;
-			spanElementInfo.style.borderRightWidth = "1px";
-			spanElementInfo.style.borderLeftWidth = borderWidth;
-			if (this.model.data[i].value==0){
-			    spanElementInfo.style.backgroundColor = '#DDDDDD';
-			}else{
-			    spanElementInfo.style.backgroundColor = color;
-			}
-
-			spanElementInfo.style.verticalAlign = verticalAlign;
+			setElementsForRenderThird(this, i, k);
 			switch (i) {
 			case 0:
-				spanElementInfo.innerHTML = '1';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '1';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 1:
-				spanElementInfo.innerHTML = '2';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '2';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 2:
-				spanElementInfo.innerHTML = '3';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '3';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 3:
-				spanElementInfo.innerHTML = '4';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '4';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 4:
-				spanElementInfo.innerHTML = '5';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '5';				
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 5:
-				spanElementInfo.innerHTML = '6';
+				spanElementInfo[k].innerHTML = '6';
 				// spanElementInfo.style.padding = '0px ' + '2.5px';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 6:
-				spanElementInfo.innerHTML = '7';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '7';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 7:
-				spanElementInfo.innerHTML = '8';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '8';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 8:
-				spanElementInfo.innerHTML = '9';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '9';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 9:
-				spanElementInfo.innerHTML = '10';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '10';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 10:
-				spanElementInfo.innerHTML = '11';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '11';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 11:
-				spanElementInfo.innerHTML = '12';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '12';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 12:
-				spanElementInfo.innerHTML = '13';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '13';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 13:
-				spanElementInfo.innerHTML = '14';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '14';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 14:
-				spanElementInfo.innerHTML = '15';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '15';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 15:
-				spanElementInfo.innerHTML = '16';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '16';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 16:
-				spanElementInfo.innerHTML = '17';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '17';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 17:
-				spanElementInfo.innerHTML = '18';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '18';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 18:
-				spanElementInfo.innerHTML = '19';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '19';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 19:
-				spanElementInfo.innerHTML = '20';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '20';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 20:
-				spanElementInfo.innerHTML = '21';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '21';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 21:
-				spanElementInfo.innerHTML = '22';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '22';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 22:
-				spanElementInfo.innerHTML = '23';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '23';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 23:
-				spanElementInfo.innerHTML = '24';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '24';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 24:
-				spanElementInfo.innerHTML = '25';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '25';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 25:
-				spanElementInfo.innerHTML = '26';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '26';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 26:
-				spanElementInfo.innerHTML = '27';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '27';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 27:
-				spanElementInfo.innerHTML = '28';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '28';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 28:
-				spanElementInfo.innerHTML = '28';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '28';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 29:
-				spanElementInfo.innerHTML = '30';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '30';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 30:
-				spanElementInfo.innerHTML = '31';
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.width = "11.290322px";
-				spanElementInfo.style.fontSize = "8.5px";
+				spanElementInfo[k].innerHTML = '31';
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.width = "11.290322px";
+				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 
 			}
 		    var subSpan = document.createElement('span');
-		    spanElement.appendChild(subSpan);
-		    if (tooltip == true) {
-			//activateToolTip(spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses());
-			activateToolTipSimple(spanElementInfo, spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses(), this.model.data[i].value);
+		    subSpan.className ="Menu";
+		    //both.appendChild(subSpan);
+		    if (tooltip == true) {			
+			activateToolTipSimple(19, subSpan, i, arrayX, this.model.data[i].value);
 		    }
-		    hystogrammDiv.appendChild(spanElement);
-		    hystogrammDivInfo.appendChild(spanElementInfo);
+		    hystogrammDiv.appendChild(spanElement[k]);
+		    hystogrammDivInfo.appendChild(spanElementInfo[k]);
 		    both.appendChild(hystogrammDiv);
 		    both.appendChild(hystogrammDivInfo);
-		  }
+		  } 
 	  parent.appendChild(both);
+	  if (i==this.model.getNumberOfClasses()-1){
+	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllDays();'></div> <div><input type='button' value='-' class='histogramInfoButton' onclick='javascript:de_selectAllDays()'></div> <div><input type='button' value='+ -' class='histogramInfoButton' onclick='javascript:mirrorAllDays();'></div>";
+	    parent.appendChild(information);  
+	  }
 	}
 };
 
-Histogramm.prototype.render4 = function(parent, arrayX) {
-	var classWidth = this.options.classWidth;
-	var strokeColor = this.options.strokeColor;
-	var color = this.options.color;
-	var tooltip = this.options.tooltip;
-	var borderStyle = this.options.borderStyle;
-	var borderWidth = this.options.borderWidth;
-	var verticalAlign = this.options.verticalAlign;
 
+Histogramm.prototype.render4 = function(parent, arrayX) {	
+	setElementsForRender(this);	
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
-		var both = document.createElement('div');
-		both.style.display = "block";
-		both.style.cssFloat = "left";
-		var bothId = 'both';
-		both.id = bothId+""+globId;
-		globId++;
-		var hystogrammDiv = document.createElement('div');
-		hystogrammDiv.className = "histogramDiv";
-		var hystogrammDivInfo = document.createElement('div');
-		var spanElementInfo = document.createElement('div');
-		var spanElement = document.createElement('span');
-		spanElement.className = "spanElement";
-		spanElement.style.borderColor = strokeColor;
-		spanElement.style.borderStyle = borderStyle;
-		spanElement.style.borderBottomWidth = borderWidth;
-		spanElement.style.borderTopWidth = borderWidth;
-		spanElement.style.borderRightWidth = borderWidth;
-		spanElement.style.borderLeftWidth = borderWidth;
-		spanElement.style.verticalAlign = verticalAlign;
-		if (this.model.data[i].value==0){
-		    spanElement.style.padding = "0px " + "0px" + " 0px " + "0.01px";
-		    spanElement.style.borderRightWidth = '0px';
-		    spanElement.style.borderLeftWidth = '0px';
-		    spanElement.style.borderTopWidth = '0px';
-		    spanElement.style.borderBottomWidth = '0px';
-		    spanElement.style.backgroundColor = '#DDDDDD';
-		}else{
-		    spanElement.style.padding = this.model.data[i].value + "px " +classWidth + " 0px " +classWidth;
-		    spanElement.style.backgroundColor = color;
-		}
-
+		var k=i+50;
+	        setElementsForRenderSecondo(this, i, k);
+		globalHour[i] = this.model.data[i].value;
 		if (this.model.getNumberOfClasses() == 24) {
-			var spanElementInfoClass = 'spanElementInfo';
-			spanElementInfo.className = spanElementInfoClass;
-			spanElementInfo.style.borderColor = strokeColor;
-			spanElementInfo.style.borderStyle = borderStyle;
-			spanElementInfo.style.display = "block";
-			spanElementInfo.style.cssFloat = "left";
-			spanElementInfo.style.borderBottomWidth = borderWidth;
-			spanElementInfo.style.borderTopWidth = borderWidth;
-			spanElementInfo.style.borderRightWidth = "1px";
-			spanElementInfo.style.borderLeftWidth = borderWidth;
-			if (this.model.data[i].value==0){
-			    spanElementInfo.style.backgroundColor = '#DDDDDD';
-			}else {
-			    spanElementInfo.style.backgroundColor = color;
-			}
-			spanElementInfo.style.verticalAlign = verticalAlign;
+			setElementsForRenderThird(this, i, k);
 			switch (i) {
 			case 0:
-				spanElementInfo.innerHTML = '0';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '0';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 1:
-				spanElementInfo.innerHTML = '1';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '1';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 2:
-				spanElementInfo.innerHTML = '2';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '2';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 3:
-				spanElementInfo.innerHTML = '3';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '3';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 4:
-				spanElementInfo.innerHTML = '4';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '4';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 5:
-				spanElementInfo.innerHTML = '5';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '5';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 6:
-				spanElementInfo.innerHTML = '6';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '6';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 7:
-				spanElementInfo.innerHTML = '7';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '7';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 8:
-				spanElementInfo.innerHTML = '8';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '8';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 9:
-				spanElementInfo.innerHTML = '9';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '9';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 10:
-				spanElementInfo.innerHTML = '10';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '10';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 11:
-				spanElementInfo.innerHTML = '11';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '11';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 12:
-				spanElementInfo.innerHTML = '12';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '12';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 13:
-				spanElementInfo.innerHTML = '13';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '13';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 14:
-				spanElementInfo.innerHTML = '14';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '14';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 15:
-				spanElementInfo.innerHTML = '15';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '15';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 16:
-				spanElementInfo.innerHTML = '16';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '16';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 17:
-				spanElementInfo.innerHTML = '17';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '17';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 18:
-				spanElementInfo.innerHTML = '18';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '18';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 19:
-				spanElementInfo.innerHTML = '19';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '19';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 20:
-				spanElementInfo.innerHTML = '20';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '20';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 21:
-				spanElementInfo.innerHTML = '21';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '21';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 22:
-				spanElementInfo.innerHTML = '22';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '22';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			case 23:
-				spanElementInfo.innerHTML = '23';
-				spanElementInfo.style.width = "15.166666px";
-				spanElementInfo.style.textAlign = "center";
-				spanElementInfo.style.fontSize = "10px";
+				spanElementInfo[k].innerHTML = '23';
+				spanElementInfo[k].style.width = "15.166666px";
+				spanElementInfo[k].style.textAlign = "center";
+				spanElementInfo[k].style.fontSize = "10px";
 				break;
 			}
-		    var subSpan = document.createElement('span');
-		    spanElement.appendChild(subSpan);
-		    if (tooltip == true) {
-			//activateToolTip(spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses());
-			activateToolTipSimple(spanElementInfo, spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses(), this.model.data[i].value);
+		       var subSpan = document.createElement('span');
+		    subSpan.className ="Menu";
+		    //both.appendChild(subSpan);
+		    if (tooltip == true) {			
+			activateToolTipSimple(50, subSpan, i, arrayX, this.model.data[i].value);
 		    }
-		    hystogrammDiv.appendChild(spanElement);
-		    hystogrammDivInfo.appendChild(spanElementInfo);
+		    hystogrammDiv.appendChild(spanElement[k]);
+		    hystogrammDivInfo.appendChild(spanElementInfo[k]);
 		    both.appendChild(hystogrammDiv);
 		    both.appendChild(hystogrammDivInfo);
-		  }
+		  } 
 	  parent.appendChild(both);
+	  if (i==this.model.getNumberOfClasses()-1){
+	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllHours();'></div> <div><input type='button' value='-' class='histogramInfoButton' onclick='javascript:de_selectAllHours();'></div> <div><input type='button' value='+ -' class='histogramInfoButton' onclick='javascript:mirrorAllHours();'></div>";
+	    parent.appendChild(information);  
+	  }
 	}
 };
 
-Histogramm.prototype.render5 = function(parent, arrayX) {
-	var classWidth = this.options.classWidth;
-	var strokeColor = this.options.strokeColor;
-	var color = this.options.color;
-	var tooltip = this.options.tooltip;
-	var borderStyle = this.options.borderStyle;
-	var borderWidth = this.options.borderWidth;
-	var verticalAlign = this.options.verticalAlign;
-
+Histogramm.prototype.render5 = function(parent, arrayX) {	
+	setElementsForRender(this);	
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
-		var both = document.createElement('div');
-		both.style.display = "block";
-		both.style.cssFloat = "left";
-		var bothId = 'both';
-		both.id = bothId+""+globId;
-		globId++;
-		var hystogrammDiv = document.createElement('div');
-		hystogrammDiv.className = "histogramDiv";
-		var hystogrammDivInfo = document.createElement('div');
-		var spanElementInfo = document.createElement('div');
-		var spanElement = document.createElement('span');
-		spanElement.className = "spanElement";
-		spanElement.style.borderColor = strokeColor;
-		spanElement.style.borderStyle = borderStyle;
-		spanElement.style.borderBottomWidth = borderWidth;
-		spanElement.style.borderTopWidth = borderWidth;
-		spanElement.style.borderRightWidth = borderWidth;
-		spanElement.style.borderLeftWidth = borderWidth;
-		spanElement.style.verticalAlign = verticalAlign;
-		if (this.model.data[i].value==0){
-		    spanElement.style.padding = "0px " + "0px" + " 0px " + "0.01px";
-		    spanElement.style.borderRightWidth = '0px';
-		    spanElement.style.borderLeftWidth = '0px';
-		    spanElement.style.borderTopWidth = '0px';
-		    spanElement.style.borderBottomWidth = '0px';
-		    spanElement.style.backgroundColor = '#DDDDDD';
-		}else{
-		    spanElement.style.padding = this.model.data[i].value + "px " +classWidth + " 0px " +classWidth;
-		    spanElement.style.backgroundColor = color;
-		}
+		var k=i+74;
+	        setElementsForRenderSecondo(this, i, k);
+		globalWeek[i] = this.model.data[i].value;
 		if ((this.model.getNumberOfClasses() == 7) && (this.model.getIndexValueOfBool() == 5)) {
-			var spanElementInfoClass = 'spanElementInfo';
-			spanElementInfo.className = spanElementInfoClass;
-			spanElementInfo.style.borderColor = strokeColor;
-			spanElementInfo.style.borderStyle = borderStyle;
-			spanElementInfo.style.display = "block";
-			spanElementInfo.style.cssFloat = "left";
-			spanElementInfo.style.borderBottomWidth = borderWidth;
-			spanElementInfo.style.borderTopWidth = borderWidth;
-			spanElementInfo.style.borderRightWidth = "1px";
-			spanElementInfo.style.borderLeftWidth = borderWidth;
-			if  (this.model.data[i].value==0){
-			    spanElementInfo.style.backgroundColor = '#DDDDDD';
-			}else{
-			    spanElementInfo.style.backgroundColor = color;
-			}
-			spanElementInfo.style.verticalAlign = verticalAlign;
-			switch (i) {
+			setElementsForRenderThird(this, i, k);
+			switch (i) {			
 			case 0:
-				spanElementInfo.innerHTML = 'Mon';
-				spanElementInfo.style.width = "56.8571428px";
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[k].innerHTML = 'Mon';
+				spanElementInfo[k].style.width = "56.8571428px";
+				spanElementInfo[k].style.textAlign = "center";
 				break;
 			case 1:
-				spanElementInfo.innerHTML = 'Tue';
-				spanElementInfo.style.width = "56.8571428px";
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[k].innerHTML = 'Tue';
+				spanElementInfo[k].style.width = "56.8571428px";
+				spanElementInfo[k].style.textAlign = "center";
 				break;
 			case 2:
-				spanElementInfo.innerHTML = 'Wed';
-				spanElementInfo.style.width = "56.8571428px";
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[k].innerHTML = 'Wed';
+				spanElementInfo[k].style.width = "56.8571428px";
+				spanElementInfo[k].style.textAlign = "center";
 				break;
 			case 3:
-				spanElementInfo.innerHTML = 'Thu';
-				spanElementInfo.style.width = "56.8571428px";
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[k].innerHTML = 'Thu';
+				spanElementInfo[k].style.width = "56.8571428px";
+				spanElementInfo[k].style.textAlign = "center";
 				break;
 			case 4:
-				spanElementInfo.innerHTML = 'Fri';
-				spanElementInfo.style.width = "56.8571428px";
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[k].innerHTML = 'Fri';
+				spanElementInfo[k].style.width = "56.8571428px";
+				spanElementInfo[k].style.textAlign = "center";
 				break;
 			case 5:
-				spanElementInfo.innerHTML = 'Sat';
-				spanElementInfo.style.width = "56.8571428px";
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[k].innerHTML = 'Sat';
+				spanElementInfo[k].style.width = "56.8571428px";
+				spanElementInfo[k].style.textAlign = "center";
 				break;
 			case 6:
-				spanElementInfo.innerHTML = 'Sun';
-				spanElementInfo.style.width = "56.8571428px";// 25.714285px
-				spanElementInfo.style.textAlign = "center";
+				spanElementInfo[k].innerHTML = 'Sun';
+				spanElementInfo[k].style.width = "56.8571428px";// 25.714285px
+				spanElementInfo[k].style.textAlign = "center";
 				break;
 
 			}
 		    var subSpan = document.createElement('span');
-		    spanElement.appendChild(subSpan);
-		    if (tooltip == true) {
-			//activateToolTip(spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses());
-			activateToolTipSimple(spanElementInfo, spanElement, subSpan, i, arrayX, this.model.getNumberOfClasses(), this.model.data[i].value);
+		    subSpan.className ="Menu";
+		    if (tooltip == true) {			
+			activateToolTipSimple(74, subSpan, i, arrayX, this.model.data[i].value);
 		    }
-		    hystogrammDiv.appendChild(spanElement);
-		    hystogrammDivInfo.appendChild(spanElementInfo);
+		    hystogrammDiv.appendChild(spanElement[k]);
+		    hystogrammDivInfo.appendChild(spanElementInfo[k]);
 		    both.appendChild(hystogrammDiv);
 		    both.appendChild(hystogrammDivInfo);
-		  }
+		  } 
 	  parent.appendChild(both);
+	  if (i==this.model.getNumberOfClasses()-1){
+	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllWeekDays();'></div> <div><input type='button' value='-' class='histogramInfoButton' onclick='javascript:de_selectAllWeekDays();'></div> <div><input type='button' value='+ -' class='histogramInfoButton'  onclick='javascript:mirrorAllWeekDays();'></div>";
+	    parent.appendChild(information);  
+	  }
 	}
 };
+
+function selectAllWeekDays(){
+        for (var i = 0; i <7; i++){
+		var j = i+74;
+		spanElementInfo[j].style.background = "#FFFFAA";
+		spanElement[j].style.background = "#FFFFAA";
+		var numberPhotos = globalWeek[i];	
+		if (myArray5[i].label == 0) {
+			if (numberPhotos == 0){
+			    myArray5[i].label++;
+			    globalArray[myArray5[i].indexVal]++
+			    myArray5[i].label = myArray5[i].label%2;
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
+			} else{	
+			}
+		}else {
+			if (numberPhotos == 0){
+			}else{
+			    myArray5[i].label++;
+			    globalArray[myArray5[i].indexVal]++
+			    myArray5[i].label = myArray5[i].label%2; // instead of 1
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;	
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+function de_selectAllWeekDays(){
+        for (var i = 0; i <7; i++){
+		var j = i+74;
+		spanElementInfo[j].style.background = "#DDDDDD";
+		spanElement[j].style.background = "#DDDDDD";
+		var numberPhotos = globalWeek[i];	
+		if (myArray5[i].label == 0) {
+			if (numberPhotos == 0){
+			} else{	
+			    myArray5[i].label++;
+			    globalArray[myArray5[i].indexVal]++
+			    myArray5[i].label = myArray5[i].label%2;
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
+			}
+		}else {
+			if (numberPhotos == 0){
+			    myArray5[i].label++;
+			    globalArray[myArray5[i].indexVal]++
+			    myArray5[i].label = myArray5[i].label%2; // instead of 1
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;	
+			}else{
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+function mirrorAllWeekDays(){
+        for (var i = 0; i <7; i++){
+		var j = i+74;		
+		var numberPhotos = globalWeek[i];	
+		if (myArray5[i].label == 0) {
+			if (numberPhotos == 0){
+			    spanElementInfo[j].style.background = "#FFFFAA";
+			    spanElement[j].style.background = "#FFFFAA";
+			    myArray5[i].label++;
+			    globalArray[myArray5[i].indexVal]++
+			    myArray5[i].label = myArray5[i].label%2;
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
+			} else{	
+			    spanElementInfo[j].style.background = "#DDDDDD";
+			    spanElement[j].style.background = "#DDDDDD";
+			    myArray5[i].label++;
+			    globalArray[myArray5[i].indexVal]++
+			    myArray5[i].label = myArray5[i].label%2;
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
+			}
+		}else {
+			if (numberPhotos == 0){
+			    spanElementInfo[j].style.background = "#DDDDDD";
+			    spanElement[j].style.background = "#DDDDDD";
+			    myArray5[i].label++;
+			    globalArray[myArray5[i].indexVal]++
+			    myArray5[i].label = myArray5[i].label%2; // instead of 1
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;	
+			}else{
+			    spanElementInfo[j].style.background = "#FFFFAA";
+			    spanElement[j].style.background = "#FFFFAA";
+			    myArray5[i].label++;
+			    globalArray[myArray5[i].indexVal]++
+			    myArray5[i].label = myArray5[i].label%2; // instead of 1
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;	
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+
+
+function selectAllHours(){
+       for (var i = 0; i <24; i++){
+		var j = i+50;
+		spanElementInfo[j].style.background = "#FFFFAA";
+		spanElement[j].style.background = "#FFFFAA";
+		var numberPhotos = globalHour[i];	
+		if (myArray4[i].label == 0) {
+			if (numberPhotos == 0){
+			    myArray4[i].label++;
+			    globalArray[myArray4[i].indexVal]++
+			    myArray4[i].label = myArray4[i].label%2;
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
+			} else{	
+			}
+		}else {
+			if (numberPhotos == 0){
+			}else{
+			    myArray4[i].label++;
+			    globalArray[myArray4[i].indexVal]++
+			    myArray4[i].label = myArray4[i].label%2; // instead of 1
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;	
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+function de_selectAllHours(){
+       for (var i = 0; i <24; i++){
+		var j = i+50;
+		spanElementInfo[j].style.background = "#DDDDDD";
+		spanElement[j].style.background = "#DDDDDD";
+		var numberPhotos = globalHour[i];	
+		if (myArray4[i].label == 0) {
+			if (numberPhotos == 0){			  
+			} else{	
+			    myArray4[i].label++;
+			    globalArray[myArray4[i].indexVal]++
+			    myArray4[i].label = myArray4[i].label%2;
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
+			}
+		}else {
+			if (numberPhotos == 0){
+			    myArray4[i].label++;
+			    globalArray[myArray4[i].indexVal]++
+			    myArray4[i].label = myArray4[i].label%2; // instead of 1
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;	
+			}else{
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+function mirrorAllHours(){
+       for (var i = 0; i <24; i++){
+		var j = i+50;
+		var numberPhotos = globalHour[i];	
+		if (myArray4[i].label == 0) {
+			if (numberPhotos == 0){
+			    spanElementInfo[j].style.background = "#FFFFAA";
+			    spanElement[j].style.background = "#FFFFAA";
+			    myArray4[i].label++;
+			    globalArray[myArray4[i].indexVal]++
+			    myArray4[i].label = myArray4[i].label%2;
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
+			} else{
+			    spanElementInfo[j].style.background = "#DDDDDD";
+			    spanElement[j].style.background = "#DDDDDD";
+			    myArray4[i].label++;
+			    globalArray[myArray4[i].indexVal]++
+			    myArray4[i].label = myArray4[i].label%2;
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
+			}
+		}else {
+			if (numberPhotos == 0){
+			    spanElementInfo[j].style.background = "#DDDDDD";
+			    spanElement[j].style.background = "#DDDDDD";
+			    myArray4[i].label++;
+			    globalArray[myArray4[i].indexVal]++
+			    myArray4[i].label = myArray4[i].label%2; // instead of 1
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;	
+			}else{
+			    spanElementInfo[j].style.background = "#FFFFAA";
+			    spanElement[j].style.background = "#FFFFAA";
+			    myArray4[i].label++;
+			    globalArray[myArray4[i].indexVal]++
+			    myArray4[i].label = myArray4[i].label%2; // instead of 1
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;	
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+
+
+
+function selectAllDays(){
+       for (var i = 0; i <31; i++){
+		var j = i+19;
+		spanElementInfo[j].style.background = "#FFFFAA";
+		spanElement[j].style.background = "#FFFFAA";
+		var numberPhotos = globalDay[i];	
+		if (myArray3[i].label == 0) {
+			if (numberPhotos == 0){
+			    myArray3[i].label++;
+			    globalArray[myArray3[i].indexVal]++
+			    myArray3[i].label = myArray3[i].label%2;
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
+			} else{	
+			}
+		}else {
+			if (numberPhotos == 0){
+			}else{
+			    myArray3[i].label++;
+			    globalArray[myArray3[i].indexVal]++
+			    myArray3[i].label = myArray3[i].label%2; // instead of 1
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;	
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+function de_selectAllDays(){
+       for (var i = 0; i <31; i++){
+		var j = i+19;
+		spanElementInfo[j].style.background = "#DDDDDD";
+		spanElement[j].style.background = "#DDDDDD";
+		var numberPhotos = globalDay[i];	
+		if (myArray3[i].label == 0) {
+			if (numberPhotos == 0){			  
+			} else{	
+			    myArray3[i].label++;
+			    globalArray[myArray3[i].indexVal]++
+			    myArray3[i].label = myArray3[i].label%2;
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
+			}
+		}else {
+			if (numberPhotos == 0){
+			    myArray3[i].label++;
+			    globalArray[myArray3[i].indexVal]++
+			    myArray3[i].label = myArray3[i].label%2; // instead of 1
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;	
+			}else{			  
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+function mirrorAllDays(){
+         for (var i = 0; i <31; i++){
+		var j = i+19;		
+		var numberPhotos = globalDay[i];	
+		if (myArray3[i].label == 0) {
+			if (numberPhotos == 0){
+			    spanElementInfo[j].style.background = "#FFFFAA";
+			    spanElement[j].style.background = "#FFFFAA";
+			    myArray3[i].label++;
+			    globalArray[myArray3[i].indexVal]++
+			    myArray3[i].label = myArray3[i].label%2;
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
+			} else{
+			    spanElementInfo[j].style.background = "#DDDDDD";
+			    spanElement[j].style.background = "#DDDDDD";
+			    myArray3[i].label++;
+			    globalArray[myArray3[i].indexVal]++
+			    myArray3[i].label = myArray3[i].label%2;
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
+			}
+		}else {
+			if (numberPhotos == 0){
+			    spanElementInfo[j].style.background = "#DDDDDD";
+			    spanElement[j].style.background = "#DDDDDD";
+			    myArray3[i].label++;
+			    globalArray[myArray3[i].indexVal]++
+			    myArray3[i].label = myArray3[i].label%2; 
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;	
+			}else{
+			    spanElementInfo[j].style.background = "#FFFFAA";
+			    spanElement[j].style.background = "#FFFFAA";
+			    myArray3[i].label++;
+			    globalArray[myArray3[i].indexVal]++
+			    myArray3[i].label = myArray3[i].label%2;
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;	
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+
+
+
+function selectAllMonths(){
+      for (var i = 0; i < 12; i++){
+		var j = i+7;
+		spanElementInfo[j].style.background = "#FFFFAA";
+		spanElement[j].style.background = "#FFFFAA";
+		var numberPhotos = globalMonth[i];		
+		if (myArray2[i].label == 0) {		
+			if (numberPhotos == 0){				   	   
+			    myArray2[i].label++;
+			    globalArray[myArray2[i].indexVal]++
+			    myArray2[i].label = myArray2[i].label%2;
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
+			} else{				  
+			}
+		}else {
+			if (numberPhotos == 0){			 
+			}else{			  
+			    myArray2[i].label++;
+			    globalArray[myArray2[i].indexVal]++
+			    myArray2[i].label = myArray2[i].label%2; // instead of 1
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;	
+		      }
+		}  	
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+function de_selectAllMonths(){
+      for (var i = 0; i < 12; i++){
+		var j = i+7;
+		spanElementInfo[j].style.background = "#DDDDDD";
+		spanElement[j].style.background = "#DDDDDD";
+		var numberPhotos = globalMonth[i];		
+		if (myArray2[i].label == 0) {		
+			if (numberPhotos == 0){				   	   
+			   
+			} else{		
+			    myArray2[i].label++;
+			    globalArray[myArray2[i].indexVal]++
+			    myArray2[i].label = myArray2[i].label%2;
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;		 	    			   
+			}
+		}else {
+			if (numberPhotos == 0){	
+			    myArray2[i].label++;
+			    globalArray[myArray2[i].indexVal]++
+			    myArray2[i].label = myArray2[i].label%2; // instead of 1
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;			
+			}else{						   
+		      }
+		}  	
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+
+function mirrorAllMonths(){
+	  for (var i = 0; i < 12; i++){
+		var j = i+7;		
+		var numberPhotos = globalMonth[i];		
+		if (myArray2[i].label == 0) {		
+			if (numberPhotos == 0){	
+			    spanElementInfo[j].style.background = "#FFFFAA";
+			    spanElement[j].style.background = "#FFFFAA";	   
+			    myArray2[i].label++;
+			    globalArray[myArray2[i].indexVal]++
+			    myArray2[i].label = myArray2[i].label%2;
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
+			} else{	
+			    spanElementInfo[j].style.background = "#DDDDDD";
+			    spanElement[j].style.background = "#DDDDDD";
+			    myArray2[i].label++;
+			    globalArray[myArray2[i].indexVal]++
+			    myArray2[i].label = myArray2[i].label%2;
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;		   
+			}
+		}else {
+			if (numberPhotos == 0){
+			    spanElementInfo[j].style.background = "#DDDDDD";
+			    spanElement[j].style.background = "#DDDDDD";
+			    myArray2[i].label++;
+			    globalArray[myArray2[i].indexVal]++
+			    myArray2[i].label = myArray2[i].label%2; // instead of 1
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
+			}else{
+			  spanElementInfo[j].style.background = "#FFFFAA";
+			    spanElement[j].style.background = "#FFFFAA";
+			    myArray2[i].label++;
+			    globalArray[myArray2[i].indexVal]++
+			    myArray2[i].label = myArray2[i].label%2; // instead of 1
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;	
+		      }
+		}  	
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+/*this changes the color and the selection value 0 or 1*/
+function selectAllYear(){       
+      for (var i = 0; i < 7; i++){		
+		spanElementInfo[i].style.background = "#FFFFAA";
+		spanElement[i].style.background = "#FFFFAA";
+		var numberPhotos = globalYear[i];		
+		if (myArray1[i].label == 0) {		
+			if (numberPhotos == 0){			    
+			    myArray1[i].label++;
+			    globalArray[myArray1[i].indexVal]++
+			    myArray1[i].label = myArray1[i].label%2; // instead of 1
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;			    			
+			} else{				  
+			}
+		}else {
+			if (numberPhotos == 0){					 
+			}else{					   
+			    myArray1[i].label++;
+			    globalArray[myArray1[i].indexVal]++
+			    myArray1[i].label = myArray1[i].label%2; // instead of 1
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;	
+		      }
+		}  	
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }     
+}
+
+function de_selectAllYear(){
+        for (var i = 0; i < 7; i++){		
+		spanElementInfo[i].style.background = "#DDDDDD";
+		spanElement[i].style.background = "#DDDDDD";
+		var numberPhotos = globalYear[i];
+		if (myArray1[i].label == 0) {
+			if (numberPhotos == 0){			   		    			
+			} else{
+			    myArray1[i].label++;
+			    globalArray[myArray1[i].indexVal]++
+			    myArray1[i].label = myArray1[i].label%2;
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;	
+			}
+		}else {
+			if (numberPhotos == 0){
+			    myArray1[i].label++;
+			    globalArray[myArray1[i].indexVal]++
+			    myArray1[i].label = myArray1[i].label%2; // instead of 1
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;			 
+			}else{					   			   
+		      }
+		}  	
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }
+}
+
+function mirrorAllYear(){
+      for (var i = 0; i < 7; i++){				
+		var numberPhotos = globalYear[i];
+		if (myArray1[i].label == 0) {
+			if (numberPhotos == 0){	
+			    spanElementInfo[i].style.background = "#FFFFAA";
+			    spanElement[i].style.background = "#FFFFAA";
+			    myArray1[i].label++;
+			    globalArray[myArray1[i].indexVal]++
+			    myArray1[i].label = myArray1[i].label%2; // instead of 1
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;		   		    			
+			} else{
+			    spanElementInfo[i].style.background = "#DDDDDD";
+			    spanElement[i].style.background = "#DDDDDD";
+			    myArray1[i].label++;
+			    globalArray[myArray1[i].indexVal]++
+			    myArray1[i].label = myArray1[i].label%2;
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;	
+			}
+		}else {
+			if (numberPhotos == 0){
+			    spanElementInfo[i].style.background = "#DDDDDD";
+			    spanElement[i].style.background = "#DDDDDD";
+			    myArray1[i].label++;
+			    globalArray[myArray1[i].indexVal]++
+			    myArray1[i].label = myArray1[i].label%2; // instead of 1
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;			 
+			}else{
+			    spanElementInfo[i].style.background = "#FFFFAA";
+			    spanElement[i].style.background = "#FFFFAA";
+			    myArray1[i].label++;
+			    globalArray[myArray1[i].indexVal]++
+			    myArray1[i].label = myArray1[i].label%2; // instead of 1
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;
+		      }
+		}
+      }
+      if (once == true) {
+	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+	once = false;
+      }
+}
+
+
 
 function histogramReset(){
 	for (var i=0;i<globalArray.length;i++){
@@ -1450,40 +1824,14 @@ function timeController1XMLHistogram() {
 	// ********************************************************* for the day of
 	// the week
 	text1 = text1 + "<weekdays>";
-	for ( var i = 74; i <= 79; i++) {
-	    text1 = text1 + "<weekday>" + nameString[i + 2] + "</weekday>";
+	for ( var i = 74; i <= 79; i++) {				
+	    text1 = text1 + "<weekday>" + nameString[i + 2] + "</weekday>";		
 	}
 	text1 = text1 + "<weekday>" + nameString[75] + "</weekday>";
-	text1 = text1 + "</weekdays>";
+	text1 = text1 + "</weekdays>";	
 	// *********************************************************
 	text1 = text1 + "</calendar>";
 	return text1;
 }
 // sendToServer.js
-function sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram) {
-	var textToSend = headerXMLHistogram + "" + bodyXMLHistogram;
-	textToSend = "<request>" + textToSend + "</request>";
-	if (window.XMLHttpRequest) {
-		xmlHttp = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-	} else {
-		document.write("browser not supported");
-	}
-	// var xmlHttp = createXMLHttpRequest();
 
-	xmlHttp.onreadystatechange = function() {
-		if (xmlHttp.readyState == 4) {
-			var xmlDoc = xmlHttp.responseText;
-			//alert("histogram response: "+xmlDoc);
-			loadHistogram(xmlDoc);
-		}
-	};
-
-//	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/HistrogramsData");
-	xmlHttp.open("POST", "HistrogramsData");
-	xmlHttp.setRequestHeader('Content-Type',
-			'application/x-www-form-urlencoded; charset=UTF-8');
-	xmlHttp.send("xml=" + encodeURIComponent(textToSend)+ "&timestamp=" + new Date().getTime());
-	//alert("histogram"+textToSend);
-}

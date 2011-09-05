@@ -13,13 +13,9 @@ $(document).ready(function () {
     $(function () {
         $('#validateForm').validate({
             errorPlacement: $.datepick.errorPlacement,
-            rules: {
-                //	validMinPicker: {dpMinDate: []},
-                //	validMaxPicker: {dpMaxDate: []},
-                //	validMinMaxPicker: {dpMinMaxDate: []}
+            rules: {         
             },
-            messages: {
-                //	validRangePicker: 'Please enter a valid date range',
+            messages: {                
                 popupDatepicker1: 'Invalid Date!'
             }
         });

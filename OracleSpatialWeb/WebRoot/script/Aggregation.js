@@ -1,14 +1,13 @@
 var listenerHandle;
 function agregationPolygonsAdd() {
 	$("#voronoiT").attr('value', 'Disable triangle agregation');
-	$("#legendInfo").html("<span>number of pictures </span><br/> <span> <img src='images/circle_bl.ico' width='20px' height='20px'/> 1-99 </span> <br/><span> <img src='images/circle_gr.ico' width='20px' height='20px' /> 100-999</span><br/><span> <img src='images/circle_lgr.ico' width='20px' height='20px'/> 1000-9999</span> <br/><span> <img src='images/circle_or.ico' width='20px' height='20px'/> > 10000</span>");
-	listenerHandle = google.maps.event.addListener(map, 'zoom_changed',
+	listenerHandle = google.maps.event.addListener(map, 'idle',
 			function() {
-				removeCircles(); // circle.js								
+				removeCircles();
 				var bounds = map.getBounds();
 				var center = map.getCenter();
-				var zoomLevel = map.getZoom();				
-				scaleLevelOnStart();		      				
+				var zoomLevel = map.getZoom();
+				scaleLevelOnStart();
 			});
 }
 
@@ -29,7 +28,7 @@ $(function() {
 
 });
 $(function() {
-	$("#timeC1, #timeC2, #timeC3, #tab1ready, #tab2ready, #tab3ready, #tab4ready")
+	$("#timeC7, #timeC1, #timeC2, #timeC3, #tab1ready, #tab2ready, #tab3ready, #tab4ready")
 			.hover(function() {
 				$(this).removeClass("timeCstar");
 				$(this).addClass("hover");
@@ -39,24 +38,29 @@ $(function() {
 			});
 });
 
-$(function() {
+$(function() {	
 	$("#CalendarContent").hide();
-	//$("#selectedYMDHContent").hide();
 	$("#histogramContent").hide();
-	
+	$("#SearchBox").hide();	
 	$("#selectedYMDHCheckbox").click(function() {
-		//$("#selectedYMDHContent").show(1000);				
-		$("#CalendarContent").hide(1000);		
+		$("#CalendarContent").hide(1000);
 		$("#histogramContent").hide(1000);
+		$("#table7").css({ 'padding-bottom' : '0px'});
 	}); 
 	$("#CalendarcheckBox").click(function() {
 		$("#CalendarContent").show(1000);
-		//$("#selectedYMDHContent").hide(1000);		
 		$("#histogramContent").hide(1000);
+		$("#table7").css({ 'padding-bottom' : '0px'});
 	});
-	$("#histogramCheckbox").click(function() {
+	$("#histogramCheckbox").click(function() {		
+		$("#table7").css({ 'padding-bottom' : '40px'});
 		$("#histogramContent").show(1000);
 		$("#CalendarContent").hide(1000);
-		//$("#selectedYMDHContent").hide(1000);
 	});	
+	$("#SearchCheckBox").toggle(function() {
+	     $("#SearchBox").show();
+	}, function() {
+	      $("#SearchBox").hide();
+	});
+
 });

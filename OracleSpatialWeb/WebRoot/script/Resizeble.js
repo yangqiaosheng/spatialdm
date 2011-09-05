@@ -1,4 +1,4 @@
 $(document).ready(function(){
-    $("#idlegendContainer").resizable();
+    //$("#idlegendContainer").resizable();
     /*$("#move1").resizable(); */   
 });
