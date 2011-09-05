@@ -49,21 +49,21 @@
 			center(m.geom) as "center",
 			'R${radius}' as "radius"
 		from FLICKR_EUROPE_AREA_${radius} m
-		where ST_Intersects(m.geom, #{pgQueryGeom})
+		where ST_Intersects(m.geom, '${pgQueryGeom}')
 	</select>
 
 	<select id="selectIdsByGeom" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID
 		from FLICKR_EUROPE_AREA_${radius} m
-		where ST_Intersects(m.geom, #{pgQueryGeom})
+		where ST_Intersects(m.geom, '${pgQueryGeom}')
 	</select>
 
 	<select id="selectByGeomSize" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			COUNT(*)
 		from FLICKR_EUROPE_AREA_${radius} m
-		where ST_Intersects(m.geom, #{pgQueryGeom})
+		where ST_Intersects(m.geom, '${pgQueryGeom}')
 	</select>
 
 	<select id="hoursTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
