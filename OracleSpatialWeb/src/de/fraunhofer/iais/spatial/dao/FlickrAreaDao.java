@@ -314,6 +314,10 @@ public abstract class FlickrAreaDao {
 	}
 
 	public final static String createDatesTagsCountDbString(SortedMap<String, Map<String, Integer>> datesTagsCount){
+		return createDatesTagsCountDbString(datesTagsCount, 0);
+	}
+
+	public final static String createDatesTagsCountDbString(SortedMap<String, Map<String, Integer>> datesTagsCount, int limitSize){
 		StringBuffer strBuffer = new StringBuffer();
 
 		for (Map.Entry<String, Map<String, Integer>> e : datesTagsCount.entrySet()) {
@@ -321,7 +325,12 @@ public abstract class FlickrAreaDao {
 					 .append(":")
 					 .append("<");
 
+			int i = 0;
 			for (Map.Entry<String, Integer> term : sortTagsCountByValuesDesc(e.getValue()).entrySet()) {
+				if (limitSize > 0 && i++ > limitSize) {
+					break;
+				}
+
 				strBuffer.append(term.getKey())
 						 .append("|")
 						 .append(term.getValue())
