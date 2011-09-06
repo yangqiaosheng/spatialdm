@@ -18,7 +18,7 @@ public class ValidateCount {
 	private static void countYear() throws Exception {
 		Connection conn = db.getConn();
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select * from flickr_europe_topviewed_10000_tags_count where id = 3");
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from flickr_europe_topviewed_10000_tags_count where id = 30");
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {

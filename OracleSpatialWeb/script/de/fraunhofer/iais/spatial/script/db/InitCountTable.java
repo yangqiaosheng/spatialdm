@@ -38,7 +38,7 @@ public class InitCountTable {
 
 		Connection conn = db.getConn();
 
-		PreparedStatement deleteStmt = db.getPstmt(conn, "delete from " + COUNTS_TABLE_NAME);
+		PreparedStatement deleteStmt = db.getPstmt(conn, "truncate " + COUNTS_TABLE_NAME);
 		deleteStmt.executeUpdate();
 		db.close(deleteStmt);
 
