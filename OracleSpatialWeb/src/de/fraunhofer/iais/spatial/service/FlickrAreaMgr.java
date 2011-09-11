@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -141,14 +142,14 @@ public class FlickrAreaMgr {
 			areaDao.loadHoursTagsCount(area);
 		}
 		hoursTagsCount = area.getHoursTagsCount();
+
 		System.out.println(hoursTagsCount);
 
 		for (String queryStr : areaDto.getQueryStrs()) {
 			if (hoursTagsCount.containsKey(queryStr)) {
 				Map<String, Integer> tags = hoursTagsCount.get(queryStr);
 				for (Map.Entry<String, Integer> e : tags.entrySet()) {
-					int previousValue = MapUtils.getIntValue(tagsCount, tagsCount);
-					tagsCount.put(e.getKey(), previousValue + e.getValue());
+					tagsCount.put(e.getKey(), MapUtils.getIntValue(tagsCount, e.getKey()) + e.getValue());
 				}
 			}
 		}
@@ -419,6 +420,50 @@ public class FlickrAreaMgr {
 	@Deprecated
 	public void createBarChart(Map<String, Integer> cs) {
 		ChartUtil.createBarChart(cs, "temp/bar.jpg");
+	}
+
+	public void createTagTimeSeriesChartOld(FlickrArea area, String tag, Set<String> years, OutputStream os) throws ParseException, IOException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
+		// init
+		for (int i : DateUtil.allYearInts) {
+			for (int j : DateUtil.allMonthInts) {
+				for (int k : DateUtil.allDayInts) {
+					countsMap.put(sdf.parse(i + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k)), 0);
+				}
+			}
+		}
+
+		Map<String, Integer> countsMap2 = new TreeMap<String, Integer>();
+		for (int j : DateUtil.allMonthInts) {
+			for (int k : DateUtil.allDayInts) {
+				countsMap2.put((new DecimalFormat("00").format(j) + "-" + new DecimalFormat("00").format(k)), 0);
+			}
+		}
+
+
+		if (MapUtils.isEmpty(area.getDaysTagsCount())) {
+			areaDao.loadDaysTagsCount(area);
+		}
+		Map<String, Map<String, Integer>> daysTagsCount = area.getDaysTagsCount();
+		System.out.println(daysTagsCount);
+
+		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
+			if (years.contains(e.getKey().substring(0, 4))) {
+				for (Map.Entry<String, Integer> term : daysTagsCount.get(e.getKey()).entrySet()) {
+					if(term.getKey().equals(tag)){
+						countsMap.put(sdf.parse(e.getKey()), term.getValue());
+						countsMap2.put(e.getKey().substring(5, 10), term.getValue() + MapUtils.getIntValue(countsMap2, e.getKey().substring(5, 10)));
+					}
+				}
+			}
+		}
+
+		System.out.println(countsMap);
+		System.out.println(countsMap2);
+		ChartUtil.createTimeSeriesChartOld(countsMap, os);
+		ChartUtil.createBarChart(countsMap2, "temp/bar.jpg");
 	}
 
 	@Deprecated

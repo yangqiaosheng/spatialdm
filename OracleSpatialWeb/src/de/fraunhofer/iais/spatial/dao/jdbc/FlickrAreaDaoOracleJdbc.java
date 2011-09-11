@@ -562,4 +562,10 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 
 	}
 
+	@Override
+	public void loadDaysTagsCount(FlickrArea area) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

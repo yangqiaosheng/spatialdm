@@ -86,7 +86,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius + "|queryStrs:" + areaDto.getQueryStrs()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 
