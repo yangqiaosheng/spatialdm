@@ -34,6 +34,7 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
+import org.jfree.data.time.MovingAverage;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
@@ -93,10 +94,10 @@ public class ChartUtil {
 						2000), //year
 						e.getValue()); //value
 			}
-			timeSeriesCollection.addSeries(timeSeries);
+//			timeSeriesCollection.addSeries(timeSeries);
 
-//			TimeSeries avgtimeseries = MovingAverage.createMovingAverage(timeseries, String.valueOf(year), 5, 0);
-//			timeseriescollection.addSeries(avgtimeseries);
+			TimeSeries avgtimeseries = MovingAverage.createMovingAverage(timeSeries, String.valueOf(year), 1, 0);
+			timeSeriesCollection.addSeries(avgtimeseries);
 		}
 
 		return timeSeriesCollection;

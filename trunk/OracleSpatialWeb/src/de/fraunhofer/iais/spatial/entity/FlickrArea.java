@@ -31,6 +31,7 @@ public class FlickrArea implements Serializable {
 	private SortedMap<String, Integer> daysCount = Maps.newTreeMap();
 	private SortedMap<String, Integer> hoursCount = Maps.newTreeMap();
 	private SortedMap<String, Map<String, Integer>> hoursTagsCount = Maps.newTreeMap();
+	private SortedMap<String, Map<String, Integer>> daysTagsCount = Maps.newTreeMap();
 
 	public enum Radius {
 		R375, R750, R1250, R2500, R5000, R10000, R20000, R40000, R80000, R160000, R320000;
@@ -123,6 +124,10 @@ public class FlickrArea implements Serializable {
 
 	public SortedMap<String, Map<String, Integer>> getHoursTagsCount() {
 		return hoursTagsCount;
+	}
+
+	public SortedMap<String, Map<String, Integer>> getDaysTagsCount() {
+		return daysTagsCount;
 	}
 
 }

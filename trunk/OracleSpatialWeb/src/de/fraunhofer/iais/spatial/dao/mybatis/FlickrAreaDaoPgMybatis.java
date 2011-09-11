@@ -61,11 +61,21 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		}
 	}
 
+	@Override
 	public void loadHoursTagsCount(FlickrArea area) {
 
 		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hoursTagsCount", area);
 		if (count != null) {
 			parseHoursTagsCountDbString(count, area.getHoursTagsCount());
+		}
+	}
+
+	@Override
+	public void loadDaysTagsCount(FlickrArea area) {
+
+		String count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".daysTagsCount", area);
+		if (count != null) {
+			parseDaysTagsCountDbString(count, area.getDaysTagsCount());
 		}
 	}
 

@@ -43,6 +43,7 @@ public abstract class FlickrAreaDao {
 
 	// eg. 2010-03-04@23:test tags|32,schön|334,宫殿|12;
 	public static String hourTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
+	public static String dayTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
 
 
 	/**
@@ -138,6 +139,12 @@ public abstract class FlickrAreaDao {
 	public abstract void loadHoursTagsCount(FlickrArea area);
 
 	/**
+	 *
+	 * @param area
+	 */
+	public abstract void loadDaysTagsCount(FlickrArea area);
+
+	/**
 	 * get the total amount of photos uploaded within this area
 	 * @param areaid
 	 * @return long - number of photos
@@ -212,6 +219,7 @@ public abstract class FlickrAreaDao {
 		for (int i = tempQueryStrs.size() - idx; photos.size() < pageSize && i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
 				List<FlickrPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), pageSize - photos.size() + (start - pos));
+				System.out.println("getPhoto():" + tempQueryStrs.get(i) + "|HasSize: " + count.get(tempQueryStrs.get(i)) + "|limit: " + (pageSize - photos.size() + (start - pos))+ "|gotSize: " + tempPhotos.size());
 				photos.addAll(tempPhotos.subList(start - pos, tempPhotos.size()));
 				pos = start;
 			}
@@ -303,6 +311,17 @@ public abstract class FlickrAreaDao {
 				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
 			}
 			hoursTagsCount.put(m.group(1), tagsCount);
+		}
+	}
+
+	public final static void parseDaysTagsCountDbString(String count, SortedMap<String, Map<String, Integer>> daysTagsCount) {
+		Matcher m = Pattern.compile(dayTagsRegExPatternStr).matcher(count);
+		while (m.find()) {
+			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
+			for(String term : StringUtils.split(m.group(2), ",")){
+				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
+			}
+			daysTagsCount.put(m.group(1), tagsCount);
 		}
 	}
 

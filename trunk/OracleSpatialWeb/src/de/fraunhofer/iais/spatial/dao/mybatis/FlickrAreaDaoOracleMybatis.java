@@ -294,4 +294,10 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 		return null;
 	}
 
+	@Override
+	public void loadDaysTagsCount(FlickrArea area) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

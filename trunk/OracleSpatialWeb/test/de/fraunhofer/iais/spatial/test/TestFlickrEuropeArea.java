@@ -5,12 +5,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -28,6 +31,8 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -164,6 +169,30 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
+	public void testTag() {
+		long start = System.currentTimeMillis();
+
+		FlickrAreaDto areaDto = new FlickrAreaDto();
+		areaDto.setQueryLevel(Level.HOUR);
+		Set<String> queryStr = areaDto.getQueryStrs();
+
+		for (int i = 2005; i < 2010; i++) {
+			for (int j = 1; j <= 12; j++) {
+				for (int k = 1; k < 30; k++) {
+					for (int l = 1; l < 24; l++) {
+						queryStr.add(i + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k) + "@" +  new DecimalFormat("00").format(l));
+					}
+				}
+			}
+		}
+
+		FlickrArea area = new FlickrArea();
+		area.setId(10);
+		System.out.println(tagsResponseXml(area, areaDto, 30));
+		System.out.println(System.currentTimeMillis() - start);
+	}
+
+	@Test
 	public void testJdbcDao0() {
 		long total = areaMgr.getAreaDao().getTotalCountWithinArea(1);
 
@@ -217,22 +246,6 @@ public class TestFlickrEuropeArea {
 			// System.out.println(person+":"+dao.getPersonCount(a.getId(),
 			// person));
 		}
-	}
-
-	@Test
-	public void testTag() {
-		long start = System.currentTimeMillis();
-
-		FlickrAreaDto areaDto = new FlickrAreaDto();
-		areaDto.setQueryLevel(Level.HOUR);
-		Set<String> queryStr = areaDto.getQueryStrs();
-		queryStr.add("2006-01-01@00");
-		queryStr.add("2006-10-07@17");
-		queryStr.add("2009-05-03@11");
-		FlickrArea area = new FlickrArea();
-		area.setId(3646);
-		System.out.println(tagsResponseXml(area, areaDto, 30));
-		System.out.println(System.currentTimeMillis() - start);
 	}
 
 	private String tagsResponseXml(FlickrArea area, FlickrAreaDto areaDto, int size) {
@@ -637,6 +650,22 @@ public class TestFlickrEuropeArea {
 //		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, icon, new FileOutputStream("temp/tsChartm.png"));
 		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto,  100, 60, false, smmoth, icon, new FileOutputStream("temp/tsCharty.png"));
 		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 100, 60, false, smmoth, icon, new FileOutputStream("temp/tsChartw.png"));
+	}
+
+	@Test
+	public void testTagTimeSeriesChart() throws Exception {
+		testRequestXml();
+		Set<String> years = new HashSet<String>();
+		years.add("2005");
+		years.add("2006");
+		years.add("2009");
+		years.add("2010");
+		years.add("2011");
+		years.add("2007");
+		years.add("2008");
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R320000);
+
+		areaMgr.createTagTimeSeriesChartOld(area, "motorsport", years, new FileOutputStream("temp/tsTagCharty.png"));
 	}
 
 //	@Test
