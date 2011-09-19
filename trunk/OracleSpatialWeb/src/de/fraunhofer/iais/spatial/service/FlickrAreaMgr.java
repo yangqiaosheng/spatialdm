@@ -427,18 +427,11 @@ public class FlickrAreaMgr {
 
 		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
 		// init
-		for (int i : DateUtil.allYearInts) {
+		for (String year : years) {
 			for (int j : DateUtil.allMonthInts) {
 				for (int k : DateUtil.allDayInts) {
-					countsMap.put(sdf.parse(i + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k)), 0);
+					countsMap.put(sdf.parse(year + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k)), 0);
 				}
-			}
-		}
-
-		Map<String, Integer> countsMap2 = new TreeMap<String, Integer>();
-		for (int j : DateUtil.allMonthInts) {
-			for (int k : DateUtil.allDayInts) {
-				countsMap2.put((new DecimalFormat("00").format(j) + "-" + new DecimalFormat("00").format(k)), 0);
 			}
 		}
 
@@ -446,6 +439,7 @@ public class FlickrAreaMgr {
 		if (MapUtils.isEmpty(area.getDaysTagsCount())) {
 			areaDao.loadDaysTagsCount(area);
 		}
+
 		Map<String, Map<String, Integer>> daysTagsCount = area.getDaysTagsCount();
 		System.out.println(daysTagsCount);
 
@@ -454,16 +448,12 @@ public class FlickrAreaMgr {
 				for (Map.Entry<String, Integer> term : daysTagsCount.get(e.getKey()).entrySet()) {
 					if(term.getKey().equals(tag)){
 						countsMap.put(sdf.parse(e.getKey()), term.getValue());
-						countsMap2.put(e.getKey().substring(5, 10), term.getValue() + MapUtils.getIntValue(countsMap2, e.getKey().substring(5, 10)));
 					}
 				}
 			}
 		}
 
-		System.out.println(countsMap);
-		System.out.println(countsMap2);
 		ChartUtil.createTimeSeriesChartOld(countsMap, os);
-		ChartUtil.createBarChart(countsMap2, "temp/bar.jpg");
 	}
 
 	@Deprecated
