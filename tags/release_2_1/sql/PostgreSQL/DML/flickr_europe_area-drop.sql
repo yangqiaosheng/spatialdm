@@ -1,0 +1,12 @@
+drop table flickr_europe_area;
+drop table flickr_europe_area_320000;
+drop table flickr_europe_area_160000;
+drop table flickr_europe_area_80000;
+drop table flickr_europe_area_20000;
+drop table flickr_europe_area_40000;
+drop table flickr_europe_area_10000;
+drop table flickr_europe_area_5000;
+drop table flickr_europe_area_2500;
+drop table flickr_europe_area_1250;
+drop table flickr_europe_area_750;
+drop table flickr_europe_area_375;

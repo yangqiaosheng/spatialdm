@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+ 	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<properties resource="jdbc.properties" />
+	<settings>
+		<setting name="cacheEnabled" value="true"/>
+	</settings>
+	<typeAliases>
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.FlickrArea" alias="FlickrArea" />
+		<typeAlias type="de.fraunhofer.iais.spatial.entity.FlickrPhoto" alias="FlickrPhoto" />
+		<typeAlias type="de.fraunhofer.iais.spatial.dto.FlickrAreaDto" alias="FlickrAreaDto" />
+	</typeAliases>
+	<typeHandlers>
+		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.ListTypeHandler" javaType="java.util.List" />
+		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.SdoGeometryTypeHandler" javaType="oracle.spatial.geometry.JGeometry" />
+		<typeHandler handler="de.fraunhofer.iais.spatial.dao.mybatis.type.Point2DTypeHandler" javaType="java.awt.geom.Point2D" />
+	</typeHandlers>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+
+		<environment id="deployment">
+			<transactionManager type="JDBC" />
+			<dataSource type="JNDI">
+				<property name="data_source" value="java:comp/env/jdbc/OracleCP" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrAreaOracle.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrPhotoOracle.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrAreaPg.xml" />
+		<mapper resource="de/fraunhofer/iais/spatial/dao/mybatis/FlickrPhotoPg.xml" />
+	</mappers>
+</configuration>
