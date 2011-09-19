@@ -16,7 +16,7 @@ import com.vividsolutions.jts.math.Vector2D;
 
 public class FeatureGeometryCalculator {
 
-	GeometryFactory geometryFactory = new GeometryFactory();
+	public GeometryFactory geometryFactory = new GeometryFactory();
 
 	public Polygon arrow(Point fromPt, Point toPt, float width) {
 
@@ -94,6 +94,7 @@ public class FeatureGeometryCalculator {
 		return polygons;
 
 	}
+
 
 	public Polygon peak(Coordinate fromCoordinate, Coordinate dirCoordinate, float width, float peakBodyLength, float peakHeadLength) {
 		Coordinate deltaVector = new Coordinate(dirCoordinate.x - fromCoordinate.x, dirCoordinate.y - fromCoordinate.y);

@@ -1,19 +1,15 @@
 package de.fraunhofer.iais.ta.service;
 
-import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.jaitools.swing.JTSFrame;
-
+import com.google.common.collect.Lists;
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.util.AffineTransformation;
 import com.vividsolutions.jts.math.Vector2D;
-import com.vividsolutions.jts.operation.overlay.OverlayOp;
 
 import de.fraunhofer.iais.ta.entity.TrajectorySegment;
 import de.fraunhofer.iais.ta.geometry.FeatureGeometryCalculator;
@@ -35,14 +31,33 @@ public class TrajectoryRenderer {
 		Polygon boundary = featureGeometryCalculator.boundary(segment.getFromCoordinate(), segment.getToCoordinate(), segment.getFeature().getWidth());
 		segment.getFeature().setBoundary(boundary);
 
-		List<Polygon> polygons = new ArrayList<Polygon>();
+		List<Polygon> polygons = Lists.newArrayList();
 		polygons = featureGeometryCalculator.peaks(segment.getFromCoordinate(), segment.getToCoordinate(), segment.getFeature().getWidth() * 0.8f, peakBodyLength, peakHeadLength, spaceLength);
 		segment.getFeature().setTexture(polygons);
 	}
 
-	@Deprecated
-	public Polygon joinTrajectorySegments(List<TrajectorySegment> segments, JTSFrame jtsFrame) {
-		float width = 0.9f;
+	public void joinTrajectorySegments(List<TrajectorySegment> segments) {
+		TrajectorySegment lastSegment = null;
+		for (int i = 0; i < segments.size(); i++) {
+			TrajectorySegment segment = segments.get(i);
+			if (i != 0) {
+				List<Polygon> texture = lastSegment.getFeature().getTexture();
+				Geometry convexHall = featureGeometryCalculator.geometryFactory.buildGeometry(segment.getFeature().getTexture()).convexHull();
+				List<Polygon> newTexture = Lists.newArrayList();
+				for (int j = 0; j < texture.size(); j++) {
+					Polygon polygon = texture.get(j);
+					if(!convexHall.intersects(polygon)){
+						newTexture.add(polygon);
+					}
+				}
+				lastSegment.getFeature().setTexture(newTexture);
+			}
+			lastSegment = segment;
+		}
+	}
+
+
+	public Polygon joinTrajectorySegments2(List<TrajectorySegment> segments) {
 		Coordinate from = null;
 		Coordinate join = null;
 		Coordinate to = null;
@@ -75,9 +90,6 @@ public class TrajectoryRenderer {
 				Coordinate c1 = new Coordinate((bisectorNormalVector.x * (segment.getLength() + segment.getFeature().getWidth()) + join.x), (bisectorNormalVector.y * (segment.getLength() + segment.getFeature().getWidth()) + join.y));
 				Coordinate c2 = new Coordinate(-bisectorNormalVector.x / Math.sin(angle / 2) * segment.getFeature().getWidth() * 2 + join.x, -bisectorNormalVector.y / Math.sin(angle / 2) * segment.getFeature().getWidth() * 2 + join.y);
 				Coordinate c3 = new Coordinate(to.x, to.y);
-				jtsFrame.addGeometry(geometryFactory.createPoint(c1).buffer(0.1), Color.BLACK);
-				jtsFrame.addGeometry(geometryFactory.createPoint(c2).buffer(0.1), Color.BLACK);
-				jtsFrame.addGeometry(geometryFactory.createPoint(c3).buffer(0.1), Color.BLACK);
 
 				LinearRing shell = geometryFactory.createLinearRing(new Coordinate[] { c1, c2, c3, c1 });
 				Polygon trianglePolygon = geometryFactory.createPolygon(shell, null);
