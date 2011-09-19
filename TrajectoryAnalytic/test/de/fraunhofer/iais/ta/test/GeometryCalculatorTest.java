@@ -27,23 +27,34 @@ import de.fraunhofer.iais.ta.geometry.FeatureGeometryCalculator;
 public class GeometryCalculatorTest {
 
 	public static void main(String[] args) {
-		Coordinate[] coordinates = new Coordinate[] { new Coordinate(10, 20),  new Coordinate(10, 30),  new Coordinate(20, 30)};
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(10, 20),  new Coordinate(10, 30),  new Coordinate(20, 30), new Coordinate(25, 20)};
+		Coordinate[] coordinates2 = new Coordinate[] { new Coordinate(10.3, 19.6), new Coordinate(9.3, 24.2),  new Coordinate(10.2, 31.3),  new Coordinate(16.5, 31.6), new Coordinate(19.5, 29.2), new Coordinate(25.2, 20.2)};
 		GeometryFactory geometryFactory = new GeometryFactory();
 		LineString path = geometryFactory.createLineString(coordinates);
+		LineString path2 = geometryFactory.createLineString(coordinates2);
 		System.out.println(path.toText());
 
 //		BufferBuilder bufferBuilder = new BufferBuilder(BufferParameters);
 		JTSFrame jtsFrame = new JTSFrame("JTS Frame");
-		Geometry buffer = path.buffer(1.5d);
-		for (Coordinate coordinate : buffer.getCoordinates()){
-			jtsFrame.addGeometry(geometryFactory.createPoint(coordinate).buffer(0.1d), Color.BLACK);
-		}
+		Geometry buffer1 = path.buffer(1.0d);
+		Geometry buffer2 = path.buffer(2.0d);
+		Geometry buffer = path.buffer(0.07d);
 
-		jtsFrame.addGeometry(buffer, Color.BLACK);
+		for (Coordinate coordinate : buffer1.getCoordinates()){
+//			jtsFrame.addGeometry(geometryFactory.createPoint(coordinate).buffer(0.1d), Color.BLACK);
+		}
+		jtsFrame.addGeometry(geometryFactory.createPoint(new Coordinate(0, 10)).buffer(0.1d), Color.BLACK);
+		jtsFrame.addGeometry(geometryFactory.createPoint(new Coordinate(0, 40)).buffer(0.1d), Color.BLACK);
+//		jtsFrame.addGeometry(buffer1, Color.GREEN);
+//		jtsFrame.addGeometry(buffer2, Color.LIGHT_GRAY);
 		jtsFrame.setVisible(true);
+		jtsFrame.setBackground(Color.WHITE);
 		jtsFrame.setSize(400, 300);
 
-		jtsFrame.addGeometry(path, Color.RED);
+		jtsFrame.addGeometry(path, Color.BLACK);
+		jtsFrame.addGeometry(path.buffer(0.07d), Color.BLACK);
+		jtsFrame.addGeometry(path2, Color.RED);
+		jtsFrame.addGeometry(path2.buffer(0.07d), Color.RED);
 
 		Polygon trianglePolygon = new FeatureGeometryCalculator().triangle(new Coordinate(10, 20),  new Coordinate(10, 30), 1f);
 		List<Polygon> triangles = new FeatureGeometryCalculator().triangles(new Coordinate(10, 20),  new Coordinate(10, 30), 1f , 2, 1);
@@ -58,7 +69,7 @@ public class GeometryCalculatorTest {
 
 		List<Polygon> peaks = new FeatureGeometryCalculator().peaks(new Coordinate(10, 20),  new Coordinate(10, 30), 1f , 0.2f, 2.2f, 0.3f);
 		for(Polygon peak : peaks){
-			jtsFrame.addGeometry(peak, Color.GREEN);
+//			jtsFrame.addGeometry(peak, Color.GREEN);
 		}
 
 
