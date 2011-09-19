@@ -1,0 +1,32 @@
+<calendar>
+	<years>
+		<year>2007</year>
+		<year>2008</year>
+		<year>2009</year>
+	</years>
+	<months>
+		<month>January</month>
+		<month>March</month>
+		<month>April</month>
+		<month>May</month>
+		<month>September</month>
+		<month>October</month>
+		<month>November</month>
+		<month>December</month>
+	</months>
+	<days>
+		<day>3</day>
+		<day>09</day>
+		<day>12</day>
+		<day>17</day>
+	</days>
+	
+	<hours>
+		<hour>15</hour>
+	</hours>
+	
+	<weekdays>
+<!--		<weekday>Saturday</weekday>-->
+<!--		<weekday>Sunday</weekday>-->
+	</weekdays>
+</calendar>

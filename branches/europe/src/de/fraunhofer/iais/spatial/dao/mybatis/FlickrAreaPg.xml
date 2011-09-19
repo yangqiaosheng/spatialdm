@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrAreaPg">
+
+	<!-- local cache: flushInterval: 24hours -->
+ 	<cache eviction="LRU" size="161" readOnly="true" flushInterval="86400000"></cache>
+
+	<!-- Ehcache: configurated in classpath:ehcache.xml -->
+<!--   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+
+	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
+		select
+			ID,
+			NAME,
+			GEOM,
+			AREA,
+			center(m.geom) as "center",
+			'R${radius}' as "radius"
+		from FLICKR_EUROPE_AREA_${radius} m
+	</select>
+
+	<select id="selectAllIds" resultType="int" parameterType="FlickrAreaDto" useCache="false">
+		select
+			ID
+		from FLICKR_EUROPE_AREA_${radius} m
+	</select>
+
+	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="true">
+		select
+			ID,
+			NAME,
+			GEOM,
+			AREA,
+			center(m.geom) as "center",
+			'R${radius}' as "radius"
+		from FLICKR_EUROPE_AREA_${radius} m
+		where m.ID = #{areaid}
+	</select>
+
+	<select id="selectByGeom" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
+		select
+			ID,
+			NAME,
+			GEOM,
+			AREA,
+			center(m.geom) as "center",
+			'R${radius}' as "radius"
+		from FLICKR_EUROPE_AREA_${radius} m
+		where ST_Intersects(m.geom, '${pgQueryGeom}')
+	</select>
+
+	<select id="selectIdsByGeom" resultType="int" parameterType="FlickrAreaDto" useCache="false">
+		select
+			ID
+		from FLICKR_EUROPE_AREA_${radius} m
+		where ST_Intersects(m.geom, '${pgQueryGeom}')
+	</select>
+
+	<select id="selectByGeomSize" resultType="int" parameterType="FlickrAreaDto" useCache="false">
+		select
+			COUNT(*)
+		from FLICKR_EUROPE_AREA_${radius} m
+		where ST_Intersects(m.geom, '${pgQueryGeom}')
+	</select>
+
+	<select id="hoursTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
+		select hour
+		from FLICKR_EUROPE_TAGS_COUNT
+		where ID = #{id}
+	</select>
+
+	<select id="daysTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
+		select day
+		from FLICKR_EUROPE_TAGS_COUNT
+		where ID = #{id}
+	</select>
+
+	<select id="hoursCount" resultType="String" parameterType="FlickrArea" useCache="false">
+		select hour
+		from FLICKR_EUROPE_COUNT
+		where ID = #{id}
+	</select>
+
+	<select id="daysCount" resultType="String" parameterType="FlickrArea" useCache="false">
+		select day
+		from FLICKR_EUROPE_COUNT
+		where ID = #{id}
+	</select>
+
+	<select id="monthsCount" resultType="String" parameterType="FlickrArea" useCache="false">
+		select month
+		from FLICKR_EUROPE_COUNT
+		where ID = #{id}
+	</select>
+
+	<select id="yearsCount" resultType="String" parameterType="FlickrArea" useCache="false">
+		select year
+		from FLICKR_EUROPE_COUNT
+		where ID = #{id}
+	</select>
+
+	<select id="totalCount" resultType="long" parameterType="FlickrArea" useCache="false">
+		select total
+		from FLICKR_EUROPE_COUNT
+		where ID = #{areaid}
+	</select>
+
+</mapper>

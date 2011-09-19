@@ -1,0 +1,37 @@
+virtual_machine:
+	oracle XE login:
+		gennady_flickr / gennady
+		system / .oracle.
+
+To solve the imp error : Oracle: IMP-00060 - "MDSYS"."SDO_GEOMETRY" does not exist:
+windows xp:
+imp userid=Gennady_Flickr/gennady@XE file=d:\AREAS20KMRADIUS_ALL.dmp fromuser=Gennady_Flickr touser=Gennady_Flickr toid_novalidate=MDSYS.SDO_GEOMETRY,MDSYS.SDO_ELEM_INFO_ARRAY,MDSYS.SDO_ORDINATE_ARRAY
+imp userid=Gennady_Flickr/gennady@XE file=d:\FLICKR_DE_WEST_TABLE_AREA.dmp fromuser=Gennady_Flickr touser=Gennady_Flickr toid_novalidate=MDSYS.SDO_GEOMETRY,MDSYS.SDO_ELEM_INFO_ARRAY,MDSYS.SDO_ORDINATE_ARRAY
+
+
+linux:
+export ORACLE_HOME=/usr/lib/oracle/xe/app/oracle/product/10.2.0/server
+export ORACLE_SID=XE
+export PATH=$PATH:ORACLE_HOME/bin
+cd /usr/lib/oracle/xe/app/oracle/product/10.2.0/server/bin
+
+-> to run SQL Scripts:
+./sqlplus  
+
+	
+SQL> create tablespace GENNADY datafile 'D:\oraclexe\oradata\XE\GENNADY.DBF' size 500m;
+alter tablespace GENNADY add datafile 'D:\oraclexe\oradata\XE\GENNADY02.DBF' size 3000m;
+--SQL> drop tablespace gennady including contents and datafiles;
+
+SQL> revoke unlimited tablespace from Gennady_flickr;
+SQL> alter user Gennady_flickr default tablespace GENNADY quota unlimited on GENNADY;
+
+
+-> to run command
+./imp userid=Gennady_Flickr/gennady@XE file=/files1/home/iulian/FLICKR_DE_WEST_TABLE.dmp fromuser=Gennady_Flickr touser=Gennady_Flickr
+./imp userid=Gennady_Flickr/gennady@XE file=/files1/home/iulian/FLICKR_DE_WEST_TABLE_AREA.dmp fromuser=Gennady_Flickr touser=Gennady_Flickr toid_novalidate=MDSYS.SDO_GEOMETRY,MDSYS.SDO_ELEM_INFO_ARRAY,MDSYS.SDO_ORDINATE_ARRAY
+
+
+
+Show the table size:
+select t.table_name, t.num_rows * t.avg_row_len/1024/1024||'MB' from user_tables t;

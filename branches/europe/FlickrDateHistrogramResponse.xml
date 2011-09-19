@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+	<message>SUCCESS</message>
+	<histrogramsData>
+		<years maxValue="6786" minValue="140">
+			<year id="2005">3040</year>
+			<year id="2006">234</year>
+			<year id="2007">6786</year>
+			<year id="2008">323</year>
+			<year id="2009">140</year>
+			<year id="2010">841</year>
+			<year id="2011">2341</year>
+		</years>
+		<months maxValue="8977" minValue="34">
+			<month id="Jan">322</month>
+			<month id="Feb">432</month>
+			<month id="Mar">34</month>
+			<month id="Apr">8977</month>
+			<month id="May">322</month>
+			<month id="Jun">3245</month>
+			<month id="Jul">2345</month>
+			<month id="Aug">876</month>
+			<month id="Sep">567</month>
+			<month id="Oct">2345</month>
+			<month id="Nov">322</month>
+			<month id="Dec">3242</month>
+		</months>
+		<days maxValue="9353" minValue="0">
+			<day id="01">543</day>
+			<day id="02">2234</day>
+			<day id="03">45</day>
+			<day id="04">73</day>
+			<day id="05">543</day>
+			<day id="06">234</day>
+			<day id="07">543</day>
+			<day id="08">9353</day>
+			<day id="09">645</day>
+			<day id="10">867</day>
+			<day id="11">1212</day>
+			<day id="12">876</day>
+			<day id="13">432</day>
+			<day id="14">654</day>
+			<day id="15">0</day>
+			<day id="16">43</day>
+			<day id="17">76</day>
+			<day id="18">32</day>
+			<day id="19">98</day>
+			<day id="20">543</day>
+			<day id="21">2</day>
+			<day id="22">23</day>
+			<day id="23">345</day>
+			<day id="24">756</day>
+			<day id="25">234</day>
+			<day id="26">543</day>
+			<day id="27">443</day>
+			<day id="28">432</day>
+			<day id="29">543</day>
+			<day id="30">23</day>
+			<day id="31">765</day>
+		</days>
+		<hours maxValue="9564" minValue="22">
+			<hour id="00">234</hour>
+			<hour id="01">765</hour>
+			<hour id="02">6564</hour>
+			<hour id="03">5645</hour>
+			<hour id="04">22</hour>
+			<hour id="05">543</hour>
+			<hour id="06">65</hour>
+			<hour id="07">32</hour>
+			<hour id="08">876</hour>
+			<hour id="09">23</hour>
+			<hour id="09">43</hour>
+			<hour id="10">234</hour>
+			<hour id="11">765</hour>
+			<hour id="12">9564</hour>
+			<hour id="13">5645</hour>
+			<hour id="14">22</hour>
+			<hour id="15">543</hour>
+			<hour id="16">65</hour>
+			<hour id="17">32</hour>
+			<hour id="18">876</hour>
+			<hour id="19">23</hour>
+			<hour id="20">43</hour>
+			<hour id="21">765</hour>
+			<hour id="22">6564</hour>
+			<hour id="23">5645</hour>
+		</hours>
+		<weekdays maxValue="764232" minValue="12232">
+			<weekday id="Mon">34232</weekday>
+			<weekday id="Tue">434232</weekday>
+			<weekday id="Wed">12432</weekday>
+			<weekday id="Thu">234232</weekday>
+			<weekday id="Fri">764232</weekday>
+			<weekday id="Sat">234232</weekday>
+			<weekday id="Sun">12232</weekday>
+		</weekdays>
+	</histrogramsData>
+</response>
