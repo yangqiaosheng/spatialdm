@@ -170,6 +170,17 @@
 	</servlet-mapping>
 
 	<servlet>
+		<description>Create the TagChart</description>
+		<display-name>TagChart</display-name>
+		<servlet-name>TagChart</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.TagTimeSeriesChartServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TagChart</servlet-name>
+		<url-pattern>/TagChart.png</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<description>return the tags</description>
 		<display-name>Tag</display-name>
 		<servlet-name>Tag</servlet-name>

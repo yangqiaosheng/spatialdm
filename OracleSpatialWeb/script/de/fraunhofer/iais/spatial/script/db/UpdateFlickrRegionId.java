@@ -33,7 +33,8 @@ public class UpdateFlickrRegionId {
 	private static final Logger logger = LoggerFactory.getLogger(UpdateFlickrRegionId.class);
 
 	final static int SELECT_BATCH_SIZE = 400;
-	final static String PHOTOS_TABLE_NAME = "FLICKR_EUROPE";
+	final static String AREAS_TABLE_NAME = "flickr_world_area";
+	final static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_5m";
 	static Calendar startDate;
 
 	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
@@ -82,7 +83,7 @@ public class UpdateFlickrRegionId {
 				double latitude = rs.getLong("latitude");
 
 				System.out.println("totalNum/updatedNum: " + totalNum + "/" + updatedNum++);
-				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from FLICKR_EUROPE_AREA t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
+				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from " + AREAS_TABLE_NAME + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
 //				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select region_id as id, radius from " + PHOTOS_TABLE_NAME + "_REGION_ID where photo_id = ?");
 //				selectAreaIdPstmt.setLong(1, photoId);
 				ResultSet areaIdRs = db.getRs(selectAreaIdPstmt);

@@ -18,13 +18,13 @@ public class ValidateCount {
 	private static void countYear() throws Exception {
 		Connection conn = db.getConn();
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select * from flickr_europe_topviewed_10000_tags_count where id = 1");
+		PreparedStatement personStmt = db.getPstmt(conn, "select * from flickr_europe_topviewed_1m_tags_count_20 where id = 12");
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
 			String id = pset.getString("id");
 			String hourStr = pset.getString("hour");
-			String total = pset.getString("total");
+			String total = pset.getString("day");
 			StringBuffer yearStr = new StringBuffer();
 			if (hourStr != null) {
 				//person:28507282@N03
