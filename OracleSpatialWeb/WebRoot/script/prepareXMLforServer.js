@@ -1,7 +1,7 @@
 function createHeaderXML() {
-	
-        var bounds = map.getBounds();
-	var center = map.getCenter();
+
+    var bounds = map.getBounds();
+	var center = bounds.getCenter();
 	var zoomLevel = map.getZoom();
 	var localXmlheader = "";
 	localXmlheader = "<screen>";
@@ -9,7 +9,7 @@ function createHeaderXML() {
 			+ center + "</center><zoom>" + zoomLevel + "</zoom>";
 	localXmlheader = localXmlheader + "</screen>";
 	return localXmlheader;
-		
+
 }
 function individualPolygonXml(text1) {
 	var localXml = "";
