@@ -11,12 +11,13 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.geom.util.AffineTransformation;
 import com.vividsolutions.jts.math.Vector2D;
 
 public class FeatureGeometryCalculator {
 
-	public GeometryFactory geometryFactory = new GeometryFactory();
+	public GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING_SINGLE));
 
 	public Polygon arrow(Point fromPt, Point toPt, float width) {
 

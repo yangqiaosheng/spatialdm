@@ -48,6 +48,8 @@ public class TrajectoryRenderer {
 					Polygon polygon = texture.get(j);
 					if(!convexHall.intersects(polygon)){
 						newTexture.add(polygon);
+					}else{
+						newTexture.add((Polygon)polygon.difference(convexHall));
 					}
 				}
 				lastSegment.getFeature().setTexture(newTexture);

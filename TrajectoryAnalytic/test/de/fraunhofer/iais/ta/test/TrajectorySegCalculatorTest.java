@@ -32,8 +32,6 @@ public class TrajectorySegCalculatorTest {
 	public static void main(String[] args) {
 		JTSFrame jtsFrame = new JTSFrame("JTS Frame");
 
-		GeometryFactory geometryFactory = new GeometryFactory();
-
 		TrajectoryRenderer render = new TrajectoryRenderer();
 		TrajectorySegment segment1 = new TrajectorySegment("d", 1, 30, new Coordinate(10, 20), new Coordinate(10, 30));
 		render.renderTrajectorySegment(segment1);
