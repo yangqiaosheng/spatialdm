@@ -17,8 +17,8 @@ import com.vividsolutions.jts.math.Vector2D;
 
 public class FeatureGeometryCalculator {
 
-	public GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING_SINGLE));
-
+//	public GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING_SINGLE));
+	public GeometryFactory geometryFactory = new GeometryFactory();
 	public Polygon arrow(Point fromPt, Point toPt, float width) {
 
 		return null;
@@ -75,21 +75,26 @@ public class FeatureGeometryCalculator {
 
 	}
 
-	public List<Polygon> peaks(Coordinate fromCoordinate, Coordinate toCoordinate, float width, float peakBodyLength, float peakHeadLength, float spaceLength) {
+	public List<Polygon> peaks(Geometry boundary, Coordinate fromCoordinate, Coordinate toCoordinate, float width, float peakBodyLength, float peakHeadLength, float spaceLength) {
 
 		Coordinate deltaVector = new Coordinate(toCoordinate.x - fromCoordinate.x, toCoordinate.y - fromCoordinate.y);
 		Coordinate deltaNormalVector = Vector2D.create(deltaVector).normalize().toCoordinate();
 		double deltaVectorLength = Vector2D.create(deltaVector).length();
-		int num = (int) ((deltaVectorLength - peakHeadLength) /(spaceLength + peakBodyLength));
-		double margin = (deltaVectorLength - peakHeadLength) - num * ((spaceLength + peakBodyLength)) ;
+		int num = (int) ((deltaVectorLength - peakHeadLength + width*10) /(spaceLength + peakBodyLength));
+		double margin = (deltaVectorLength - peakHeadLength + width*10) - num * ((spaceLength + peakBodyLength)) ;
 		float peakLength = peakBodyLength + peakHeadLength;
 		float bodyRatio = peakBodyLength / peakLength;
 		List<Polygon> polygons = new ArrayList<Polygon>();
 		for(int i = 0; i < num ; i++){
-			Coordinate from = new Coordinate(fromCoordinate.x + deltaNormalVector.x * ( margin + i * (spaceLength + peakBodyLength)), fromCoordinate.y + deltaNormalVector.y * ( margin + i * (spaceLength + peakBodyLength)));
+			Coordinate from = new Coordinate(fromCoordinate.x + deltaNormalVector.x * (-width*5 + margin + i * (spaceLength + peakBodyLength)), fromCoordinate.y + deltaNormalVector.y * (-width*5 + margin + i * (spaceLength + peakBodyLength)));
 			Coordinate to = new Coordinate(from.x + deltaNormalVector.x * peakLength, from.y + deltaNormalVector.y * peakLength);
 			Polygon trianglePolygon = new FeatureGeometryCalculator().peak(from, to, width, bodyRatio);
-			polygons.add(trianglePolygon);
+			Geometry insection = trianglePolygon.intersection(boundary);
+			for (int k = 0; k < insection.getNumGeometries(); k++) {
+				if(insection.getGeometryN(k) instanceof Polygon){
+					polygons.add((Polygon) insection.getGeometryN(k));
+				}
+			}
 		}
 
 		return polygons;

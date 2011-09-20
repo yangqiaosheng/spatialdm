@@ -23,17 +23,21 @@ public class TrajectoryRenderer {
 
 	public void renderTrajectorySegment(TrajectorySegment segment) {
 		float width = 0.9f;
+		float textureWidthRatio = 0.6f;
 		float peakBodyLength = 0.2f;
 		float peakHeadLength = segment.getSpeed() * MAX_PEAK_HEAD_LENGTH / MAX_SPEED;
-		float spaceLength = 0.5f;
+		float spaceLength = (float) (0.5f / Math.sin(Math.atan2(width, peakHeadLength)));
 
 		segment.getFeature().setWidth(width);
-
+		segment.getFeature().setTextureWidthRatio(textureWidthRatio);
 		Polygon boundary = featureGeometryCalculator.boundary(segment.getFromCoordinate(), segment.getToCoordinate(), segment.getFeature().getWidth());
 		segment.getFeature().setBoundary(boundary);
 
+		Polygon textureBoundary = featureGeometryCalculator.boundary(segment.getFromCoordinate(), segment.getToCoordinate(), segment.getFeature().getWidth() * segment.getFeature().getTextureWidthRatio());
+		segment.getFeature().setTextureBoundary(textureBoundary);
+
 		List<Polygon> polygons = Lists.newArrayList();
-		polygons = featureGeometryCalculator.peaks(segment.getFromCoordinate(), segment.getToCoordinate(), segment.getFeature().getWidth() * 0.8f, peakBodyLength, peakHeadLength, spaceLength);
+		polygons = featureGeometryCalculator.peaks(textureBoundary, segment.getFromCoordinate(), segment.getToCoordinate(), segment.getFeature().getWidth() * segment.getFeature().getTextureWidthRatio(), peakBodyLength, peakHeadLength, spaceLength);
 		segment.getFeature().setTexture(polygons);
 	}
 
@@ -43,16 +47,18 @@ public class TrajectoryRenderer {
 			TrajectorySegment segment = segments.get(i);
 			if (i != 0) {
 				List<Polygon> texture = lastSegment.getFeature().getTexture();
-				Geometry convexHall = featureGeometryCalculator.geometryFactory.buildGeometry(segment.getFeature().getTexture()).convexHull();
+
 				List<Polygon> newTexture = Lists.newArrayList();
 				for (int j = 0; j < texture.size(); j++) {
 					Polygon polygon = texture.get(j);
-					if(!convexHall.intersects(polygon)){
+					if(!segment.getFeature().getBoundary().intersects(polygon)){
 						newTexture.add(polygon);
 					}else{
-						System.out.println(convexHall);
-						if(polygon.isValid() && convexHall.isValid()){
-							newTexture.add((Polygon)polygon.difference(convexHall));
+						if (polygon.isValid()) {
+							Geometry difference = polygon.difference(segment.getFeature().getBoundary());
+							for (int k = 0; k < difference.getNumGeometries(); k++) {
+								newTexture.add((Polygon) difference.getGeometryN(k));
+							}
 						}
 					}
 				}

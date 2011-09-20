@@ -45,8 +45,8 @@ public class GeometryCalculatorTest {
 		}
 		jtsFrame.addGeometry(geometryFactory.createPoint(new Coordinate(0, 10)).buffer(0.1d), Color.BLACK);
 		jtsFrame.addGeometry(geometryFactory.createPoint(new Coordinate(0, 40)).buffer(0.1d), Color.BLACK);
-//		jtsFrame.addGeometry(buffer1, Color.GREEN);
-//		jtsFrame.addGeometry(buffer2, Color.LIGHT_GRAY);
+		jtsFrame.addGeometry(buffer1, Color.GREEN);
+		jtsFrame.addGeometry(buffer2, Color.LIGHT_GRAY);
 		jtsFrame.setVisible(true);
 		jtsFrame.setBackground(Color.WHITE);
 		jtsFrame.setSize(400, 300);
@@ -66,11 +66,6 @@ public class GeometryCalculatorTest {
 		Polygon peakPolygon2 = new FeatureGeometryCalculator().peak(new Coordinate(10, 20),  new Coordinate(10, 50), 1f, 3f, 7f);
 //		jtsFrame.addGeometry(peakPolygon, Color.BLACK);
 //		jtsFrame.addGeometry(peakPolygon2, Color.RED);
-
-		List<Polygon> peaks = new FeatureGeometryCalculator().peaks(new Coordinate(10, 20),  new Coordinate(10, 30), 1f , 0.2f, 2.2f, 0.3f);
-		for(Polygon peak : peaks){
-//			jtsFrame.addGeometry(peak, Color.GREEN);
-		}
 
 
 	}

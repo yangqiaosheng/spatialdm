@@ -18,7 +18,9 @@ public class TrajectorySegment {
 
 	public class RenderFeature {
 		private float width;
+		private float textureWidthRatio;
 		private Polygon boundary;
+		private Polygon textureBoundary;
 		private List<Polygon> texture;
 
 		public float getWidth() {
@@ -29,12 +31,28 @@ public class TrajectorySegment {
 			this.width = width;
 		}
 
+		public float getTextureWidthRatio() {
+			return textureWidthRatio;
+		}
+
+		public void setTextureWidthRatio(float textureWidthRatio) {
+			this.textureWidthRatio = textureWidthRatio;
+		}
+
 		public Polygon getBoundary() {
 			return boundary;
 		}
 
 		public void setBoundary(Polygon boundary) {
 			this.boundary = boundary;
+		}
+
+		public Polygon getTextureBoundary() {
+			return textureBoundary;
+		}
+
+		public void setTextureBoundary(Polygon textureBoundary) {
+			this.textureBoundary = textureBoundary;
 		}
 
 		public List<Polygon> getTexture() {
