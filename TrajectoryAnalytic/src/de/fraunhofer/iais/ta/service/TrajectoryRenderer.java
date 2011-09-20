@@ -10,6 +10,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.math.Vector2D;
+import com.vividsolutions.jts.operation.valid.IsValidOp;
 
 import de.fraunhofer.iais.ta.entity.TrajectorySegment;
 import de.fraunhofer.iais.ta.geometry.FeatureGeometryCalculator;
@@ -49,7 +50,10 @@ public class TrajectoryRenderer {
 					if(!convexHall.intersects(polygon)){
 						newTexture.add(polygon);
 					}else{
-						newTexture.add((Polygon)polygon.difference(convexHall));
+						System.out.println(convexHall);
+						if(polygon.isValid() && convexHall.isValid()){
+							newTexture.add((Polygon)polygon.difference(convexHall));
+						}
 					}
 				}
 				lastSegment.getFeature().setTexture(newTexture);
