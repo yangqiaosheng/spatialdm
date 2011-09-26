@@ -19,13 +19,13 @@
 			AREA,
 			center(m.geom) as "center",
 			'R${radius}' as "radius"
-		from FLICKR_EUROPE_AREA_${radius} m
+		from FLICKR_WORLD_AREA_${radius} m
 	</select>
 
 	<select id="selectAllIds" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID
-		from FLICKR_EUROPE_AREA_${radius} m
+		from FLICKR_WORLD_AREA_${radius} m
 	</select>
 
 	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="true">
@@ -36,7 +36,7 @@
 			AREA,
 			center(m.geom) as "center",
 			'R${radius}' as "radius"
-		from FLICKR_EUROPE_AREA_${radius} m
+		from FLICKR_WORLD_AREA_${radius} m
 		where m.ID = #{areaid}
 	</select>
 
@@ -48,63 +48,63 @@
 			AREA,
 			center(m.geom) as "center",
 			'R${radius}' as "radius"
-		from FLICKR_EUROPE_AREA_${radius} m
+		from FLICKR_WORLD_AREA_${radius} m
 		where ST_Intersects(m.geom, '${pgQueryGeom}')
 	</select>
 
 	<select id="selectIdsByGeom" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID
-		from FLICKR_EUROPE_AREA_${radius} m
+		from FLICKR_WORLD_AREA_${radius} m
 		where ST_Intersects(m.geom, '${pgQueryGeom}')
 	</select>
 
 	<select id="selectByGeomSize" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			COUNT(*)
-		from FLICKR_EUROPE_AREA_${radius} m
+		from FLICKR_WORLD_AREA_${radius} m
 		where ST_Intersects(m.geom, '${pgQueryGeom}')
 	</select>
 
 	<select id="hoursTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select hour
-		from FLICKR_EUROPE_TAGS_COUNT
+		from FLICKR_WORLD_TAGS_COUNT
 		where ID = #{id}
 	</select>
 
 	<select id="daysTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select day
-		from FLICKR_EUROPE_TAGS_COUNT
+		from FLICKR_WORLD_TAGS_COUNT
 		where ID = #{id}
 	</select>
 
 	<select id="hoursCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select hour
-		from FLICKR_EUROPE_COUNT
+		from FLICKR_WORLD_COUNT
 		where ID = #{id}
 	</select>
 
 	<select id="daysCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select day
-		from FLICKR_EUROPE_COUNT
+		from FLICKR_WORLD_COUNT
 		where ID = #{id}
 	</select>
 
 	<select id="monthsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select month
-		from FLICKR_EUROPE_COUNT
+		from FLICKR_WORLD_COUNT
 		where ID = #{id}
 	</select>
 
 	<select id="yearsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select year
-		from FLICKR_EUROPE_COUNT
+		from FLICKR_WORLD_COUNT
 		where ID = #{id}
 	</select>
 
 	<select id="totalCount" resultType="long" parameterType="FlickrArea" useCache="false">
 		select total
-		from FLICKR_EUROPE_COUNT
+		from FLICKR_WORLD_COUNT
 		where ID = #{areaid}
 	</select>
 
