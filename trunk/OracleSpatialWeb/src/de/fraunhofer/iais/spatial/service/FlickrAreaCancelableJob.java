@@ -30,10 +30,21 @@ public class FlickrAreaCancelableJob {
 		this.flickrAreaDao = areaDao;
 	}
 
-	public List<FlickrArea> getAreasByRect(Date sessionTimestamp, SessionMutex sessionMutex, double x1, double y1, double x2, double y2, Radius radius) throws InterruptedException {
+	public List<FlickrArea> getAllAreas(Date sessionTimestamp, SessionMutex sessionMutex, Radius radius) throws InterruptedException {
 
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
-		for (int areaid : flickrAreaDao.getAreaIdsByRect(x1, y1, x2, y2, radius)) {
+		for (int areaid : flickrAreaDao.getAllAreaIds(radius)) {
+			checkInterruption(sessionTimestamp, sessionMutex);
+			areas.add(flickrAreaDao.getAreaById(areaid, radius));
+		}
+
+		return areas;
+	}
+
+	public List<FlickrArea> getAreasByRect(Date sessionTimestamp, SessionMutex sessionMutex, double x1, double y1, double x2, double y2, Radius radius,  boolean crossDateLine) throws InterruptedException {
+
+		List<FlickrArea> areas = new ArrayList<FlickrArea>();
+		for (int areaid : flickrAreaDao.getAreaIdsByRect(x1, y1, x2, y2, radius, crossDateLine)) {
 			checkInterruption(sessionTimestamp, sessionMutex);
 			areas.add(flickrAreaDao.getAreaById(areaid, radius));
 		}

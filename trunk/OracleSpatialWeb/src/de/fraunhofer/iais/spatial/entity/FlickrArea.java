@@ -34,7 +34,7 @@ public class FlickrArea implements Serializable {
 	private SortedMap<String, Map<String, Integer>> daysTagsCount = Maps.newTreeMap();
 
 	public enum Radius {
-		R375, R750, R1250, R2500, R5000, R10000, R20000, R40000, R80000, R160000, R320000;
+		R625, R1250, R2500, R5000, R10000, R20000, R40000, R80000, R160000, R320000, R640000, R1280000, R2560000;
 
 		@Override
 		public String toString() {

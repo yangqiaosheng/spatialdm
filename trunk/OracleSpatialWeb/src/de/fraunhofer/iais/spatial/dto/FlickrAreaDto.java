@@ -28,6 +28,7 @@ public class FlickrAreaDto implements Serializable {
 	private int zoom;
 	private Point2D center;
 	private Rectangle2D boundaryRect;
+	private boolean crossDateLine;
 	private List<Point2D> polygon;
 	private Date beginDate;
 	private Date endDate;
@@ -80,6 +81,14 @@ public class FlickrAreaDto implements Serializable {
 
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
+	}
+
+	public boolean isCrossDateLine() {
+		return crossDateLine;
+	}
+
+	public void setCrossDateLine(boolean crossDateLine) {
+		this.crossDateLine = crossDateLine;
 	}
 
 	public Point2D getCenter() {

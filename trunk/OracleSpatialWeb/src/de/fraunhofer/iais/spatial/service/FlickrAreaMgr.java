@@ -197,6 +197,10 @@ public class FlickrAreaMgr {
 				}
 			}
 
+			if(!areaDto.getBoundaryRect().contains(areaDto.getCenter())){
+				areaDto.setCrossDateLine(true);
+			}
+
 			// <screen><zoom>9</zoom>
 			String zoomStr = screenElement.getChildText("zoom");
 			if (zoomStr != null && !"".equals(zoomStr.trim())) {
