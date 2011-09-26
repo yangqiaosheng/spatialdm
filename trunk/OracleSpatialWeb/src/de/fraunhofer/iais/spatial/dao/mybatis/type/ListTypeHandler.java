@@ -17,6 +17,7 @@ import org.postgis.LinearRing;
 import org.postgis.MultiPolygon;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
+import org.postgis.Polygon;
 
 public class ListTypeHandler implements TypeHandler {
 
@@ -33,12 +34,21 @@ public class ListTypeHandler implements TypeHandler {
 			}
 			return geom;
 		} else if (resultObj instanceof PGgeometry) {
-			MultiPolygon polygon = (MultiPolygon) ((PGgeometry)resultObj).getGeometry();
-			LinearRing rng = polygon.getPolygons()[0].getRing(0);
-			for(Point point : rng.getPoints()){
-				geom.add(new Point2D.Double(point.getX(), point.getY()));
+			if(((PGgeometry)resultObj).getGeometry() instanceof MultiPolygon){
+				MultiPolygon polygon = (MultiPolygon) ((PGgeometry)resultObj).getGeometry();
+				LinearRing rng = polygon.getPolygons()[0].getRing(0);
+				for(Point point : rng.getPoints()){
+					geom.add(new Point2D.Double(point.getX(), point.getY()));
+				}
+				return geom;
+			} else {
+				Polygon polygon = (Polygon) ((PGgeometry)resultObj).getGeometry();
+				LinearRing rng = polygon.getRing(0);
+				for(Point point : rng.getPoints()){
+					geom.add(new Point2D.Double(point.getX(), point.getY()));
+				}
+				return geom;
 			}
-			return geom;
 		} else {
 			throw new ClassFormatError("Error in converting the column:" + columnName + " to a List Object");
 		}
@@ -58,12 +68,21 @@ public class ListTypeHandler implements TypeHandler {
 			}
 			return geom;
 		} else if (resultObj instanceof PGgeometry) {
-			MultiPolygon polygon = (MultiPolygon) ((PGgeometry)resultObj).getGeometry();
-			LinearRing rng = polygon.getPolygons()[0].getRing(0);
-			for(Point point : rng.getPoints()){
-				geom.add(new Point2D.Double(point.getX(), point.getY()));
+			if(((PGgeometry)resultObj).getGeometry() instanceof MultiPolygon){
+				MultiPolygon polygon = (MultiPolygon) ((PGgeometry)resultObj).getGeometry();
+				LinearRing rng = polygon.getPolygons()[0].getRing(0);
+				for(Point point : rng.getPoints()){
+					geom.add(new Point2D.Double(point.getX(), point.getY()));
+				}
+				return geom;
+			} else {
+				Polygon polygon = (Polygon) ((PGgeometry)resultObj).getGeometry();
+				LinearRing rng = polygon.getRing(0);
+				for(Point point : rng.getPoints()){
+					geom.add(new Point2D.Double(point.getX(), point.getY()));
+				}
+				return geom;
 			}
-			return geom;
 		} else {
 			throw new ClassFormatError("Error in converting the column with Index:" + columnIndex + " to a List Object");
 		}
