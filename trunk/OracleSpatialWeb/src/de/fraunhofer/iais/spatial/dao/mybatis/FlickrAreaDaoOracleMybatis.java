@@ -300,4 +300,16 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 
 	}
 
+	@Override
+	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

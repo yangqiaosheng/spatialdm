@@ -11,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jdom.IllegalDataException;
 import org.mybatis.spring.SqlSessionTemplate;
 
+import com.sun.org.apache.commons.collections.CollectionUtils;
+
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
@@ -192,6 +194,17 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	}
 
 	@Override
+	public int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine) {
+		int num = 0;
+		if (crossDateLine) {
+			num = getAreasByRectSize(x1, y1, 180, y2, radius) + getAreasByRectSize(-180, y1, x2, y2, radius);
+		} else {
+			num = getAreasByRectSize(x1, y1, x2, y2, radius);
+		}
+		return num;
+	}
+
+	@Override
 	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius) {
 
 		FlickrAreaDto areaDto = new FlickrAreaDto();
@@ -200,6 +213,19 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		areaDto.setRadius(radius);
 
 		return (List<Integer>) sessionTemplate.selectList(FlickrArea.class.getName() + DB_NAME + ".selectIdsByGeom", areaDto);
+	}
+
+	@Override
+	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine) {
+		List<Integer> areaIds;
+		if (crossDateLine) {
+			areaIds = getAreaIdsByRect(x1, y1, 180, y2, radius);
+			areaIds.addAll(getAreaIdsByRect(-180, y1, x2, y2, radius));
+		} else {
+			areaIds = getAreaIdsByRect(x1, y1, x2, y2, radius);
+		}
+
+		return areaIds;
 	}
 
 	@Override

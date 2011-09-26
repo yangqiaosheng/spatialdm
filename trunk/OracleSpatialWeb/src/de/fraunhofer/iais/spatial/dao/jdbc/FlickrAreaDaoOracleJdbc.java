@@ -515,6 +515,12 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 	}
 
 	@Override
+	public int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
 	public long getTotalEuropePhotoNum() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -566,6 +572,12 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 	public void loadDaysTagsCount(FlickrArea area) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

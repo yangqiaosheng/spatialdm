@@ -91,7 +91,19 @@ public abstract class FlickrAreaDao {
 	 * @param y2
 	 * @return List<FlickrArea>
 	 */
+	@Deprecated
 	public abstract int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius);
+
+	/**
+	 * Returns the size of the List of FlickrArea instances which interact to this rectangle
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @param crossDateLine
+	 * @return List<FlickrArea>
+	 */
+	public abstract int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine);
 
 	/**
 	 * Returns a List of FlickrArea ids which interact to this rectangle
@@ -101,7 +113,19 @@ public abstract class FlickrAreaDao {
 	 * @param y2
 	 * @return List<Integer>
 	 */
+	@Deprecated
 	public abstract List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius);
+	/**
+	 * Returns a List of FlickrArea ids which interact to this rectangle
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @param radius
+	 * @param crossDateLine
+	 * @return List<Integer>
+	 */
+	public abstract List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine);
 
 	/**
 	 * Returns a List of FlickrArea instances which interact to this rectangle

@@ -8,19 +8,13 @@
 	<select id="totalNum" resultType="long" useCache="false">
 		select n_tup_ins
 		from pg_stat_user_tables
-		where relname = 'flickr_europe'
+		where relname = 'flickr_world'
 	</select>
 
 	<select id="totalPeopleNum" resultType="long" useCache="false">
 		select n_tup_ins
 		from pg_stat_user_tables
 		where relname = 'flickr_people'
-	</select>
-
-	<select id="totalWorldPhotoNum" resultType="long" useCache="false">
-		select n_tup_ins
-		from pg_stat_user_tables
-		where relname = 'flickr_photo'
 	</select>
 
 	<select id="selectByDateQuery" resultType="FlickrPhoto" parameterType="map" useCache="false">
@@ -34,7 +28,7 @@
 			SMALLURL,
 			TITLE,
 			VIEWED
- 		from FLICKR_EUROPE p
+ 		from FLICKR_WORLD p
 		where p.REGION_${radius}_ID = #{areaid}
 		 		and p.TAKEN_DATE >= to_timestamp(#{queryStr}, #{oracleDatePatternStr})
 		 		and p.TAKEN_DATE <  to_timestamp(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
@@ -54,7 +48,7 @@
 			SMALLURL,
 			TITLE,
 			VIEWED
-		from FLICKR_EUROPE P
+		from FLICKR_WORLD P
 		where p.REGION_5000_ID = 512
 				and p.TAKEN_DATE >= to_timestamp('2008-11-12', 'yyyy-mm-dd')
 				and p.TAKEN_DATE <  to_timestamp('2008-11-12', 'yyyy-mm-dd') + interval '1' month
