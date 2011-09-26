@@ -39,7 +39,7 @@
 	-->
 	<context-param>
 		<param-name>webAppRootKey</param-name>
-		<param-value>oraclespatialweb.root</param-value>
+		<param-value>flickr_world.root</param-value>
 	</context-param>
 
 	<!--
