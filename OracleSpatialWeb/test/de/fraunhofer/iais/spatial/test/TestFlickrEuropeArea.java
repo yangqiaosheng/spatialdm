@@ -71,8 +71,8 @@ public class TestFlickrEuropeArea {
 
 	@BeforeClass
 	public static void initClass() throws NamingException {
-		System.setProperty("oraclespatialweb.root", System.getProperty("user.dir") + "/");
-		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
+		System.setProperty("flickr_world.root", System.getProperty("user.dir") + "/");
+		System.out.println("flickr_world.root:" + System.getProperty("flickr_world.root"));
 
 		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans.xml" });
 //		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans_oracle.xml" });
@@ -577,7 +577,7 @@ public class TestFlickrEuropeArea {
 	public void testKml() throws Exception {
 		long start = System.currentTimeMillis();
 		FlickrAreaDto areaDto = new FlickrAreaDto();
-		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
+		System.out.println("flickr_world.root:" + System.getProperty("flickr_world.root"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest3.xml"))), areaDto);
 		List<FlickrArea> areas = null;
 		List<FlickrAreaResult> areaResults = Lists.newArrayList();
