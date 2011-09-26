@@ -43,7 +43,7 @@ public class Pg2OracleDataExport {
 		Connection fromConn = fromDb.getConn();
 		fromConn.setAutoCommit(false);
 		Connection toConn = toDb.getConn();
-		PreparedStatement fromCountStmt = fromDb.getPstmt(fromConn, "select count(*) num from " + tableName);
+		PreparedStatement fromCountStmt = fromDb.getPstmt(fromConn, "select n_tup_ins as num from pg_stat_user_tables where relname = '"+ tableName + "'" );
 		PreparedStatement fromSelectStmt = fromDb.getPstmt(fromConn, "select * from " + tableName);
 		fromSelectStmt.setFetchSize(BATCH_SIZE);
 		PreparedStatement pgInsertStmt = null;
