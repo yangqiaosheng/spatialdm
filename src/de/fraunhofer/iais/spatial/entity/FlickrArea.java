@@ -20,7 +20,7 @@ public class FlickrArea implements Serializable {
 	private long id;
 	private Radius radius;
 	private String name;
-	private float area;
+	private double area;
 	private Point2D center;
 	private List<Point2D> geom;
 	private boolean isCached;
@@ -66,11 +66,11 @@ public class FlickrArea implements Serializable {
 		this.geom = geom;
 	}
 
-	public float getArea() {
+	public double getArea() {
 		return area;
 	}
 
-	public void setArea(float area) {
+	public void setArea(double area) {
 		this.area = area;
 	}
 

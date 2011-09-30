@@ -175,13 +175,19 @@ public class PolygonXmlServlet extends HttpServlet {
 		rootElement.setAttribute("radius", areaDto.getRadius().toString());
 		rootElement.setAttribute("wholeDbPhotosNum", String.valueOf(totalPhotoNum));
 
+		long maxTotalCount = Long.MIN_VALUE;
+		long maxSelectCount = Long.MIN_VALUE;
+		long minTotalCount = Long.MAX_VALUE;
+		long minSelectCount = Long.MAX_VALUE;
+
 		for (FlickrAreaResult areaResult : areaResults) {
 			FlickrArea area = areaResult.getArea();
 			Element polygonElement = new Element("polygon");
 			rootElement.addContent(polygonElement);
-			polygonElement.setAttribute("id", String.valueOf(area.getId()));
-			polygonElement.setAttribute("total", String.valueOf(area.getTotalCount()));
-			polygonElement.setAttribute("select", String.valueOf(areaResult.getSelectCount()));
+			polygonElement.setAttribute("id", area.getId() + "");
+			polygonElement.setAttribute("total", area.getTotalCount() + "");
+			polygonElement.setAttribute("select", areaResult.getSelectCount() + "");
+			polygonElement.setAttribute("area", area.getArea() + "");
 
 			Element lineElement = new Element("line");
 			polygonElement.addContent(lineElement);
@@ -191,17 +197,35 @@ public class PolygonXmlServlet extends HttpServlet {
 			for (Point2D point : geom) {
 				Element pointElement = new Element("point");
 				lineElement.addContent(pointElement);
-				pointElement.setAttribute("lng", String.valueOf(point.getX()));
-				pointElement.setAttribute("lat", String.valueOf(point.getY()));
+				pointElement.setAttribute("lng", point.getX() + "");
+				pointElement.setAttribute("lat", point.getY() + "");
 			}
 
 			Element centerElement = new Element("center");
 			polygonElement.addContent(centerElement);
 			Element pointElement = new Element("point");
 			centerElement.addContent(pointElement);
-			pointElement.setAttribute("lng", String.valueOf(area.getCenter().getX()));
-			pointElement.setAttribute("lat", String.valueOf(area.getCenter().getY()));
+			pointElement.setAttribute("lng", area.getCenter().getX() + "");
+			pointElement.setAttribute("lat", area.getCenter().getY() + "");
+
+			if (area.getTotalCount() > maxTotalCount) {
+				maxTotalCount = area.getTotalCount();
+			}
+			if (area.getTotalCount() < minTotalCount) {
+				minTotalCount = area.getTotalCount();
+			}
+			if (areaResult.getSelectCount() > maxSelectCount) {
+				maxSelectCount = area.getTotalCount();
+			}
+			if (areaResult.getSelectCount() < minSelectCount) {
+				minSelectCount = area.getTotalCount();
+			}
 		}
+
+		rootElement.setAttribute("minTotal", minTotalCount + "");
+		rootElement.setAttribute("maxTotal", maxTotalCount + "");
+		rootElement.setAttribute("minSelect", minSelectCount + "");
+		rootElement.setAttribute("maxSelect", maxSelectCount + "");
 
 		if (filenamePrefix != null) {
 			XmlUtil.xml2File(document, filenamePrefix + ".xml", false);
