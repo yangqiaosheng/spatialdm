@@ -34,24 +34,24 @@ public class UpdateFlickrRegionId {
 	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
 
 	public static void main(String[] args) throws SQLException, IOException {
-		long start = System.currentTimeMillis();
-		startDate = Calendar.getInstance();
-		startDate.setTimeInMillis(start);
 
-		System.out.println("\nPlease input the Buffer TableName:\n[Default: " + AREAS_TABLE_NAME + "]");
+		System.out.println("\nPlease input the Area TableName:\n[Default: " + AREAS_TABLE_NAME + "]");
 		String areaTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
 		if (StringUtils.isNotEmpty(areaTableName)){
 			AREAS_TABLE_NAME = areaTableName;
 		}
 		System.out.println("Area Table:" + AREAS_TABLE_NAME);
 
-		System.out.println("\nPlease input the OSM TableName:\n[Default: " + PHOTOS_TABLE_NAME + "]");
+		System.out.println("\nPlease input the Photo TableName:\n[Default: " + PHOTOS_TABLE_NAME + "]");
 		String photoTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
 		if (StringUtils.isNotEmpty(photoTableName)){
 			PHOTOS_TABLE_NAME = photoTableName;
 		}
 		System.out.println("Photo Table:" + PHOTOS_TABLE_NAME);
 
+		long start = System.currentTimeMillis();
+		startDate = Calendar.getInstance();
+		startDate.setTimeInMillis(start);
 		UpdateFlickrRegionId t = new UpdateFlickrRegionId();
 		t.updateRegionId();
 

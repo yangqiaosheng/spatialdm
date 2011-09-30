@@ -54,7 +54,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.Histograms;
-import de.fraunhofer.iais.spatial.script.db.JoinFlickrEuropeAreaTagsCount;
+import de.fraunhofer.iais.spatial.script.db.JoinFlickrAreaTagsCount;
 import de.fraunhofer.iais.spatial.service.FlickrAreaCancelableJob;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
@@ -139,7 +139,7 @@ public class TestFlickrEuropeArea {
 		FlickrAreaDao.parseHoursTagsCountDbString(count2, area2.getHoursTagsCount());
 		System.out.println(area2.getHoursTagsCount());
 
-		JoinFlickrEuropeAreaTagsCount.mergeTagsCountsMap(area1.getHoursTagsCount(), area2.getHoursTagsCount());
+		JoinFlickrAreaTagsCount.mergeTagsCountsMap(area1.getHoursTagsCount(), area2.getHoursTagsCount());
 
 		System.out.println(FlickrAreaDao.createDatesTagsCountDbString(area1.getHoursTagsCount()));
 	}
@@ -160,7 +160,7 @@ public class TestFlickrEuropeArea {
 			m.find();
 			String key = m.group(1);
 			System.out.println(key + ":" + e.getValue());
-			JoinFlickrEuropeAreaTagsCount.addToTagsCountsMap(daysTagsCount, key, e.getValue());
+			JoinFlickrAreaTagsCount.addToTagsCountsMap(daysTagsCount, key, e.getValue());
 		}
 
 
