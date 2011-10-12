@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
-import de.fraunhofer.iais.spatial.util.DBUtil;
 import de.fraunhofer.iais.spatial.util.DbJdbcUtil;
 
 public class JoinFlickrEuropeAreaCount {

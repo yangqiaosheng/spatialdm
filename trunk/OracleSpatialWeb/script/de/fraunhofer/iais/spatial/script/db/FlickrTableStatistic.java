@@ -11,12 +11,7 @@ import java.util.TimerTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
-import de.fraunhofer.iais.spatial.scheduling.CleanOldKmlsTimerTask;
-import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class FlickrTableStatistic {

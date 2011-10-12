@@ -3,7 +3,6 @@ package de.fraunhofer.iais.spatial.script.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import de.fraunhofer.iais.spatial.util.DBUtil;
 

@@ -2,11 +2,9 @@ package de.fraunhofer.iais.spatial.web.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -24,13 +22,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
-import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
