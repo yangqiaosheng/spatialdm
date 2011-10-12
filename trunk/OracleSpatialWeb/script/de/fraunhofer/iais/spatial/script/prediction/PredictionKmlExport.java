@@ -300,7 +300,6 @@ public class PredictionKmlExport {
 		String values = "";
 		String labels = "";
 		int maxValue = new TreeSet<Integer>(data.values()).last();
-		int barWithd = (int) (width / data.size() / 1.3);
 		int labelsInterval = 24;
 		int valuesInterval = 1;
 		int i = 0;
@@ -312,6 +311,7 @@ public class PredictionKmlExport {
 				values += "," + e.getValue();
 			}
 		}
+		labels += "| ";
 
 		String img = "<img src='" + "http://chart.apis.google.com/chart" + //chart engine
 				"?chtt=" + displayLevel + //chart title
