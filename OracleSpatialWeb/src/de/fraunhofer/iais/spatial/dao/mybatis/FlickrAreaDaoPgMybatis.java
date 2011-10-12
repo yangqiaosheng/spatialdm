@@ -11,14 +11,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.jdom.IllegalDataException;
 import org.mybatis.spring.SqlSessionTemplate;
 
-import com.sun.org.apache.commons.collections.CollectionUtils;
-
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
 public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 

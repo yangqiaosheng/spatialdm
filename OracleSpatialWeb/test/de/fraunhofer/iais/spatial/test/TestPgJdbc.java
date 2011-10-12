@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import org.junit.Test;
 import org.postgis.MultiPolygon;
 import org.postgis.PGgeometry;
-import org.postgis.Polygon;
 
 import de.fraunhofer.iais.spatial.util.DBUtil;
 

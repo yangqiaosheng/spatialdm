@@ -30,7 +30,6 @@ import com.aetrion.flickr.photosets.Photoset;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
 import com.aetrion.flickr.util.AuthStore;
 import com.aetrion.flickr.util.FileAuthStore;
-import com.aetrion.flickr.util.IOUtilities;
 
 /**
  * A simple program to backup all of a users private and public photos in a photoset aware manner.  If photos

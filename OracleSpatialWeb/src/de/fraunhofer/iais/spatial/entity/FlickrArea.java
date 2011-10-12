@@ -46,8 +46,8 @@ public class FlickrArea implements Serializable {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(long areaId) {
+		this.id = areaId;
 	}
 
 	public String getName() {

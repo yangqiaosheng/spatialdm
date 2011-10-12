@@ -13,10 +13,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.fraunhofer.iais.spatial.dao.jdbc.DB;
-
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
+import de.fraunhofer.iais.spatial.dao.jdbc.DB;
 
 public class JoinFlickrDeWestAreaCount {
 	static long start = System.currentTimeMillis();

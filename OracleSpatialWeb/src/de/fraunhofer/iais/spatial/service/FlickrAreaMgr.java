@@ -35,13 +35,12 @@ import org.jdom.input.SAXBuilder;
 import com.google.common.collect.Lists;
 
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
-import de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
+import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.util.ChartUtil;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
@@ -893,7 +892,7 @@ public class FlickrAreaMgr {
 		"&chxl=0:" + labels +					//labels in x axis
 		"&chbh=" + barWithd +					//chbh=<bar_width_or_scale>,<space_between_bars>,<space_between_groups>
 		"&chm=N,444444,-1,,12" +				//data marker chm= <marker_type>,<color>,<series_index>,<which_points>,<size>,<z_order>,<placement>
-		"&chds=1," + maxValue * 1.2 +			//scale of y axis (default 1-100)
+		"&chds=0," + maxValue * 1.2 +			//scale of y axis (default 1-100)
 		"&chxr=1,0," + maxValue * 1.2 +			//scale in value (default 1-100)
 		"'/>";
 
