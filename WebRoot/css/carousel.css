@@ -52,6 +52,7 @@
 	MARGIN-RIGHT: auto;
 	MARGIN-LEFT: auto;
 	opacity: 1;
+	z-index:200; 
 	/*overflow-y: scroll;
  	 overflow-x: scroll;*/
 }
@@ -70,6 +71,7 @@
 #maxContainer {
 	/*background-color: #A7BDF7; 
 	opacity: 0.8;*/
+	z-index:200; 
 	border-width:0.31em;
 	border-style:solid; 
 	border-color:#8AA8F3; 

@@ -69,7 +69,7 @@ public class FlickrAreaMgr {
 		this.areaDao = areaDao;
 	}
 
-	public void countSelected(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
+	public void countSelected(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException{
 		Date timestamp = new Date();
 		SessionMutex sessionMutex = new SessionMutex(timestamp);
 		this.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areas, areaDto);
@@ -131,31 +131,12 @@ public class FlickrAreaMgr {
 		return areaResults;
 	}
 
-	public FlickrAreaResult countTag(FlickrArea area, FlickrAreaDto areaDto) {
+	public FlickrAreaResult countTag(FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
 
-		FlickrAreaResult areaResult = new FlickrAreaResult(area);
-
-		Map<String, Map<String, Integer>> hoursTagsCount = null;
-		Map<String, Integer> tagsCount = areaResult.getTagsCount();
-
-		if (MapUtils.isEmpty(area.getHoursTagsCount())) {
-			areaDao.loadHoursTagsCount(area);
-		}
-		hoursTagsCount = area.getHoursTagsCount();
-
-		System.out.println(hoursTagsCount);
-
-		for (String queryStr : areaDto.getQueryStrs()) {
-			if (hoursTagsCount.containsKey(queryStr)) {
-				Map<String, Integer> tags = hoursTagsCount.get(queryStr);
-				for (Map.Entry<String, Integer> e : tags.entrySet()) {
-					tagsCount.put(e.getKey(), MapUtils.getIntValue(tagsCount, e.getKey()) + e.getValue());
-				}
-			}
-		}
-		return areaResult;
+		Date timestamp = new Date();
+		SessionMutex sessionMutex = new SessionMutex(timestamp);
+		return this.getAreaCancelableJob().countTag(timestamp, sessionMutex, area, areaDto);
 	}
-
 
 
 	@SuppressWarnings("unchecked")

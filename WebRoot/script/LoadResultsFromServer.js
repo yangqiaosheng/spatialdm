@@ -104,6 +104,7 @@ function carouselLoadPictures(xml) {
 	readXml(xml);
 	xmldoc = null;
 	if (booleanF2 == false) {
+		//console.log("carousel");
 		YAHOO.widget.Carousel.prototype.STRINGS.NEXT_BUTTON_TEXT = "<img src='right-enabled.gif'/> ";
 		YAHOO.widget.Carousel.prototype.STRINGS.PREVIOUS_BUTTON_TEXT = "<img src='left-enabled.gif'/> ";
 		YAHOO.widget.Carousel.prototype.STRINGS.PAGER_PREFIX_TEXT = "Go to page: "; 
@@ -129,6 +130,8 @@ function carouselLoadPictures(xml) {
 		loadTheCarousel(g_carouselTotalSize, g_jcarousel, smallUrl);
 		g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
 	}
+     // console.log("ready to execute is true");
+      readyToExecute=true;
 }
 
 function readXml(xml) {
@@ -207,13 +210,5 @@ function setCarousel(ids) {
 	page = 1;
 	sendToServerFromCarousel(ids, page_size, page);
 }
-
-
-
-
-
-
-
-/*cloud Carousel not yet*/
 
 
