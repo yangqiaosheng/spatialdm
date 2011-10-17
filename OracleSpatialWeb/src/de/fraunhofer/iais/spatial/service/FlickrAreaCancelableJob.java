@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.MapUtils;
+
 import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
@@ -20,7 +22,7 @@ import de.fraunhofer.iais.spatial.util.DateUtil;
 
 public class FlickrAreaCancelableJob {
 
-	private FlickrAreaDao flickrAreaDao = new FlickrAreaDaoOracleJdbc();
+	private FlickrAreaDao flickrAreaDao;
 
 	public FlickrAreaDao getAreaDao() {
 		return flickrAreaDao;
@@ -57,6 +59,7 @@ public class FlickrAreaCancelableJob {
 	 */
 	public Histograms calculateSumHistogram(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException {
 
+		checkInterruption(sessionTimestamp, sessionMutex);
 		Histograms sumHistrograms = new Histograms();
 
 		Map<String, Integer> sumQueryStrData = Maps.newHashMap();
@@ -109,7 +112,7 @@ public class FlickrAreaCancelableJob {
 		return sumHistrograms;
 	}
 
-	public void countSelected(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
+	public void countSelected(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException{
 
 		for (FlickrArea area : areas) {
 			checkInterruption(sessionTimestamp, sessionMutex);
@@ -150,6 +153,36 @@ public class FlickrAreaCancelableJob {
 			areaResult.setSelectedCount(selectCount);
 		}
 
+	}
+
+	public FlickrAreaResult countTag(Date sessionTimestamp, SessionMutex sessionMutex, FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
+
+		checkInterruption(sessionTimestamp, sessionMutex);
+		FlickrAreaResult areaResult = new FlickrAreaResult(area);
+
+		Map<String, Map<String, Integer>> hoursTagsCount = null;
+		Map<String, Integer> tagsCount = areaResult.getTagsCount();
+
+		if (MapUtils.isEmpty(area.getHoursTagsCount())) {
+			flickrAreaDao.loadHoursTagsCount(area);
+		}
+		hoursTagsCount = area.getHoursTagsCount();
+
+		System.out.println(hoursTagsCount);
+
+		int i = 0;
+		for (String queryStr : areaDto.getQueryStrs()) {
+			if (i++ % (24 * 31) == 0) {
+				checkInterruption(sessionTimestamp, sessionMutex);
+			}
+			if (hoursTagsCount.containsKey(queryStr)) {
+				Map<String, Integer> tags = hoursTagsCount.get(queryStr);
+				for (Map.Entry<String, Integer> e : tags.entrySet()) {
+					tagsCount.put(e.getKey(), MapUtils.getIntValue(tagsCount, e.getKey()) + e.getValue());
+				}
+			}
+		}
+		return areaResult;
 	}
 
 	private void checkInterruption(Date sessionTimestamp, SessionMutex sessionMutex) throws InterruptedException {

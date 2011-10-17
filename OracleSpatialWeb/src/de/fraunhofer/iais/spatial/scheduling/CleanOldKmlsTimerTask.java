@@ -31,7 +31,7 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 
 		try {
 			//		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
-			//		File kmlPath = new File(System.getProperty("flickr_world.root") + RequestKmlServlet.kmlPath);
+//					File kmlPath = new File(System.getProperty("flickr_world.root") + RequestKmlServlet.kmlPath);
 			File kmlPath = new File(this.getClass().getResource("/../../" + ZoomKmlServlet.kmlPath).getPath());
 			File files[] = kmlPath.listFiles();
 			logger.debug("run() - kmlPath:" + kmlPath.getAbsolutePath()); //$NON-NLS-1$

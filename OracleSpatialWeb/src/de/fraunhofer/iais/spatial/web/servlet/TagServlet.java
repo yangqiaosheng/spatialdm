@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,11 +27,13 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.google.common.collect.Lists;
 
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
+import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
+import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class TagServlet extends HttpServlet {
@@ -60,6 +65,20 @@ public class TagServlet extends HttpServlet {
 		 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Date timestamp = new Date();
+		timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
+
+		HttpSession session = request.getSession();
+		SessionMutex sessionMutex = null;
+		synchronized (this) {
+			if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID) == null) {
+				session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
+			}
+			sessionMutex = (SessionMutex) session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
+			if (sessionMutex.getTimestamp().before(timestamp)) {
+				sessionMutex.setTimestamp(timestamp);
+			}
+		}
 
 		response.setContentType("text/xml");
 		// Prevents caching
@@ -93,17 +112,47 @@ public class TagServlet extends HttpServlet {
 
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 
+				if(session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) != null){
+					int waitSec = 5;
+					for (int i = 1; i <= waitSec; i++) {
+						Thread.sleep(1000);
+						if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
+							break;
+						} else {
+							if (i == waitSec) {
+								throw new TimeoutException("Blocked until:" + waitSec + "s");
+							}
+							if (!sessionMutex.getTimestamp().equals(timestamp)) {
+								throw new InterruptedException("Interrupted before");
+							}
+						}
+					}
+				}
+
+				session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
+
 				if(area != null){
-					tagsResponseXml(document, area, areaDto, size);
+					tagsResponseXml(timestamp, sessionMutex, document, area, areaDto, size);
 					messageElement.setText("SUCCESS");
 				}else{
 					messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
 				}
+				session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
+			} catch (TimeoutException e) {
+				messageElement.setText("INFO: Rejected until Timeout!");
+				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+				rootElement.addContent(new Element("description").setText(e.getMessage()));
+			} catch (InterruptedException e) {
+				messageElement.setText("INFO: interupted by another query!");
+//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+//				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 				messageElement.setText("ERROR: wrong input parameter!");
 //				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 				rootElement.addContent(new Element("description").setText(e.getMessage()));
+			} finally {
+				session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK);
 			}
 		}
 
@@ -114,9 +163,9 @@ public class TagServlet extends HttpServlet {
 		System.gc();
 	}
 
-	private String tagsResponseXml(Document document, FlickrArea area, FlickrAreaDto areaDto, int size) {
+	private String tagsResponseXml(Date timestamp, SessionMutex sessionMutex, Document document, FlickrArea area, FlickrAreaDto areaDto, int size) throws InterruptedException {
 
-		FlickrAreaResult areaResult = areaMgr.countTag(area, areaDto);
+		FlickrAreaResult areaResult = areaMgr.getAreaCancelableJob().countTag(timestamp, sessionMutex, area, areaDto);
 
 		List<Map.Entry<String, Integer>> entries = Lists.newLinkedList(areaResult.getTagsCount().entrySet());
 
