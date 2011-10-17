@@ -13,14 +13,7 @@ var numberHeader = new Array(7);
 var fieldHeader = new Array(7);
 var N = 100;
 
-// this function is executed in the begining onload on body
-function loadStart() {	
-	field = get_set_Field();
-	number = get_set_number();
-	nameString = loadDataForTable();		
-	activateTheHeaderOfTable();		
-	//nameStringHistogram = loadDataForTable();	
-}
+
 function get_set_Field(){
 	var local_nameString = new Array(200);
 	for (var i=0;i<N; i++){ 

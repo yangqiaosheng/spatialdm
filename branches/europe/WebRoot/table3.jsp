@@ -1,5 +1,5 @@
 <div id="table3" class="tabcontent">
-  <span id="CalendarcheckBox"><b id="timeC2" class="timeCstar"><a class="noLine" href="#" >Select time from calendar</a></b></span>
+  <span id="CalendarcheckBox"><b id="timeC2" class="timeCstar">Select time from calendar</b></span>
   <div id="CalendarContent">
     <br/>
     <span id="intervalSelection" class="timeCstar">Select an interval</span>    

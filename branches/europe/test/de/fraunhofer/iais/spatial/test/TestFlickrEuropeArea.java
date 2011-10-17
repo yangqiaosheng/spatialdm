@@ -169,7 +169,7 @@ public class TestFlickrEuropeArea {
 	}
 
 	@Test
-	public void testTag() {
+	public void testTag() throws InterruptedException {
 		long start = System.currentTimeMillis();
 
 		FlickrAreaDto areaDto = new FlickrAreaDto();
@@ -248,7 +248,7 @@ public class TestFlickrEuropeArea {
 		}
 	}
 
-	private String tagsResponseXml(FlickrArea area, FlickrAreaDto areaDto, int size) {
+	private String tagsResponseXml(FlickrArea area, FlickrAreaDto areaDto, int size) throws InterruptedException {
 
 		FlickrAreaResult areaResult = areaMgr.countTag(area, areaDto);
 
