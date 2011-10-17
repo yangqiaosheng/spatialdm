@@ -976,7 +976,7 @@ Histogramm.prototype.render3 = function(parent, arrayX) {
 				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 28:
-				spanElementInfo[k].innerHTML = '28';
+				spanElementInfo[k].innerHTML = '29';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "11.290322px";
 				spanElementInfo[k].style.fontSize = "8.5px";

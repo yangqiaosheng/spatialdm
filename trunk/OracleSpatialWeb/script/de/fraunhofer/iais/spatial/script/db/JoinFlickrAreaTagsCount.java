@@ -88,18 +88,18 @@ public class JoinFlickrAreaTagsCount {
 
 		if(PHOTO_TABLE_NAME.contains("world")){
 			System.out.println("For the World");
-			radiusList.add("625");
-			radiusList.add("1250");
-			radiusList.add("2500");
-			radiusList.add("5000");
-			radiusList.add("10000");
-			radiusList.add("20000");
-			radiusList.add("40000");
-			radiusList.add("80000");
-			radiusList.add("160000");
-			radiusList.add("320000");
-			radiusList.add("640000");
-			radiusList.add("1280000");
+//			radiusList.add("625");
+//			radiusList.add("1250");
+//			radiusList.add("2500");
+//			radiusList.add("5000");
+//			radiusList.add("10000");
+//			radiusList.add("20000");
+//			radiusList.add("40000");
+//			radiusList.add("80000");
+//			radiusList.add("160000");
+//			radiusList.add("320000");
+//			radiusList.add("640000");
+//			radiusList.add("1280000");
 			radiusList.add("2560000");
 		} else if(PHOTO_TABLE_NAME.contains("europe")){
 			System.out.println("For the Europe");
@@ -162,7 +162,7 @@ public class JoinFlickrAreaTagsCount {
 //				conn.commit();
 //			} while(updateSize == BATCH_SIZE);
 
-			countDay(selectConn);
+//			countDay(selectConn);
 //			countMonth(selectConn);
 //			countYear(selectConn);
 //			countTotal(selectConn);
@@ -179,7 +179,8 @@ public class JoinFlickrAreaTagsCount {
 	}
 
 	private void countHoursTags(Connection conn, String radiusString) throws SQLException {
-		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTO_TABLE_NAME + " t");
+//		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select distinct(t.region_" + radiusString + "_id) id from " + PHOTO_TABLE_NAME + " t");
+		PreparedStatement selectAreaStmt = db.getPstmt(conn, "select id from " + COUNTS_TABLE_NAME + " t where radius = 2560000 and hour is null");
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 		PreparedStatement selectDateStmt = db.getPstmt(conn, "select DISTINCT to_char(t.TAKEN_DATE,?) d from " + PHOTO_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? order by d");
 
@@ -276,7 +277,7 @@ public class JoinFlickrAreaTagsCount {
 		db.close(rs);
 		db.close(selectCountStmt);
 
-		// add countsMap and countsMap2 together
+		// add countsMap and countsMapToAdd together
 		mergeTagsCountsMap(countsMap, countsMapToAdd);
 
 		String countStr = FlickrAreaDao.createDatesTagsCountDbString(countsMap, TAG_LIMIT);

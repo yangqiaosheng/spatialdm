@@ -125,6 +125,7 @@ public class PolygonXmlServlet extends HttpServlet {
 				}
 
 				session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
+
 				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(), areaDto.isCrossDateLine());
 				if (size > 2000) {
 					throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
@@ -140,7 +141,7 @@ public class PolygonXmlServlet extends HttpServlet {
 				List<FlickrAreaResult> areaResults = Lists.newArrayList();
 				areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areas, areaDto);
 				responseStr = createXml(areaResults, null, areaDto, areaMgr.getAreaDao().getTotalEuropePhotoNum());
-				request.getSession().setAttribute("areaDto", areaDto);
+				session.setAttribute("areaDto", areaDto);
 				session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
 			} catch (TimeoutException e) {
 				messageElement.setText("INFO: Rejected until Timeout!");
