@@ -49,9 +49,9 @@ import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 public class ChartUtil {
 
 	@Deprecated
-	public static void createTimeSeriesChartOld(Map<Date, Integer> countsMap, OutputStream os) throws IOException {
+	public static void createTimeSeriesChartOld(Map<Date, Integer> countsMap, String title, OutputStream os) throws IOException {
 		XYDataset timeSeriesDataset = createTimeSeriesDatasetOld(countsMap);
-		JFreeChart jfreechart = buildTimeSeriesChartOld(timeSeriesDataset);
+		JFreeChart jfreechart = buildTimeSeriesChartOld(timeSeriesDataset, title);
 		ChartUtilities.writeChartAsPNG(os, jfreechart, 600, 300);
 	}
 
@@ -146,10 +146,10 @@ public class ChartUtil {
 	}
 
 	@Deprecated
-	private static JFreeChart buildTimeSeriesChartOld(XYDataset xydataset) {
+	private static JFreeChart buildTimeSeriesChartOld(XYDataset xydataset, String title) {
 
 		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
-				"#Photos Distribution", // Title
+				title, // Title
 				"Time", // X Label
 				"#photos", // Y Label
 				xydataset, // dataset
