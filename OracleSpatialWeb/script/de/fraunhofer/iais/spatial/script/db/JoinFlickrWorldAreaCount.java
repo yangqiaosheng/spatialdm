@@ -30,8 +30,8 @@ public class JoinFlickrWorldAreaCount {
 	final static int BEGIN_REGION_CHECKED_CODE = 1;
 	final static int FINISH_REGION_CHECKED_CODE = 2;
 	final static int TEMP_REGION_CHECKED_CODE = 1;
-	final static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_5m_taken_date_hour";
-	final static String COUNTS_TABLE_NAME = "flickr_world_topviewed_5m_count";
+	final static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_50m_taken_date_hour";
+	final static String COUNTS_TABLE_NAME = "flickr_world_topviewed_50m_count";
 	static int rownum = 1;
 	static Calendar startDate;
 
@@ -58,10 +58,10 @@ public class JoinFlickrWorldAreaCount {
 	public void begin(){
 
 		ArrayList<String> radiusList = new ArrayList<String>();
-//		radiusList.add("625");
-//		radiusList.add("1250");
-//		radiusList.add("2500");
-//		radiusList.add("5000");
+		radiusList.add("625");
+		radiusList.add("1250");
+		radiusList.add("2500");
+		radiusList.add("5000");
 		radiusList.add("10000");
 		radiusList.add("20000");
 		radiusList.add("40000");

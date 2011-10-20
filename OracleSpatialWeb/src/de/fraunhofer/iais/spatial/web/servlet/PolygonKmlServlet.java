@@ -66,7 +66,6 @@ public class PolygonKmlServlet extends HttpServlet {
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 				List<FlickrArea> areas = null;
-				List<FlickrAreaResult> areaResults = Lists.newArrayList();
 
 				if (areaDto.getPolygon() != null) {
 					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
@@ -80,8 +79,8 @@ public class PolygonKmlServlet extends HttpServlet {
 				} else {
 					areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 				}
-
-				areaMgr.countSelected(areaResults, areas, areaDto);
+				List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
+				areaMgr.countSelected(areaResults, areaDto);
 				kmlStr = areaMgr.buildKmlFile(areaResults, null, areaDto.getRadius(), remoteBasePath, false);
 
 			} catch (Exception e) {

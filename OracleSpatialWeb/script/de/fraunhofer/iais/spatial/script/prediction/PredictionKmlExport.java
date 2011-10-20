@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,22 +29,25 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
+import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
-import de.fraunhofer.iais.spatial.util.DateUtil;
+import de.fraunhofer.iais.spatial.util.DBUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class PredictionKmlExport {
 
+	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
 	/**
 	 * @param args
 	 * @throws IOException
 	 * @throws JDOMException
+	 * @throws SQLException
 	 */
-	public static void main(String[] args) throws IOException, JDOMException {
+	public static void main(String[] args) throws IOException, JDOMException, SQLException {
 		Map<Long, Map<String, Integer>> areaEvents = Maps.newHashMap();
 		List<FlickrArea> areas = Lists.newArrayList();
 
@@ -49,9 +55,48 @@ public class PredictionKmlExport {
 		importAreas(areaEvents, areas);
 		initAreas(areaEvents, areas);
 
-		System.out.println(buildKmlString(areas, Radius.R1250, ""));
-		System.out.println(buildKmlFile(areas, "temp/areas1000", Radius.R1250, null, false));
+		exportAreas(areas);
+		exportAreaEvents(areaEvents, areas);
+
+//		System.out.println(buildKmlString(areas, Radius.R1250, ""));
+//		System.out.println(buildKmlFile(areas, "temp/areas1000", Radius.R1250, null, false));
 	}
+
+	private static void exportAreas(List<FlickrArea> areas) throws SQLException {
+		Connection conn = db.getConn();
+
+		for (FlickrArea area : areas) {
+			PreparedStatement insertAreaCountStmt = db.getPstmt(conn, "insert into prediction_milan_area_count (id, hour) values (?, ?)");
+			insertAreaCountStmt.setLong(1, area.getId());
+			insertAreaCountStmt.setString(2, FlickrAreaDao.createDatesCountDbString(area.getHoursCount()));
+			insertAreaCountStmt.executeUpdate();
+			db.close(insertAreaCountStmt);
+		}
+		db.close(conn);
+	}
+
+	private static void exportAreaEvents(Map<Long, Map<String, Integer>> areaEvents, List<FlickrArea> areas) throws SQLException {
+		Connection conn = db.getConn();
+
+		for (FlickrArea area : areas) {
+
+			String pgQueryGeom = "SRID=4326;polygon((";
+			for(Point2D point : area.getGeom()){
+				pgQueryGeom += point.getX() + " " + point.getY()  + ", ";
+			}
+			pgQueryGeom = StringUtils.removeEnd(pgQueryGeom, ", ") + "))";
+			String sql = "insert into prediction_milan_area (id, center_x, center_y, geom) values (?, ?, ? , '" + pgQueryGeom + "')";
+			System.out.println(sql);
+			PreparedStatement insertAreaStmt = db.getPstmt(conn, sql);
+			insertAreaStmt.setLong(1, area.getId());
+			insertAreaStmt.setDouble(2, area.getCenter().getX());
+			insertAreaStmt.setDouble(3, area.getCenter().getY());
+			insertAreaStmt.executeUpdate();
+			db.close(insertAreaStmt);
+		}
+		db.close(conn);
+	}
+
 
 	private static void initAreas(Map<Long, Map<String, Integer>> areaEvents, List<FlickrArea> areas) {
 		for (FlickrArea area : areas) {

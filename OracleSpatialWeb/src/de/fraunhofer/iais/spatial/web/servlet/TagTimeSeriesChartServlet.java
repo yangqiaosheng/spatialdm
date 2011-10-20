@@ -2,6 +2,7 @@ package de.fraunhofer.iais.spatial.web.servlet;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -71,6 +72,7 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
 			logger.info("requestUrl:" + request.getRequestURL() + " |areaid:" + areaid + " |tag:" + tag + " |smooth:" + smooth); //$NON-NLS-1$
+			tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
 			try {
 				List<FlickrArea> areas = new ArrayList<FlickrArea>();
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
@@ -92,20 +94,7 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 					icon = true;
 				}
 
-				Set<String> years = Sets.newTreeSet();
-				int num = 3;
-				int i = 0;
-				if (areaDto.getYears().size() > num) {
-					i = areaDto.getYears().size() - num;
-				}
-
-				for (String year : areaDto.getYears()) {
-					if (--i < 0) {
-						years.add(year);
-					}
-				}
-
-				areaMgr.createTagTimeSeriesChartOld(area, tag, years, sos);
+				areaMgr.createTagTimeSeriesChartOld(area, tag, areaDto.getYears(), "#" + tag + " Distribution", sos);
 
 			} catch (Exception e) {
 //				IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);

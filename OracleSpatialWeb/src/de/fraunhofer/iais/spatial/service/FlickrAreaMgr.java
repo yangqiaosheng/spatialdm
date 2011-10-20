@@ -33,6 +33,7 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
@@ -68,24 +69,31 @@ public class FlickrAreaMgr {
 		this.areaDao = areaDao;
 	}
 
-	public void countSelected(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException{
+	public void countSelected(List<FlickrAreaResult> areaResults, FlickrAreaDto areaDto) throws InterruptedException{
 		Date timestamp = new Date();
 		SessionMutex sessionMutex = new SessionMutex(timestamp);
-		this.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areas, areaDto);
+		this.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
 	}
+
+	public List<FlickrAreaResult> createAreaResults(List<FlickrArea> areas) {
+		List<FlickrAreaResult> areaResults = Lists.newArrayList();
+		for (FlickrArea area : areas) {
+			FlickrAreaResult areaResult = new FlickrAreaResult(area);
+			areaResults.add(areaResult);
+		}
+		return areaResults;
+	}
+
 
 	/**
 	 * calculate the histograms DataSets for each FlickrArea
 	 * @param areas
 	 * @param areaDto
 	 */
-	public void calculateHistograms(List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) {
+	public void calculateHistograms(List<FlickrAreaResult> areaResults, FlickrAreaDto areaDto) {
 
 		int queryStrsLength = areaDto.getQueryStrsLength();
-		for (FlickrArea area : areas) {
-			FlickrAreaResult areaResult = new FlickrAreaResult(area);
-			areaResults.add(areaResult);
-
+		for (FlickrAreaResult areaResult : areaResults) {
 			Map<Integer, Integer> yearData = areaResult.getHistograms().getYears();
 			Map<Integer, Integer> monthData = areaResult.getHistograms().getMonths();
 			Map<Integer, Integer> dayData = areaResult.getHistograms().getDays();
@@ -96,7 +104,7 @@ public class FlickrAreaMgr {
 			calendar.setLenient(false);
 
 			//set values
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+			for (Map.Entry<String, Integer> e : areaResult.getArea().getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
 					int hour = Integer.parseInt(e.getKey().substring(11, 13));
 					hourData.put(hour, e.getValue() + hourData.get(hour));
@@ -131,7 +139,6 @@ public class FlickrAreaMgr {
 	}
 
 	public FlickrAreaResult countTag(FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
-
 		Date timestamp = new Date();
 		SessionMutex sessionMutex = new SessionMutex(timestamp);
 		return this.getAreaCancelableJob().countTag(timestamp, sessionMutex, area, areaDto);
@@ -407,12 +414,39 @@ public class FlickrAreaMgr {
 		ChartUtil.createBarChart(cs, "temp/bar.jpg");
 	}
 
-	public void createTagTimeSeriesChartOld(FlickrArea area, String tag, Set<String> years, OutputStream os) throws ParseException, IOException {
+	public void createTagTimeSeriesChartOld(FlickrArea area, String tag, Set<String> years, String title, OutputStream os) throws ParseException, IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
+
+		Map<String, Map<String, Integer>> daysTagsCount = area.getDaysTagsCount();
+		TreeSet<String> approvedYears = Sets.newTreeSet();
+		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
+			if (years.contains(e.getKey().substring(0, 4))) {
+				for (Map.Entry<String, Integer> term : daysTagsCount.get(e.getKey()).entrySet()) {
+					if(term.getKey().equals(tag)){
+						approvedYears.add(e.getKey().substring(0, 4));
+						break;
+					}
+				}
+			}
+		}
+
+		approvedYears.retainAll(years);
+		Set<String> displayYears = Sets.newTreeSet();
+		int num = 3;
+		int i = 0;
+		if (approvedYears.size() > num) {
+			i = approvedYears.size() - num;
+		}
+
+		for (String year : approvedYears) {
+			if (--i < 0) {
+				displayYears.add(year);
+			}
+		}
 		// init
-		for (String year : years) {
+		for (String year : displayYears) {
 			for (int j : DateUtil.allMonthInts) {
 				for (int k : DateUtil.allDayInts) {
 					countsMap.put(sdf.parse(year + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k)), 0);
@@ -425,11 +459,10 @@ public class FlickrAreaMgr {
 			areaDao.loadDaysTagsCount(area);
 		}
 
-		Map<String, Map<String, Integer>> daysTagsCount = area.getDaysTagsCount();
 		System.out.println(daysTagsCount);
 
 		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
-			if (years.contains(e.getKey().substring(0, 4))) {
+			if (displayYears.contains(e.getKey().substring(0, 4))) {
 				for (Map.Entry<String, Integer> term : daysTagsCount.get(e.getKey()).entrySet()) {
 					if(term.getKey().equals(tag)){
 						countsMap.put(sdf.parse(e.getKey()), term.getValue());
@@ -438,7 +471,8 @@ public class FlickrAreaMgr {
 			}
 		}
 
-		ChartUtil.createTimeSeriesChartOld(countsMap, os);
+
+		ChartUtil.createTimeSeriesChartOld(countsMap, title, os);
 	}
 
 	@Deprecated
@@ -452,7 +486,7 @@ public class FlickrAreaMgr {
 			}
 		}
 
-		ChartUtil.createTimeSeriesChartOld(countsMap, os);
+		ChartUtil.createTimeSeriesChartOld(countsMap, "#Photos Distribution", os);
 	}
 
 	public void createTimeSeriesChart(List<FlickrArea> areas, Level displayLevel, FlickrAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, boolean icon, OutputStream os) throws ParseException, IOException {
