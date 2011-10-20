@@ -1,0 +1,23 @@
+.hover {
+  background-color: #06A8FA;
+}           
+.timeCstar {
+  background-color: #A7BDF7;
+}
+
+#SearchBox{	
+	width: auto;
+	height: auto;
+	padding-left:0cm;
+	padding-right:0cm;
+	padding-bottom:0cm;
+}
+input.right {
+    float:right;
+}
+         
+#absButton{
+  position: absolute;
+  bottom: 0; 
+  right: 0
+}
