@@ -134,8 +134,8 @@ public class PolygonXmlServlet extends HttpServlet {
 
 				List<FlickrArea> areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 
-				List<FlickrAreaResult> areaResults = Lists.newArrayList();
-				areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areas, areaDto);
+				List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
+				areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
 				responseStr = createXml(areaResults, null, areaDto, areaMgr.getAreaDao().getTotalEuropePhotoNum());
 				request.getSession().setAttribute("areaDto", areaDto);
 				session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);

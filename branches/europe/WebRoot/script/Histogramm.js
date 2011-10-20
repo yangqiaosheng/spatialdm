@@ -225,48 +225,38 @@ function setArray(param) {
 }
 
 function loadHistogram(xml) {
+	//console.log("load XML")
 	var klocalYear = 0;
 	var klocalMonth = 0;
 	var klocalDay = 0;
 	var klocalHour = 0;
 	var klocalWeekDay = 0;
 	$(xml).find('year').each(function() {
-		globalDataY[klocalYear] = $(this).text();
-		// console.log("years: "+globalDataY[klocalYear]+" "+klocalYear);
+		globalDataY[klocalYear] = $(this).text();		
 		klocalYear++;
 	});
 	$(xml).find('month').each(function() {
-		globalDataM[klocalMonth] = $(this).text();
-		// console.log("months: "+globalDataM[klocalMonth]+" "+klocalMonth);
+		globalDataM[klocalMonth] = $(this).text();		
 		klocalMonth++;
 	});
 	$(xml).find('day').each(function() {
-		globalDataD[klocalDay] = $(this).text();
-		// console.log("days: "+globalDataD[klocalDay]+" "+klocalDay);
+		globalDataD[klocalDay] = $(this).text();		
 		klocalDay++;
 	});
 	$(xml).find('hour').each(function() {
-		globalDataH[klocalHour] = $(this).text();
-		// console.log("hours: "+globalDataH[klocalHour]+" "+klocalHour);
+		globalDataH[klocalHour] = $(this).text();		
 		klocalHour++;
 	});
 	$(xml).find('weekday').each(function() {
-		globalDataW[klocalWeekDay] = $(this).text();
-		// console.log("weekdays: "+globalDataW[klocalWeekDay]+"
-		// "+klocalWeekDay);
+		globalDataW[klocalWeekDay] = $(this).text();				
 		klocalWeekDay++;
 	});
 
-	maxY = $(xml).find('years').attr('maxValue');
-	// console.log(maxY);
-	maxM = $(xml).find('months').attr('maxValue');
-	// console.log(maxM);
-	maxD = $(xml).find('days').attr('maxValue');
-	// console.log(maxD);
+	maxY = $(xml).find('years').attr('maxValue');	
+	maxM = $(xml).find('months').attr('maxValue');	
+	maxD = $(xml).find('days').attr('maxValue');	
 	maxH = $(xml).find('hours').attr('maxValue');
-	// console.log(maxH);
-	maxW = $(xml).find('weekdays').attr('maxValue');
-	// console.log(maxW);
+	maxW = $(xml).find('weekdays').attr('maxValue');	
 	init();
 }
 
@@ -353,14 +343,18 @@ function init() {
 	var view5 = new Histogramm(model5, opts5);
 	$("#parent5").empty().html("");
  	view5.render5(document.getElementById('parent5'), myArray5);
-	
+	//console.log("step 1");      
 	if (ApplyPolygons == false) {
 		ApplyPolygons = true;
-		headerXMLHistogram = createHeaderXML();
+		if (AGGREGATION==true){
+		    headerXMLHistogram = createHeaderXML();
+		}
+		//console.log("headerXMLHistogram "+headerXMLHistogram);
 		bodyXMLHistogram = timeController1XMLHistogram_Selected();
-		if (jQuery("#AggregationCheckBox").attr("checked") == true){
+		  //console.log("step 2");
+		//if (jQuery("#AggregationCheckBox").attr("checked") == true){
 		  sendToServerCalendarData(headerXMLHistogram, bodyXMLHistogram);		
-		}else{}
+		//}else{}
 	}
 }
 
@@ -502,12 +496,20 @@ function activateToolTipSimple(t , subSpan, index, arrayX, numberPhotos){
 	OnClick(spanElement[k], spanElementInfo[k], t , subSpan, index, arrayX, numberPhotos);
 };
 
-function askHistogramSelected() {
-	deleteHistory();
-	removeCircles();
+function askHistogramSelected() {	
+	//console.log("AGGREGATION "+AGGREGATION);
+	//deleteHistory();
+	//removeCircles();
 	addRemoveElementsFromHistogram();
 	resetParameters();
-	headerXMLHistogram = createHeaderXML();
+	if (AGGREGATION==true){
+	    deleteHistory();
+	    removeCircles();
+	    addRemoveElementsFromHistogram();
+	    resetParameters();
+	    headerXMLHistogram = createHeaderXML();	    
+	}
+	//console.log("headerXMLHistogram "+headerXMLHistogram);
 	bodyXMLHistogram = timeController1XMLHistogram_Selected();
 	sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram);
 };

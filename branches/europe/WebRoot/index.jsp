@@ -116,7 +116,7 @@
 	<jsp:include page="legend.jsp" />
 	
 	<div id="tag"></div>
-	<div id="tagClick"></div>
+	<div id="tagClick"></div>	
 	<div class="photoWindow timeCstar" id="photoWindow">
 		<div class="photoWindowDesc" id="photoWindowDesc"></div>
 		<div class="photoWindowImg" id="photoWindowImg"></div>

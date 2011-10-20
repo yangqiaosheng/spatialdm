@@ -131,7 +131,8 @@ function carouselLoadPictures(xml) {
 		g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
 	}
      // console.log("ready to execute is true");
-      readyToExecute=true;
+     // readyToExecute=true;
+      readyToExecute_A = true;
 }
 
 function readXml(xml) {
