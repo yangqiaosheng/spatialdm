@@ -20,7 +20,6 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 		}
 	};
 
-//  xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SpatialXml");
 	xmlHttp.open("POST", "SpatialXml");
 	// xmlHttp.open("POST",
 	// "http://localhost:8080/OracleSpatialWeb/RequestKml");
@@ -67,7 +66,7 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 // 			}
 // 		}
 // 	};	
-// 	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SpatialXml");
+// 	xmlHttp.open("POST", "SpatialXml");
 // 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 // 	xmlHttp.send("persist=true&xml="+ encodeURIComponent(screenBounds_screenCenter)+ "&timestamp=" + new Date().getTime());
 // }
@@ -80,7 +79,6 @@ function sendToServerFromCarousel(ids, page_size, page) {
 	} else {
 		document.write("browser not supported");
 	}	
-//	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/SmallPhotoUrl");
 	xmlHttp.open("POST", "SmallPhotoUrl");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	xmlHttp.send("areaid=" + ids + "&page_size=" + page_size + "&page=" + page);
@@ -92,6 +90,7 @@ function sendToServerFromCarousel(ids, page_size, page) {
 	};
 }
 //, total, selectedP, infowindow
+/*
 function askForTags(ids, numberOfTags, center, total, selc, number){      
       if (window.XMLHttpRequest) {
 		xmlHttp = new XMLHttpRequest();
@@ -100,11 +99,10 @@ function askForTags(ids, numberOfTags, center, total, selc, number){
 	} else {
 		document.write("browser not supported");
 	}	
-//	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/Tag");
 	xmlHttp.open("POST", "Tag");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	//console.log("areaid=" + ids + "&size=" + numberOfTags);
-	xmlHttp.send("areaid=" + ids + "&size=" + numberOfTags + "&timestamp=" + new Date().getTime());
+	xmlHttp.send("areaid=" + ids + "&size=" + numberOfTags+ "&timestamp=" + new Date().getTime());
 	xmlHttp.onreadystatechange = function() {
 		if (xmlHttp.readyState == 4) {
 			var xmlDoc = xmlHttp.responseText;
@@ -112,7 +110,7 @@ function askForTags(ids, numberOfTags, center, total, selc, number){
 		}
 	};
 }
-
+*/
 
 function sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram) {
 	var textToSend = headerXMLHistogram + "" + bodyXMLHistogram;
@@ -136,7 +134,6 @@ function sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram)
 	$("#parent3").empty().html('<img src="images/89.gif" height="50" width="50"  />');
 	$("#parent4").empty().html('<img src="images/89.gif" height="50" width="50"  />');
 	$("#parent5").empty().html('<img src="images/89.gif" height="50" width="50"  />');
-//	xmlHttp.open("POST", "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/HistrogramsData");
 	xmlHttp.open("POST", "HistrogramsData");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	xmlHttp.send("xml=" + encodeURIComponent(textToSend)+ "&timestamp=" + new Date().getTime());	

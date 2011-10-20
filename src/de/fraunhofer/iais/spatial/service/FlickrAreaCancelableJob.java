@@ -112,13 +112,11 @@ public class FlickrAreaCancelableJob {
 		return sumHistrograms;
 	}
 
-	public void countSelected(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrAreaResult> areaResults, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException{
+	public void countSelected(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrAreaResult> areaResults, FlickrAreaDto areaDto) throws InterruptedException{
 
-		for (FlickrArea area : areas) {
+		for (FlickrAreaResult areaResult : areaResults) {
+			FlickrArea area = areaResult.getArea();
 			checkInterruption(sessionTimestamp, sessionMutex);
-
-			FlickrAreaResult areaResult = new FlickrAreaResult(area);
-			areaResults.add(areaResult);
 
 			int selectCount = 0;
 			Map<String, Integer> counts = null;
@@ -154,6 +152,7 @@ public class FlickrAreaCancelableJob {
 		}
 
 	}
+
 
 	public FlickrAreaResult countTag(Date sessionTimestamp, SessionMutex sessionMutex, FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
 

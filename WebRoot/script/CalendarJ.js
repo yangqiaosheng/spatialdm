@@ -1,5 +1,7 @@
 var selectedDays;
-
+var bounds;
+var center;
+var zoomLevel;
 $(document).ready(function() {
 	$('#popupDatepicker1').datepick( {
 		renderer : $.datepick.themeRollerRenderer,
@@ -26,9 +28,9 @@ $(document).ready(function() {
 });
 
 function selectedCalendarDays() {
-	var bounds = map.getBounds();
-	var center = map.getCenter();
-	var zoomLevel = map.getZoom();
+	bounds = map.getBounds();
+	center = map.getCenter();
+	zoomLevel = map.getZoom();
 	headerXML = createHeaderXML(bounds, center, zoomLevel);
 
 	var selectedCalendarDays = "";

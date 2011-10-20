@@ -376,17 +376,17 @@ function ask() {
 }
 
 function refreshButtons() {    
-    // deleteHistory();
-    //resetTable();
+    deleteHistory();
+//     resetTable();
 }
-/*
-function resetTable(){
-  for (var i=1; i<=80;i++){
-   if (number[i] % 2 != 0) {
-	number[i]++;	
-        field[i].style.background = '#06A8FA';
-    } else {
-        field[i].style.background = '#06A8FA';
-    }
-  }
-}*/
+
+// function resetTable(){
+//   for (var i=1; i<=80;i++){
+//    if (number[i] % 2 != 0) {
+// 	number[i]++;	
+//         field[i].style.background = '#06A8FA';
+//     } else {
+//         field[i].style.background = '#06A8FA';
+//     }
+//   }
+// }

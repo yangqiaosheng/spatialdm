@@ -580,7 +580,6 @@ public class TestFlickrEuropeArea {
 		System.out.println("oraclespatialweb.root:" + System.getProperty("oraclespatialweb.root"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest3.xml"))), areaDto);
 		List<FlickrArea> areas = null;
-		List<FlickrAreaResult> areaResults = Lists.newArrayList();
 		if (areaDto.getBoundaryRect() == null) {
 			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 		} else {
@@ -590,7 +589,8 @@ public class TestFlickrEuropeArea {
 		Date timestamp = new Date();
 		SessionMutex sessionMutex = new SessionMutex(timestamp);
 
-		areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areas, areaDto);
+		List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
+		areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
 
 		System.out.println(areaMgr.buildKmlString(areaResults, areaDto.getRadius(), ""));
 		System.out.println(System.currentTimeMillis() - start);
@@ -665,7 +665,7 @@ public class TestFlickrEuropeArea {
 		years.add("2008");
 		FlickrArea area = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R320000);
 
-		areaMgr.createTagTimeSeriesChartOld(area, "motorsport", years, new FileOutputStream("temp/tsTagCharty.png"));
+		areaMgr.createTagTimeSeriesChartOld(area, "motorsport", years, "motorsport", new FileOutputStream("temp/tsTagCharty.png"));
 	}
 
 //	@Test
