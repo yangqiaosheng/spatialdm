@@ -416,7 +416,14 @@ public class FlickrAreaMgr {
 
 		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
 
+
+		if (MapUtils.isEmpty(area.getDaysTagsCount())) {
+			areaDao.loadDaysTagsCount(area);
+		}
+
 		Map<String, Map<String, Integer>> daysTagsCount = area.getDaysTagsCount();
+		System.out.println(daysTagsCount);
+
 		TreeSet<String> approvedYears = Sets.newTreeSet();
 		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
 			if (years.contains(e.getKey().substring(0, 4))) {
@@ -430,18 +437,20 @@ public class FlickrAreaMgr {
 		}
 
 		approvedYears.retainAll(years);
-		Set<String> displayYears = Sets.newTreeSet();
 		int num = 3;
 		int i = 0;
 		if (approvedYears.size() > num) {
 			i = approvedYears.size() - num;
 		}
 
+		Set<String> displayYears = Sets.newTreeSet();
 		for (String year : approvedYears) {
 			if (--i < 0) {
 				displayYears.add(year);
 			}
 		}
+		System.out.println("displayYears:" + displayYears);
+
 		// init
 		for (String year : displayYears) {
 			for (int j : DateUtil.allMonthInts) {
@@ -450,13 +459,6 @@ public class FlickrAreaMgr {
 				}
 			}
 		}
-
-
-		if (MapUtils.isEmpty(area.getDaysTagsCount())) {
-			areaDao.loadDaysTagsCount(area);
-		}
-
-		System.out.println(daysTagsCount);
 
 		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
 			if (displayYears.contains(e.getKey().substring(0, 4))) {
