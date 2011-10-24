@@ -254,11 +254,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 		try {
 			do {
 				//get all the photo with and without GEO info
-			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
+//			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
 
 				//there is bugs in the Search method with bbox option, which will only return the result of accuracy=16
 //			    photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), peopleInterface.new Bbox(MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE), extras, pageSize, page++);
-//				photos = peopleInterface.searchWithGeoPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), null, extras, pageSize, page++);
+				photos = peopleInterface.searchWithGeoPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), null, extras, pageSize, page++);
 
 				total = photos.getTotal();
 				pages = photos.getPages();
@@ -271,9 +271,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 						insertWorldPhotos.add(p);
 					}
 
+					/*
 					if (checkDate(p.getDateTaken(), p.getDatePosted()) && checkLocation(p.getGeoData())) {
 						insertEuropePhotos.add(p);
-					}
+					}*/
 				}
 				num += photos.size();
 
@@ -319,6 +320,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			HashSet<String> europePhotosId = new HashSet<String>();
 			HashSet<String> worldPhotosId = new HashSet<String>();
 
+			/*
 			for (Photo photo : europePhotos) {
 				if (!europePhotosId.contains(photo.getId())) {
 					insertPhoto(conn, photo, "FLICKR_EUROPE");
@@ -329,6 +331,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 					logger.warn("Duplicate Photo to Euorpe:" + photo.toString());
 				}
 			}
+			*/
 
 			for (Photo photo : worldPhotos) {
 				if (!worldPhotosId.contains(photo.getId())) {
