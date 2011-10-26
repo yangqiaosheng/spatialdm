@@ -39,6 +39,9 @@ public class PeopleMultiCrawler extends Thread {
 	static int NUM_THREAD = 0;
 	static final int MAX_NUM_RETRY = 5000;
 	static final int MAX_USERNAME_LENGTH = 200;
+	static final int INIT_CONTACT_UPDATE_CHECKED = 1;
+	static final int FINISH_CONTACT_UPDATE_CHECKED = 2;
+
 
 	static Calendar beginDateLimit = Calendar.getInstance();
 	static int numReTry = 0;
@@ -151,11 +154,12 @@ public class PeopleMultiCrawler extends Thread {
 
 	private void selectPeople(int threadId, ContactsInterface contactsInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
-//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = 0");
-//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = 0 and abs(mod(ora_hash(USER_ID), ?)) = ?");
-		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = 0 and abs(mod(hashtext(USER_ID), ?)) = ?");
-		pstmt.setInt(1, NUM_THREAD);
-		pstmt.setInt(2, threadId);
+//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = ?");
+//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = ? and abs(mod(ora_hash(USER_ID), ?)) = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.CONTACT_UPDATE_CHECKED = ? and abs(mod(hashtext(USER_ID), ?)) = ?");
+		pstmt.setInt(1, INIT_CONTACT_UPDATE_CHECKED);
+		pstmt.setInt(2, NUM_THREAD);
+		pstmt.setInt(3, threadId);
 		ResultSet rs = null;
 		try {
 			rs = db.getRs(pstmt);
@@ -211,12 +215,12 @@ public class PeopleMultiCrawler extends Thread {
 
 	private void insertPeoples(String userId, MembersList memberslist) {
 		Connection conn = db.getConn();
-		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set CONTACT_UPDATE_CHECKED = 1 where t.USER_ID = ?");
+		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set CONTACT_UPDATE_CHECKED = ? where t.USER_ID = ?");
 
 		try {
 			conn.setAutoCommit(false);
 			PreparedStatement selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");
-			PreparedStatement insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME) values (?, ?)");
+			PreparedStatement insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME, CONTACT_UPDATE_CHECKED) values (?, ?, ?)");
 			PreparedStatement updatePeopleContactCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_contact_checked_num'");
 			ResultSet rs = null;
 			try {
@@ -235,6 +239,7 @@ public class PeopleMultiCrawler extends Thread {
 
 						insertPstmt.setString(1, m.getId());
 						insertPstmt.setString(2, username);
+						insertPstmt.setInt(3, INIT_CONTACT_UPDATE_CHECKED);
 						insertPstmt.addBatch();
 						increaseNumInsertedPeople();
 						System.out.println(m.getId() + " inserted");
@@ -252,7 +257,8 @@ public class PeopleMultiCrawler extends Thread {
 			}
 
 
-			updatePstmt.setString(1, userId);
+			updatePstmt.setInt(1, FINISH_CONTACT_UPDATE_CHECKED);
+			updatePstmt.setString(2, userId);
 			updatePstmt.executeUpdate();
 			increaseNumCheckedPeople();
 
