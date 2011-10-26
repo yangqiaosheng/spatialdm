@@ -150,7 +150,7 @@ public class JoinFlickrAreaTagsCount {
 //				conn.commit();
 
 				for (String radius : radiusList) {
-					countHoursTags(conn, radius);
+//					countHoursTags(conn, radius);
 				}
 
 //				 REGION_CHECKED = 2 : already indexed
@@ -309,6 +309,7 @@ public class JoinFlickrAreaTagsCount {
 			int id = pset.getInt("id");
 			String radius = pset.getString("radius");
 			String hourStr = pset.getString("hour");
+			System.out.println("id:" + id + "\thourStr:" + hourStr);
 
 			if (hourStr != null) {
 				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
@@ -316,8 +317,7 @@ public class JoinFlickrAreaTagsCount {
 
 				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
-
-				for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
+				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})@\\d{2}");
 					Matcher m = p.matcher(e.getKey());
 					m.find();
@@ -325,6 +325,7 @@ public class JoinFlickrAreaTagsCount {
 					addToTagsCountsMap(datesTagsCount, key, e.getValue());
 				}
 
+				System.out.println("datesTagsCount:" + datesTagsCount);
 				update(datesTagsCount, Level.DAY.toString(), id, radius);
 			}
 		}

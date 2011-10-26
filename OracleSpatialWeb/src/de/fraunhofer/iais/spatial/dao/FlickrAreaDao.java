@@ -13,9 +13,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.aop.ThrowsAdvice;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
@@ -328,24 +330,40 @@ public abstract class FlickrAreaDao {
 	}
 
 	public final static void parseHoursTagsCountDbString(String count, SortedMap<String, Map<String, Integer>> hoursTagsCount) {
-		Matcher m = Pattern.compile(hourTagsRegExPatternStr).matcher(count);
-		while (m.find()) {
+/* using regex consumes too much memory
+//		hourTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
+//		Matcher m = Pattern.compile(hourTagsRegExPatternStr).matcher(count);
+*/
+		for(String terms : StringUtils.split(count, ";")){
+			String key = terms.substring(0, 13);
+			if(!key.matches("\\d{4}-\\d{2}-\\d{2}@\\d{2}")){
+				throw new RuntimeException("hour key:" + key);
+			}
+			String content = terms.substring(15, terms.length()-1);
 			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
-			for(String term : StringUtils.split(m.group(2), ",")){
+			for(String term : StringUtils.split(content, ",")){
 				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
 			}
-			hoursTagsCount.put(m.group(1), tagsCount);
+			hoursTagsCount.put(key, tagsCount);
 		}
 	}
 
 	public final static void parseDaysTagsCountDbString(String count, SortedMap<String, Map<String, Integer>> daysTagsCount) {
+/* using regex consumes too much memory
 		Matcher m = Pattern.compile(dayTagsRegExPatternStr).matcher(count);
 		while (m.find()) {
+*/
+		for(String terms : StringUtils.split(count, ";")){
+			String key = terms.substring(0, 10);
+			if(!key.matches("\\d{4}-\\d{2}-\\d{2}")){
+				throw new RuntimeException("day key:" + key);
+			}
+			String content = terms.substring(12, terms.length()-1);
 			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
-			for(String term : StringUtils.split(m.group(2), ",")){
+			for(String term : StringUtils.split(content, ",")){
 				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
 			}
-			daysTagsCount.put(m.group(1), tagsCount);
+			daysTagsCount.put(key, tagsCount);
 		}
 	}
 

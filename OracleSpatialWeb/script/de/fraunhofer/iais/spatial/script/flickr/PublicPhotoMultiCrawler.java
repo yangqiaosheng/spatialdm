@@ -51,6 +51,9 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static final int MAX_NUM_RETRY = 5000;
 	static final int MAX_TITLE_LENGTH = 1024;
 
+	static final int BEGIN_PHOTO_UPDATE_CHECKED = 0;
+	static final int FINISH_PHOTO_UPDATE_CHECKED = 1;
+
 	static final double MIN_LONGITUDE = -13.119622;
 	static final double MIN_LATITUDE = 34.26329;
 	static final double MAX_LONGITUDE = 35.287624;
@@ -191,18 +194,17 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	private void selectPeople(int threadId, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
-//		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0");
-//		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(ora_hash(USER_ID), ?)) = ?");
-		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = 0 and abs(mod(hashtext(USER_ID), ?)) = ?");
+//		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ?");
+//		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(ora_hash(USER_ID), ?)) = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(hashtext(USER_ID), ?)) = ?");
 
 		conn.setAutoCommit(false);
 		pstmt.setFetchSize(PG_FETCH_SIZE);
-
-		pstmt.setInt(1, NUM_THREAD);
-		pstmt.setInt(2, threadId);
-		ResultSet rs = null;
+		pstmt.setInt(1, BEGIN_PHOTO_UPDATE_CHECKED);
+		pstmt.setInt(2, NUM_THREAD);
+		pstmt.setInt(3, threadId);
+		ResultSet rs = db.getRs(pstmt);
 		try {
-			rs = db.getRs(pstmt);
 			while (rs.next()) {
 
 				String userId = rs.getString("USER_ID");
@@ -240,6 +242,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		int num = 0;
 
 		Calendar minUploadDate = beginDateLimit;
+
 		if (lastUploadDate != null && lastUploadDate.after(beginDateLimit.getTime())) {
 			minUploadDate.setTime(lastUploadDate);
 		}
@@ -343,7 +346,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 				}
 			}
 
-			updatePeoplesInfo(conn, userId, 1, addWorldNum, addEuorpeNum);
+			updatePeoplesInfo(conn, userId, FINISH_PHOTO_UPDATE_CHECKED, addWorldNum, addEuorpeNum);
 
 			conn.commit();
 		} catch (SQLException e) {

@@ -1,4 +1,4 @@
-package de.fraunhofer.iais.spatial.script.db;
+package de.fraunhofer.iais.spatial.script.flickr;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
