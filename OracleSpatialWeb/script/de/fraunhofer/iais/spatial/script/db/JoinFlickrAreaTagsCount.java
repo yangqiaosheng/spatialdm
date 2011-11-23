@@ -34,7 +34,7 @@ public class JoinFlickrAreaTagsCount {
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrAreaTagsCount.class);
 
-	final static int BATCH_SIZE = 1;
+	final static int FETCH_SIZE = 1;
 	static int TAG_LIMIT = 25;
 	static String PHOTO_TABLE_NAME = "flickr_world_topviewed_1m_with_region_id";
 	static String COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_25";
@@ -301,7 +301,7 @@ public class JoinFlickrAreaTagsCount {
 	private void countDay(Connection conn) throws SQLException {
 
 		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		stmt.setFetchSize(BATCH_SIZE);
+		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
 
@@ -336,7 +336,7 @@ public class JoinFlickrAreaTagsCount {
 	private void countMonth(Connection conn) throws SQLException {
 
 		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		stmt.setFetchSize(BATCH_SIZE);
+		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
 
@@ -371,7 +371,7 @@ public class JoinFlickrAreaTagsCount {
 	private void countYear(Connection conn) throws SQLException {
 
 		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		stmt.setFetchSize(BATCH_SIZE);
+		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
 
@@ -406,7 +406,7 @@ public class JoinFlickrAreaTagsCount {
 	private void countTotal(Connection conn) throws SQLException {
 
 		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME + " where id = 1");
-		stmt.setFetchSize(BATCH_SIZE);
+		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
 

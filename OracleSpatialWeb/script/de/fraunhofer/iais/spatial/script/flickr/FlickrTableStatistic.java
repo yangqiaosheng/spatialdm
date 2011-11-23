@@ -12,7 +12,7 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.fraunhofer.iais.spatial.util.DBUtil;
+import de.fraunhofer.iais.spatial.util.DbJdbcUtil;
 
 public class FlickrTableStatistic {
 
@@ -25,7 +25,7 @@ public class FlickrTableStatistic {
 	private static final Logger logger = LoggerFactory.getLogger(FlickrTableStatistic.class);
 
 //	private static FlickrEuropeAreaMgr areaMgr = null;
-	static DBUtil db = new DBUtil("/jdbc_pg.properties", 3, 1);
+	static DbJdbcUtil db = new DbJdbcUtil("/jdbc_pg.properties");
 
 	Timer timer;
 
