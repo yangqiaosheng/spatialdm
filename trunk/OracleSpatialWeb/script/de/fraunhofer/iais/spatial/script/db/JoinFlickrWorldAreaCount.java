@@ -21,6 +21,8 @@ import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.util.DbJdbcUtil;
 
 public class JoinFlickrWorldAreaCount {
+	private static final int FETCH_SIZE = 1;
+
 	/**
 	* Logger for this class
 	*/
@@ -276,8 +278,9 @@ public class JoinFlickrWorldAreaCount {
 
 	private void countDay(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		ResultSet pset = db.getRs(personStmt);
+		PreparedStatement pstmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		pstmt.setFetchSize(FETCH_SIZE);
+		ResultSet pset = db.getRs(pstmt);
 
 		while (pset.next()) {
 			int id = pset.getInt("id");
@@ -314,13 +317,14 @@ public class JoinFlickrWorldAreaCount {
 			}
 		}
 		db.close(pset);
-		db.close(personStmt);
+		db.close(pstmt);
 	}
 
 	private void countMonth(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		ResultSet pset = db.getRs(personStmt);
+		PreparedStatement pstmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		pstmt.setFetchSize(FETCH_SIZE);
+		ResultSet pset = db.getRs(pstmt);
 
 		while (pset.next()) {
 			int id = pset.getInt("id");
@@ -357,13 +361,14 @@ public class JoinFlickrWorldAreaCount {
 			}
 		}
 		db.close(pset);
-		db.close(personStmt);
+		db.close(pstmt);
 	}
 
 	private void countYear(Connection conn) throws SQLException {
 
-		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		ResultSet pset = db.getRs(personStmt);
+		PreparedStatement pstmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		pstmt.setFetchSize(FETCH_SIZE);
+		ResultSet pset = db.getRs(pstmt);
 
 		while (pset.next()) {
 			int id = pset.getInt("id");
@@ -400,12 +405,13 @@ public class JoinFlickrWorldAreaCount {
 			}
 		}
 		db.close(pset);
-		db.close(personStmt);
+		db.close(pstmt);
 	}
 
 	private void countTotal(Connection conn) throws SQLException {
 
 		PreparedStatement pstmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME + " t");
+		pstmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(pstmt);
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set total = ? where id = ? and radius = ?");
 		int numUpdate = 0;

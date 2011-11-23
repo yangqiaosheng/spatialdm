@@ -32,6 +32,8 @@ public class JoinFlickrEuropeAreaCount {
 	final static int TEMP_REGION_CHECKED_CODE = 1;
 	final static String PHOTOS_TABLE_NAME = "flickr_europe_topviewed_15m_region_id_taken_date_hour";
 	final static String COUNTS_TABLE_NAME = "FLICKR_EUROPE_COUNT";
+
+	private static final int FETCH_SIZE = 1;
 	static int rownum = 1;
 	static Calendar startDate;
 
@@ -275,6 +277,7 @@ public class JoinFlickrEuropeAreaCount {
 	private void countDay(Connection conn) throws SQLException {
 
 		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		personStmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
@@ -318,6 +321,7 @@ public class JoinFlickrEuropeAreaCount {
 	private void countMonth(Connection conn) throws SQLException {
 
 		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		personStmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
@@ -361,6 +365,7 @@ public class JoinFlickrEuropeAreaCount {
 	private void countYear(Connection conn) throws SQLException {
 
 		PreparedStatement personStmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		personStmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
@@ -404,6 +409,7 @@ public class JoinFlickrEuropeAreaCount {
 	private void countTotal(Connection conn) throws SQLException {
 
 		PreparedStatement pstmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME + " t");
+		pstmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(pstmt);
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set total = ? where id = ? and radius = ?");
 		int numUpdate = 0;
