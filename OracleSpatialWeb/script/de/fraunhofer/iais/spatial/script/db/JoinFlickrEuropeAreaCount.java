@@ -311,6 +311,7 @@ public class JoinFlickrEuropeAreaCount {
 				iStmt.setInt(3, Integer.parseInt(radius));
 				iStmt.executeUpdate();
 				iStmt.close();
+				conn.commit();
 				System.out.println("id:" + id + "!" + dayStr);
 			}
 		}
@@ -355,6 +356,7 @@ public class JoinFlickrEuropeAreaCount {
 				iStmt.setInt(3, Integer.parseInt(radius));
 				iStmt.executeUpdate();
 				iStmt.close();
+				conn.commit();
 				System.out.println("id:" + id + "!" + monthStr);
 			}
 		}
@@ -399,6 +401,7 @@ public class JoinFlickrEuropeAreaCount {
 				iStmt.setInt(3, Integer.parseInt(radius));
 				iStmt.executeUpdate();
 				iStmt.close();
+				conn.commit();
 				System.out.println("id:" + id + "!" + yearStr);
 			}
 		}
@@ -438,6 +441,7 @@ public class JoinFlickrEuropeAreaCount {
 		}
 
 		updateStmt.executeBatch();
+		conn.commit();
 		db.close(updateStmt);
 		db.close(pset);
 		db.close(pstmt);
