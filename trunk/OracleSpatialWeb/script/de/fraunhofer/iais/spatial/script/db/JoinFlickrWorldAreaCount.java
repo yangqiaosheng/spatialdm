@@ -307,13 +307,7 @@ public class JoinFlickrWorldAreaCount {
 				if (!day.equals("")) {
 					dayStr.append(day + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set day = ? where id = ? and radius = ?");
-				iStmt.setString(1, dayStr.toString());
-				iStmt.setInt(2, id);
-				iStmt.setInt(3, Integer.parseInt(radius));
-				iStmt.executeUpdate();
-				iStmt.close();
-				System.out.println("id:" + id + "!" + dayStr);
+				update(dayStr.toString(), "day", id, radius);
 			}
 		}
 		db.close(pset);
@@ -351,13 +345,7 @@ public class JoinFlickrWorldAreaCount {
 				if (!month.equals("")) {
 					monthStr.append(month + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set month = ? where id = ? and radius = ?");
-				iStmt.setString(1, monthStr.toString());
-				iStmt.setInt(2, id);
-				iStmt.setInt(3, Integer.parseInt(radius));
-				iStmt.executeUpdate();
-				iStmt.close();
-				System.out.println("id:" + id + "!" + monthStr);
+				update(monthStr.toString(), "day", id, radius);
 			}
 		}
 		db.close(pset);
@@ -395,13 +383,7 @@ public class JoinFlickrWorldAreaCount {
 				if (!year.equals("")) {
 					yearStr.append(year + ":" + hour + ";");
 				}
-				PreparedStatement iStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set year = ? where id = ? and radius = ?");
-				iStmt.setString(1, yearStr.toString());
-				iStmt.setInt(2, id);
-				iStmt.setInt(3, Integer.parseInt(radius));
-				iStmt.executeUpdate();
-				iStmt.close();
-				System.out.println("id:" + id + "!" + yearStr);
+				update(yearStr.toString(), "day", id, radius);
 			}
 		}
 		db.close(pset);
@@ -443,6 +425,24 @@ public class JoinFlickrWorldAreaCount {
 		db.close(updateStmt);
 		db.close(pset);
 		db.close(pstmt);
+	}
+
+	private void update(String countStr, String queryLevel, int id, String radius) throws SQLException {
+
+		Connection conn = db.getConn();
+
+		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
+		updateStmt.setString(1, countStr);
+		updateStmt.setInt(2, id);
+		updateStmt.setInt(3, Integer.parseInt(radius));
+
+
+//		System.out.println("countStr:" + countStr);
+		System.out.println("id:" + id);
+		System.out.println("radius:" + radius);
+		System.out.println("executeUpdate:" + updateStmt.executeUpdate());
+		db.close(updateStmt);
+		db.close(conn);
 	}
 
 	/*
