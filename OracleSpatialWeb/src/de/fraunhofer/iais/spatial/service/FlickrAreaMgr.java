@@ -808,7 +808,7 @@ public class FlickrAreaMgr {
 
 			List<Point2D> shape = area.getGeom();
 			for (Point2D point: shape) {
-				coordinates += point.getX() + ", " + point.getY() + "0\n";
+				coordinates += point.getX() + "," + point.getY() + "0\n";
 			}
 
 			// create kml
@@ -901,7 +901,8 @@ public class FlickrAreaMgr {
 //		}
 
 		String img = "<img src='" +
-		"http://chart.apis.google.com/chart" + 	//chart engine
+//		"http://chart.apis.google.com/chart" + 	//chart engine
+		"http://kd-photomap.iais.fraunhofer.de/chart_engine/chart" + 	//chart engine
 		"?chtt=" + displayLevel +				//chart title
 		"&cht=bvs" +							//chart type
 		"&chs=" + width + "x" + height +		//chart size(pixel)
