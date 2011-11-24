@@ -162,10 +162,10 @@ public class JoinFlickrAreaTagsCount {
 //				conn.commit();
 //			} while(updateSize == BATCH_SIZE);
 
-			countDay(selectConn);
+//			countDay(selectConn);
 //			countMonth(selectConn);
 //			countYear(selectConn);
-//			countTotal(selectConn);
+			countTotal(selectConn);
 		} catch (SQLException e) {
 			logger.error("begin()", e); //$NON-NLS-1$
 			try {
@@ -405,7 +405,7 @@ public class JoinFlickrAreaTagsCount {
 
 	private void countTotal(Connection conn) throws SQLException {
 
-		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME + " where id = 1");
+		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
 		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
