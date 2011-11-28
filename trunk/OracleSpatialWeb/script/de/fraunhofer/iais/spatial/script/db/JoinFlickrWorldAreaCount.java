@@ -212,6 +212,7 @@ public class JoinFlickrWorldAreaCount {
 	}
 
 	private void addToIndex(Connection conn, SortedMap<String, Integer> countsMapToAdd, Level queryLevel, int id, String radius) throws SQLException {
+		/* merge results*/
 		PreparedStatement selectCountStmt = db.getPstmt(conn, "select " + queryLevel + " as countStr from " + COUNTS_TABLE_NAME + " where id = ? and radius = ?");
 		selectCountStmt.setInt(1, id);
 		selectCountStmt.setInt(2, Integer.parseInt(radius));
@@ -232,9 +233,11 @@ public class JoinFlickrWorldAreaCount {
 		// add countsMap and countsMap2 together
 		mergeCountsMap(countsMap, countsMapToAdd);
 
+		/* don't merge results
 		String countStr = FlickrAreaDao.createDatesCountDbString(countsMap);
+		 */
 
-
+		String countStr = FlickrAreaDao.createDatesCountDbString(countsMapToAdd);
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
 		updateStmt.setString(1, countStr);
 		updateStmt.setInt(2, id);
@@ -345,7 +348,7 @@ public class JoinFlickrWorldAreaCount {
 				if (!month.equals("")) {
 					monthStr.append(month + ":" + hour + ";");
 				}
-				update(monthStr.toString(), "day", id, radius);
+				update(monthStr.toString(), "month", id, radius);
 			}
 		}
 		db.close(pset);
@@ -383,7 +386,7 @@ public class JoinFlickrWorldAreaCount {
 				if (!year.equals("")) {
 					yearStr.append(year + ":" + hour + ";");
 				}
-				update(yearStr.toString(), "day", id, radius);
+				update(yearStr.toString(), "year", id, radius);
 			}
 		}
 		db.close(pset);
@@ -437,7 +440,7 @@ public class JoinFlickrWorldAreaCount {
 		updateStmt.setInt(3, Integer.parseInt(radius));
 
 
-//		System.out.println("countStr:" + countStr);
+		System.out.println("countStr:" + countStr);
 		System.out.println("id:" + id);
 		System.out.println("radius:" + radius);
 		System.out.println("executeUpdate:" + updateStmt.executeUpdate());

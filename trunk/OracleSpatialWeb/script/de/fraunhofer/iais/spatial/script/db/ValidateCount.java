@@ -31,7 +31,8 @@ public class ValidateCount {
 			String id = pset.getString("id");
 			String hourStr = pset.getString("total");
 			String line = id + ": \t" + StringUtils.substring(hourStr, 0, 1000);
-			FileUtils.writeStringToFile(new File("temp\result.txt"), line + "\r\n", true);
+			
+			FileUtils.writeStringToFile(new File("temp/result.txt"), line + "\r\n", true);
 			System.out.println(line);
 		}
 		db.close(pset);
