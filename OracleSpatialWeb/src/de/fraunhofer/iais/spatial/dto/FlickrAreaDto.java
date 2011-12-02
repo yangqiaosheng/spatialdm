@@ -34,6 +34,7 @@ public class FlickrAreaDto implements Serializable {
 	private Date endDate;
 	JGeometry oracleQueryGeom;
 	String pgQueryGeom;
+	private Point2D transfromVector;
 
 	public enum Level {
 		HOUR, DAY, MONTH, YEAR, WEEKDAY;
@@ -177,5 +178,14 @@ public class FlickrAreaDto implements Serializable {
 	public void setPgQueryGeom(String pgQueryGeom) {
 		this.pgQueryGeom = pgQueryGeom;
 	}
+
+	public Point2D getTransfromVector() {
+		return transfromVector;
+	}
+
+	public void setTransfromVector(Point2D transfromVector) {
+		this.transfromVector = transfromVector;
+	}
+
 
 }

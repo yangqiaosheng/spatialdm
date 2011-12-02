@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -161,7 +162,7 @@ public class FlickrAreaMgr {
 			String boundsStr = screenElement.getChildText("bounds");
 			if (StringUtils.isNotBlank(boundsStr)) {
 				Pattern boundsPattern = Pattern.compile("\\(\\(([-0-9.]*), ([-0-9.]*)\\), \\(([-0-9.]*), ([-0-9.]*)\\)\\)");
-				Matcher boundsMatcher = boundsPattern.matcher(boundsStr);
+				Matcher boundsMatcher = boundsPattern.matcher(boundsStr.trim());
 				if (boundsMatcher.find()) {
 					Rectangle2D boundaryRect = new Rectangle2D.Double();
 					areaDto.setBoundaryRect(boundaryRect);
@@ -177,7 +178,7 @@ public class FlickrAreaMgr {
 			String centerStr = screenElement.getChildText("center");
 			if (StringUtils.isNotBlank(centerStr)) {
 				Pattern centerPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
-				Matcher centerMachter = centerPattern.matcher(centerStr);
+				Matcher centerMachter = centerPattern.matcher(centerStr.trim());
 				if (centerMachter.find()) {
 					Point2D center = new Point2D.Double();
 					areaDto.setCenter(center);
@@ -191,11 +192,38 @@ public class FlickrAreaMgr {
 
 			// <screen><zoom>9</zoom>
 			String zoomStr = screenElement.getChildText("zoom");
-			if (zoomStr != null && !"".equals(zoomStr.trim())) {
-				int zoom = Integer.parseInt(zoomStr);
+			if (StringUtils.isNotBlank(zoomStr)) {
+				int zoom = Integer.parseInt(zoomStr.trim());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				areaDto.setRadius(radius);
 				areaDto.setZoom(zoom);
+			}
+		}
+
+		/*
+//		<transform>
+//		    <move>
+//		      	<from> 45.478158, 9.1237</from>
+//		      	<to> 43.816111, 4.359167</to>
+//		    </move>
+//		    <scale>1.0</scale>
+//		</transform>*/
+
+		Element transformElement = rootElement.getChild("transform");
+		if (transformElement != null) {
+			Element moveElement = transformElement.getChild("move");
+			String fromStr = moveElement.getChildText("from");
+			String toStr = moveElement.getChildText("to");
+			Pattern pointPattern = Pattern.compile("\\(([-0-9.]*), ([-0-9.]*)\\)");
+			Matcher fromMachter = pointPattern.matcher(fromStr.trim());
+			Matcher toMachter = pointPattern.matcher(toStr.trim());
+			String scaleStr = transformElement.getChildText("scale");
+			double scale = NumberUtils.toDouble(scaleStr.trim());
+			if (fromMachter.find() && toMachter.find() && scale != 0) {
+				Point2D from = new Point2D.Double(Double.parseDouble(fromMachter.group(2)), Double.parseDouble(fromMachter.group(1)));
+				Point2D to = new Point2D.Double(Double.parseDouble(toMachter.group(2)), Double.parseDouble(toMachter.group(1)));
+				Point2D transfromVector = new Point2D.Double((to.getX() - from.getX()) * scale, (to.getY() - from.getY()) * scale);
+				areaDto.setTransfromVector(transfromVector);
 			}
 		}
 
@@ -243,6 +271,7 @@ public class FlickrAreaMgr {
 				}
 			}
 		}
+
 
 		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 		String selectedDaysStr = rootElement.getChildText("selected_days");
@@ -696,13 +725,13 @@ public class FlickrAreaMgr {
 			ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
 		}
 
-	public String buildKmlFile(List<FlickrAreaResult> areaResults, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
+	public String buildKmlFile(List<FlickrAreaResult> areaResults, String filenamePrefix, Radius radius, Point2D transfromVector, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = this.getClass().getResource("/../../").getPath();
 		if (StringUtils.isEmpty(remoteBasePath)) {
 			remoteBasePath = "http://localhost:8080/OracleSpatialWeb/";
 		}
 
-		Document document = createKmlDoc(areaResults, radius, remoteBasePath);
+		Document document = createKmlDoc(areaResults, radius, transfromVector, remoteBasePath);
 
 		if(filenamePrefix != null){
 			if(StringUtils.isNotEmpty(filenamePrefix)){
@@ -717,13 +746,17 @@ public class FlickrAreaMgr {
 		return XmlUtil.xml2String(document, false);
 	}
 
-	public String buildKmlString(List<FlickrAreaResult> areaResults, Radius radius, String remoteBasePath) throws IOException {
-		Document document = createKmlDoc(areaResults, radius, remoteBasePath);
+	public String buildKmlString(List<FlickrAreaResult> areaResults, Radius radius, Point2D transfromVector, String remoteBasePath) throws IOException {
+		Document document = createKmlDoc(areaResults, radius, transfromVector, remoteBasePath);
 
 		return XmlUtil.xml2String(document, false);
 	}
 
-	private Document createKmlDoc(List<FlickrAreaResult> areaResults, Radius radius, String remoteBasePath) {
+	private Document createKmlDoc(List<FlickrAreaResult> areaResults, Radius radius, Point2D transformVector, String remoteBasePath) {
+		if(transformVector == null){
+			transformVector = new Point2D.Double();
+		}
+
 		Document document = new Document();
 
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
@@ -777,10 +810,10 @@ public class FlickrAreaMgr {
 //				groundOverlayElement.addContent(altitudeModeElement);
 				Element latLonBoxElement = new Element("LatLonBox", namespace);
 				groundOverlayElement.addContent(latLonBoxElement);
-				Element northElement = new Element("north", namespace).addContent(Double.toString(area.getCenter().getY() + r * 0.55));
-				Element southElement = new Element("south", namespace).addContent(Double.toString(area.getCenter().getY() - r * 0.55));
-				Element eastElement = new Element("east", namespace).addContent(Double.toString(area.getCenter().getX() + r));
-				Element westElement = new Element("west", namespace).addContent(Double.toString(area.getCenter().getX() - r));;
+				Element northElement = new Element("north", namespace).addContent(Double.toString(area.getCenter().getY() + transformVector.getY() + r * 0.55));
+				Element southElement = new Element("south", namespace).addContent(Double.toString(area.getCenter().getY() + transformVector.getY()  - r * 0.55));
+				Element eastElement = new Element("east", namespace).addContent(Double.toString(area.getCenter().getX() + transformVector.getX()  + r));
+				Element westElement = new Element("west", namespace).addContent(Double.toString(area.getCenter().getX() + transformVector.getX()  - r));;
 				latLonBoxElement.addContent(northElement);
 				latLonBoxElement.addContent(southElement);
 				latLonBoxElement.addContent(eastElement);
@@ -808,7 +841,7 @@ public class FlickrAreaMgr {
 
 			List<Point2D> shape = area.getGeom();
 			for (Point2D point: shape) {
-				coordinates += point.getX() + "," + point.getY() + "0\n";
+				coordinates += (point.getX() + transformVector.getX()) + "," + (point.getY() + transformVector.getY())  + "0\n";
 			}
 
 			// create kml

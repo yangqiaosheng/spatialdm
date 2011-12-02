@@ -508,6 +508,7 @@ public class TestFlickrEuropeArea {
 		System.out.println("radius:" + areaDto.getRadius());
 		System.out.println("zoom:" + areaDto.getZoom());
 		System.out.println("center:" + areaDto.getCenter());
+		System.out.println("transformVector:" + areaDto.getTransfromVector());
 		System.out.println("boundaryRect:" + areaDto.getBoundaryRect());
 		if (areaDto.getPolygon() != null) {
 			System.out.print("polygon:" + areaDto.getPolygon());
@@ -576,19 +577,19 @@ public class TestFlickrEuropeArea {
 		System.out.println("flickr_world.root:" + System.getProperty("flickr_world.root"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest3.xml"))), areaDto);
 		List<FlickrArea> areas = null;
-		List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
 		if (areaDto.getBoundaryRect() == null) {
 			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
 		} else {
 			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
+		List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
 
 		Date timestamp = new Date();
 		SessionMutex sessionMutex = new SessionMutex(timestamp);
 
 		areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
 
-		System.out.println(areaMgr.buildKmlString(areaResults, areaDto.getRadius(), ""));
+		System.out.println(areaMgr.buildKmlString(areaResults, areaDto.getRadius(), areaDto.getTransfromVector(), ""));
 		System.out.println(System.currentTimeMillis() - start);
 //		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
 	}

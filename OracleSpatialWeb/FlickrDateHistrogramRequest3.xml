@@ -5,6 +5,13 @@
 		<center>(50.93824417572383, 6.98699108221434)</center>
 		<zoom>13</zoom>
 	</screen>
+	<transform>
+	    <move>
+	      	<from>(45.478158, 9.1237)</from>
+	      	<to>(43.816111, 4.359167)</to>
+	    </move>
+	    <scale>1.0</scale>
+	</transform>
 	<calendar>
 		<years>
 			<year>2005</year>

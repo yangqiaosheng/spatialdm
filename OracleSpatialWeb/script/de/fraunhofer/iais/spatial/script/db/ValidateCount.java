@@ -15,6 +15,7 @@ import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class ValidateCount {
 
+	private static final int NUM = 80;
 	static DBUtil db = new DBUtil("/jdbc_pg.properties", 4, 1);
 
 	public static void main(String[] args) throws Exception {
@@ -25,14 +26,15 @@ public class ValidateCount {
 		Connection conn = db.getConn();
 
 		PreparedStatement personStmt = db.getPstmt(conn, "select id, total from flickr_world_topviewed_5m_tags_count where radius = 2560000");
+		personStmt.setFetchSize(1);
 		ResultSet pset = db.getRs(personStmt);
 
 		while (pset.next()) {
 			String id = pset.getString("id");
 			String hourStr = pset.getString("total");
-			String line = id + ": \t" + StringUtils.substring(hourStr, 0, 1000);
-			
-			FileUtils.writeStringToFile(new File("temp/result.txt"), line + "\r\n", true);
+			String line = id + ": \t" + StringUtils.substring(hourStr, 0, NUM);
+
+			FileUtils.writeStringToFile(new File("temp/result_" + NUM + ".txt"), line + "\r\n", true);
 			System.out.println(line);
 		}
 		db.close(pset);
