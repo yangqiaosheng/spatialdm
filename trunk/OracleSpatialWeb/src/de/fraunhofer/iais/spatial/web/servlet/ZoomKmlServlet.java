@@ -112,7 +112,7 @@ public class ZoomKmlServlet extends HttpServlet {
 				List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
 				areaMgr.countSelected(areaResults, areaDto);
 				areaMgr.calculateHistograms(areaResults, areaDto);
-				areaMgr.buildKmlFile(areaResults, kmlPath + filenamePrefix, areaDto.getRadius(), remoteBasePath, false);
+				areaMgr.buildKmlFile(areaResults, kmlPath + filenamePrefix, areaDto.getRadius(), areaDto.getTransfromVector(), remoteBasePath, false);
 
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);

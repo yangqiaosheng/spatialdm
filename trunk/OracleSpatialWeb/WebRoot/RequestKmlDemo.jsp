@@ -46,6 +46,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</p>
 
 					<p>
+						Transform:	<br>
+						&lt;from&gt; point: (latitude, longitude) <br>
+						&lt;to&gt; point: (latitude, longitude)	<br>
+						&lt;scale&gt; 1.0	<br>
+					</p>
+
+					<p>
 						&lt;year&gt;: 		2005 - 2011	<br>
 						&lt;month&gt;: 		January - December	<br>
 						&lt;day&gt;: 		1 - 31	<br>
@@ -77,6 +84,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		&lt;center&gt;(50.8, 7.12)&lt;/center&gt;
 		&lt;zoom&gt;8&lt;/zoom&gt;
 	&lt;/screen&gt;
+	&lt;transform&gt;
+	    &lt;move&gt;
+			&lt;from&gt;(0.0, 0.0)&lt;/from&gt;
+			&lt;to&gt;(0.0, 0.0)&lt;/to&gt;
+		&lt;/move&gt;
+		&lt;scale&gt;1.0&lt;/scale&gt;
+	&lt;/transform&gt;
 	&lt;calendar&gt;
 		&lt;years&gt;
 			&lt;year&gt;2005&lt;/year&gt;

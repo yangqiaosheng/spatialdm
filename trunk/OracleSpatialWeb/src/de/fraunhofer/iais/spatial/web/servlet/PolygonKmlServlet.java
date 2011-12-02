@@ -81,7 +81,7 @@ public class PolygonKmlServlet extends HttpServlet {
 				}
 				List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
 				areaMgr.countSelected(areaResults, areaDto);
-				kmlStr = areaMgr.buildKmlFile(areaResults, null, areaDto.getRadius(), remoteBasePath, false);
+				kmlStr = areaMgr.buildKmlFile(areaResults, null, areaDto.getRadius(), areaDto.getTransfromVector(), remoteBasePath, false);
 
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
