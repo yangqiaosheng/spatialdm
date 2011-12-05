@@ -24,8 +24,8 @@ public class LimitFlickrAreaTagsCount {
 	private static final Logger logger = LoggerFactory.getLogger(LimitFlickrAreaTagsCount.class);
 
 	final static int BATCH_SIZE = 1;
-	final static String INPUT_COUNTS_TABLE_NAME = "flickr_europe_topviewed_5m_tags_count";
-	final static String OUTPUT_COUNTS_TABLE_NAME = "flickr_europe_topviewed_5m_tags_count_15";
+	final static String INPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_5m_tags_count";
+	final static String OUTPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_5m_tags_count_15";
 	static int rownum = 1;
 	static Calendar startDate;
 
