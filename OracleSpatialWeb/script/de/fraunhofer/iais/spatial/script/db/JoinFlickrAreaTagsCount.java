@@ -304,7 +304,6 @@ public class JoinFlickrAreaTagsCount {
 		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
-
 		while (pset.next()) {
 			int id = pset.getInt("id");
 			String radius = pset.getString("radius");
@@ -339,7 +338,6 @@ public class JoinFlickrAreaTagsCount {
 		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
-
 		while (pset.next()) {
 			int id = pset.getInt("id");
 			String radius = pset.getString("radius");
@@ -351,15 +349,13 @@ public class JoinFlickrAreaTagsCount {
 
 				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
-
-				for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
+				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
 					Pattern p = Pattern.compile("(\\d{4}-\\d{2})-\\d{2}@\\d{2}");
 					Matcher m = p.matcher(e.getKey());
 					m.find();
 					String key = m.group(1);
 					addToTagsCountsMap(datesTagsCount, key, e.getValue());
 				}
-
 
 				update(datesTagsCount, Level.MONTH.toString(), id, radius);
 			}
@@ -374,7 +370,6 @@ public class JoinFlickrAreaTagsCount {
 		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
-
 		while (pset.next()) {
 			int id = pset.getInt("id");
 			String radius = pset.getString("radius");
@@ -386,15 +381,13 @@ public class JoinFlickrAreaTagsCount {
 
 				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
-
-				for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
+				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
 					Pattern p = Pattern.compile("(\\d{4})-\\d{2}-\\d{2}@\\d{2}");
 					Matcher m = p.matcher(e.getKey());
 					m.find();
 					String key = m.group(1);
 					addToTagsCountsMap(datesTagsCount, key, e.getValue());
 				}
-
 
 				update(datesTagsCount, Level.YEAR.toString(), id, radius);
 			}
@@ -409,7 +402,6 @@ public class JoinFlickrAreaTagsCount {
 		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 
-
 		while (pset.next()) {
 			int id = pset.getInt("id");
 			String radius = pset.getString("radius");
@@ -421,8 +413,7 @@ public class JoinFlickrAreaTagsCount {
 
 				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
-
-				for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
+				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
 					addToTagsCountsMap(datesTagsCount, "total", e.getValue());
 				}
 				System.out.println("hourStr:" + hourStr);
@@ -447,23 +438,21 @@ public class JoinFlickrAreaTagsCount {
 
 	private void update(SortedMap<String, Map<String, Integer>> countsMap, String queryLevel, int id, String radius) throws SQLException {
 
-			Connection conn = db.getConn();
-			String countStr = FlickrAreaDao.createDatesTagsCountDbString(countsMap);
+		Connection conn = db.getConn();
+		String countStr = FlickrAreaDao.createDatesTagsCountDbString(countsMap);
 
+		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
+		updateStmt.setString(1, countStr);
+		updateStmt.setInt(2, id);
+		updateStmt.setInt(3, Integer.parseInt(radius));
 
-			PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
-			updateStmt.setString(1, countStr);
-			updateStmt.setInt(2, id);
-			updateStmt.setInt(3, Integer.parseInt(radius));
-
-
-	//		System.out.println("countStr:" + countStr);
-			System.out.println("id:" + id);
-			System.out.println("radius:" + radius);
-			System.out.println("executeUpdate:" + updateStmt.executeUpdate());
-			db.close(updateStmt);
-			db.close(conn);
-		}
+		//		System.out.println("countStr:" + countStr);
+		System.out.println("id:" + id);
+		System.out.println("radius:" + radius);
+		System.out.println("executeUpdate:" + updateStmt.executeUpdate());
+		db.close(updateStmt);
+		db.close(conn);
+	}
 
 	public static void mergeTagsCountsMap(SortedMap<String, Map<String, Integer>> countsMap, Map<String, Map<String, Integer>> countsMapToAdd) {
 		for (Entry<String, Map<String, Integer>> entry : countsMapToAdd.entrySet()) {
