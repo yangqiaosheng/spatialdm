@@ -183,7 +183,7 @@ public class TestFlickrEuropeArea {
 		}
 
 		FlickrArea area = new FlickrArea();
-		area.setId(10);
+		area.setId(10000);
 		System.out.println(tagsResponseXml(area, areaDto, 30));
 		System.out.println(System.currentTimeMillis() - start);
 	}
@@ -198,7 +198,7 @@ public class TestFlickrEuropeArea {
 
 	@Test
 	public void testJdbcDao1() {
-		FlickrArea a = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R320000);
+		FlickrArea a = areaMgr.getAreaDao().getAreaById(1000, FlickrArea.Radius.R320000);
 
 		long totalNum = areaMgr.getAreaDao().getTotalEuropePhotoNum();
 		long totalNumPeople = areaMgr.getAreaDao().getTotalPeopleNum();
@@ -287,7 +287,7 @@ public class TestFlickrEuropeArea {
 		queryStr.add("2006-10-07@17");
 		queryStr.add("2009-05-03@11");
 
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(3646, Radius.R40000), areaDto, 1, 20);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(1000, Radius.R320000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
 			System.out.println(p);
 		}
@@ -317,37 +317,37 @@ public class TestFlickrEuropeArea {
 			}
 		}
 
-		List<FlickrPhoto> photos0 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(3646, Radius.R40000), areaDto, 1, 20);
+		List<FlickrPhoto> photos0 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(152272, Radius.R5000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos0) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos1 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(24272, Radius.R160000), areaDto, 1, 20);
+		List<FlickrPhoto> photos1 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(810369, Radius.R625), areaDto, 1, 20);
 		for (FlickrPhoto p : photos1) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(23315, Radius.R80000), areaDto, 1, 20);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(498976, Radius.R1250), areaDto, 1, 20);
 		for (FlickrPhoto p : photos) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos2 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(21170, Radius.R40000), areaDto, 1, 20);
+		List<FlickrPhoto> photos2 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(15012, Radius.R40000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos2) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos3 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(16988, Radius.R20000), areaDto, 1, 20);
+		List<FlickrPhoto> photos3 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(34591, Radius.R20000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos3) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos4 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(10091, Radius.R10000), areaDto, 1, 20);
+		List<FlickrPhoto> photos4 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(811, Radius.R640000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos4) {
 			System.out.println(p);
 		}
 
-		List<FlickrPhoto> photos5 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(27, Radius.R5000), areaDto, 1, 20);
+		List<FlickrPhoto> photos5 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(27, Radius.R2560000), areaDto, 1, 20);
 		for (FlickrPhoto p : photos5) {
 			System.out.println(p);
 		}
@@ -359,7 +359,7 @@ public class TestFlickrEuropeArea {
 
 		FlickrAreaDto areaDto2 = new FlickrAreaDto();
 		areaDto2.setQueryLevel(Level.YEAR);
-		List<FlickrPhoto> photos6 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(27, Radius.R5000), areaDto2, 1, 20);
+		List<FlickrPhoto> photos6 = areaMgr.getAreaDao().getPhotos(areaMgr.getAreaDao().getAreaById(152274, Radius.R5000), areaDto2, 1, 20);
 		for (FlickrPhoto p : photos6) {
 			System.out.println(p);
 		}
@@ -399,7 +399,7 @@ public class TestFlickrEuropeArea {
 		//			System.out.println(p);
 		//		}
 
-		FlickrArea area = areaMgr.getAreaDao().getAreaById(23315, Radius.R80000);
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(811, Radius.R640000);
 		List<FlickrPhoto> photos3 = areaMgr.getAreaDao().getPhotos(area, areaDto, 1, 90);
 		for (int i = 0; i < photos3.size(); i++) {
 			FlickrPhoto p = photos3.get(i);
@@ -457,7 +457,7 @@ public class TestFlickrEuropeArea {
 				}
 			}
 		}
-		System.out.println(photosResponseXml(10, Radius.R320000, areaDto, 100));
+		System.out.println(photosResponseXml(811, Radius.R640000, areaDto, 100));
 	}
 
 	private String photosResponseXml(int areaid, Radius radius, FlickrAreaDto areaDto, int num) {
@@ -611,7 +611,7 @@ public class TestFlickrEuropeArea {
 
 	@Test
 	public void testSelectById() {
-		FlickrArea a = areaMgr.getAreaDao().getAreaById(23312, Radius.R80000);
+		FlickrArea a = areaMgr.getAreaDao().getAreaById(811, Radius.R640000);
 		String coordinates = "\t";
 		for (Point2D point : a.getGeom()) {
 			coordinates += point.getX() + ", " + point.getY() + "0\n";
@@ -631,7 +631,7 @@ public class TestFlickrEuropeArea {
 //		years.add("2001");
 //		years.add("2005-01");
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
-		FlickrArea area1 = areaMgr.getAreaDao().getAreaById(23312, FlickrArea.Radius.R80000);
+		FlickrArea area1 = areaMgr.getAreaDao().getAreaById(811, Radius.R640000);
 //		FlickrArea area3 = areaMgr.getAreaDao().getAreaById(23318, FlickrArea.Radius.R80000);
 		areas.add(area1);
 //		areas.add(area3);
@@ -660,7 +660,7 @@ public class TestFlickrEuropeArea {
 		years.add("2011");
 		years.add("2007");
 		years.add("2008");
-		FlickrArea area = areaMgr.getAreaDao().getAreaById(1, FlickrArea.Radius.R320000);
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(811, Radius.R640000);
 
 		areaMgr.createTagTimeSeriesChartOld(area, "motorsport", years, "motorsport", new FileOutputStream("temp/tsTagCharty.png"));
 	}
