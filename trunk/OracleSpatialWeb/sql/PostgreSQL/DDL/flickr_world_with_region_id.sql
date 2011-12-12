@@ -8,6 +8,7 @@ CREATE TABLE flickr_world
   upload_date timestamp without time zone,
   viewed integer,
   title character varying(1024),
+  description text,
   tags character varying(1024),
   smallurl character varying(100),
   place_id character varying(20),

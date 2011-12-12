@@ -82,6 +82,8 @@ public class LimitFlickrAreaTagsCount {
 		}
 		db.close(pset);
 		db.close(stmt);
+		db.close(conn);
+		db.close(updateConn);
 	}
 
 }

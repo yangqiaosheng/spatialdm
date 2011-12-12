@@ -231,6 +231,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		Set<String> extras = new HashSet<String>();
 		extras.add(Extras.DATE_TAKEN);
 		extras.add(Extras.DATE_UPLOAD);
+		extras.add(Extras.DESCRIPTION);
 		extras.add(Extras.GEO);
 		extras.add(Extras.VIEWS);
 		extras.add(Extras.TAGS);
@@ -368,7 +369,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		PreparedStatement pstmt = db
 				.getPstmt(
 						conn,
-						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, TAGS, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, DESCRIPTION, TAGS, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		try {
 			int i = 1;
 			pstmt.setLong(i++, NumberUtils.toLong(photo.getId()));
@@ -387,6 +388,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 				tagsStr += tag.getValue() + ",";
 			}
 			pstmt.setString(i++, title);
+			pstmt.setString(i++, photo.getDescription());
 			pstmt.setString(i++, tagsStr);
 			pstmt.setString(i++, photo.getSmallUrl());
 			pstmt.setString(i++, photo.getPlaceId());
