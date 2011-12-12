@@ -162,9 +162,9 @@ public class JoinFlickrAreaTagsCount {
 //				conn.commit();
 //			} while(updateSize == BATCH_SIZE);
 
-//			countDay(selectConn);
-//			countMonth(selectConn);
-//			countYear(selectConn);
+			countDay(selectConn);
+			countMonth(selectConn);
+			countYear(selectConn);
 			countTotal(selectConn);
 		} catch (SQLException e) {
 			logger.error("begin()", e); //$NON-NLS-1$
