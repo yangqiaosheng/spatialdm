@@ -6,14 +6,26 @@ import spade.time.Date;
 import spade.analysis.tools.moves.simulation.SimulationEngine;
 import spade.analysis.tools.moves.simulation.PlaceMovesAggregate;
 import configstart.SysConfigReader;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.service.CsvImporter;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,15 +41,15 @@ public class TrafficSimulator {
 	* Argument: the path to the file with the simulation parameters
 	*/
 	public static void main(String args[]) {
-		if (args == null || args.length < 1) {
-			System.out.println("The path to the file with the simulation parameters " + "must be specified as an argument!");
-			return;
+		String paraFile = "params1.txt";
+		if (args.length == 1) {
+			paraFile = args[0];
 		}
 		//read and set values of system parameters
 		Parameters parm = new Parameters();
 		SysConfigReader scr = new SysConfigReader(parm, null);
-		if (!scr.readConfiguration(args[0])) {
-			System.out.println("Could not read parameters from " + args[0] + "!");
+		if (!scr.readConfiguration(paraFile)) {
+			System.out.println("Could not read parameters from " + paraFile + "!");
 			return;
 		}
 		if (parm.getParameter("MODEL") == null) {
@@ -130,17 +142,29 @@ public class TrafficSimulator {
 		d = (Date) sim.predT0.getCopy();
 		d.setPrecision('t');
 		try {
+			List<String> dates = Lists.newArrayList();
 			writer.write("place_id,Load at t=" + d.toString());
+			dates.add(d.toString());
 			for (int i = 1; i < pAgg[0].baseLoads.length; i++) {
 				d.add(aggILen);
 				writer.write(",Load at t=" + d.toString());
+				dates.add(d.toString());
 			}
 			writer.write("\r\n");
+			System.out.println(dates);
+
+			Map<Long, Map<String, Integer>> areaEvents = Maps.newTreeMap();
 			for (int i = 0; i < pAgg.length; i++) {
 				writer.write(pAgg[i].id);
-				for (int j = 0; j < pAgg[i].baseLoads.length; j++)
+				long areaId = NumberUtils.toLong(pAgg[i].id);
+				Map<String, Integer> events = Maps.newTreeMap();
+				for (int j = 0; j < pAgg[i].baseLoads.length; j++) {
 					writer.write("," + (pAgg[i].baseLoads[j] + pAgg[i].addCounts[j]));
+					events.put(dates.get(j), (pAgg[i].baseLoads[j] + pAgg[i].addCounts[j]));
+				}
+				System.out.println(areaId + " " + events);
 				writer.write("\r\n");
+				areaEvents.put(areaId, events);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -148,6 +172,7 @@ public class TrafficSimulator {
 		try {
 			writer.close();
 		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 

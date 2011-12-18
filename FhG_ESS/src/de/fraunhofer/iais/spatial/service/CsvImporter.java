@@ -54,11 +54,12 @@ public class CsvImporter {
 //		System.out.println(buildKmlFile(areas, "temp/areas1000", Radius.R1250, null, false));
 	}
 
-	private static void initAreas(Map<Long, Map<String, Integer>> areaEvents, List<FlickrArea> areas) {
+	public static void initAreas(Map<Long, Map<String, Integer>> areaEvents, List<FlickrArea> areas) {
 		for (FlickrArea area : areas) {
 			if(MapUtils.isNotEmpty(areaEvents.get(area.getId()))){
 				for (Map.Entry<String, Integer> events : areaEvents.get(area.getId()).entrySet()) {
 					area.getHoursCount().put(events.getKey(), events.getValue());
+					System.out.println(area.getId() + " " + area.getHoursCount());
 				}
 			}
 		}
@@ -96,7 +97,7 @@ public class CsvImporter {
 		if ((nextLine = reader.readNext()) != null) {
 			for (int i = 0; i < nextLine.length; i++) {
 				String term = nextLine[i];
-				if (i >= 2) {
+				if (i >= 1) {
 					Matcher dateMatcher = datePattern.matcher(term);
 					System.out.println(term);
 					if (dateMatcher.matches()) {
@@ -120,8 +121,8 @@ public class CsvImporter {
 				String term = nextLine[i];
 				if (i == 0) {
 					areaId = Long.parseLong(term);
-				} else if (i >= 2) {
-					events.put(dates.get(i - 2), Integer.parseInt(term));
+				} else if (i >= 1) {
+					events.put(dates.get(i - 1), Integer.parseInt(term));
 				}
 			}
 			areaEvents.put(areaId, events);

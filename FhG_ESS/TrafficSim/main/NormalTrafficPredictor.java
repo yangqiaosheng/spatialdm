@@ -25,15 +25,15 @@ public class NormalTrafficPredictor {
 	* Argument: the path to the file with the modelling parameters
 	*/
 	public static void main(String args[]) {
-		if (args == null || args.length < 1) {
-			System.out.println("The path to the file with the modelling parameters " + "must be specified as an argument!");
-			return;
+		String paraFile = "params3.txt";
+		if (args.length == 1) {
+			paraFile = args[0];
 		}
 		//read and set values of system parameters
 		Parameters parm = new Parameters();
 		SysConfigReader scr = new SysConfigReader(parm, null);
-		if (!scr.readConfiguration(args[0])) {
-			System.out.println("Could not read parameters from " + args[0] + "!");
+		if (!scr.readConfiguration(paraFile)) {
+			System.out.println("Could not read parameters from " + paraFile + "!");
 			return;
 		}
 		if (parm.getParameter("MODEL") == null) {
