@@ -53,7 +53,7 @@ public class ZoomKmlServlet extends HttpServlet {
 		// web base path for remote access
 		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 		//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
-		response.setContentType("text/xml");
+		response.setContentType("text/xml; charset=UTF-8");
 		// response.setContentType("application/vnd.google-earth.kml+xml");
 
 		// Prevents caching
@@ -81,17 +81,11 @@ public class ZoomKmlServlet extends HttpServlet {
 			try {
 				String filenamePrefix = StringUtil.genId();
 
-				FlickrAreaDto areaDto = null;
-				if ("true".equals(persist)) {
-					logger.info("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
-					areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-				} else {
-					areaDto = new FlickrAreaDto();
-				}
+				FlickrAreaDto areaDto = new FlickrAreaDto();
 
 				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
-				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+				areaMgr.parseXmlRequest(xml.toString(), areaDto);
 
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
@@ -117,7 +111,6 @@ public class ZoomKmlServlet extends HttpServlet {
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);
 				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
-				request.getSession().setAttribute("areaDto", areaDto);
 				messageElement.setText("SUCCESS");
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
