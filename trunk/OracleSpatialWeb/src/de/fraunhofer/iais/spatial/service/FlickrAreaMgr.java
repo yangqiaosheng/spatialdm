@@ -150,8 +150,7 @@ public class FlickrAreaMgr {
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest(String xml, FlickrAreaDto areaDto) throws JDOMException, IOException, ParseException {
 		xml = StringUtil.shortNum2Long(StringUtil.FullMonth2Num(xml));
-		SAXBuilder builder = new SAXBuilder();
-		Document document = builder.build(new ByteArrayInputStream(xml.getBytes()));
+		Document document = XmlUtil.string2Xml(xml);
 		Element rootElement = document.getRootElement();
 
 		// <screen>
