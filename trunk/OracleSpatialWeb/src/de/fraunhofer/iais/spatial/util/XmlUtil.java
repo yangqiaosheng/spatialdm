@@ -1,5 +1,6 @@
 package de.fraunhofer.iais.spatial.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,10 +8,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 public class XmlUtil {
+
+	public static Document string2Xml(String xml) throws JDOMException, IOException {
+		SAXBuilder builder = new SAXBuilder();
+		return builder.build(new ByteArrayInputStream(xml.getBytes()));
+	}
+
+	public static Document string2Xml(String xml, String charsetName) throws JDOMException, IOException {
+		SAXBuilder builder = new SAXBuilder();
+		return builder.build(new ByteArrayInputStream(xml.getBytes(charsetName)));
+	}
 
 	public static String xml2String(Document document, boolean compact) {
 		XMLOutputter xmlOutputter = new XMLOutputter();
