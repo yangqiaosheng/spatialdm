@@ -1,0 +1,5 @@
+MODEL="models/model_place_presence_15min_intervals.xml"
+START_TIME="01/12/2011;19:30"
+END_TIME="02/12/2011;02:00"
+ADD_NOISE="true"
+OUTPUT_FILE="data/normal_place_loads.csv"

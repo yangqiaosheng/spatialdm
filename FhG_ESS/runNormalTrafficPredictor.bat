@@ -1,0 +1,1 @@
+java -Djava.library.path="jogl64bit;c:\Program Files\Java\Java3d\1.5.2\bin" -classpath "TrafficSim.jar;lib_classes.jar;OpenForecast-0.4.0.jar" main.NormalTrafficPredictor params3.txt

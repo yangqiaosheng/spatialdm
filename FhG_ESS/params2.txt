@@ -1,0 +1,5 @@
+MODEL="models/sim_model_reduced_north.xml"
+START_TIME="01/12/2011;19:30"
+N_MOVERS=10000
+AGGREGATION_INTERVAL_LENGTH=10
+OUTPUT_FILE="data/place_loads_2.csv"
