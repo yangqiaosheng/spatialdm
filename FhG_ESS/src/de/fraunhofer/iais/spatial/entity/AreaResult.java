@@ -9,21 +9,21 @@ import com.google.common.collect.Maps;
  * @author haolin
  *
  */
-public class FlickrAreaResult {
+public class AreaResult {
 
-	private FlickrArea area;
-	private Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
+	private Area area;
 	private long selectedCount;
+	private Histograms histograms = new Histograms();
 
-	public FlickrAreaResult(FlickrArea area) {
+	public AreaResult(Area area) {
 		this.area = area;
 	}
 
-	public FlickrArea getArea() {
+	public Area getArea() {
 		return area;
 	}
 
-	public void setArea(FlickrArea area) {
+	public void setArea(Area area) {
 		this.area = area;
 	}
 
@@ -35,7 +35,12 @@ public class FlickrAreaResult {
 		this.selectedCount = selectCount;
 	}
 
-	public Map<String, Integer> getTagsCount() {
-		return tagsCount;
+	public Histograms getHistograms() {
+		return histograms;
 	}
+
+	public void setHistograms(Histograms histograms) {
+		this.histograms = histograms;
+	}
+
 }

@@ -16,13 +16,16 @@ import org.xml.sax.SAXException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.service.CsvImporter;
+import de.fraunhofer.iais.spatial.service.ModelManager;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,52 +44,53 @@ public class TrafficSimulator {
 	* Argument: the path to the file with the simulation parameters
 	*/
 	public static void main(String args[]) {
-		String paraFile = "params1.txt";
-		if (args.length == 1) {
-			paraFile = args[0];
-		}
-		//read and set values of system parameters
+		/*params1.txt*/
+		Map<Long, Map<String, Integer>> areaEvents1 = generateEvents("models/sim_model.xml", "01/12/2011;19:30", "10000", "10");
+
+		/*params2.txt*/
+		Map<Long, Map<String, Integer>> areaEvents2 = generateEvents("models/sim_model_reduced_north.xml", "01/12/2011;19:30", "10000", "10");
+	}
+
+	public static Map<Long, Map<String, Integer>> generateEvents(String model, String startTime, String nMovers, String aggrIntervalLength) {
+		Map<Long, Map<String, Integer>> areaEvents = Maps.newTreeMap();
+
+		//set values of system parameters
 		Parameters parm = new Parameters();
-		SysConfigReader scr = new SysConfigReader(parm, null);
-		if (!scr.readConfiguration(paraFile)) {
-			System.out.println("Could not read parameters from " + paraFile + "!");
-			return;
-		}
+		parm.setParameter("MODEL", model);
+		parm.setParameter("START_TIME", startTime);
+		parm.setParameter("N_MOVERS", nMovers);
+		parm.setParameter("AGGREGATION_INTERVAL_LENGTH", aggrIntervalLength);
+		parm.setParameter("OUTPUT_FILE", "data/normal_place_loads.csv");
+
 		if (parm.getParameter("MODEL") == null) {
-			System.out.println("No path to the model!");
-			return;
+			throw new RuntimeException("No path to the model!");
 		}
 		if (parm.getParameter("OUTPUT_FILE") == null) {
-			System.out.println("No path for the output file!");
-			return;
+			throw new RuntimeException("No path for the output file!");
 		}
 		if (parm.getParameter("START_TIME") == null) {
-			System.out.println("No simulation start time!");
-			return;
+			throw new RuntimeException("No simulation start time!");
 		}
 		String timeStr = parm.getParameterAsString("START_TIME");
 		Date d = new Date();
 		d.scheme = "dd/mm/yyyy;hh:tt";
 		if (!d.setMoment(timeStr) || !d.isValid()) {
 			System.out.println("Invalid simulation start time: " + timeStr + "; expected dd/mm/yyyy;hh:tt");
-			return;
+			return null;
 		}
 		Document doc = LoadXML.loadXML(parm.getParameterAsString("MODEL"));
 		if (doc == null)
-			return;
+			throw new RuntimeException("cannot load the model xml file!");
 		SimulationEngine sim = new SimulationEngine();
 		if (!sim.restoreFromXML(doc)) {
-			System.out.println("Cannot read the model: " + sim.err);
-			return;
+			throw new RuntimeException("Cannot read the model: " + sim.err);
 		}
 		if (!sim.retrievePlaces()) {
-			System.out.println("Failed to retrieve places: " + sim.err);
-			return;
+			throw new RuntimeException("Failed to retrieve places: " + sim.err);
 		}
 		sim.predT0 = d;
 		if (!sim.prepareModels()) {
-			System.out.println("Model error: " + sim.err);
-			return;
+			throw new RuntimeException("Model error: " + sim.err);
 		}
 		int nObj = 0;
 		if (parm.getParameter("N_MOVERS") != null)
@@ -100,12 +104,10 @@ public class TrafficSimulator {
 			nObj = 0;
 		int nRoutesTotal = sim.attachRoutesToOrigins(nObj); //the N of trajectories as defined by the route frequencies
 		if (nRoutesTotal < 1) {
-			System.out.println("Failed to attach the possible routes to the origin places: " + sim.err);
-			return;
+			throw new RuntimeException("Failed to attach the possible routes to the origin places: " + sim.err);
 		}
 		if (!sim.simulateMovement()) {
-			System.out.println(sim.err);
-			return;
+			throw new RuntimeException(sim.err);
 		}
 		int aggILen = 10;
 		if (parm.getParameter("AGGREGATION_INTERVAL_LENGTH") != null)
@@ -117,8 +119,7 @@ public class TrafficSimulator {
 			}
 		PlaceMovesAggregate pAgg[] = sim.aggregateByPlaces(aggILen);
 		if (pAgg == null || pAgg.length < 1) {
-			System.out.println("Failed to aggregate: " + sim.err);
-			return;
+			throw new RuntimeException("Failed to aggregate: " + sim.err);
 		}
 		String path = parm.getParameterAsString("OUTPUT_FILE");
 		String dir = CopyFile.getDir(path);
@@ -127,33 +128,32 @@ public class TrafficSimulator {
 			if (!file.exists())
 				file.mkdir();
 			if (!file.exists()) {
-				System.out.println("Cannot create directory [" + dir + "]!");
-				return;
+				throw new RuntimeException("Cannot create directory [" + dir + "]!");
 			}
 		}
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(path);
 		} catch (Exception ex) {
-			System.out.println("Cannot create file [" + path + "]!");
 			ex.printStackTrace();
-			return;
+			throw new RuntimeException("Cannot create file [" + path + "]!");
 		}
 		d = (Date) sim.predT0.getCopy();
 		d.setPrecision('t');
 		try {
+			SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy;HH:mm");
+			SimpleDateFormat outputDateFormat = new SimpleDateFormat(ModelManager.minuteDateFormatStr);
 			List<String> dates = Lists.newArrayList();
 			writer.write("place_id,Load at t=" + d.toString());
-			dates.add(d.toString());
+			dates.add(outputDateFormat.format(inputDateFormat.parse(d.toString())));
 			for (int i = 1; i < pAgg[0].baseLoads.length; i++) {
 				d.add(aggILen);
 				writer.write(",Load at t=" + d.toString());
-				dates.add(d.toString());
+				dates.add(outputDateFormat.format(inputDateFormat.parse(d.toString())));
 			}
 			writer.write("\r\n");
-			System.out.println(dates);
+//			System.out.println(dates);
 
-			Map<Long, Map<String, Integer>> areaEvents = Maps.newTreeMap();
 			for (int i = 0; i < pAgg.length; i++) {
 				writer.write(pAgg[i].id);
 				long areaId = NumberUtils.toLong(pAgg[i].id);
@@ -174,6 +174,7 @@ public class TrafficSimulator {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		return areaEvents;
 	}
 
 }

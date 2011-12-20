@@ -10,7 +10,7 @@ public class ModelDto {
 	String call;
 	String valid;
 	private Point2D position;
-//	FlickrAreaDto areaDto;
+	private Point2D transfromVector;
 
 	enum ModelType {
 		AGGREGATION, PREDITION
@@ -64,12 +64,12 @@ public class ModelDto {
 		this.position = position;
 	}
 
-//	public FlickrAreaDto getAreaDto() {
-//		return areaDto;
-//	}
-//
-//	public void setAreaDto(FlickrAreaDto areaDto) {
-//		this.areaDto = areaDto;
-//	}
+	public Point2D getTransfromVector() {
+		return transfromVector;
+	}
+
+	public void setTransfromVector(Point2D transfromVector) {
+		this.transfromVector = transfromVector;
+	}
 
 }

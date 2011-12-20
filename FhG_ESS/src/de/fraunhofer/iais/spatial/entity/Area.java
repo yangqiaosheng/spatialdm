@@ -13,12 +13,11 @@ import com.google.common.collect.Maps;
  * @author zhi
  */
 
-public class FlickrArea implements Serializable {
+public class Area implements Serializable {
 
 	private static final long serialVersionUID = -5736041303318937777L;
 
 	private long id;
-	private Radius radius;
 	private String name;
 	private double area;
 	private Point2D center;
@@ -26,20 +25,7 @@ public class FlickrArea implements Serializable {
 	private boolean isCached;
 	private long totalCount;
 
-	private SortedMap<String, Integer> yearsCount = Maps.newTreeMap();
-	private SortedMap<String, Integer> monthsCount = Maps.newTreeMap();
-	private SortedMap<String, Integer> daysCount = Maps.newTreeMap();
-	private SortedMap<String, Integer> hoursCount = Maps.newTreeMap();
-	private SortedMap<String, Integer> minutesCount = Maps.newTreeMap();
-
-	public enum Radius {
-		R625, R1250, R2500, R5000, R10000, R20000, R40000, R80000, R160000, R320000, R640000, R1280000, R2560000;
-
-		@Override
-		public String toString() {
-			return this.name().substring(1);
-		}
-	}
+	private SortedMap<String, Integer> datesCount = Maps.newTreeMap();
 
 	public long getId() {
 		return id;
@@ -97,32 +83,8 @@ public class FlickrArea implements Serializable {
 		this.isCached = isCached;
 	}
 
-	public SortedMap<String, Integer> getYearsCount() {
-		return yearsCount;
-	}
-
-	public SortedMap<String, Integer> getMonthsCount() {
-		return monthsCount;
-	}
-
-	public SortedMap<String, Integer> getDaysCount() {
-		return daysCount;
-	}
-
-	public SortedMap<String, Integer> getHoursCount() {
-		return hoursCount;
-	}
-
-	public Radius getRadius() {
-		return radius;
-	}
-
-	public void setRadius(Radius radius) {
-		this.radius = radius;
-	}
-
-	public SortedMap<String, Integer> getMinutesCount() {
-		return minutesCount;
+	public SortedMap<String, Integer> getDatesCount() {
+		return datesCount;
 	}
 
 }

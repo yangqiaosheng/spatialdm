@@ -14,7 +14,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom.CDATA;
@@ -28,10 +27,12 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
-import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
-import de.fraunhofer.iais.spatial.entity.FlickrArea;
-import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.entity.Area;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -45,45 +46,52 @@ public class CsvImporter {
 	 */
 	public static void main(String[] args) throws IOException, JDOMException, SQLException {
 		Map<Long, Map<String, Integer>> areaEvents = Maps.newHashMap();
-		List<FlickrArea> areas = Lists.newArrayList();
+		List<Area> areas = Lists.newArrayList();
 
-		importAreaEvents(areaEvents, "data/normal_place_loads.csv");
+		importAreaEvents(areaEvents, "data/place_loads_1.csv");
+
 		importAreas(areas, "data/places.xml");
 		initAreas(areaEvents, areas);
 //		System.out.println(buildKmlString(areas, Radius.R1250, ""));
-//		System.out.println(buildKmlFile(areas, "temp/areas1000", Radius.R1250, null, false));
+		System.out.println(buildKmlFile(areas, "temp/place_loads_1", "1250", null, false));
 	}
 
-	public static void initAreas(Map<Long, Map<String, Integer>> areaEvents, List<FlickrArea> areas) {
-		for (FlickrArea area : areas) {
+	public static void initAreas(Map<Long, Map<String, Integer>> areaEvents, List<Area> areas) {
+		for (Area area : areas) {
 			if(MapUtils.isNotEmpty(areaEvents.get(area.getId()))){
 				for (Map.Entry<String, Integer> events : areaEvents.get(area.getId()).entrySet()) {
-					area.getHoursCount().put(events.getKey(), events.getValue());
-					System.out.println(area.getId() + " " + area.getHoursCount());
+					area.getDatesCount().put(events.getKey(), events.getValue());
 				}
+//				System.out.println(area.getId() + " " + area.getDatesCount());
 			}
 		}
 	}
 
-	private static void importAreas(List<FlickrArea> areas, String file) throws JDOMException, IOException {
+	public static void importAreas(List<Area> areas, String file) throws JDOMException, IOException {
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(new File(file));
 		Element rootElement = document.getRootElement();
+		GeometryFactory geometryFactory = new GeometryFactory();
 		for (Element objectElement : (List<Element>) rootElement.getChildren("Object")) {
 			long areaId = Integer.parseInt(objectElement.getChildText("id"));
 			Element shapeElement = objectElement.getChild("shape");
-			FlickrArea area = new FlickrArea();
+			Area area = new Area();
 
 
 			List<Point2D> geom = new LinkedList<Point2D>();
+			List<Coordinate> coordinates = Lists.newArrayList();
 			for (Element pointElement : (List<Element>) shapeElement.getChildren("point")) {
 				geom.add(new Point2D.Double(Double.parseDouble(pointElement.getChildText("xCoord")), Double.parseDouble(pointElement.getChildText("yCoord"))));
+				coordinates.add(new Coordinate(Double.parseDouble(pointElement.getChildText("xCoord")), Double.parseDouble(pointElement.getChildText("yCoord"))));
 			}
+			LinearRing shell = geometryFactory.createLinearRing(coordinates.toArray(new Coordinate[0]));
+			Polygon polygon = geometryFactory.createPolygon(shell, null);
+			area.setCenter(new Point2D.Double(polygon.getCentroid().getX(), polygon.getCentroid().getY()));
 
 			area.setGeom(geom);
 			area.setId(areaId);
-			System.out.println(area.getId());
-			System.out.println(area.getGeom());
+//			System.out.println(area.getId());
+//			System.out.println(area.getGeom());
 			areas.add(area);
 		}
 	}
@@ -112,7 +120,7 @@ public class CsvImporter {
 				}
 			}
 		}
-		System.out.println(dates);
+//		System.out.println(dates);
 
 		while ((nextLine = reader.readNext()) != null) {
 			long areaId = -1;
@@ -130,7 +138,7 @@ public class CsvImporter {
 		}
 	}
 
-	public static String buildKmlFile(List<FlickrArea> areas, String filenamePrefix, Radius radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
+	public static String buildKmlFile(List<Area> areas, String filenamePrefix, String radius, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		if (StringUtils.isEmpty(remoteBasePath)) {
 			remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
 		}
@@ -150,13 +158,13 @@ public class CsvImporter {
 		return XmlUtil.xml2String(document, false);
 	}
 
-	public static String buildKmlString(List<FlickrArea> areas, Radius radius, String remoteBasePath) throws IOException {
+	public static String buildKmlString(List<Area> areas, String radius, String remoteBasePath) throws IOException {
 		Document document = createKmlDoc(areas, radius, remoteBasePath);
 
 		return XmlUtil.xml2String(document, false);
 	}
 
-	private static Document createKmlDoc(List<FlickrArea> areas, Radius radius, String remoteBasePath) {
+	private static Document createKmlDoc(List<Area> areas, String radius, String remoteBasePath) {
 		Document document = new Document();
 
 		Namespace namespace = Namespace.getNamespace("http://earth.google.com/kml/2.1");
@@ -169,7 +177,7 @@ public class CsvImporter {
 		rootElement.addContent(documentElement);
 
 		// GroundOverlay
-		for (FlickrArea area : areas) {
+		for (Area area : areas) {
 			String name = String.valueOf(area.getId());
 			String description = "";
 			Element groundOverlayElement = new Element("GroundOverlay", namespace);
@@ -182,7 +190,7 @@ public class CsvImporter {
 			String icon = remoteBasePath + "images/circle_or.ico";
 
 			int count = 0;
-			for(int num : area.getHoursCount().values()){
+			for(int num : area.getDatesCount().values()){
 				count += num;
 			}
 
@@ -224,7 +232,7 @@ public class CsvImporter {
 		}
 
 		// Polygon
-		for (FlickrArea area : areas) {
+		for (Area area : areas) {
 			String name = "id:" + area.getId();
 			String description = buildKmlDescription(area);
 
@@ -238,7 +246,7 @@ public class CsvImporter {
 
 			List<Point2D> shape = area.getGeom();
 			for (Point2D point : shape) {
-				coordinates += point.getX() + ", " + point.getY() + "0\n";
+				coordinates += point.getX() + "," + point.getY() + "0\n";
 			}
 
 			// create kml
@@ -287,18 +295,23 @@ public class CsvImporter {
 		return document;
 	}
 
-	private static String buildKmlDescription(FlickrArea area) {
+	private static String buildKmlDescription(Area area) {
 		int width = 1000;
 		int height = 300;
-		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width, height, area.getHoursCount(), Level.HOUR);
 
-		String description = weekdayChartImg;
-		return description;
+		if(MapUtils.isNotEmpty(area.getDatesCount())){
+			String weekdayChartImg = createGoogleChartImg("Photos Distribution", width, height, area.getDatesCount(), "HOUR");
+			String description = weekdayChartImg;
+			return description;
+		}else{
+			return null;
+		}
 	}
 
-	public static String createGoogleChartImg(String title, int width, int height, Map<String, Integer> data, Level displayLevel) {
+	public static String createGoogleChartImg(String title, int width, int height, Map<String, Integer> data, String displayLevel) {
 		String values = "";
 		String labels = "";
+		System.out.println(data);
 		int maxValue = new TreeSet<Integer>(data.values()).last();
 		int labelsInterval = 24;
 		int valuesInterval = 1;
