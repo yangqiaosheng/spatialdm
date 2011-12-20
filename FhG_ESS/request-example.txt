@@ -1,0 +1,104 @@
+http://kd-photomap.iais.fraunhofer.de/ESS/RequestKml?xml=
+
+Step(2): Fetching Model Data
+
+###########################################################################
+Fetching Model Data 
+
+	* transformation for particular is loaded from model.xml
+	* call is looked up in model.xml and executed
+	* as done before: kml is generated & returned
+
+Sample request xml
+---------------------------------------------------------------------------------------------------------
+<request>
+	<model>NimesMatchPred1</model>
+
+	<screen>
+		<bounds>((43.810000000, 4.3513360925), (43.8200000000, 4.3633397349))</bounds>
+	</screen>
+	<calendar>
+		<years>
+			<year>2011</year>
+		</years>
+		<months>
+			<month>December</month>
+		</months>
+		<days>0
+			<day>01</day>
+		</days>
+		<hours>
+			<hour>17</hour>
+			<hour>18</hour>
+			<hour>19</hour>
+			<hour>20</hour>
+			<hour>21</hour>
+			<hour>22</hour>
+			<hour>23</hour>
+		</hours>
+		<minutes>
+			<minute>00</minute>
+			<minute>10</minute>
+			<minute>20</minute>
+			<minute>30</minute>
+			<minute>40</minute>
+			<minute>50</minute>
+		</minutes>
+		<weekdays>
+			<weekday>Sunday</weekday>
+			<weekday>Monday</weekday>
+			<weekday>Tuesday</weekday>
+			<weekday>Wednesday</weekday>
+			<weekday>Thursday</weekday>
+			<weekday>Friday</weekday>
+			<weekday>Saturday</weekday>
+		</weekdays>
+	</calendar>
+</request>
+
+-----------------------------------------------------------------------------------------------------
+<request>
+	<model>MilanUsualTraffic</model>
+
+	<screen>
+		<bounds>((43.810000000, 4.3513360925), (43.8200000000, 4.3633397349))</bounds>
+	</screen>
+	<calendar>
+		<years>
+			<year>2011</year>
+		</years>
+		<months>
+			<month>December</month>
+		</months>
+		<days>0
+			<day>01</day>
+			<day>05</day>
+		</days>
+		<hours>
+			<hour>17</hour>
+			<hour>18</hour>
+			<hour>19</hour>
+			<hour>20</hour>
+			<hour>21</hour>
+			<hour>22</hour>
+			<hour>23</hour>
+		</hours>
+		<minutes>
+			<minute>00</minute>
+			<minute>15</minute>
+			<minute>30</minute>
+			<minute>45</minute>
+		</minutes>
+		<weekdays>
+			<weekday>Sunday</weekday>
+			<weekday>Monday</weekday>
+			<weekday>Tuesday</weekday>
+			<weekday>Wednesday</weekday>
+			<weekday>Thursday</weekday>
+			<weekday>Friday</weekday>
+			<weekday>Saturday</weekday>
+		</weekdays>
+	</calendar>
+</request>
+-----------------------------------------------------------------------------------------------------------
+
