@@ -69,7 +69,8 @@ public class CsvImporter {
 
 	public static void importAreas(List<Area> areas, String file) throws JDOMException, IOException {
 		SAXBuilder builder = new SAXBuilder();
-		Document document = builder.build(new File(file));
+		String basePath = StringUtils.defaultString(System.getProperty("ess.root"));
+		Document document = builder.build(new File(basePath + file));
 		Element rootElement = document.getRootElement();
 		GeometryFactory geometryFactory = new GeometryFactory();
 		for (Element objectElement : (List<Element>) rootElement.getChildren("Object")) {

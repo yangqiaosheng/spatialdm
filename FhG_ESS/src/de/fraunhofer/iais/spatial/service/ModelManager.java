@@ -1,6 +1,7 @@
 package de.fraunhofer.iais.spatial.service;
 
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -30,6 +31,7 @@ import de.fraunhofer.iais.spatial.entity.AreaResult;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet;
 
 public class ModelManager {
 	public static String minuteDateFormatStr = "yyyy-MM-dd@HH:mm";

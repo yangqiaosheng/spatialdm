@@ -8,6 +8,7 @@ import spade.analysis.tools.moves.simulation.PlaceMovesAggregate;
 import configstart.SysConfigReader;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXParseException;
@@ -54,9 +55,10 @@ public class TrafficSimulator {
 	public static Map<Long, Map<String, Integer>> generateEvents(String model, String startTime, String nMovers, String aggrIntervalLength) {
 		Map<Long, Map<String, Integer>> areaEvents = Maps.newTreeMap();
 
+		String basePath = StringUtils.defaultString(System.getProperty("ess.root"));
 		//set values of system parameters
 		Parameters parm = new Parameters();
-		parm.setParameter("MODEL", model);
+		parm.setParameter("MODEL", basePath + model);
 		parm.setParameter("START_TIME", startTime);
 		parm.setParameter("N_MOVERS", nMovers);
 		parm.setParameter("AGGREGATION_INTERVAL_LENGTH", aggrIntervalLength);
