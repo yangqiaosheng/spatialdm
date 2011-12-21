@@ -8,6 +8,7 @@ import spade.analysis.tools.time_series.TSModelSet;
 import spade.analysis.tools.time_series.ModelledObjectInfo;
 import configstart.SysConfigReader;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.w3c.dom.Document;
 
@@ -43,10 +44,11 @@ public class NormalTrafficPredictor {
 
 	public static Map<Long, Map<String, Integer>> generateEvents(String model, String startTime, String endTime, boolean addNoise) {
 		Map<Long, Map<String, Integer>> areaEvents = Maps.newTreeMap();
+		String basePath = StringUtils.defaultString(System.getProperty("ess.root"));
 
 		//set values of system parameters
 		Parameters parm = new Parameters();
-		parm.setParameter("MODEL", model);
+		parm.setParameter("MODEL", basePath + model);
 		parm.setParameter("START_TIME", startTime);
 		parm.setParameter("END_TIME", endTime);
 		parm.setParameter("OUTPUT_FILE", "data/normal_place_loads.csv");

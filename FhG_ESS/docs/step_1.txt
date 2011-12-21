@@ -1,0 +1,133 @@
+
+http://kd-photomap.iais.fraunhofer.de/ESS/RequestKml?xml=
+
+Step(1): Fetching List of Models
+
+###########################################################################
+Fetching List of Models - Sample request xml
+
+<request>
+	<Models/>
+</request>
+
+###########################################################################
+
+Sample Respond (list of models). Transformation and Call excluded.
+
+<Models>
+	<HDAModel type="prediction" name="NimesUsualTraffic">
+		<title>Variation of N cars by 15-min intervals *50: daily and weekly in Nîmes</title>
+		<position>
+		 	(43.836944, 4.36)
+		</position>
+		<value>N cars by 15-min intervals *50</value>
+		  <Annotation>
+		  This is a model of the standard traffic depending on time of the day and day of the week.
+		  It predicts how many cars will be in each place by 15-min time intervals within a given time period.  
+		  The data have been obtained by aggregating GPS tracks of cars and scaling by factor 50
+		  (i.e. the sample of the tracked cars is estimated as 2% of the total number of cars in the city).
+		  </Annotation>
+		  <valid option="Daily"/>
+		</HDAModel>
+
+	<HDAModel type="prediction" name="NimesMatchPred1">
+		<title>Simulation of movement of 10000 vehicles from Stade des Costières (Nîmes).</title>
+		<position>
+		 	(43.816111, 4.359167)
+		</position>	
+		<value>N cars by 15-min intervals</value>
+		  <Annotation>
+			10000 vehicles in total
+			Place 171: 2800 vehicles
+			Place 134: 4000 vehicles
+			Place 224: 3200 vehicles
+			3236 different route
+		  </Annotation>
+		  <valid option="Days of a match"/>
+	</HDAModel>
+
+
+	<HDAModel type="prediction"  name="NimesMatchPred2">	
+		<title>Simulation of movement of 10000 vehicles from Stade des Costières (Nîmes); reduced movement to north</title>
+		<position>
+		 	(43.816111, 4.359167)
+		</position>	
+		<value>N cars by 15-min intervals</value>
+		  <Annotation>
+			The traffic from the stadium area to the north has been reduced by reducing the weights of the corresponding network links.
+			The resulting movement takes less time than with more intensive movement to the north.
+			Some traffic regulation measures can be applied in reality to direct more traffic to other directions.
+			10000 vehicles in total
+			Place 171: 3000 vehicles
+			Place 134: 4000 vehicles
+			Place 224: 3000 vehicles
+			3958 different routes
+		  </Annotation>
+		  <valid option="Days of a match"/>
+	</HDAModel>
+
+	<HDAModel type="aggregation"  name="NimesMatchPed1">	
+		<title>Distribution of Pedestrians during a soccer Match in Nîmes</title>
+		<position>
+		 	(43.816111, 4.359167)		
+		</position>	
+		<value>N pedestrian by 60-min intervals</value>
+		  <Annotation>
+			  Pedestrian volumes inside the stadium, based on the soccer match 05/08/2011.
+		  </Annotation>
+		  <valid option="Days of a match"/>
+	</HDAModel>
+
+
+	<HDAModel type="prediction" name="MilanUsualTraffic">
+		<title>Variation of N cars by 15-min intervals *50: daily and weekly in Milan</title>
+		<position>
+			(45.4625, 9.186389)
+		</position>
+		<value>N cars by 15-min intervals *50</value>
+		  <Annotation>
+		  This is a model of the standard traffic depending on time of the day and day of the week.
+		  It predicts how many cars will be in each place by 15-min time intervals within a given time period.  
+		  The data have been obtained by aggregating GPS tracks of cars and scaling by factor 50
+		 (i.e. the sample of the tracked cars is estimated as 2% of the total number of cars in the city).
+		  </Annotation>
+		  <valid option="Daily"/>
+		</HDAModel>
+
+	<HDAModel type="prediction" name="MilanMatchPred1">
+		<title>Simulation of movement of 10000 vehicles from San Siro stadium (Milan).</title>
+		<position>
+			(45.478158, 9.1237)
+		</position>	
+		<value>N cars by 15-min intervals</value>
+		  <Annotation>
+			10000 vehicles in total
+			Place 171: 2800 vehicles
+			Place 134: 4000 vehicles
+			Place 224: 3200 vehicles
+			3236 different route
+		  </Annotation>
+		  <valid option="Days of a match"/>
+	</HDAModel>
+
+
+	<HDAModel type="prediction"  name="MilanMatchPred2">	
+		<title>Simulation of movement of 10000 vehicles from San Siro stadium (Milan); reduced movement to north</title>
+		<position>
+			(45.478158, 9.1237)		
+		</position>	
+		<value>N cars by 15-min intervals</value>
+		  <Annotation>
+			The traffic from the stadium area to the north has been reduced by reducing the weights of the corresponding network links.
+			The resulting movement takes less time than with more intensive movement to the north.
+			Some traffic regulation measures can be applied in reality to direct more traffic to other directions.
+			10000 vehicles in total
+			Place 171: 3000 vehicles
+			Place 134: 4000 vehicles
+			Place 224: 3000 vehicles
+			3958 different routes
+		  </Annotation>
+		  <valid option="Days of a match"/>
+	</HDAModel>
+</Models>
+

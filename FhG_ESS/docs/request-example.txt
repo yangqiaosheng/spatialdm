@@ -3,14 +3,29 @@ http://kd-photomap.iais.fraunhofer.de/ESS/RequestKml?xml=
 Step(2): Fetching Model Data
 
 ###########################################################################
-Fetching Model Data 
+Fetching Model Data
 
 	* transformation for particular is loaded from model.xml
 	* call is looked up in model.xml and executed
 	* as done before: kml is generated & returned
 
-Sample request xml
----------------------------------------------------------------------------------------------------------
+Sample request xml:
+###########################################################################
+Fetching List of Models - Sample request xml
+
+<request>
+	<Models/>
+</request>
+
+
+###########################################################################
+Fetching kml of model NimesMatchPred1 with paramters:
+	program=TrafficSimulator
+	model=models/sim_model.xml
+	start_time=01/12/2011:17:00 (depends on the query)
+	n_moves=10000(default)
+	aggregation_interval_length=10 (default time interval 10min)
+
 <request>
 	<model>NimesMatchPred1</model>
 
@@ -56,7 +71,14 @@ Sample request xml
 	</calendar>
 </request>
 
------------------------------------------------------------------------------------------------------
+###########################################################################
+Fetching kml of model NimesMatchPred1 with paramters:
+	program=NormalTrafficPredictor (time interval 15min)
+	model=models/model_place_presence_15min_intervals.xml
+	start_time=01/12/2011:17:00 (depends on the query)
+	end_time=05/12/2011:23:45 (depends on the query)
+	add_noise=true (default)
+
 <request>
 	<model>MilanUsualTraffic</model>
 
@@ -100,5 +122,51 @@ Sample request xml
 		</weekdays>
 	</calendar>
 </request>
------------------------------------------------------------------------------------------------------------
 
+
+###########################################################################
+Forward the query to http://kd-photomap.iais.fraunhofer.de/prediction_ped/RequestKml
+
+<request>
+	<model>NimesMatchPed1</model>
+
+	<screen>
+		<bounds>((43.810000000, 4.3513360925), (43.8200000000, 4.3633397349))</bounds>
+	</screen>
+	<transform>
+	    <move>
+			<from>(0.0, 0.0)</from>
+			<to>(0.0, 0.0)</to>
+		</move>
+		<scale>1.0</scale>
+	</transform>
+	<calendar>
+		<years>
+			<year>2011</year>
+		</years>
+		<months>
+			<month>August</month>
+		</months>
+		<days>0
+			<day>05</day>
+		</days>
+		<hours>
+			<hour>16</hour>
+			<hour>17</hour>
+			<hour>18</hour>
+			<hour>19</hour>
+			<hour>20</hour>
+			<hour>21</hour>
+			<hour>22</hour>
+		</hours>
+		<weekdays>
+			<weekday>Sunday</weekday>
+			<weekday>Monday</weekday>
+			<weekday>Tuesday</weekday>
+			<weekday>Wednesday</weekday>
+			<weekday>Thursday</weekday>
+			<weekday>Friday</weekday>
+			<weekday>Saturday</weekday>
+		</weekdays>
+	</calendar>
+</request>
