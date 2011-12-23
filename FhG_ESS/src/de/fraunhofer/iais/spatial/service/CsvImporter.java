@@ -1,6 +1,7 @@
 package de.fraunhofer.iais.spatial.service;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -50,7 +51,7 @@ public class CsvImporter {
 
 		importAreaEvents(areaEvents, "data/place_loads_1.csv");
 
-		importAreas(areas, "data/places.xml");
+		importAreas(areas, null, "data/places.xml");
 		initAreas(areaEvents, areas);
 //		System.out.println(buildKmlString(areas, Radius.R1250, ""));
 		System.out.println(buildKmlFile(areas, "temp/place_loads_1", "1250", null, false));
@@ -67,7 +68,7 @@ public class CsvImporter {
 		}
 	}
 
-	public static void importAreas(List<Area> areas, String file) throws JDOMException, IOException {
+	public static void importAreas(List<Area> areas, Rectangle2D boundaryRect, String file) throws JDOMException, IOException {
 		SAXBuilder builder = new SAXBuilder();
 		String basePath = StringUtils.defaultString(System.getProperty("ess.root"));
 		Document document = builder.build(new File(basePath + file));
@@ -81,10 +82,21 @@ public class CsvImporter {
 
 			List<Point2D> geom = new LinkedList<Point2D>();
 			List<Coordinate> coordinates = Lists.newArrayList();
+
+			boolean inBoundaryRect = false;
 			for (Element pointElement : (List<Element>) shapeElement.getChildren("point")) {
-				geom.add(new Point2D.Double(Double.parseDouble(pointElement.getChildText("xCoord")), Double.parseDouble(pointElement.getChildText("yCoord"))));
+				Point2D point = new Point2D.Double(Double.parseDouble(pointElement.getChildText("xCoord")), Double.parseDouble(pointElement.getChildText("yCoord")));
+				geom.add(point);
 				coordinates.add(new Coordinate(Double.parseDouble(pointElement.getChildText("xCoord")), Double.parseDouble(pointElement.getChildText("yCoord"))));
+				if(boundaryRect != null && boundaryRect.contains(point)){
+					inBoundaryRect = true;
+				}
 			}
+
+			if(boundaryRect != null && inBoundaryRect == false ){
+				continue;
+			}
+
 			LinearRing shell = geometryFactory.createLinearRing(coordinates.toArray(new Coordinate[0]));
 			Polygon polygon = geometryFactory.createPolygon(shell, null);
 			area.setCenter(new Point2D.Double(polygon.getCentroid().getX(), polygon.getCentroid().getY()));

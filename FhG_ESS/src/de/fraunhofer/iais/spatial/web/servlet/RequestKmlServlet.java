@@ -108,7 +108,7 @@ public class RequestKmlServlet extends HttpServlet {
 					setCalendarQueryStrs(areaDto);
 
 					List<Area> areas = Lists.newArrayList();
-					CsvImporter.importAreas(areas, "data/places.xml");
+					CsvImporter.importAreas(areas, areaDto.getBoundaryRect(), "data/places.xml");
 					CsvImporter.initAreas(areaEvents, areas);
 
 					List<AreaResult> areaResults = ModelManager.createAreaResults(areas);
