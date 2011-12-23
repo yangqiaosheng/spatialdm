@@ -3,7 +3,6 @@ http://kd-photomap.iais.fraunhofer.de/ESS/RequestKml?xml=
 Step(2): Fetching Model Data
 
 ###########################################################################
-Fetching Model Data
 
 	* transformation for particular is loaded from model.xml
 	* call is looked up in model.xml and executed
@@ -11,7 +10,7 @@ Fetching Model Data
 
 Sample request xml:
 ###########################################################################
-Fetching List of Models - Sample request xml
+1. Fetching List of Models - Sample request xml
 
 <request>
 	<Models/>
@@ -19,7 +18,7 @@ Fetching List of Models - Sample request xml
 
 
 ###########################################################################
-Fetching kml of model NimesMatchPred1 with paramters:
+2. Fetching kml of model NimesMatchPred1 with paramters:
 	program=TrafficSimulator
 	model=models/sim_model.xml
 	start_time=01/12/2011:17:00 (depends on the query)
@@ -72,7 +71,7 @@ Fetching kml of model NimesMatchPred1 with paramters:
 </request>
 
 ###########################################################################
-Fetching kml of model NimesMatchPred1 with paramters:
+3. Fetching kml of model NimesMatchPred1 with paramters:
 	program=NormalTrafficPredictor (time interval 15min)
 	model=models/model_place_presence_15min_intervals.xml
 	start_time=01/12/2011:17:00 (depends on the query)
@@ -125,7 +124,7 @@ Fetching kml of model NimesMatchPred1 with paramters:
 
 
 ###########################################################################
-Forward the query to http://kd-photomap.iais.fraunhofer.de/prediction_ped/RequestKml
+4. Forward the query to http://kd-photomap.iais.fraunhofer.de/prediction_ped/RequestKml
 
 <request>
 	<model>NimesMatchPed1</model>
