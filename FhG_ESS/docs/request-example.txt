@@ -29,7 +29,8 @@ Sample request xml:
 	<model>NimesMatchPred1</model>
 
 	<screen>
-		<bounds>((43.810000000, 4.3513360925), (43.8200000000, 4.3633397349))</bounds>
+		<!-- boundary from Milan -->
+		<bounds>((45.28811094993348, 8.701339734960925), (45.63630547681248, 9.624877942968737))</bounds>
 	</screen>
 	<calendar>
 		<years>
@@ -82,7 +83,8 @@ Sample request xml:
 	<model>MilanUsualTraffic</model>
 
 	<screen>
-		<bounds>((43.810000000, 4.3513360925), (43.8200000000, 4.3633397349))</bounds>
+		<!-- boundary from Milan -->
+		<bounds>((45.28811094993348, 8.701339734960925), (45.63630547681248, 9.624877942968737))</bounds>
 	</screen>
 	<calendar>
 		<years>
