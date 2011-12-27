@@ -44,7 +44,7 @@ function scrollEvtHandler(obj) {
  	}
 }
 
-function loadTheCarousel(k, g_jcarousel, smallUrl) {	
+function loadTheCarousel(k, g_jcarousel, smallUrl) {
 	for ( var i = 1; i <= smallUrl.length; i++) {
 		g_jcarousel.addItem(mycarousel_getItemHTML(i, k, smallUrl[i - 1]));
 		g_jcarousel.render();
@@ -107,7 +107,7 @@ function carouselLoadPictures(xml) {
 		//console.log("carousel");
 		YAHOO.widget.Carousel.prototype.STRINGS.NEXT_BUTTON_TEXT = "<img src='right-enabled.gif'/> ";
 		YAHOO.widget.Carousel.prototype.STRINGS.PREVIOUS_BUTTON_TEXT = "<img src='left-enabled.gif'/> ";
-		YAHOO.widget.Carousel.prototype.STRINGS.PAGER_PREFIX_TEXT = "Go to page: "; 
+		YAHOO.widget.Carousel.prototype.STRINGS.PAGER_PREFIX_TEXT = "Go to page: ";
 		//YAHOO.widget.Carousel.prototype.STRINGS.FIRST_PAGE= "1";
 		g_jcarousel = new YAHOO.widget.Carousel("carousel", {
 			animation : {
@@ -117,12 +117,12 @@ function carouselLoadPictures(xml) {
 			numVisible : one_stepCarousel,
 			scrollInc : one_stepCarousel
 		});
-		g_jcarousel.addListener("afterScroll", scrollEvtHandler);				
+		g_jcarousel.addListener("afterScroll", scrollEvtHandler);
 		g_jcarousel.render();
 		g_jcarousel.show();
 		g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
 		//console.log("g_carouselTotalSize: "+g_carouselTotalSize);
-		timeofUpload++;	
+		timeofUpload++;
 		loadTheCarousel(0, g_jcarousel, smallUrl);
 		booleanF2 = true;
 	}
@@ -132,7 +132,6 @@ function carouselLoadPictures(xml) {
 	}
      // console.log("ready to execute is true");
      // readyToExecute=true;
-      readyToExecute_A = true;
 }
 
 function readXml(xml) {
@@ -155,9 +154,9 @@ function readXml(xml) {
 }
 
 function setTheParameters() {
-	
+
 	 ///??  $(".yui-carousel-nav.form.select").val("Go to page: 1");
-	// $("select option[value='Go to page: 1']").attr("selected", true);  
+	// $("select option[value='Go to page: 1']").attr("selected", true);
 	for ( var i = 0; i < smallUrl.length; i++) {
 		smallUrl[i] = "";
 		photoId[i] = "";
@@ -179,11 +178,11 @@ function setTheParameters() {
 	poz = 0;
 }
 
-function cleanPhotos() {	 	
-	if (g_jcarousel != null) {	 
+function cleanPhotos() {
+	if (g_jcarousel != null) {
 	    g_jcarousel.clearItems();
 	    g_jcarousel.scrollTo(1, false);
-	    g_jcarousel.set("selectedItem", 1);	
+	    g_jcarousel.set("selectedItem", 1);
 	}
 	dateTotal = new Array();
 	weekdayTotal = new Array();
