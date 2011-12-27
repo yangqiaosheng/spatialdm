@@ -56,10 +56,6 @@ function initialize1() {
 	initboolSelected();// LoadPolygons.js
 	$('#EnabledOrDisabled').html(" Enabled <br/>");
 	agregationPolygonsAdd();
-	// scaleLevelOnStart();
-	/* google.maps.event.addListener(map, "idle", function() {
-	   askHistogram();
-	 });*/
 };
 //********************************************************************************************
 var listenerHandle;
