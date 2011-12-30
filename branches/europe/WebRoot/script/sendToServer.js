@@ -25,18 +25,18 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 	// "http://localhost:8080/OracleSpatialWeb/RequestKml");
 
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-	xmlHttp.send("xml=" + encodeURIComponent(textToSend)+ "&timestamp=" + new Date().getTime());
+	xmlHttp.send("xml=" + encodeURIComponent(textToSend) + "&timestamp=" + new Date().getTime());
 	//alert("calendar"+textToSend);
 }
 
 // function sendToServer_ScreenCenter_ScreenBounds(headerXML, bodyXML) {
-// 
+//
 // 	var screenBounds_screenCenter = headerXML + "" + bodyXML;
 // 	screenBounds_screenCenter = "<request>" + screenBounds_screenCenter+ "</request>";
 // 	$("#legendInfo").html("");
-// 	if (window.XMLHttpRequest) {		
+// 	if (window.XMLHttpRequest) {
 // 		xmlHttp = new XMLHttpRequest();
-// 	} else if (window.ActiveXObject) {				
+// 	} else if (window.ActiveXObject) {
 // 		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
 // 	} else {
 // 		document.write("browser not supported");
@@ -65,20 +65,20 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 // 				loadXml(xmlDoc);
 // 			}
 // 		}
-// 	};	
+// 	};
 // 	xmlHttp.open("POST", "SpatialXml");
 // 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 // 	xmlHttp.send("persist=true&xml="+ encodeURIComponent(screenBounds_screenCenter)+ "&timestamp=" + new Date().getTime());
 // }
 
-function sendToServerFromCarousel(ids, page_size, page) {	
+function sendToServerFromCarousel(ids, page_size, page) {
 	if (window.XMLHttpRequest) {
 		xmlHttp = new XMLHttpRequest();
 	} else if (window.ActiveXObject) {
 		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
 	} else {
 		document.write("browser not supported");
-	}	
+	}
 	xmlHttp.open("POST", "SmallPhotoUrl");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	xmlHttp.send("areaid=" + ids + "&page_size=" + page_size + "&page=" + page);
@@ -91,14 +91,14 @@ function sendToServerFromCarousel(ids, page_size, page) {
 }
 //, total, selectedP, infowindow
 /*
-function askForTags(ids, numberOfTags, center, total, selc, number){      
+function askForTags(ids, numberOfTags, center, total, selc, number){
       if (window.XMLHttpRequest) {
 		xmlHttp = new XMLHttpRequest();
 	} else if (window.ActiveXObject) {
 		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
 	} else {
 		document.write("browser not supported");
-	}	
+	}
 	xmlHttp.open("POST", "Tag");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	//console.log("areaid=" + ids + "&size=" + numberOfTags);
@@ -121,14 +121,14 @@ function sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram)
 		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
 	} else {
 		document.write("browser not supported");
-	}	
+	}
 	xmlHttp.onreadystatechange = function() {
 		if (xmlHttp.readyState == 4) {
-			var xmlDoc = xmlHttp.responseText;			
-			loadHistogram(xmlDoc);			
+			var xmlDoc = xmlHttp.responseText;
+			loadHistogram(xmlDoc);
 		}
-	};	
-	$("#legendInfo").empty().html('<img src="images/89.gif" height="50" width="50"  />');	
+	};
+	$("#legendInfo").empty().html('<img src="images/89.gif" height="50" width="50"  />');
 	$("#parent1").empty().html('<img src="images/89.gif" height="50" width="50"  />');
 	$("#parent2").empty().html('<img src="images/89.gif" height="50" width="50"  />');
 	$("#parent3").empty().html('<img src="images/89.gif" height="50" width="50"  />');
@@ -136,5 +136,5 @@ function sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram)
 	$("#parent5").empty().html('<img src="images/89.gif" height="50" width="50"  />');
 	xmlHttp.open("POST", "HistrogramsData");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-	xmlHttp.send("xml=" + encodeURIComponent(textToSend)+ "&timestamp=" + new Date().getTime());	
+	xmlHttp.send("xml=" + encodeURIComponent(textToSend) + "&timestamp=" + new Date().getTime());
 }
