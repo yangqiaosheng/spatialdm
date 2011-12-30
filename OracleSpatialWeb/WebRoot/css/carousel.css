@@ -1,5 +1,5 @@
 
-.yui-carousel-element li { 
+.yui-carousel-element li {
 	    width: 100px;
 	    height: 100px;
 	    background-color: #A7BDF7;
@@ -8,7 +8,7 @@
 	    MARGIN-RIGHT: auto;
 	    MARGIN-LEFT: auto;
 	    opacity: 1;
-	} 
+	}
 
 /*.yui-carousel-content{
     height: 150px;
@@ -20,10 +20,10 @@
 	width: 100%;
 }
 
-#carousel {	
+#carousel {
 	width: 100%;
 }
-.carousel {	
+.carousel {
 	height: auto;
 	width: auto;
 }
@@ -42,7 +42,7 @@
 	 opacity: 1;
 }*/
 
-.item {	
+.item {
 
 	width: 100px;
 	height: 100px;
@@ -52,7 +52,7 @@
 	MARGIN-RIGHT: auto;
 	MARGIN-LEFT: auto;
 	opacity: 1;
-	z-index:200; 
+	z-index:200;
 	/*overflow-y: scroll;
  	 overflow-x: scroll;*/
 }
@@ -69,18 +69,18 @@
 }
 
 #maxContainer {
-	/*background-color: #A7BDF7; 
+	/*background-color: #A7BDF7;
 	opacity: 0.8;*/
-	z-index:300; 
+	z-index:300;
 	border-width:0.31em;
-	border-style:solid; 
-	border-color:#8AA8F3; 
+	border-style:solid;
+	border-color:#8AA8F3;
 	width: auto;
 	position: absolute;
 	top: 0;
 	left: 25%;
 	top: 70%
-  
+
 }
 #numberOfItems{
   background-color: #A7BDF7
@@ -106,5 +106,7 @@
     height: auto;
     top:5%;
     right:5%;
+    cursor: no-drop;
+    cursor: -moz-zoom-out;
 }
 

@@ -1,31 +1,37 @@
-.contextmenu{
-        position: absolute;
-	    visibility:hidden;
-	    background:#ffffff;
-	    border:1px solid #8888FF;
-	    z-index: 10;  	   
-	    width: 140px;
-	  }
-.contextmenu div{
-	    padding-left: 5px
-	  }
+.contextmenu {
+	position: absolute;
+	visibility: hidden;
+	background: #ffffff;
+	border: 1px solid #8888FF;
+	z-index: 10;
+	width: 140px;
+}
 
-.contextmenu1{
-	    visibility:hidden;
-	    background:#ffffff;
-	    border:1px solid #8888FF;
-	    z-index: 10;  
-	    position: relative;
-	    width: 140px;
-	  }
-.contextmenu1 div{
-	    padding-left: 5px
-	  }
+.contextmenu div {
+	padding-left: 5px
+}
 
+.contextmenu1 {
+	visibility: hidden;
+	background: #ffffff;
+	border: 1px solid #8888FF;
+	z-index: 10;
+	position: relative;
+	width: 140px;
+}
+
+.contextmenu1 div {
+	padding-left: 5px;
+}
+
+.InteriorChart {
+	cursor: pointer;
+	cursor: -moz-zoom-in;
+}
 /*.Menu {
 	    background:#ffffff;
 	    border:1px solid #8888FF;
-	    z-index: 200;  
+	    z-index: 200;
 	    position: absolute;
 	    width: auto;
 }*/

@@ -8,7 +8,7 @@ var daysMax;
 var hourMax;
 var weekDayMax;
 
-// because we can't devide with 0: 
+// because we can't devide with 0:
 var globalDataY = [];
 var maxY = 1;
 var globalDataM = [];
@@ -64,7 +64,7 @@ function setArray(param) {
 		if (YEAR) {
 			YEAR = false;
 			for ( var i = 0; i < param; i++) {
-				dataArray[i] = globalDataY[i]; 
+				dataArray[i] = globalDataY[i];
 			}
 			for ( var i = 0; i < param; i++) {
 				dataRepresentation[i] = (50 * dataArray[i]) / maxY;
@@ -197,8 +197,8 @@ function setArray(param) {
 		var dataArray = [];
 		var dataRepresentation = [];
 
-		for ( var i = 0; i < param-1; i++) {			
-			dataArray[i] = globalDataW[i+1]; // data extraction			
+		for ( var i = 0; i < param-1; i++) {
+			dataArray[i] = globalDataW[i+1]; // data extraction
 		}
 		dataArray[i] = globalDataW[0];
 		for ( var i = 0; i < param; i++) {
@@ -225,6 +225,7 @@ function setArray(param) {
 }
 
 function loadHistogram(xml) {
+	//console.log("load XML")
 	var klocalYear = 0;
 	var klocalMonth = 0;
 	var klocalDay = 0;
@@ -232,41 +233,30 @@ function loadHistogram(xml) {
 	var klocalWeekDay = 0;
 	$(xml).find('year').each(function() {
 		globalDataY[klocalYear] = $(this).text();
-		// console.log("years: "+globalDataY[klocalYear]+" "+klocalYear);
 		klocalYear++;
 	});
 	$(xml).find('month').each(function() {
 		globalDataM[klocalMonth] = $(this).text();
-		// console.log("months: "+globalDataM[klocalMonth]+" "+klocalMonth);
 		klocalMonth++;
 	});
 	$(xml).find('day').each(function() {
 		globalDataD[klocalDay] = $(this).text();
-		// console.log("days: "+globalDataD[klocalDay]+" "+klocalDay);
 		klocalDay++;
 	});
 	$(xml).find('hour').each(function() {
 		globalDataH[klocalHour] = $(this).text();
-		// console.log("hours: "+globalDataH[klocalHour]+" "+klocalHour);
 		klocalHour++;
 	});
 	$(xml).find('weekday').each(function() {
 		globalDataW[klocalWeekDay] = $(this).text();
-		// console.log("weekdays: "+globalDataW[klocalWeekDay]+"
-		// "+klocalWeekDay);
 		klocalWeekDay++;
 	});
 
 	maxY = $(xml).find('years').attr('maxValue');
-	// console.log(maxY);
 	maxM = $(xml).find('months').attr('maxValue');
-	// console.log(maxM);
 	maxD = $(xml).find('days').attr('maxValue');
-	// console.log(maxD);
 	maxH = $(xml).find('hours').attr('maxValue');
-	// console.log(maxH);
 	maxW = $(xml).find('weekdays').attr('maxValue');
-	// console.log(maxW);
 	init();
 }
 
@@ -279,7 +269,7 @@ function init() {
 		classWidth : '28.428571px',
 		borderStyle : 'solid',
 		borderWidth : '1px',
-		verticalAlign : 'text-bottom'	
+		verticalAlign : 'text-bottom'
 	};
 
 	var opts2 = {
@@ -289,7 +279,7 @@ function init() {
 		classWidth : '16.166666px',
 		borderStyle : 'solid',
 		borderWidth : '1px',
-		verticalAlign : 'text-bottom'	
+		verticalAlign : 'text-bottom'
 	};
 
 	var opts3 = {
@@ -319,7 +309,7 @@ function init() {
 		classWidth : '28.428571px',
 		borderStyle : 'solid',
 		borderWidth : '1px',
-		verticalAlign : 'text-bottom'	
+		verticalAlign : 'text-bottom'
 	};
 
 	myArray1 = setArray(7); // years
@@ -341,26 +331,30 @@ function init() {
  	var view2 = new Histogramm(model2, opts2);
 	$("#parent2").empty().html("");
  	view2.render2(document.getElementById('parent2'), myArray2);
-// 
+//
  	var view3 = new Histogramm(model3, opts3);
 	$("#parent3").empty().html("");
  	view3.render3(document.getElementById('parent3'), myArray3);
-// 
+//
  	var view4 = new Histogramm(model4, opts4);
 	$("#parent4").empty().html("");
  	view4.render4(document.getElementById('parent4'), myArray4);
-// 
+//
 	var view5 = new Histogramm(model5, opts5);
 	$("#parent5").empty().html("");
  	view5.render5(document.getElementById('parent5'), myArray5);
-	
+	//console.log("step 1");
 	if (ApplyPolygons == false) {
 		ApplyPolygons = true;
-		headerXMLHistogram = createHeaderXML();
+		if (AGGREGATION==true){
+		    headerXMLHistogram = createHeaderXML();
+		}
+		//console.log("headerXMLHistogram "+headerXMLHistogram);
 		bodyXMLHistogram = timeController1XMLHistogram_Selected();
-		if (jQuery("#AggregationCheckBox").attr("checked") == true){
-		  sendToServerCalendarData(headerXMLHistogram, bodyXMLHistogram);		
-		}else{}
+		  //console.log("step 2");
+		//if (jQuery("#AggregationCheckBox").attr("checked") == true){
+		  sendToServerCalendarData(headerXMLHistogram, bodyXMLHistogram);
+		//}else{}
 	}
 }
 
@@ -419,7 +413,7 @@ function OnMouseOver(cls, spanElementInfo, spanElement, t , subSpan, index, arra
 		      BubbleUpWindow(cls, subSpan);
 		    }
 		}
-		
+
 	};
 }
 
@@ -454,18 +448,18 @@ function OnClick(spanElementInfo, spanElement, t , subSpan, index, arrayX, numbe
 			    arrayX[index].label++;
 			    globalArray[arrayX[index].indexVal]++
 			    arrayX[index].label = arrayX[index].label%2; // instead of 1
-			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;			    
+			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
 			    if (once == true) {
 				    $("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 				    once = false;
 			    }
 			}else{
 			    spanElementInfo.style.background = '#DDDDDD';
-			    spanElement.style.background = '#DDDDDD';			   
+			    spanElement.style.background = '#DDDDDD';
 			    arrayX[index].label++;
 			    globalArray[arrayX[index].indexVal]++
 			    arrayX[index].label = arrayX[index].label%2; // instead of 1
-			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;			  
+			    globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
 			    if (once == true) {
 				    $("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 				    once = false;
@@ -474,40 +468,48 @@ function OnClick(spanElementInfo, spanElement, t , subSpan, index, arrayX, numbe
 		}else {
 			if (numberPhotos == 0){
 			  spanElementInfo.style.background = "#FFFFAA";
-			  spanElement.style.background = "#FFFFAA";			  
+			  spanElement.style.background = "#FFFFAA";
 			  arrayX[index].label++;
 			  globalArray[arrayX[index].indexVal]++
 			  arrayX[index].label = arrayX[index].label%2;
-			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;			
+			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
 			}else{
 			  spanElementInfo.style.background = "#DDDDDD";
-			  spanElement.style.background = "#DDDDDD";			  
+			  spanElement.style.background = "#DDDDDD";
 			  arrayX[index].label++;
 			  globalArray[arrayX[index].indexVal]++
 			  arrayX[index].label = arrayX[index].label%2;
-			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;			 
+			  globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal]%2;
 		      }
 		}
 	};
 }
 
 function activateToolTipSimple(t , subSpan, index, arrayX, numberPhotos){
-	var k = index +t;	
+	var k = index +t;
 	OnMouseOver(".spanElementInfo", spanElementInfo[k], spanElement[k], t , subSpan, index, arrayX, numberPhotos);
-	OnMouseOut(spanElementInfo[k], spanElement[k], t , subSpan, index, arrayX, numberPhotos);    
+	OnMouseOut(spanElementInfo[k], spanElement[k], t , subSpan, index, arrayX, numberPhotos);
 	OnClick(spanElementInfo[k], spanElement[k], t , subSpan, index, arrayX, numberPhotos);
 
 	OnMouseOver(".spanElement", spanElement[k], spanElementInfo[k], t , subSpan, index, arrayX, numberPhotos);
-	OnMouseOut(spanElement[k], spanElementInfo[k], t , subSpan, index, arrayX, numberPhotos);    
+	OnMouseOut(spanElement[k], spanElementInfo[k], t , subSpan, index, arrayX, numberPhotos);
 	OnClick(spanElement[k], spanElementInfo[k], t , subSpan, index, arrayX, numberPhotos);
 };
 
 function askHistogramSelected() {
-	deleteHistory();
-	removeCircles();
+	//console.log("AGGREGATION "+AGGREGATION);
+	//deleteHistory();
+	//removeCircles();
 	addRemoveElementsFromHistogram();
 	resetParameters();
-	headerXMLHistogram = createHeaderXML();
+	if (AGGREGATION==true){
+	    deleteHistory();
+	    removeCircles();
+	    addRemoveElementsFromHistogram();
+	    resetParameters();
+	    headerXMLHistogram = createHeaderXML();
+	}
+	//console.log("headerXMLHistogram "+headerXMLHistogram);
 	bodyXMLHistogram = timeController1XMLHistogram_Selected();
 	sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram);
 };
@@ -558,7 +560,7 @@ function timeController1XMLHistogram_Selected() {
 	// the week
 	text1 = text1 + "<weekdays>";
 	for ( var i = 74; i <= 79; i++) {
-		if (globalArray[i] == 0) {			
+		if (globalArray[i] == 0) {
 			text1 = text1 + "<weekday>" + nameString[i + 2] + "</weekday>";
 		}
 	}
@@ -574,13 +576,13 @@ function timeController1XMLHistogram_Selected() {
 function setElementsForRender(thisL){
 	classWidth = thisL.options.classWidth;
 	strokeColor = thisL.options.strokeColor;
-	color = thisL.options.color;	
+	color = thisL.options.color;
 	tooltip = thisL.options.tooltip;
 	borderStyle = thisL.options.borderStyle;
 	borderWidth = thisL.options.borderWidth;
 	verticalAlign = thisL.options.verticalAlign;
 	information = document.createElement("div");
-	information.className = "histogramInfoButtons1";	
+	information.className = "histogramInfoButtons1";
 	information.style.display = "block";
 	information.style.cssFloat = "left";
 }
@@ -588,35 +590,35 @@ function setElementsForRender(thisL){
 function setElementsForRenderSecondo(thisL, i, k){
 		both = document.createElement('div');
 		both.style.display = "block";
-		both.style.cssFloat = "left";	
+		both.style.cssFloat = "left";
 		both.style.bottom = "0px";
 		bothId = 'both';
 		both.id = bothId+""+globId;
 		globId++;
 		hystogrammDiv = document.createElement('div');
 		hystogrammDiv.className = "histogramDiv";
-		hystogrammDivInfo = document.createElement('div');	
-		spanElementInfo[k] = document.createElement('div');	
+		hystogrammDivInfo = document.createElement('div');
+		spanElementInfo[k] = document.createElement('div');
 		spanElement[k] = document.createElement('span');
-		hystogrammDivInfo.className = "hystogrammDivInfo";		
-		spanElement[k].className = "spanElement";	
-		spanElement[k].id="spanElement"+k;	
+		hystogrammDivInfo.className = "hystogrammDivInfo";
+		spanElement[k].className = "spanElement";
+		spanElement[k].id="spanElement"+k;
 		spanElement[k].style.borderColor = strokeColor;
-		spanElement[k].style.borderStyle = borderStyle;	
+		spanElement[k].style.borderStyle = borderStyle;
 		spanElement[k].style.borderBottomWidth = borderWidth;
-		spanElement[k].style.borderTopWidth = borderWidth;						
+		spanElement[k].style.borderTopWidth = borderWidth;
 		spanElement[k].style.borderRightWidth = borderWidth;
 		spanElement[k].style.borderLeftWidth = borderWidth;
-		spanElement[k].style.verticalAlign = verticalAlign;		
+		spanElement[k].style.verticalAlign = verticalAlign;
 		if (thisL.model.data[i].value==0){
-		    spanElement[k].style.padding = "0px " + "0px" + " 0px " + "0px";  
+		    spanElement[k].style.padding = "0px " + "0px" + " 0px " + "0px";
 		    spanElement[k].style.borderRightWidth = '0px';
 		    spanElement[k].style.borderLeftWidth = '0px';
 		    spanElement[k].style.borderTopWidth = '0px';
 		    spanElement[k].style.borderBottomWidth = '0px';
 		    spanElement[k].style.backgroundColor = '#DDDDDD';
 		}else{
-		    spanElement[k].style.padding = thisL.model.data[i].value + "px " +classWidth + " 0px " +classWidth;  
+		    spanElement[k].style.padding = thisL.model.data[i].value + "px " +classWidth + " 0px " +classWidth;
 		    spanElement[k].style.backgroundColor = color;
 		}
 }
@@ -643,7 +645,7 @@ function setElementsForRenderThird(thisL, i, k){
 
 }
 Histogramm.prototype.render1 = function(parent, arrayX) {
- 	setElementsForRender(this);	
+ 	setElementsForRender(this);
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
 		var k=i;
 		setElementsForRenderSecondo(this, i, k);
@@ -654,61 +656,61 @@ Histogramm.prototype.render1 = function(parent, arrayX) {
 			case 0:
 				spanElementInfo[i].innerHTML = '2005';
 				spanElementInfo[i].style.width = "56.8571428px";
-				spanElementInfo[i].style.textAlign = "center";				
+				spanElementInfo[i].style.textAlign = "center";
 				break;
 			case 1:
 				spanElementInfo[i].innerHTML = '2006';
 				spanElementInfo[i].style.width = "56.8571428px";
-				spanElementInfo[i].style.textAlign = "center";				
+				spanElementInfo[i].style.textAlign = "center";
 				break;
 			case 2:
 				spanElementInfo[i].innerHTML = '2007';
 				spanElementInfo[i].style.width = "56.8571428px";
-				spanElementInfo[i].style.textAlign = "center";				
+				spanElementInfo[i].style.textAlign = "center";
 				break;
 			case 3:
 				spanElementInfo[i].innerHTML = '2008';
 				spanElementInfo[i].style.width = "56.8571428px";
-				spanElementInfo[i].style.textAlign = "center";				
+				spanElementInfo[i].style.textAlign = "center";
 				break;
 			case 4:
 				spanElementInfo[i].innerHTML = '2009';
 				spanElementInfo[i].style.width = "56.8571428px";
-				spanElementInfo[i].style.textAlign = "center";				
+				spanElementInfo[i].style.textAlign = "center";
 				break;
 			case 5:
 				spanElementInfo[i].innerHTML = '2010';
 				spanElementInfo[i].style.width = "56.8571428px";
-				spanElementInfo[i].style.textAlign = "center";				
+				spanElementInfo[i].style.textAlign = "center";
 				break;
 			case 6:
 				spanElementInfo[i].innerHTML = '2011';
 				spanElementInfo[i].style.width = "56.8571428px";
 				spanElementInfo[i].style.textAlign = "center";
-				break; 
-			}		
+				break;
+			}
 		    var subSpan = document.createElement('span');
 		    subSpan.className ="Menu"+i;
-		    //spanElement[i].appendChild(subSpan);		    
-		    if (tooltip == true) {			
+		    //spanElement[i].appendChild(subSpan);
+		    if (tooltip == true) {
 			activateToolTipSimple(0, subSpan, i, arrayX, this.model.data[i].value);
 		    }
 		    hystogrammDiv.appendChild(spanElement[i]);
 		    hystogrammDivInfo.appendChild(spanElementInfo[i]);
 		    both.appendChild(hystogrammDiv);
-		    both.appendChild(hystogrammDivInfo);		   
-		  } 
+		    both.appendChild(hystogrammDivInfo);
+		  }
 	  parent.appendChild(both);
 	  if (i==this.model.getNumberOfClasses()-1){
 	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllYear();'></div> <div><input type='button' value='-' class='histogramInfoButton' onclick='javascript:de_selectAllYear();'></div> <div><input type='button' value='+ -' class='histogramInfoButton' onclick='javascript:mirrorAllYear();'></div>";
-	    parent.appendChild(information);  
+	    parent.appendChild(information);
 	  }
 	}
 };
 
 
-Histogramm.prototype.render2 = function(parent, arrayX) {	
-	setElementsForRender(this);	
+Histogramm.prototype.render2 = function(parent, arrayX) {
+	setElementsForRender(this);
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
 		var k=i+7;
 	        setElementsForRenderSecondo(this, i, k);
@@ -717,88 +719,88 @@ Histogramm.prototype.render2 = function(parent, arrayX) {
 			setElementsForRenderThird(this, i, k);
 			switch (i) {
 			case 0:
-				spanElementInfo[k].innerHTML = 'Jan';				
+				spanElementInfo[k].innerHTML = 'Jan';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 1:
-				spanElementInfo[k].innerHTML = 'Feb';				
+				spanElementInfo[k].innerHTML = 'Feb';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 2:
-				spanElementInfo[k].innerHTML = 'Mar';				
+				spanElementInfo[k].innerHTML = 'Mar';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 3:
-				spanElementInfo[k].innerHTML = 'Apr';				
+				spanElementInfo[k].innerHTML = 'Apr';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 4:
-				spanElementInfo[k].innerHTML = 'May';				
+				spanElementInfo[k].innerHTML = 'May';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 5:
-				spanElementInfo[k].innerHTML = 'Jun';				
+				spanElementInfo[k].innerHTML = 'Jun';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 6:
-				spanElementInfo[k].innerHTML = 'Jul';				
+				spanElementInfo[k].innerHTML = 'Jul';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 7:
-				spanElementInfo[k].innerHTML = 'Aug';				
+				spanElementInfo[k].innerHTML = 'Aug';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 8:
-				spanElementInfo[k].innerHTML = 'Sep';				
+				spanElementInfo[k].innerHTML = 'Sep';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 9:
-				spanElementInfo[k].innerHTML = 'Oct';				
+				spanElementInfo[k].innerHTML = 'Oct';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 10:
-				spanElementInfo[k].innerHTML = 'Nov';				
+				spanElementInfo[k].innerHTML = 'Nov';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 			case 11:
-				spanElementInfo[k].innerHTML = 'Dec';				
+				spanElementInfo[k].innerHTML = 'Dec';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "32.333332px";
 				break;
 
-			}			
+			}
 		    var subSpan = document.createElement('span');
 		    subSpan.className ="Menu";
 		    //both.appendChild(subSpan);
-		    if (tooltip == true) {			
+		    if (tooltip == true) {
 			activateToolTipSimple(7, subSpan, i, arrayX, this.model.data[i].value);
 		    }
 		    hystogrammDiv.appendChild(spanElement[k]);
 		    hystogrammDivInfo.appendChild(spanElementInfo[k]);
 		    both.appendChild(hystogrammDiv);
 		    both.appendChild(hystogrammDivInfo);
-		  } 
+		  }
 	  parent.appendChild(both);
 	  if (i==this.model.getNumberOfClasses()-1){
 	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllMonths();'></div> <div><input type='button' value='-' class='histogramInfoButton'  onclick='javascript:de_selectAllMonths()'></div> <div><input type='button' value='+ -' class='histogramInfoButton' onclick='javascript:mirrorAllMonths();'></div>";
-	    parent.appendChild(information);  
+	    parent.appendChild(information);
 	  }
 	}
 };
 
-Histogramm.prototype.render3 = function(parent, arrayX) {	
-	setElementsForRender(this);	
+Histogramm.prototype.render3 = function(parent, arrayX) {
+	setElementsForRender(this);
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
 		var k=i+19;
 	        setElementsForRenderSecondo(this, i, k);
@@ -807,31 +809,31 @@ Histogramm.prototype.render3 = function(parent, arrayX) {
 			setElementsForRenderThird(this, i, k);
 			switch (i) {
 			case 0:
-				spanElementInfo[k].innerHTML = '1';				
+				spanElementInfo[k].innerHTML = '1';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "11.290322px";
 				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 1:
-				spanElementInfo[k].innerHTML = '2';				
+				spanElementInfo[k].innerHTML = '2';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "11.290322px";
 				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 2:
-				spanElementInfo[k].innerHTML = '3';				
+				spanElementInfo[k].innerHTML = '3';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "11.290322px";
 				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 3:
-				spanElementInfo[k].innerHTML = '4';				
+				spanElementInfo[k].innerHTML = '4';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "11.290322px";
 				spanElementInfo[k].style.fontSize = "8.5px";
 				break;
 			case 4:
-				spanElementInfo[k].innerHTML = '5';				
+				spanElementInfo[k].innerHTML = '5';
 				spanElementInfo[k].style.textAlign = "center";
 				spanElementInfo[k].style.width = "11.290322px";
 				spanElementInfo[k].style.fontSize = "8.5px";
@@ -998,25 +1000,25 @@ Histogramm.prototype.render3 = function(parent, arrayX) {
 		    var subSpan = document.createElement('span');
 		    subSpan.className ="Menu";
 		    //both.appendChild(subSpan);
-		    if (tooltip == true) {			
+		    if (tooltip == true) {
 			activateToolTipSimple(19, subSpan, i, arrayX, this.model.data[i].value);
 		    }
 		    hystogrammDiv.appendChild(spanElement[k]);
 		    hystogrammDivInfo.appendChild(spanElementInfo[k]);
 		    both.appendChild(hystogrammDiv);
 		    both.appendChild(hystogrammDivInfo);
-		  } 
+		  }
 	  parent.appendChild(both);
 	  if (i==this.model.getNumberOfClasses()-1){
 	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllDays();'></div> <div><input type='button' value='-' class='histogramInfoButton' onclick='javascript:de_selectAllDays()'></div> <div><input type='button' value='+ -' class='histogramInfoButton' onclick='javascript:mirrorAllDays();'></div>";
-	    parent.appendChild(information);  
+	    parent.appendChild(information);
 	  }
 	}
 };
 
 
-Histogramm.prototype.render4 = function(parent, arrayX) {	
-	setElementsForRender(this);	
+Histogramm.prototype.render4 = function(parent, arrayX) {
+	setElementsForRender(this);
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
 		var k=i+50;
 	        setElementsForRenderSecondo(this, i, k);
@@ -1172,31 +1174,31 @@ Histogramm.prototype.render4 = function(parent, arrayX) {
 		       var subSpan = document.createElement('span');
 		    subSpan.className ="Menu";
 		    //both.appendChild(subSpan);
-		    if (tooltip == true) {			
+		    if (tooltip == true) {
 			activateToolTipSimple(50, subSpan, i, arrayX, this.model.data[i].value);
 		    }
 		    hystogrammDiv.appendChild(spanElement[k]);
 		    hystogrammDivInfo.appendChild(spanElementInfo[k]);
 		    both.appendChild(hystogrammDiv);
 		    both.appendChild(hystogrammDivInfo);
-		  } 
+		  }
 	  parent.appendChild(both);
 	  if (i==this.model.getNumberOfClasses()-1){
 	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllHours();'></div> <div><input type='button' value='-' class='histogramInfoButton' onclick='javascript:de_selectAllHours();'></div> <div><input type='button' value='+ -' class='histogramInfoButton' onclick='javascript:mirrorAllHours();'></div>";
-	    parent.appendChild(information);  
+	    parent.appendChild(information);
 	  }
 	}
 };
 
-Histogramm.prototype.render5 = function(parent, arrayX) {	
-	setElementsForRender(this);	
+Histogramm.prototype.render5 = function(parent, arrayX) {
+	setElementsForRender(this);
 	for ( var i = 0; i < this.model.getNumberOfClasses(); i++) {
 		var k=i+74;
 	        setElementsForRenderSecondo(this, i, k);
 		globalWeek[i] = this.model.data[i].value;
 		if ((this.model.getNumberOfClasses() == 7) && (this.model.getIndexValueOfBool() == 5)) {
 			setElementsForRenderThird(this, i, k);
-			switch (i) {			
+			switch (i) {
 			case 0:
 				spanElementInfo[k].innerHTML = 'Mon';
 				spanElementInfo[k].style.width = "56.8571428px";
@@ -1236,18 +1238,18 @@ Histogramm.prototype.render5 = function(parent, arrayX) {
 			}
 		    var subSpan = document.createElement('span');
 		    subSpan.className ="Menu";
-		    if (tooltip == true) {			
+		    if (tooltip == true) {
 			activateToolTipSimple(74, subSpan, i, arrayX, this.model.data[i].value);
 		    }
 		    hystogrammDiv.appendChild(spanElement[k]);
 		    hystogrammDivInfo.appendChild(spanElementInfo[k]);
 		    both.appendChild(hystogrammDiv);
 		    both.appendChild(hystogrammDivInfo);
-		  } 
+		  }
 	  parent.appendChild(both);
 	  if (i==this.model.getNumberOfClasses()-1){
 	    information.innerHTML = "<div><input type='button' value='+' class='histogramInfoButton' onclick='javascript:selectAllWeekDays();'></div> <div><input type='button' value='-' class='histogramInfoButton' onclick='javascript:de_selectAllWeekDays();'></div> <div><input type='button' value='+ -' class='histogramInfoButton'  onclick='javascript:mirrorAllWeekDays();'></div>";
-	    parent.appendChild(information);  
+	    parent.appendChild(information);
 	  }
 	}
 };
@@ -1257,14 +1259,14 @@ function selectAllWeekDays(){
 		var j = i+74;
 		spanElementInfo[j].style.background = "#FFFFAA";
 		spanElement[j].style.background = "#FFFFAA";
-		var numberPhotos = globalWeek[i];	
+		var numberPhotos = globalWeek[i];
 		if (myArray5[i].label == 0) {
 			if (numberPhotos == 0){
 			    myArray5[i].label++;
 			    globalArray[myArray5[i].indexVal]++
 			    myArray5[i].label = myArray5[i].label%2;
 			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
-			} else{	
+			} else{
 			}
 		}else {
 			if (numberPhotos == 0){
@@ -1272,14 +1274,14 @@ function selectAllWeekDays(){
 			    myArray5[i].label++;
 			    globalArray[myArray5[i].indexVal]++
 			    myArray5[i].label = myArray5[i].label%2; // instead of 1
-			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;	
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
 		      }
 		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 function de_selectAllWeekDays(){
@@ -1287,10 +1289,10 @@ function de_selectAllWeekDays(){
 		var j = i+74;
 		spanElementInfo[j].style.background = "#DDDDDD";
 		spanElement[j].style.background = "#DDDDDD";
-		var numberPhotos = globalWeek[i];	
+		var numberPhotos = globalWeek[i];
 		if (myArray5[i].label == 0) {
 			if (numberPhotos == 0){
-			} else{	
+			} else{
 			    myArray5[i].label++;
 			    globalArray[myArray5[i].indexVal]++
 			    myArray5[i].label = myArray5[i].label%2;
@@ -1301,7 +1303,7 @@ function de_selectAllWeekDays(){
 			    myArray5[i].label++;
 			    globalArray[myArray5[i].indexVal]++
 			    myArray5[i].label = myArray5[i].label%2; // instead of 1
-			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;	
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
 			}else{
 		      }
 		}
@@ -1309,13 +1311,13 @@ function de_selectAllWeekDays(){
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 function mirrorAllWeekDays(){
         for (var i = 0; i <7; i++){
-		var j = i+74;		
-		var numberPhotos = globalWeek[i];	
+		var j = i+74;
+		var numberPhotos = globalWeek[i];
 		if (myArray5[i].label == 0) {
 			if (numberPhotos == 0){
 			    spanElementInfo[j].style.background = "#FFFFAA";
@@ -1324,7 +1326,7 @@ function mirrorAllWeekDays(){
 			    globalArray[myArray5[i].indexVal]++
 			    myArray5[i].label = myArray5[i].label%2;
 			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
-			} else{	
+			} else{
 			    spanElementInfo[j].style.background = "#DDDDDD";
 			    spanElement[j].style.background = "#DDDDDD";
 			    myArray5[i].label++;
@@ -1339,21 +1341,21 @@ function mirrorAllWeekDays(){
 			    myArray5[i].label++;
 			    globalArray[myArray5[i].indexVal]++
 			    myArray5[i].label = myArray5[i].label%2; // instead of 1
-			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;	
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
 			}else{
 			    spanElementInfo[j].style.background = "#FFFFAA";
 			    spanElement[j].style.background = "#FFFFAA";
 			    myArray5[i].label++;
 			    globalArray[myArray5[i].indexVal]++
 			    myArray5[i].label = myArray5[i].label%2; // instead of 1
-			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;	
+			    globalArray[myArray5[i].indexVal] = globalArray[myArray5[i].indexVal]%2;
 		      }
 		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 
@@ -1363,14 +1365,14 @@ function selectAllHours(){
 		var j = i+50;
 		spanElementInfo[j].style.background = "#FFFFAA";
 		spanElement[j].style.background = "#FFFFAA";
-		var numberPhotos = globalHour[i];	
+		var numberPhotos = globalHour[i];
 		if (myArray4[i].label == 0) {
 			if (numberPhotos == 0){
 			    myArray4[i].label++;
 			    globalArray[myArray4[i].indexVal]++
 			    myArray4[i].label = myArray4[i].label%2;
 			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
-			} else{	
+			} else{
 			}
 		}else {
 			if (numberPhotos == 0){
@@ -1378,14 +1380,14 @@ function selectAllHours(){
 			    myArray4[i].label++;
 			    globalArray[myArray4[i].indexVal]++
 			    myArray4[i].label = myArray4[i].label%2; // instead of 1
-			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;	
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
 		      }
 		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 function de_selectAllHours(){
@@ -1393,10 +1395,10 @@ function de_selectAllHours(){
 		var j = i+50;
 		spanElementInfo[j].style.background = "#DDDDDD";
 		spanElement[j].style.background = "#DDDDDD";
-		var numberPhotos = globalHour[i];	
+		var numberPhotos = globalHour[i];
 		if (myArray4[i].label == 0) {
-			if (numberPhotos == 0){			  
-			} else{	
+			if (numberPhotos == 0){
+			} else{
 			    myArray4[i].label++;
 			    globalArray[myArray4[i].indexVal]++
 			    myArray4[i].label = myArray4[i].label%2;
@@ -1407,7 +1409,7 @@ function de_selectAllHours(){
 			    myArray4[i].label++;
 			    globalArray[myArray4[i].indexVal]++
 			    myArray4[i].label = myArray4[i].label%2; // instead of 1
-			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;	
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
 			}else{
 		      }
 		}
@@ -1415,13 +1417,13 @@ function de_selectAllHours(){
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 function mirrorAllHours(){
        for (var i = 0; i <24; i++){
 		var j = i+50;
-		var numberPhotos = globalHour[i];	
+		var numberPhotos = globalHour[i];
 		if (myArray4[i].label == 0) {
 			if (numberPhotos == 0){
 			    spanElementInfo[j].style.background = "#FFFFAA";
@@ -1445,21 +1447,21 @@ function mirrorAllHours(){
 			    myArray4[i].label++;
 			    globalArray[myArray4[i].indexVal]++
 			    myArray4[i].label = myArray4[i].label%2; // instead of 1
-			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;	
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
 			}else{
 			    spanElementInfo[j].style.background = "#FFFFAA";
 			    spanElement[j].style.background = "#FFFFAA";
 			    myArray4[i].label++;
 			    globalArray[myArray4[i].indexVal]++
 			    myArray4[i].label = myArray4[i].label%2; // instead of 1
-			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;	
+			    globalArray[myArray4[i].indexVal] = globalArray[myArray4[i].indexVal]%2;
 		      }
 		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 
@@ -1470,14 +1472,14 @@ function selectAllDays(){
 		var j = i+19;
 		spanElementInfo[j].style.background = "#FFFFAA";
 		spanElement[j].style.background = "#FFFFAA";
-		var numberPhotos = globalDay[i];	
+		var numberPhotos = globalDay[i];
 		if (myArray3[i].label == 0) {
 			if (numberPhotos == 0){
 			    myArray3[i].label++;
 			    globalArray[myArray3[i].indexVal]++
 			    myArray3[i].label = myArray3[i].label%2;
 			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
-			} else{	
+			} else{
 			}
 		}else {
 			if (numberPhotos == 0){
@@ -1485,14 +1487,14 @@ function selectAllDays(){
 			    myArray3[i].label++;
 			    globalArray[myArray3[i].indexVal]++
 			    myArray3[i].label = myArray3[i].label%2; // instead of 1
-			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;	
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
 		      }
 		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 function de_selectAllDays(){
@@ -1500,10 +1502,10 @@ function de_selectAllDays(){
 		var j = i+19;
 		spanElementInfo[j].style.background = "#DDDDDD";
 		spanElement[j].style.background = "#DDDDDD";
-		var numberPhotos = globalDay[i];	
+		var numberPhotos = globalDay[i];
 		if (myArray3[i].label == 0) {
-			if (numberPhotos == 0){			  
-			} else{	
+			if (numberPhotos == 0){
+			} else{
 			    myArray3[i].label++;
 			    globalArray[myArray3[i].indexVal]++
 			    myArray3[i].label = myArray3[i].label%2;
@@ -1514,21 +1516,21 @@ function de_selectAllDays(){
 			    myArray3[i].label++;
 			    globalArray[myArray3[i].indexVal]++
 			    myArray3[i].label = myArray3[i].label%2; // instead of 1
-			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;	
-			}else{			  
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
+			}else{
 		      }
 		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 function mirrorAllDays(){
          for (var i = 0; i <31; i++){
-		var j = i+19;		
-		var numberPhotos = globalDay[i];	
+		var j = i+19;
+		var numberPhotos = globalDay[i];
 		if (myArray3[i].label == 0) {
 			if (numberPhotos == 0){
 			    spanElementInfo[j].style.background = "#FFFFAA";
@@ -1551,22 +1553,22 @@ function mirrorAllDays(){
 			    spanElement[j].style.background = "#DDDDDD";
 			    myArray3[i].label++;
 			    globalArray[myArray3[i].indexVal]++
-			    myArray3[i].label = myArray3[i].label%2; 
-			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;	
+			    myArray3[i].label = myArray3[i].label%2;
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
 			}else{
 			    spanElementInfo[j].style.background = "#FFFFAA";
 			    spanElement[j].style.background = "#FFFFAA";
 			    myArray3[i].label++;
 			    globalArray[myArray3[i].indexVal]++
 			    myArray3[i].label = myArray3[i].label%2;
-			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;	
+			    globalArray[myArray3[i].indexVal] = globalArray[myArray3[i].indexVal]%2;
 		      }
 		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 
@@ -1577,29 +1579,29 @@ function selectAllMonths(){
 		var j = i+7;
 		spanElementInfo[j].style.background = "#FFFFAA";
 		spanElement[j].style.background = "#FFFFAA";
-		var numberPhotos = globalMonth[i];		
-		if (myArray2[i].label == 0) {		
-			if (numberPhotos == 0){				   	   
+		var numberPhotos = globalMonth[i];
+		if (myArray2[i].label == 0) {
+			if (numberPhotos == 0){
 			    myArray2[i].label++;
 			    globalArray[myArray2[i].indexVal]++
 			    myArray2[i].label = myArray2[i].label%2;
 			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
-			} else{				  
+			} else{
 			}
 		}else {
-			if (numberPhotos == 0){			 
-			}else{			  
+			if (numberPhotos == 0){
+			}else{
 			    myArray2[i].label++;
 			    globalArray[myArray2[i].indexVal]++
 			    myArray2[i].label = myArray2[i].label%2; // instead of 1
-			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;	
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
 		      }
-		}  	
+		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 function de_selectAllMonths(){
@@ -1607,52 +1609,52 @@ function de_selectAllMonths(){
 		var j = i+7;
 		spanElementInfo[j].style.background = "#DDDDDD";
 		spanElement[j].style.background = "#DDDDDD";
-		var numberPhotos = globalMonth[i];		
-		if (myArray2[i].label == 0) {		
-			if (numberPhotos == 0){				   	   
-			   
-			} else{		
+		var numberPhotos = globalMonth[i];
+		if (myArray2[i].label == 0) {
+			if (numberPhotos == 0){
+
+			} else{
 			    myArray2[i].label++;
 			    globalArray[myArray2[i].indexVal]++
 			    myArray2[i].label = myArray2[i].label%2;
-			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;		 	    			   
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
 			}
 		}else {
-			if (numberPhotos == 0){	
+			if (numberPhotos == 0){
 			    myArray2[i].label++;
 			    globalArray[myArray2[i].indexVal]++
 			    myArray2[i].label = myArray2[i].label%2; // instead of 1
-			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;			
-			}else{						   
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
+			}else{
 		      }
-		}  	
+		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 
 function mirrorAllMonths(){
 	  for (var i = 0; i < 12; i++){
-		var j = i+7;		
-		var numberPhotos = globalMonth[i];		
-		if (myArray2[i].label == 0) {		
-			if (numberPhotos == 0){	
+		var j = i+7;
+		var numberPhotos = globalMonth[i];
+		if (myArray2[i].label == 0) {
+			if (numberPhotos == 0){
 			    spanElementInfo[j].style.background = "#FFFFAA";
-			    spanElement[j].style.background = "#FFFFAA";	   
+			    spanElement[j].style.background = "#FFFFAA";
 			    myArray2[i].label++;
 			    globalArray[myArray2[i].indexVal]++
 			    myArray2[i].label = myArray2[i].label%2;
 			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
-			} else{	
+			} else{
 			    spanElementInfo[j].style.background = "#DDDDDD";
 			    spanElement[j].style.background = "#DDDDDD";
 			    myArray2[i].label++;
 			    globalArray[myArray2[i].indexVal]++
 			    myArray2[i].label = myArray2[i].label%2;
-			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;		   
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
 			}
 		}else {
 			if (numberPhotos == 0){
@@ -1668,67 +1670,67 @@ function mirrorAllMonths(){
 			    myArray2[i].label++;
 			    globalArray[myArray2[i].indexVal]++
 			    myArray2[i].label = myArray2[i].label%2; // instead of 1
-			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;	
+			    globalArray[myArray2[i].indexVal] = globalArray[myArray2[i].indexVal]%2;
 		      }
-		}  	
+		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 /*this changes the color and the selection value 0 or 1*/
-function selectAllYear(){       
-      for (var i = 0; i < 7; i++){		
+function selectAllYear(){
+      for (var i = 0; i < 7; i++){
 		spanElementInfo[i].style.background = "#FFFFAA";
 		spanElement[i].style.background = "#FFFFAA";
-		var numberPhotos = globalYear[i];		
-		if (myArray1[i].label == 0) {		
-			if (numberPhotos == 0){			    
+		var numberPhotos = globalYear[i];
+		if (myArray1[i].label == 0) {
+			if (numberPhotos == 0){
 			    myArray1[i].label++;
 			    globalArray[myArray1[i].indexVal]++
 			    myArray1[i].label = myArray1[i].label%2; // instead of 1
-			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;			    			
-			} else{				  
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;
+			} else{
 			}
 		}else {
-			if (numberPhotos == 0){					 
-			}else{					   
+			if (numberPhotos == 0){
+			}else{
 			    myArray1[i].label++;
 			    globalArray[myArray1[i].indexVal]++
 			    myArray1[i].label = myArray1[i].label%2; // instead of 1
-			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;	
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;
 		      }
-		}  	
+		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 	once = false;
-      }     
+      }
 }
 
 function de_selectAllYear(){
-        for (var i = 0; i < 7; i++){		
+        for (var i = 0; i < 7; i++){
 		spanElementInfo[i].style.background = "#DDDDDD";
 		spanElement[i].style.background = "#DDDDDD";
 		var numberPhotos = globalYear[i];
 		if (myArray1[i].label == 0) {
-			if (numberPhotos == 0){			   		    			
+			if (numberPhotos == 0){
 			} else{
 			    myArray1[i].label++;
 			    globalArray[myArray1[i].indexVal]++
 			    myArray1[i].label = myArray1[i].label%2;
-			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;	
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;
 			}
 		}else {
 			if (numberPhotos == 0){
 			    myArray1[i].label++;
 			    globalArray[myArray1[i].indexVal]++
 			    myArray1[i].label = myArray1[i].label%2; // instead of 1
-			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;			 
-			}else{					   			   
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;
+			}else{
 		      }
-		}  	
+		}
       }
       if (once == true) {
 	$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
@@ -1737,23 +1739,23 @@ function de_selectAllYear(){
 }
 
 function mirrorAllYear(){
-      for (var i = 0; i < 7; i++){				
+      for (var i = 0; i < 7; i++){
 		var numberPhotos = globalYear[i];
 		if (myArray1[i].label == 0) {
-			if (numberPhotos == 0){	
+			if (numberPhotos == 0){
 			    spanElementInfo[i].style.background = "#FFFFAA";
 			    spanElement[i].style.background = "#FFFFAA";
 			    myArray1[i].label++;
 			    globalArray[myArray1[i].indexVal]++
 			    myArray1[i].label = myArray1[i].label%2; // instead of 1
-			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;		   		    			
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;
 			} else{
 			    spanElementInfo[i].style.background = "#DDDDDD";
 			    spanElement[i].style.background = "#DDDDDD";
 			    myArray1[i].label++;
 			    globalArray[myArray1[i].indexVal]++
 			    myArray1[i].label = myArray1[i].label%2;
-			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;	
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;
 			}
 		}else {
 			if (numberPhotos == 0){
@@ -1762,7 +1764,7 @@ function mirrorAllYear(){
 			    myArray1[i].label++;
 			    globalArray[myArray1[i].indexVal]++
 			    myArray1[i].label = myArray1[i].label%2; // instead of 1
-			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;			 
+			    globalArray[myArray1[i].indexVal] = globalArray[myArray1[i].indexVal]%2;
 			}else{
 			    spanElementInfo[i].style.background = "#FFFFAA";
 			    spanElement[i].style.background = "#FFFFAA";
@@ -1824,11 +1826,11 @@ function timeController1XMLHistogram() {
 	// ********************************************************* for the day of
 	// the week
 	text1 = text1 + "<weekdays>";
-	for ( var i = 74; i <= 79; i++) {				
-	    text1 = text1 + "<weekday>" + nameString[i + 2] + "</weekday>";		
+	for ( var i = 74; i <= 79; i++) {
+	    text1 = text1 + "<weekday>" + nameString[i + 2] + "</weekday>";
 	}
 	text1 = text1 + "<weekday>" + nameString[75] + "</weekday>";
-	text1 = text1 + "</weekdays>";	
+	text1 = text1 + "</weekdays>";
 	// *********************************************************
 	text1 = text1 + "</calendar>";
 	return text1;
