@@ -3,7 +3,7 @@
 .histogramDiv{
   position: relative;
 } */
-.spanElement {	
+.spanElement {
 	position: relative; /*this is the key*/
 	z-index: 24;
 	background-color: #ccc;
@@ -41,40 +41,47 @@
     border-style:solid;
     border-width:1px;
     width: 35px;
+    cursor: pointer;
 }
 
-.hystogrammDivInfo{ 
+.histogramInfoButton:hover{
+   background-color: #ffff00;
+}
+
+.hystogrammDivInfo{
 }
 
 .histogramDiv{
     margin-top:70px;
 }
-#table7{  
+#table7{
 
-      
+
 }
 
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++*/
 #parent1{
 	width: auto;
-	height: 110px;		
+	height: 110px;
 }
 
-.histogramInfoButtons1{	
+.histogramInfoButtons1{
 	width: auto;
-	height: auto;	
-	margin-top:35px;
+	height: auto;
+	margin-top:43px;
+	margin-left:6px;
+	margin-left:4px;
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++*/
 
 #parent2{
 	width: auto;
-	height: 110px;	
+	height: 110px;
 }
 
-.histogramInfoButtons2{	
+.histogramInfoButtons2{
 	width: auto;
 	height: auto;
 	margin-top:35px;
@@ -84,9 +91,9 @@
 
 #parent3{
 	width: auto;
-	height: 110px;	
+	height: 110px;
 }
-.histogramInfoButtons3{	
+.histogramInfoButtons3{
 	width: auto;
 	height: auto;
 	margin-top:35px;
@@ -96,11 +103,11 @@
 
 #parent4{
 	width: auto;
-	height: 110px;	
+	height: 110px;
 }
 
 
-.histogramInfoButtons4{	
+.histogramInfoButtons4{
 	width: auto;
 	height: auto;
 	margin-top:35px;
@@ -110,10 +117,10 @@
 
 #parent5{
 	width: auto;
-	height: 110px;	
+	height: 110px;
 }
 
-.histogramInfoButtons5{	
+.histogramInfoButtons5{
 	width: auto;
 	height: auto;
 	margin-top:35px;
@@ -121,7 +128,7 @@
 
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++*/
-#histogramContent{	
+#histogramContent{
 	width: auto;
-	height: auto;	
+	height: auto;
 }
