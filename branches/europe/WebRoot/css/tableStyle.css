@@ -1,10 +1,14 @@
+input[type="button"] {
+	cursor: pointer;
+}
+
 .headerButtonbefore,.head {
 	font-family: verdana, sans-serif;
 	font-size: 14px;
 	width: auto;
 	z-index: 11;
 	white-space: nowrap;
-	text-align: center; 
+	text-align: center;
 	border-style: solid;
 	border-color: #8AA8F3;
 	border-left-width: 1px;
@@ -46,8 +50,8 @@
 	background-color: #A7BDF7;
 	font-family: sans-serif;
 	font-size: 13px;
-	width:auto;
-	height:auto;
+	width: auto;
+	height: auto;
 	/*	width:auto;
 	height:auto; */
 	border-style: solid;
@@ -55,6 +59,10 @@
 	border-width: 1px;
 	position: relative;
 	opacity: 1;
+}
+
+#table3,#table4,#table7 {
+	cursor: pointer;
 }
 
 #tab4focus,#tab1focus,#tab2focus,#tab3focus {
@@ -115,8 +123,8 @@ html,body,#map_canvas {
 #table7 {
 	width: auto;
 	height: auto;
-	padding-left:0cm;
-	padding-right:0cm;
+	padding-left: 0cm;
+	padding-right: 0cm;
 }
 
 #address {

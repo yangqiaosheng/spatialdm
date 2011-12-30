@@ -119,9 +119,13 @@ $(function() {
 });
 
 $(function() {
+
 	$("#CalendarContent").hide();
-	$("#histogramContent").hide();
+//	$("#histogramContent").hide();
 	$("#SearchBox").hide();
+	$("#table7").css( {
+		'padding-bottom' : '40px'
+	});
 	$("#selectedYMDHCheckbox").click(function() {
 		$("#CalendarContent").hide(1000);
 		$("#histogramContent").hide(1000);
@@ -129,24 +133,31 @@ $(function() {
 			'padding-bottom' : '0px'
 		});
 	});
-	$("#CalendarcheckBox").click(function() {
+	$("#CalendarcheckBox").toggle(function() {
 		$("#CalendarContent").show(1000);
 		$("#histogramContent").hide(1000);
 		$("#table7").css( {
 			'padding-bottom' : '0px'
 		});
+	}, function() {
+		$("#CalendarContent").hide(1000);
 	});
-	$("#histogramCheckbox").click(function() {
+	$("#histogramCheckbox").toggle(function() {
 		$("#table7").css( {
 			'padding-bottom' : '40px'
 		});
 		$("#histogramContent").show(1000);
 		$("#CalendarContent").hide(1000);
+	}, function() {
+		$("#histogramContent").hide(1000);
+		$("#table7").css( {
+			'padding-bottom' : '0px'
+		});
 	});
 	$("#SearchCheckBox").toggle(function() {
-		$("#SearchBox").show();
+		$("#SearchBox").show(1000);
 	}, function() {
-		$("#SearchBox").hide();
+		$("#SearchBox").hide(1000);
 	});
 
 });
@@ -467,7 +478,7 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 			$("#tag").append(
 					"<span  id = '" + tags[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick("
 							+ eval(shuffledVector[i]) + "," + idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i])
-							+ ")' OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i]) + ")'><font size="
+							+ ")' OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i]) + ")' style='cursor: pointer;'><font size="
 							+ tags[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
 							+ tags[eval(shuffledVector[i])].getNameTag() + " </font></span>");
 		}
