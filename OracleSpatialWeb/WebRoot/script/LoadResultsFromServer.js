@@ -34,14 +34,14 @@ var beforeLoad = 7;
 var globalPolygonSelected = -1;
 
 function scrollEvtHandler(obj) {
- 	//console.log("SmallPhotos 1");
+	//console.log("SmallPhotos 1");
 	//console.log("SmallPhotos 1 g_carouselTotalSize: "+g_carouselTotalSize);
- 	lastCarousel = obj.last;
- 	if ((obj.last > g_carouselTotalSize - beforeLoad)&&(g_carouselTotalSize - beforeLoad)>0) {
- 		timeofUpload++;
- 		page = page + 1;
- 		sendToServerFromCarousel(ids, page_size, page);
- 	}
+	lastCarousel = obj.last;
+	if ((obj.last > g_carouselTotalSize - beforeLoad) && (g_carouselTotalSize - beforeLoad) > 0) {
+		timeofUpload++;
+		page = page + 1;
+		sendToServerFromCarousel(ids, page_size, page);
+	}
 }
 
 function loadTheCarousel(k, g_jcarousel, smallUrl) {
@@ -51,9 +51,9 @@ function loadTheCarousel(k, g_jcarousel, smallUrl) {
 		g_jcarousel.show();
 		assignEventsForTheCarouselItems(i, k, i + k);
 	}
-        $('#numberOfItems').empty().html("<span> Number of pictures selected: " + sel[globalPolygonSelected] + "idpoligon= "+ globalPolygonSelected+ " </span>");//globalvar
+	$('#numberOfItems').empty().html(
+			"<span> Number of pictures selected: " + sel[globalPolygonSelected] + "idpoligon= " + globalPolygonSelected + " </span>");//globalvar
 }
-
 
 function assignEventsForTheCarouselItems(i, k, t) {
 	var itemSubObj = $("#subitem" + t);
@@ -61,11 +61,9 @@ function assignEventsForTheCarouselItems(i, k, t) {
 	itemObj.bind('mouseover', (function() {
 		itemSubObj.css("background-color", "#A7BDF7");
 		$("#pictureMouseOver").html(
-				"<img src='" + smallUrlTotal[t - 1] + "'/><div class='tabcontent'>"
-						+ weekdayTotal[t - 1] + " " + dateTotal[t - 1]
+				"<img src='" + smallUrlTotal[t - 1] + "'/><div class='tabcontent'>" + weekdayTotal[t - 1] + " " + dateTotal[t - 1]
 						+ "</div><div class='tabcontent'>" + titlePictureTotal[t - 1] + "</div>");
-		addPhotoMaker(latitudeTotal[t - 1], longitudeTotal[t - 1],
-				titlePictureTotal[t - 1]);
+		addPhotoMaker(latitudeTotal[t - 1], longitudeTotal[t - 1], titlePictureTotal[t - 1]);
 	}));
 
 	itemObj.bind('mouseout', (function() {
@@ -92,10 +90,8 @@ function removePhotoMaker() {
 }
 
 function mycarousel_getItemHTML(i, k, item) {
-	return "<li><div class = 'item' id = 'item" + (i + k)
-			+ "'><a href='http://www.flickr.com/photos/" + personId[i - 1]
-			+ "/" + photoId[i - 1] + "' target='_blank'><img src='"
-			+ smallUrl[i - 1] + "' height=100% /></a></div></li>";
+	return "<li><div class = 'item' id = 'item" + (i + k) + "'><a href='http://www.flickr.com/photos/" + personId[i - 1] + "/" + photoId[i - 1]
+			+ "' target='_blank'><img src='" + smallUrl[i - 1] + "' height=100% /></a></div></li>";
 }
 
 //this function is called from the sendToServer
@@ -112,7 +108,7 @@ function carouselLoadPictures(xml) {
 		g_jcarousel = new YAHOO.widget.Carousel("carousel", {
 			animation : {
 				speed : 0.5,
-				effect: null
+				effect : null
 			},
 			numVisible : one_stepCarousel,
 			scrollInc : one_stepCarousel
@@ -130,8 +126,8 @@ function carouselLoadPictures(xml) {
 		loadTheCarousel(g_carouselTotalSize, g_jcarousel, smallUrl);
 		g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
 	}
-     // console.log("ready to execute is true");
-     // readyToExecute=true;
+	// console.log("ready to execute is true");
+	// readyToExecute=true;
 }
 
 function readXml(xml) {
@@ -155,7 +151,7 @@ function readXml(xml) {
 
 function setTheParameters() {
 
-	 ///??  $(".yui-carousel-nav.form.select").val("Go to page: 1");
+	///??  $(".yui-carousel-nav.form.select").val("Go to page: 1");
 	// $("select option[value='Go to page: 1']").attr("selected", true);
 	for ( var i = 0; i < smallUrl.length; i++) {
 		smallUrl[i] = "";
@@ -180,9 +176,9 @@ function setTheParameters() {
 
 function cleanPhotos() {
 	if (g_jcarousel != null) {
-	    g_jcarousel.clearItems();
-	    g_jcarousel.scrollTo(1, false);
-	    g_jcarousel.set("selectedItem", 1);
+		g_jcarousel.clearItems();
+		g_jcarousel.scrollTo(1, false);
+		g_jcarousel.set("selectedItem", 1);
 	}
 	dateTotal = new Array();
 	weekdayTotal = new Array();
@@ -210,5 +206,3 @@ function setCarousel(ids) {
 	page = 1;
 	sendToServerFromCarousel(ids, page_size, page);
 }
-
-
