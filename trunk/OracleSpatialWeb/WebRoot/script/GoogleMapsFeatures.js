@@ -56,10 +56,6 @@ function initialize1() {
 	initboolSelected();// LoadPolygons.js
 	$('#EnabledOrDisabled').html(" Enabled <br/>");
 	agregationPolygonsAdd();
-	// scaleLevelOnStart();
-	/* google.maps.event.addListener(map, "idle", function() {
-	   askHistogram();
-	 });*/
 };
 //********************************************************************************************
 var listenerHandle;
@@ -324,15 +320,17 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 		console.log("c " + readyToExecute_A + " " + readyToExecute_B);
 		infowindow.close();
 		infowindowClick.close();
-		if ((readyToExecute_A == true) && (readyToExecute_B == true)) {
+		if ((readyToExecute_B == true)) {
 			readyToExecute = true;
 		} else {
 			readyToExecute = false;
 		}
 		if (readyToExecute == true) {
-			//console.log("MAin "+readyToExecute+" "+readyToExecute_A);
 			readyToExecute = false;
 			readyToExecute_A = false;
+			timeOut = setTimeout(function innerFunction() {
+				readyToExecute_A = true;
+			}, 2000);
 			tagsClick = new Array();
 			$("#tagClick").html("");
 			infowindowClick.close();
@@ -351,7 +349,6 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 				ids = ids + "" + globalPolygonSelected;
 			}
 			askForTags(idp, numberOfTags, center[nrPolOntheScreen], total[nrPolOntheScreen], selc[nrPolOntheScreen], 2);
-			readyToExecute_A = true;
 		}
 	});
 	google.maps.event.addListener(Polygon, 'mouseover', function(event) {
@@ -372,7 +369,9 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 			var totalP = total[nrPolOntheScreen];
 			var selectedPolygons = selc[nrPolOntheScreen];
 			timeOut = setTimeout(function innerFunction() {
-				askForTags(idp, 30, centerP, totalP, selectedPolygons, 1);
+				if (readyToExecute_A == true) {
+					askForTags(idp, 30, centerP, totalP, selectedPolygons, 1);
+				}
 			}, 500);
 		}
 	});
