@@ -35,64 +35,64 @@ ALTER TABLE flickr_world_spilt_tag OWNER TO gennady_flickr;
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_2560000_id, taken_date, tag);
+  (region_2560000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_1280000_id, taken_date, tag);
+  (region_1280000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_640000_id, taken_date, tag);
+  (region_640000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_320000_id, taken_date, tag);
+  (region_320000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_160000_id, taken_date, tag);
+  (region_160000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_80000_id, taken_date, tag);
+  (region_80000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_40000_id, taken_date, tag);
+  (region_40000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_20000_id, taken_date, tag);
+  (region_20000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_10000_id, taken_date, tag);
+  (region_10000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_5000_id, taken_date, tag);
+  (region_5000_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_2500_id, taken_date, tag);
+  (region_2500_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_1250_id, taken_date, tag);
+  (region_1250_id, tag, taken_date);
 
 CREATE INDEX
   ON flickr_world_spilt_tag
   USING btree
-  (region_625_id, taken_date, tag);
+  (region_625_id, tag, taken_date);
