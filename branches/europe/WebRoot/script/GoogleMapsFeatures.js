@@ -534,6 +534,7 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		//readyToExecute = false;
 		//readyToExecute_A = false;
 		$("#tagClick").html("");
+		$("#tag").html("");
 		if ($("#tag").html() == "") {
 			for ( var i = 0; i < contorK; i++) {
 				$("#tagClick").append(
