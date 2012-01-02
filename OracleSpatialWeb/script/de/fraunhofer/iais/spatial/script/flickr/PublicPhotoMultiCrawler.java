@@ -383,10 +383,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setInt(i++, photo.getViews());
 			String title = StringUtils.substring(photo.getTitle(), 0, MAX_TITLE_LENGTH);
 			Collection<Tag> tags = photo.getTags();
-			String tagsStr = "";
-			for (Tag tag : tags) {
-				tagsStr += tag.getValue() + ",";
-			}
+			String tagsStr = StringUtils.join(tags, ',');
 			pstmt.setString(i++, title);
 			pstmt.setString(i++, photo.getDescription());
 			pstmt.setString(i++, tagsStr);

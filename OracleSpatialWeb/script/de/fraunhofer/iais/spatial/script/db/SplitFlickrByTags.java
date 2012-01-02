@@ -41,9 +41,9 @@ public class SplitFlickrByTags {
 	private static final Logger logger = LoggerFactory.getLogger(SplitFlickrByTags.class);
 
 	final static int FETCH_SIZE = 1;
-	final static int BATCH_SIZE = 1;
-	static String PHOTO_TABLE_NAME = "flickr_world";
-	static String SPLIT_TABLE_NAME = "flickr_world_topviewed_5m_split_tag";
+	final static int BATCH_SIZE = 1000;
+	static String PHOTO_TABLE_NAME = "flickr_world_topviewed_1m";
+	static String SPLIT_TABLE_NAME = "flickr_world_topviewed_1m_spilt_tag";
 	static long start = System.currentTimeMillis();
 
 	static int rownum = 1;
@@ -130,7 +130,7 @@ public class SplitFlickrByTags {
 		}
 	}
 
-	private void split(Connection selectConn, ArrayList<String> radiusList) {
+	private void split(Connection selectConn, ArrayList<String> radiusList) throws SQLException {
 		Connection conn = db.getConn();
 		String radiusIdStr = "";
 		String radiusIdParameterStr = "";
@@ -144,28 +144,28 @@ public class SplitFlickrByTags {
 			PreparedStatement stmt = db.getPstmt(selectConn, "select photo_id, taken_date, tags, " + radiusIdStr + " from " + PHOTO_TABLE_NAME + " where length(tags)>1");
 			PreparedStatement insertStmt = db.getPstmt(conn, "insert into " + SPLIT_TABLE_NAME + " (photo_id, taken_date, tag, " + radiusIdStr + ") values (?, ?, ?, " + radiusIdParameterStr + ")");
 			stmt.setFetchSize(FETCH_SIZE);
-			ResultSet pset = db.getRs(stmt);
+			ResultSet rs = db.getRs(stmt);
 			int splitNum = 0;
 			int insertNum = 0;
-			while (pset.next()) {
-				String tags[] = (StringUtils.split(pset.getString("tags"), ','));
+			while (rs.next()) {
+				String tags[] = (StringUtils.split(rs.getString("tags"), ','));
 				if (ArrayUtils.isNotEmpty(tags)) {
 					Set<String> tagsSet = new TreeSet<String>();
 					CollectionUtils.addAll(tagsSet, tags);
-					for (String tag : tags) {
-						System.out.println(pset.getLong("photo_id") + " " + tag);
+					for (String tag : tagsSet) {
 						if (tag.length() <= MAX_TAG_LENGTH && StringUtils.isNotBlank(tag)) {
+							System.out.println(rs.getLong("photo_id") + " " + tag);
 							int i = 1;
-							insertStmt.setLong(i++, pset.getLong("photo_id"));
-							insertStmt.setTimestamp(i++, pset.getTimestamp("taken_date"));
+							insertStmt.setLong(i++, rs.getLong("photo_id"));
+							insertStmt.setTimestamp(i++, rs.getTimestamp("taken_date"));
 							insertStmt.setString(i++, tag);
 							for (String radius : radiusList) {
-								insertStmt.setInt(i++, pset.getInt("region_" + radius + "_id"));
+								insertStmt.setInt(i++, rs.getInt("region_" + radius + "_id"));
 							}
+							insertNum++;
+//							insertStmt.executeUpdate();
+							insertStmt.addBatch();
 						}
-						insertNum++;
-//						insertStmt.executeUpdate();
-						insertStmt.addBatch();
 					}
 				}
 				splitNum++;
@@ -174,8 +174,8 @@ public class SplitFlickrByTags {
 				}
 				logger.info("splitNum: " + splitNum + " \tinsertNum: " + insertNum + " \t- escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
 			}
-//			insertStmt.executeBatch();
-			db.close(pset);
+			insertStmt.executeBatch();
+			db.close(rs);
 			db.close(insertStmt);
 			db.close(stmt);
 		} catch (SQLException e) {
