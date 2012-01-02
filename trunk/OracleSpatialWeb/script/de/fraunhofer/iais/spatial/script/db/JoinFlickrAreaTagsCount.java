@@ -175,6 +175,7 @@ public class JoinFlickrAreaTagsCount {
 			}
 		} finally {
 			db.close(conn);
+			db.close(selectConn);
 		}
 	}
 
