@@ -16,6 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
-			logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + areaids + " |level:" + level + " |smooth:" + smooth); //$NON-NLS-1$
+			logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + ToStringBuilder.reflectionToString(areaids) + " |level:" + level + " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				List<FlickrArea> areas = new ArrayList<FlickrArea>();
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
