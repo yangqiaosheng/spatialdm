@@ -312,4 +312,9 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 		return 0;
 	}
 
+	@Override
+	public List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int num, int offset) {
+		return null;
+	}
+
 }

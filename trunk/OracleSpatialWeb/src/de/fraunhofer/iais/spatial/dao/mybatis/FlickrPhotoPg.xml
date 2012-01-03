@@ -17,7 +17,7 @@
 		where relname = 'flickr_people'
 	</select>
 
-	<select id="selectByDateQuery" resultType="FlickrPhoto" parameterType="map" useCache="false">
+	<select id="selectByAreaDate" resultType="FlickrPhoto" parameterType="map" useCache="false">
 		<![CDATA[
 		select
 			PHOTO_ID as "id",
@@ -30,8 +30,8 @@
 			VIEWED
  		from FLICKR_WORLD p
 		where p.REGION_${radius}_ID = #{areaid}
-		 		and p.TAKEN_DATE >= to_timestamp(#{queryStr}, #{oracleDatePatternStr})
-		 		and p.TAKEN_DATE <  to_timestamp(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
+		 	and p.TAKEN_DATE >= to_timestamp(#{queryStr}, #{dbDatePatternStr})
+		 	and p.TAKEN_DATE <  to_timestamp(#{queryStr}, #{dbDatePatternStr}) + interval '1' ${queryLevel}
 		 order by p.TAKEN_DATE desc
 		 limit #{num}
 
@@ -50,10 +50,54 @@
 			VIEWED
 		from FLICKR_WORLD P
 		where p.REGION_5000_ID = 512
-				and p.TAKEN_DATE >= to_timestamp('2008-11-12', 'yyyy-mm-dd')
-				and p.TAKEN_DATE <  to_timestamp('2008-11-12', 'yyyy-mm-dd') + interval '1' month
+			and p.TAKEN_DATE >= to_timestamp('2008-11-12', 'yyyy-mm-dd')
+			and p.TAKEN_DATE <  to_timestamp('2008-11-12', 'yyyy-mm-dd') + interval '1' month
 		order by p.TAKEN_DATE desc
 		limit 30
+	 -->
+
+	 <select id="selectByTagAreaDate" resultType="FlickrPhoto" parameterType="map" useCache="false">
+		<![CDATA[
+		select
+			p.PHOTO_ID as "id",
+			p.TAKEN_DATE as "date",
+			p.LATITUDE,
+			p.LONGITUDE,
+			p.USER_ID as "personId",
+			p.SMALLURL,
+			p.TITLE,
+			p.VIEWED
+ 		from flickr_world_spilt_tag t, flickr_world p
+		where p.REGION_${radius}_ID = #{areaid}
+			and t.tag = #{tag}
+			and p.TAKEN_DATE >= to_timestamp(#{queryStr}, #{dbDatePatternStr})
+		 	and p.TAKEN_DATE <  to_timestamp(#{queryStr}, #{dbDatePatternStr}) + interval '1' ${queryLevel}
+			and t.photo_id = t.photo_id
+		order by t.TAKEN_DATE desc
+		limit #{num}
+		offset #{offset}
+		]]>
+	</select>
+
+	<!-- Test Query:
+		select
+			p.PHOTO_ID as "id",
+			p.TAKEN_DATE as "date",
+			p.LATITUDE,
+			p.LONGITUDE,
+			p.USER_ID as "personId",
+			p.SMALLURL,
+			p.TITLE,
+			p.VIEWED
+		from flickr_world_spilt_tag t, flickr_world p
+		where t.REGION_320000_ID = 100
+			and t.tag = 'london'
+			and t.TAKEN_DATE >= to_timestamp('2008-11-12', 'yyyy-mm-dd')
+			and t.TAKEN_DATE <  to_timestamp('2008-11-12', 'yyyy-mm-dd') + interval '1' month
+			and t.photo_id = t.photo_id
+		order by t.TAKEN_DATE desc
+		limit 30
+		offset 100
 	 -->
 
 </mapper>

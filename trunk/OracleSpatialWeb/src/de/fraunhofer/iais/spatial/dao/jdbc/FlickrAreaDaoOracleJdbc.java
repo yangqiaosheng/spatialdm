@@ -580,4 +580,10 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 		return null;
 	}
 
+	@Override
+	public List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int num, int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

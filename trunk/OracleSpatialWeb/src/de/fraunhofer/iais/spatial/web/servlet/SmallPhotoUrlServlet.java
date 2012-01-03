@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.junit.runner.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -82,19 +83,34 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			messageElement.setText("ERROR: please perform a query first!");
 		} else {
 			try {
-				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
-				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
+				String tag = request.getParameter("tag");
+				String queryDateStr = request.getParameter("queryDateStr");
+				String radiusStr = request.getParameter("radius");
+				if (StringUtils.isNotBlank(tag) && StringUtils.isNotBlank(queryDateStr) && StringUtils.isNotBlank(radiusStr)) {
+					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radiusStr));
+					if (area != null) {
+						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, tag, queryDateStr, Integer.parseInt(pageSize),  Integer.parseInt(page) * Integer.parseInt(pageSize));
+						buildXmlDoc(document, photos);
+						messageElement.setText("SUCCESS");
+					} else {
+						messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
+					}
+				} else {
+					FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
+					int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
+					Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
+					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 
-				if(area != null){
-					photosResponseXml(document, area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
-					messageElement.setText("SUCCESS");
-				}else{
-					messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
+					if (area != null) {
+						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
+						buildXmlDoc(document, photos);
+						messageElement.setText("SUCCESS");
+					} else {
+						messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
+					}
 				}
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
@@ -111,9 +127,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		System.gc();
 	}
 
-	private String photosResponseXml(Document document, FlickrArea area, FlickrAreaDto areaDto, int page, int pageSize) {
-
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
+	private String buildXmlDoc(Document document, List<FlickrPhoto> photos) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleDateFormat weekdayFormat = new SimpleDateFormat("EEE", Locale.ENGLISH);
 

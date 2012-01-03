@@ -47,7 +47,6 @@ public abstract class FlickrAreaDao {
 	public static String hourTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
 	public static String dayTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
 
-
 	/**
 	 * Returns a List of all the FlickrArea ids
 	 * @return List<Integer>
@@ -117,6 +116,7 @@ public abstract class FlickrAreaDao {
 	 */
 	@Deprecated
 	public abstract List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius);
+
 	/**
 	 * Returns a List of FlickrArea ids which interact to this rectangle
 	 * @param x1
@@ -147,7 +147,6 @@ public abstract class FlickrAreaDao {
 	 * @return List<Integer>
 	 */
 	public abstract List<Integer> getAreaIdsByPolygon(List<Point2D> polygon, Radius radius);
-
 
 	/**
 	 * Returns a List of FlickrArea instances which interact to this polygon
@@ -198,11 +197,10 @@ public abstract class FlickrAreaDao {
 	protected abstract List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num);
 
 	/**
-	 * Returns a List of FlickrDeWestPhoto instances within the area
-	 * @param areaid
-	 * @param radius
-	 * @param queryStrs
-	 * @param page - page index >= 1
+	 *
+	 * @param area
+	 * @param areaDto
+	 * @param page
 	 * @param pageSize
 	 * @return
 	 */
@@ -233,26 +231,26 @@ public abstract class FlickrAreaDao {
 //		List<String> tempQueryStrs = new ArrayList<String>(areaDto.getQueryStrs());
 		for (int i = tempQueryStrs.size() - 1; i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
-				if(pos + count.get(tempQueryStrs.get(i)) <= start){
+				if (pos + count.get(tempQueryStrs.get(i)) <= start) {
 					pos += count.get(tempQueryStrs.get(i));
-				}else{
+				} else {
 					break;
 				}
 			}
-			idx ++;
+			idx++;
 		}
 
 		for (int i = tempQueryStrs.size() - idx; photos.size() < pageSize && i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
 				List<FlickrPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), pageSize - photos.size() + (start - pos));
-				System.out.println("getPhoto():" + tempQueryStrs.get(i) + "|HasSize: " + count.get(tempQueryStrs.get(i)) + "|limit: " + (pageSize - photos.size() + (start - pos))+ "|gotSize: " + tempPhotos.size());
+				System.out.println("getPhoto():" + tempQueryStrs.get(i) + "|HasSize: " + count.get(tempQueryStrs.get(i)) + "|limit: " + (pageSize - photos.size() + (start - pos)) + "|gotSize: " + tempPhotos.size());
 				photos.addAll(tempPhotos.subList(start - pos, tempPhotos.size()));
 				pos = start;
 			}
 		}
 
 		int i = 1;
-		for (FlickrPhoto photo : photos){
+		for (FlickrPhoto photo : photos) {
 			photo.setIndex((i++) + (page - 1) * pageSize);
 		}
 
@@ -267,7 +265,9 @@ public abstract class FlickrAreaDao {
 		return photos;
 	}
 
-	public final static String judgeDbDateCountPatternStr(Level queryLevel){
+	public abstract List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int num, int offset);
+
+	public final static String judgeDbDateCountPatternStr(Level queryLevel) {
 		String dbDatePatternStr = null;
 
 		switch (queryLevel) {
@@ -287,7 +287,7 @@ public abstract class FlickrAreaDao {
 		return dbDatePatternStr;
 	}
 
-	public final static Pattern judgeDbDateCountRegExPattern(Level queryLevel){
+	public final static Pattern judgeDbDateCountRegExPattern(Level queryLevel) {
 		Pattern dataCountRegExPatter = null;
 
 		switch (queryLevel) {
@@ -307,16 +307,16 @@ public abstract class FlickrAreaDao {
 		return dataCountRegExPatter;
 	}
 
-	protected final static Level judgeQueryLevel(String QueryStr){
-		if(QueryStr.matches(FlickrAreaDao.hourRegExPatternStr.split(":")[0])){
+	protected final static Level judgeQueryLevel(String QueryStr) {
+		if (QueryStr.matches(FlickrAreaDao.hourRegExPatternStr.split(":")[0])) {
 			return Level.HOUR;
-		}else if(QueryStr.matches(FlickrAreaDao.dayRegExPatternStr.split(":")[0])){
+		} else if (QueryStr.matches(FlickrAreaDao.dayRegExPatternStr.split(":")[0])) {
 			return Level.DAY;
-		}else if(QueryStr.matches(FlickrAreaDao.monthRegExPatternStr.split(":")[0])){
+		} else if (QueryStr.matches(FlickrAreaDao.monthRegExPatternStr.split(":")[0])) {
 			return Level.MONTH;
-		}else if(QueryStr.matches(FlickrAreaDao.yearRegExPatternStr.split(":")[0])){
+		} else if (QueryStr.matches(FlickrAreaDao.yearRegExPatternStr.split(":")[0])) {
 			return Level.YEAR;
-		}else{
+		} else {
 			return null;
 		}
 
@@ -334,14 +334,14 @@ public abstract class FlickrAreaDao {
 //		hourTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
 //		Matcher m = Pattern.compile(hourTagsRegExPatternStr).matcher(count);
 */
-		for(String terms : StringUtils.split(count, ";")){
+		for (String terms : StringUtils.split(count, ";")) {
 			String key = terms.substring(0, 13);
-			if(!key.matches("\\d{4}-\\d{2}-\\d{2}@\\d{2}")){
+			if (!key.matches("\\d{4}-\\d{2}-\\d{2}@\\d{2}")) {
 				throw new RuntimeException("hour key:" + key);
 			}
-			String content = terms.substring(15, terms.length()-1);
+			String content = terms.substring(15, terms.length() - 1);
 			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
-			for(String term : StringUtils.split(content, ",")){
+			for (String term : StringUtils.split(content, ",")) {
 				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
 			}
 			hoursTagsCount.put(key, tagsCount);
@@ -353,43 +353,38 @@ public abstract class FlickrAreaDao {
 		Matcher m = Pattern.compile(dayTagsRegExPatternStr).matcher(count);
 		while (m.find()) {
 */
-		for(String terms : StringUtils.split(count, ";")){
+		for (String terms : StringUtils.split(count, ";")) {
 			String key = terms.substring(0, 10);
-			if(!key.matches("\\d{4}-\\d{2}-\\d{2}")){
+			if (!key.matches("\\d{4}-\\d{2}-\\d{2}")) {
 				throw new RuntimeException("day key:" + key);
 			}
-			String content = terms.substring(12, terms.length()-1);
+			String content = terms.substring(12, terms.length() - 1);
 			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
-			for(String term : StringUtils.split(content, ",")){
+			for (String term : StringUtils.split(content, ",")) {
 				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
 			}
 			daysTagsCount.put(key, tagsCount);
 		}
 	}
 
-	public final static String createDatesCountDbString(SortedMap<String, Integer> datesCount){
+	public final static String createDatesCountDbString(SortedMap<String, Integer> datesCount) {
 		StringBuffer strBuffer = new StringBuffer();
 
 		for (Map.Entry<String, Integer> e : datesCount.entrySet()) {
-			strBuffer.append(e.getKey())
-					 .append(":")
-					 .append(e.getValue())
-					 .append(";");
+			strBuffer.append(e.getKey()).append(":").append(e.getValue()).append(";");
 		}
 		return strBuffer.toString();
 	}
 
-	public final static String createDatesTagsCountDbString(SortedMap<String, Map<String, Integer>> datesTagsCount){
+	public final static String createDatesTagsCountDbString(SortedMap<String, Map<String, Integer>> datesTagsCount) {
 		return createDatesTagsCountDbString(datesTagsCount, 0);
 	}
 
-	public final static String createDatesTagsCountDbString(SortedMap<String, Map<String, Integer>> datesTagsCount, int limitSize){
+	public final static String createDatesTagsCountDbString(SortedMap<String, Map<String, Integer>> datesTagsCount, int limitSize) {
 		StringBuffer strBuffer = new StringBuffer();
 
 		for (Map.Entry<String, Map<String, Integer>> e : datesTagsCount.entrySet()) {
-			strBuffer.append(e.getKey())
-					 .append(":")
-					 .append("<");
+			strBuffer.append(e.getKey()).append(":").append("<");
 
 			int i = 0;
 			for (Map.Entry<String, Integer> term : sortTagsCountByValuesDesc(e.getValue()).entrySet()) {
@@ -397,13 +392,9 @@ public abstract class FlickrAreaDao {
 					break;
 				}
 
-				strBuffer.append(term.getKey())
-						 .append("|")
-						 .append(term.getValue())
-						 .append(",");
+				strBuffer.append(term.getKey()).append("|").append(term.getValue()).append(",");
 			}
-			strBuffer.append(">")
-					 .append(";");
+			strBuffer.append(">").append(";");
 		}
 		return strBuffer.toString();
 	}
@@ -423,11 +414,11 @@ public abstract class FlickrAreaDao {
 		//put sorted list into map again
 		Map<String, Integer> sortedMap = Maps.newLinkedHashMap();
 
-		for(Map.Entry<String, Integer> entry : entries){
+		for (Map.Entry<String, Integer> entry : entries) {
 			sortedMap.put(entry.getKey(), entry.getValue());
 		}
 
-	return sortedMap;
-   }
+		return sortedMap;
+	}
 
 }
