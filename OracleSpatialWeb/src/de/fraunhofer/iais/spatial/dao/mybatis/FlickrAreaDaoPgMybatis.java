@@ -316,7 +316,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	protected List<FlickrPhoto> getPhotos(FlickrArea area, String queryStr, int num) {
 
 		Level queryLevel = FlickrAreaDao.judgeQueryLevel(queryStr);
-		String oracleDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
+		String dbDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		Map parameters = new HashMap();
 
 		if (queryLevel == Level.YEAR) {
@@ -327,10 +327,37 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		parameters.put("radius", area.getRadius());
 		parameters.put("queryLevel", queryLevel);
 		parameters.put("queryStr", queryStr);
-		parameters.put("oracleDatePatternStr", oracleDatePatternStr);
+		parameters.put("dbDatePatternStr", dbDatePatternStr);
 		parameters.put("num", num);
 
-		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(FlickrPhoto.class.getName() + DB_NAME + ".selectByDateQuery", parameters);
+		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(FlickrPhoto.class.getName() + DB_NAME + ".selectByAreaDate", parameters);
+		this.initPhotos(photos, area);
+
+		return photos;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int num, int offset) {
+
+		Level queryLevel = FlickrAreaDao.judgeQueryLevel(queryStr);
+		String dbDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
+		Map parameters = new HashMap();
+
+		if (queryLevel == Level.YEAR) {
+			throw new IllegalDataException("TO_DATE('" + queryStr + "', 'YYYY') in Oracle will returns a wrong result!");
+		}
+
+		parameters.put("areaid", area.getId());
+		parameters.put("radius", area.getRadius());
+		parameters.put("tag", tag);
+		parameters.put("queryLevel", queryLevel);
+		parameters.put("queryStr", queryStr);
+		parameters.put("dbDatePatternStr", dbDatePatternStr);
+		parameters.put("num", num);
+		parameters.put("offset", offset);
+
+		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(FlickrPhoto.class.getName() + DB_NAME + ".selectByAreaTagDate", parameters);
 		this.initPhotos(photos, area);
 
 		return photos;
