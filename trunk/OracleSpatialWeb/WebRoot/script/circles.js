@@ -122,7 +122,7 @@
 	      zIndex: 1
 	    });
 	   // console.log("raza:"+raza);	    
-  
+	    
 	    circles.push(circle);
 	
 	 circles[circles.length-1].setMap(map);     
