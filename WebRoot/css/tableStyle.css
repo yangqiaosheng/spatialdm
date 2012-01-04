@@ -61,7 +61,7 @@ input[type="button"] {
 	opacity: 1;
 }
 
-#table3,#table4,#table7 {
+#histogramCheckbox,#CalendarcheckBox,#SearchCheckBox {
 	cursor: pointer;
 }
 
