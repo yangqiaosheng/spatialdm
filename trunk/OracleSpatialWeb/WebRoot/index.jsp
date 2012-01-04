@@ -5,19 +5,19 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>Spatial Data Visualization</title>
-
+<link rel="shortcut icon" href="images/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="css/fonts.css" />
 
 <script type="text/javascript"
 	src="http://www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:'sensor=false'}]}"></script>
-	
-	
+
+
 	<!--this is jQuery use:)-->
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"> </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"> </script>
 
 <!--tags library-->
-<script src="script/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script> 
+<script src="script/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script>
 
       <!--using library bt-->
 <%-- <script type="text/javascript" src="script/bt/jquery.bt.js"></script> --%>
@@ -84,7 +84,7 @@
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
 
-   </script>   
+   </script>
 <link type="text/css" rel="stylesheet" href="css/histogram.css" />
 
 
@@ -102,9 +102,9 @@
 		</div>
 		<div id="move1"  class="timeCstar">
 			<div id="tableQuarry">
-				<jsp:include page="table1.jsp" /> 
+				<jsp:include page="table1.jsp" />
 				<jsp:include page="table7.jsp" />
-				<jsp:include page="table3.jsp" /> 
+				<jsp:include page="table3.jsp" />
 				<jsp:include page="table4.jsp" />
 				<jsp:include page="table5.jsp" />
 				<jsp:include page="table6.jsp" />
@@ -114,38 +114,38 @@
 	</div>
 	<jsp:include page="carousel.jsp" />
 	<jsp:include page="legend.jsp" />
-	
+
 	<div id="tag"></div>
-	<div id="tagClick"></div>	
+	<div id="tagClick"></div>
 	<div class="photoWindow timeCstar" id="photoWindow">
 		<div class="photoWindowDesc" id="photoWindowDesc"></div>
 		<div class="photoWindowImg" id="photoWindowImg"></div>
-	</div>	
-	<script type="text/javascript" src="script/TimeController.js"> </script>		
-	<script type="text/javascript" src="script/prepareXMLforServer.js"> </script>	
+	</div>
+	<script type="text/javascript" src="script/TimeController.js"> </script>
+	<script type="text/javascript" src="script/prepareXMLforServer.js"> </script>
 	<script type="text/javascript" src="script/LoadResultsFromServer.js"></script>
-	<script type="text/javascript" src="script/Search.js"></script>	
-	<script type="text/javascript" src="script/charts.js"></script>	
+	<script type="text/javascript" src="script/Search.js"></script>
+	<script type="text/javascript" src="script/charts.js"></script>
 	<script type="text/javascript" src="script/circles.js"></script>
 	<script type="text/javascript" src="script/contextMenu.js"></script>
 	<script type="text/javascript" src="script/DragnDrop.js">
 	</script>
 	<script type="text/javascript" src="script/Resizeble.js">
-	</script>	
+	</script>
 	<script type="text/javascript" src="script/Legend.js">
         </script>
 	<script type="text/javascript" src="script/LoadPolygons.js"></script>
 	<script type="text/javascript" src="script/Validate.js">
-        </script>	
+        </script>
 	<script type="text/javascript" src="script/Aggregation.js">
-	</script>			
+	</script>
 	<script type="text/javascript" src="script/HistogrammModel.js">
 	</script>
 	<script type="text/javascript" src="script/Histogramm.js"></script>
 	<script type="text/javascript" src="script/MouseDragAndDrop.js">
 	</script>
-	<script type="text/javascript" src="script/CalendarJ.js"></script>	
+	<script type="text/javascript" src="script/CalendarJ.js"></script>
 	<script type="text/javascript" src="script/sendToServer.js"> </script>
-		
+
 </body>
 </html>
