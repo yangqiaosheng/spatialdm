@@ -36,7 +36,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 
 	private void initArea(FlickrArea area) {
 
-		if (area.isCached() == false) {
+		if (area != null && area.isCached() == false) {
 			//initialize the not cached object
 			area.setCached(true);
 			area.setTotalCount(getTotalCountWithinArea(area.getId()));

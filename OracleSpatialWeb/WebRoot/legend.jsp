@@ -1,6 +1,7 @@
 <div class="pictureContainer">
   <div id="pictureMouseOver"></div>
   <div id="TagGraphic" onclick='TagGraphicDisappear()'></div>
+  <div id="TagChart"></div>
 </div>
 
 
