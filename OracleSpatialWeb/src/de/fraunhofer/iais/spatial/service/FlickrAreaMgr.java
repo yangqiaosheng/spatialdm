@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -443,18 +444,51 @@ public class FlickrAreaMgr {
 	}
 
 	public void createTagTimeSeriesChartOld(FlickrArea area, String tag, Set<String> years, String title, OutputStream os) throws ParseException, IOException {
+
+		Map<Date, Integer> seriesChartData = createTagTimeSeriesData(area, tag, years);
+
+		ChartUtil.createTimeSeriesChartOld(seriesChartData, title, os);
+	}
+
+	public Map<Date, Integer> createTagTimeSeriesData(FlickrArea area, String tag, Set<String> years) throws ParseException {
+		Map<Date, Integer> seriesData = new TreeMap<Date, Integer>();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		Map<Date, Integer> countsMap = new TreeMap<Date, Integer>();
-
 
 		if (MapUtils.isEmpty(area.getDaysTagsCount())) {
 			areaDao.loadDaysTagsCount(area);
 		}
 
 		Map<String, Map<String, Integer>> daysTagsCount = area.getDaysTagsCount();
-		System.out.println(daysTagsCount);
+//		System.out.println(daysTagsCount);
 
+		Set<String> displayYears = defineDisplayYears(tag, years, daysTagsCount);
+		System.out.println("displayYears:" + displayYears);
+
+		// init
+		for (String year : displayYears) {
+			for (int j : DateUtil.allMonthInts) {
+				for (int k : DateUtil.allDayInts) {
+					seriesData.put(sdf.parse(year + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k)), 0);
+				}
+			}
+		}
+
+		// fill with values
+		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
+			if (displayYears.contains(e.getKey().substring(0, 4))) {
+				for (Map.Entry<String, Integer> term : daysTagsCount.get(e.getKey()).entrySet()) {
+					if(term.getKey().equals(tag)){
+						seriesData.put(sdf.parse(e.getKey()), term.getValue());
+					}
+				}
+			}
+		}
+		return seriesData;
+	}
+
+	private Set<String> defineDisplayYears(String tag, Set<String> years, Map<String, Map<String, Integer>> daysTagsCount) {
+		Set<String> displayYears = Sets.newTreeSet();
 		TreeSet<String> approvedYears = Sets.newTreeSet();
 		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
 			if (years.contains(e.getKey().substring(0, 4))) {
@@ -474,36 +508,14 @@ public class FlickrAreaMgr {
 			i = approvedYears.size() - num;
 		}
 
-		Set<String> displayYears = Sets.newTreeSet();
 		for (String year : approvedYears) {
 			if (--i < 0) {
 				displayYears.add(year);
 			}
 		}
-		System.out.println("displayYears:" + displayYears);
-
-		// init
-		for (String year : displayYears) {
-			for (int j : DateUtil.allMonthInts) {
-				for (int k : DateUtil.allDayInts) {
-					countsMap.put(sdf.parse(year + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k)), 0);
-				}
-			}
-		}
-
-		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
-			if (displayYears.contains(e.getKey().substring(0, 4))) {
-				for (Map.Entry<String, Integer> term : daysTagsCount.get(e.getKey()).entrySet()) {
-					if(term.getKey().equals(tag)){
-						countsMap.put(sdf.parse(e.getKey()), term.getValue());
-					}
-				}
-			}
-		}
-
-
-		ChartUtil.createTimeSeriesChartOld(countsMap, title, os);
+		return displayYears;
 	}
+
 
 	@Deprecated
 	public void createTimeSeriesChartOld(FlickrArea area, Set<String> years, OutputStream os) throws ParseException, IOException {

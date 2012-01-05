@@ -52,7 +52,7 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 		response.setHeader("Cache-Control", "no-cache");
 		ServletOutputStream sos = response.getOutputStream();
 
-		int areaid = Integer.parseInt(request.getParameter("areaid"));
+		int areaid = NumberUtils.toInt(request.getParameter("areaid"), -1);
 		String tag = request.getParameter("tag");
 		int width = NumberUtils.toInt(request.getParameter("width"), DEFAULT_WIDTH);
 		int height = NumberUtils.toInt(request.getParameter("height"), DEFAULT_HEIGHT);
@@ -66,7 +66,7 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 			height = MAX_HEIGHT;
 		}
 
-		if (areaid <=0 || StringUtils.isEmpty(tag)) {
+		if (areaid <= 0 || StringUtils.isEmpty(tag)) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
@@ -74,28 +74,16 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 			logger.info("requestUrl:" + request.getRequestURL() + " |areaid:" + areaid + " |tag:" + tag + " |smooth:" + smooth); //$NON-NLS-1$
 			tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
 			try {
-				List<FlickrArea> areas = new ArrayList<FlickrArea>();
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(areaid, radius);
 				if (area != null) {
-					areas.add(area);
+					areaMgr.createTagTimeSeriesChartOld(area, tag, areaDto.getYears(), "#" + tag + " Distribution", sos);
+				} else {
+					IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
 				}
-
-				boolean displayLegend = false;
-				if (areas.size() > 1) {
-					displayLegend = true;
-				}
-
-				boolean icon = false;
-				if (width <= 300) {
-					icon = true;
-				}
-
-				areaMgr.createTagTimeSeriesChartOld(area, tag, areaDto.getYears(), "#" + tag + " Distribution", sos);
-
 			} catch (Exception e) {
 //				IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$

@@ -662,7 +662,8 @@ public class TestFlickrEuropeArea {
 		years.add("2008");
 		FlickrArea area = areaMgr.getAreaDao().getAreaById(811, Radius.R640000);
 
-		areaMgr.createTagTimeSeriesChartOld(area, "motorsport", years, "motorsport", new FileOutputStream("temp/tsTagCharty.png"));
+		areaMgr.createTagTimeSeriesChartOld(area, "motorsport", years, "canon", new FileOutputStream("temp/tsTagCharty.png"));
+		System.out.println(areaMgr.createTagTimeSeriesData(area, "canon", years));
 	}
 
 //	@Test

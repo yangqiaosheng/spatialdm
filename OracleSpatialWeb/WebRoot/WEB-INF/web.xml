@@ -149,6 +149,17 @@
 	</servlet-mapping>
 
 	<servlet>
+		<description>Return the Tag TimeSeries Data</description>
+		<display-name>TagTimeSeriesData</display-name>
+		<servlet-name>TagTimeSeriesData</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.TagTimeSeriesDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TagTimeSeriesData</servlet-name>
+		<url-pattern>/TagTimeSeriesData</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<description>Create the TagChart</description>
 		<display-name>TagChart</display-name>
 		<servlet-name>TagChart</servlet-name>
