@@ -40,6 +40,8 @@ var timeOut;
 var AGGREGATION = true;
 var TagExistance = true;
 
+var seriesOptions = [], yAxisOptions = [], seriesCounter = 0, colors = Highcharts.getOptions().colors;
+
 function initialize1() {
 	var myLatlng = new google.maps.LatLng(50.80, 7.12);
 	myOptions = {
@@ -121,7 +123,7 @@ $(function() {
 $(function() {
 
 	$("#CalendarContent").hide();
-//	$("#histogramContent").hide();
+	//	$("#histogramContent").hide();
 	$("#SearchBox").hide();
 	$("#table7").css( {
 		'padding-bottom' : '40px'
@@ -177,10 +179,10 @@ function addRemoveElementsFromHistogram() {
 }
 
 /*function start() {
-	$("#maxContainer").hide();
-	initialize1();
-}
-*/
+ $("#maxContainer").hide();
+ initialize1();
+ }
+ */
 
 function scaleLevelOnStart() {
 	if (map.getZoom() <= 5) {
@@ -468,22 +470,19 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		var shuffledVector = new Array();
 		shuffledVector = arrayShuffle(vector);
 		for ( var i = 0; i < contorK; i++) {
-			var weight = (Math.log(eval(tags[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs)))
-					/ (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
+			var weight = (Math.log(eval(tags[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs))) / (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
 			tags[eval(shuffledVector[i])].fontSize = eval(minFontSize) + Math.round((eval(maxFontSize) - eval(minFontSize)) * eval(weight));
 		}
 		$("#tag").html("");
 
 		for ( var i = 0; i < contorK; i++) {
 			$("#tag").append(
-					"<span  id = '" + tags[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick("
-							+ eval(shuffledVector[i]) + "," + idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i])
-							+ ")' OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i]) + ")' style='cursor: pointer;'><font size="
-							+ tags[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
+					"<span  id = '" + tags[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick(" + eval(shuffledVector[i]) + "," + idp
+							+ ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i]) + ")' OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i])
+							+ ")' style='cursor: pointer;'><font size=" + tags[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
 							+ tags[eval(shuffledVector[i])].getNameTag() + " </font></span>");
 		}
-		var contentString1 = "<div id='infoWind'><div style='text-align: center;'>Picures and Tags: <br/> Total: " + total + " Selected: " + selc
-				+ "<br/></div>";
+		var contentString1 = "<div id='infoWind'><div style='text-align: center;'>Picures and Tags: <br/> Total: " + total + " Selected: " + selc + "<br/></div>";
 		if (($("#tag").html() != "")/*&&($("#tagClick").html()=="")*/) {
 			if (TagExistance == true) {
 				var contentString2 = $("#tag").html();
@@ -527,8 +526,7 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		var shuffledVector = new Array();
 		shuffledVector = arrayShuffle(vector);
 		for ( var i = 0; i < contorK; i++) {
-			var weight = (Math.log(eval(tagsClick[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs)))
-					/ (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
+			var weight = (Math.log(eval(tagsClick[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs))) / (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
 			tagsClick[eval(shuffledVector[i])].fontSize = eval(minFontSize) + Math.round((eval(maxFontSize) - eval(minFontSize)) * eval(weight));
 		}
 		//readyToExecute = false;
@@ -538,10 +536,9 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		if ($("#tag").html() == "") {
 			for ( var i = 0; i < contorK; i++) {
 				$("#tagClick").append(
-						"<span id = '" + tagsClick[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick("
-								+ eval(shuffledVector[i]) + "," + idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i])
-								+ ")'  OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i]) + ")'><font size="
-								+ tagsClick[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
+						"<span id = '" + tagsClick[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick(" + eval(shuffledVector[i]) + ","
+								+ idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i]) + ")'  OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i])
+								+ ")'><font size=" + tagsClick[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
 								+ tagsClick[eval(shuffledVector[i])].getNameTag() + " </font></span>");
 			}
 			var contentString1 = "<div id='infoWind' OnMouseOver='mouseOverTag()' OnMouseOut='mouseOutTag()'><div style='text-align: center;'>Picures and Tags: <br/> Total: "
@@ -573,20 +570,19 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 				createInfoWindowMouseClick(center, contentString);
 			}
 		}
-		$('#numberOfItems').empty().html(
-				"<span> Number of pictures selected: " + sel[idp] + " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
+		$('#numberOfItems').empty().html("<span> Number of pictures selected: " + sel[idp] + " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
 		$("#chart1").html(
-				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=year&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=year&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart2").html(
-				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=month&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=month&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart3").html(
-				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=day&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=day&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart4").html(
-				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=hour&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=hour&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart5").html(
 				"<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
 						+ "&level=weekday&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
@@ -608,14 +604,144 @@ function createInfoWindowMouseClick(center, contentString) {
 function mouseOverTagSpan(num) {
 	jQuery("#" + tagsClick[num].getNameTag() + "" + num).css("background-color", "yellow");
 }
+// create the chart when all data is loaded
+// create the chart when all data is loaded
+function createTagChart() {
+
+	chart = new Highcharts.StockChart( {
+		chart : {
+			renderTo : 'TagChart'
+		},
+
+		credits : {
+			enabled : false
+		},
+
+		rangeSelector : {
+			buttons : [ {
+				type : 'month',
+				count : 1,
+				text : '1m'
+			}, {
+				type : 'month',
+				count : 3,
+				text : '3m'
+			}, {
+				type : 'all',
+				text : 'All'
+			} ],
+			selected : 2
+		},
+
+		xAxis : {
+			type : 'datetime',
+			dateTimeLabelFormats : {
+				second : '%%b-%d<br/>%H:%M:%S',
+				minute : '%%b-%d<br/>%H:%M',
+				hour : '%%b-%d<br/>%H:%M',
+				day : '%b-%d',
+				week : '%b-%d',
+				month : '%b',
+				year : ''
+			}
+		},
+
+		rangeSelector : {
+			inputStyle : {
+				fontWeight : 'bold'
+			},
+			labelStyle : {
+				color : 'silver',
+				fontWeight : 'bold'
+			},
+			inputDateFormat : '%b-%d',
+			inputEditDateFormat : '%b-%d'
+		},
+
+		yAxis : {
+			plotLines : [ {
+				value : 0,
+				width : 2,
+				color : 'silver'
+			} ]
+		},
+
+		plotOptions : {
+			series : {
+				allowPointSelect : true,
+				compare : 'value',
+				cursor : 'pointer',
+				events : {
+					click : function(event) {
+						console.log(this.name + ' clicked\n' + event.point.x + ' ' + event.point.y + ' \n' + 'Alt: ' + event.altKey + '\n' + 'Control: ' + event.ctrlKey + '\n'
+								+ 'Shift: ' + event.shiftKey + '\n');
+						alert(this.name + Highcharts.dateFormat('-%m-%d', event.point.x));
+
+					}
+				}
+			}
+		},
+
+		legend : {
+			enabled : true,
+			layout : 'vertical',
+			align : 'right',
+			verticalAlign : 'top',
+			x : -10,
+			y : 100,
+			borderWidth : 2
+		},
+
+		tooltip : {
+			crosshairs : {
+				dashStyle : 'dash'
+			},
+			pointFormat : '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+			formatter : function() {
+				var s = '<b>' + Highcharts.dateFormat('%A, %b %e', this.x) + '</b>';
+
+				$.each(this.points, function(i, point) {
+					if (point.y > 0) {
+						s += '<br/><span style="color:' + this.series.color + '">' + this.series.name + ' : </span><b>' + point.y + '</b> ';
+					} else {
+						s += '<br/><span style="color:' + this.series.color + '">' + this.series.name + ' : </span>' + point.y + ' ';
+					}
+				});
+
+				return s;
+			}
+		},
+
+		series : seriesOptions
+	});
+}
 function wordClick(num, idp) {
 	jQuery("#TagGraphic").html("");
 	if (tagsMask[num] == 0) {
 		tagsMask[num] = 1;
 		jQuery("#" + tagsClick[num].getNameTag() + "" + num).css("background-color", "yellow");
+		$.get("TagTimeSeriesData?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime(), function(xml) {
+			$(xml).find('series').each(function() {
+				var data = jQuery.parseJSON($(this).text());
+				var year = $(this).attr("year");
+
+				seriesOptions[seriesCounter++] = {
+					name : year,
+					data : data
+				};
+
+				// As we're loading the data asynchronously, we don't know what order it will arrive. So
+					// we keep a counter and create the chart when all the data is loaded.
+
+					if (seriesCounter == 3) {
+						createTagChart();
+					}
+				});
+		});
+
 		jQuery("#TagGraphic").append(
-				"<img title='Tag Graph' src='TagChart.png?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<img title='Tag Graph' src='TagChart.png?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime()
+						+ "  '>");
 		$("#TagGraphic").show('slow');
 	} else {
 		tagsMask[num] = 0;
@@ -679,17 +805,17 @@ function restorePolygon() {
 				"<span> Number of pictures selected: " + sel[globalPolygonSelected] + "idpoligon= " + globalPolygonSelected
 						+ " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
 		$("#chart1").html(
-				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=year&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=year&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart2").html(
-				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=month&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=month&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart3").html(
-				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=day&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=day&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart4").html(
-				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=hour&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=hour&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart5").html(
 				"<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
 						+ "&level=weekday&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
