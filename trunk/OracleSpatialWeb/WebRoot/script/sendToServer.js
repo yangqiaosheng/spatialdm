@@ -89,6 +89,25 @@ function sendToServerFromCarousel(ids, page_size, page) {
 		}
 	};
 }
+
+function sendToServerFromTagCarousel(ids, page_size, page, tag, queryDateStr) {
+	if (window.XMLHttpRequest) {
+		xmlHttp = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+	} else {
+		document.write("browser not supported");
+	}
+	xmlHttp.open("POST", "SmallPhotoUrl");
+	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+	xmlHttp.send("areaid=" + ids + "&tag=" + tag + "&queryDateStr=" + queryDateStr + "&page_size=" + page_size + "&page=" + page);
+	xmlHttp.onreadystatechange = function() {
+		if (xmlHttp.readyState == 4) {
+			var xmlDoc = xmlHttp.responseText;
+			carouselLoadPictures(xmlDoc);
+		}
+	};
+}
 //, total, selectedP, infowindow
 /*
 function askForTags(ids, numberOfTags, center, total, selc, number){

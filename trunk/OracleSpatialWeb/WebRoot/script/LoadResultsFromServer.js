@@ -32,6 +32,9 @@ var g_photo_marker = null;
 var one_stepCarousel = 5;
 var beforeLoad = 7;
 var globalPolygonSelected = -1;
+var isTagCarousel = false;
+var selectedTag = null;
+var selectedQueryDateStr = null;
 
 function scrollEvtHandler(obj) {
 	//console.log("SmallPhotos 1");
@@ -40,7 +43,11 @@ function scrollEvtHandler(obj) {
 	if ((obj.last > g_carouselTotalSize - beforeLoad) && (g_carouselTotalSize - beforeLoad) > 0) {
 		timeofUpload++;
 		page = page + 1;
-		sendToServerFromCarousel(ids, page_size, page);
+		if (isTagCarousel == false) {
+			sendToServerFromCarousel(ids, page_size, page);
+		} else {
+			sendToServerFromTagCarousel(ids, page_size, page, selectedTag, selectedQueryDateStr);
+		}
 	}
 }
 
@@ -52,7 +59,7 @@ function loadTheCarousel(k, g_jcarousel, smallUrl) {
 		assignEventsForTheCarouselItems(i, k, i + k);
 	}
 	$('#numberOfItems').empty().html(
-			"<span> Number of pictures selected: " + sel[globalPolygonSelected] + "idpoligon= " + globalPolygonSelected + " </span>");//globalvar
+			"<span> Number of pictures selected: " + sel[globalPolygonSelected] + "</span><span style='color:#999999'> polygon_id= " + globalPolygonSelected + " </span>");//globalvar
 }
 
 function assignEventsForTheCarouselItems(i, k, t) {
@@ -192,7 +199,6 @@ function cleanPhotos() {
 	lastCarousel = 0;
 	page = 1;
 	booleanF = false;
-	ids = "";
 }
 
 function getId() {
@@ -200,9 +206,23 @@ function getId() {
 }
 
 function setCarousel(ids) {
+	isTagCarousel = false;
 	g_carouselTotalSize = 0;
 	//console.log("SmallPhotos 2");
 	$("#maxContainer").removeClass('invisible').addClass('visible');
 	page = 1;
+	cleanPhotos();
 	sendToServerFromCarousel(ids, page_size, page);
+}
+
+function setTagCarousel(ids, tag, queryDateStr) {
+	isTagCarousel = true;
+	selectedTag = tag;
+	selectedQueryDateStr = queryDateStr;
+	g_carouselTotalSize = 0;
+	//console.log("SmallPhotos 2");
+	$("#maxContainer").removeClass('invisible').addClass('visible');
+	page = 1;
+	cleanPhotos();
+	sendToServerFromTagCarousel(ids, page_size, page, selectedTag, selectedQueryDateStr);
 }

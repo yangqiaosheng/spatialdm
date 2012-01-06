@@ -100,13 +100,17 @@
 	width: 100%;
 	height: 100%;
 }
-.pictureContainer{
+#pictureContainer{
     position:fixed;
     width: auto;
     height: auto;
     top:5%;
     right:5%;
-    cursor: no-drop;
-    cursor: -moz-zoom-out;
 }
-
+#pictureMouseOver{
+    position:fixed;
+    width: auto;
+    height: auto;
+    top:50%;
+    right:5%;
+}

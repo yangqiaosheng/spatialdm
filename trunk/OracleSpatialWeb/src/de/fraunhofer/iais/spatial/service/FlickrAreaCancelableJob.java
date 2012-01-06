@@ -5,13 +5,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.collections.MapUtils;
 
 import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
-import de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
@@ -153,6 +154,7 @@ public class FlickrAreaCancelableJob {
 
 	}
 
+	/* too expensive!
 	public FlickrAreaResult countTag(Date sessionTimestamp, SessionMutex sessionMutex, FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
 
 		checkInterruption(sessionTimestamp, sessionMutex);
@@ -166,8 +168,6 @@ public class FlickrAreaCancelableJob {
 		}
 		hoursTagsCount = area.getHoursTagsCount();
 
-		System.out.println(hoursTagsCount);
-
 		int i = 0;
 		for (String queryStr : areaDto.getQueryStrs()) {
 			if (i++ % (24 * 31) == 0) {
@@ -175,6 +175,38 @@ public class FlickrAreaCancelableJob {
 			}
 			if (hoursTagsCount.containsKey(queryStr)) {
 				Map<String, Integer> tags = hoursTagsCount.get(queryStr);
+				for (Map.Entry<String, Integer> e : tags.entrySet()) {
+					tagsCount.put(e.getKey(), MapUtils.getIntValue(tagsCount, e.getKey()) + e.getValue());
+				}
+			}
+		}
+		return areaResult;
+	}*/
+
+	public FlickrAreaResult countTag(Date sessionTimestamp, SessionMutex sessionMutex, FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
+
+		checkInterruption(sessionTimestamp, sessionMutex);
+		FlickrAreaResult areaResult = new FlickrAreaResult(area);
+
+		Map<String, Map<String, Integer>> daysTagsCount = null;
+		Map<String, Integer> tagsCount = areaResult.getTagsCount();
+
+		if (MapUtils.isEmpty(area.getDaysTagsCount())) {
+			flickrAreaDao.loadDaysTagsCount(area);
+		}
+		daysTagsCount = area.getDaysTagsCount();
+
+		Set<String> dayQueryStrs = new TreeSet<String>();
+		for (String queryStr : areaDto.getQueryStrs()) {
+			dayQueryStrs.add(queryStr.substring(0, "yyyy-MM-dd".length()));
+		}
+		int i = 0;
+		for (String queryStr : dayQueryStrs) {
+			if (i++ % (24 * 31) == 0) {
+				checkInterruption(sessionTimestamp, sessionMutex);
+			}
+			if (daysTagsCount.containsKey(queryStr)) {
+				Map<String, Integer> tags = daysTagsCount.get(queryStr);
 				for (Map.Entry<String, Integer> e : tags.entrySet()) {
 					tagsCount.put(e.getKey(), MapUtils.getIntValue(tagsCount, e.getKey()) + e.getValue());
 				}

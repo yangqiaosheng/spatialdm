@@ -77,6 +77,7 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
+		tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
 		logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|tag:" + tag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		if (areaid <= 0 || StringUtils.isEmpty(tag)) {
@@ -141,7 +142,8 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 			int i = 1;
 			for (Map.Entry<Date, Integer> e : countsGroupedMap.get(year).entrySet()) {
 				dataStr.append("[");
-				dataStr.append(DateUtils.setYears(e.getKey(), 2000).getTime()); //time
+				//need to add 1 day to the result, because of the bug from HighCharts
+				dataStr.append(DateUtils.addDays(DateUtils.setYears(e.getKey(), 2000), 1).getTime()); //time
 				dataStr.append(",");
 				dataStr.append(e.getValue());		//value
 				dataStr.append("]");
