@@ -369,7 +369,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		PreparedStatement pstmt = db
 				.getPstmt(
 						conn,
-						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, DESCRIPTION, TAGS, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, DESCRIPTION, TAGS, TAGSNUM SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		try {
 			int i = 1;
 			pstmt.setLong(i++, NumberUtils.toLong(photo.getId()));
@@ -381,12 +381,12 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setTimestamp(i++, new Timestamp(photo.getDatePosted().getTime()));
 
 			pstmt.setInt(i++, photo.getViews());
-			String title = StringUtils.substring(photo.getTitle(), 0, MAX_TITLE_LENGTH);
 			Collection<Tag> tags = photo.getTags();
 			String tagsStr = StringUtils.join(tags, ',');
-			pstmt.setString(i++, title);
+			pstmt.setString(i++, StringUtils.substring(photo.getTitle(), 0, MAX_TITLE_LENGTH));
 			pstmt.setString(i++, photo.getDescription());
 			pstmt.setString(i++, tagsStr);
+			pstmt.setInt(i++, tags.size());
 			pstmt.setString(i++, photo.getSmallUrl());
 			pstmt.setString(i++, photo.getPlaceId());
 			pstmt.setString(i++, photo.getWoeId());
@@ -394,10 +394,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.executeUpdate();
 			System.out.println("numPhoto:" + increaseNumPhoto());
 		} catch (PSQLException e){
-			logger.debug("Wrong input Photo to PostgreSQL:" + photo.toString());
-			logger.debug("insertPhoto()", e); //$NON-NLS-1$
+			logger.error("Wrong input Photo to PostgreSQL:" + photo.toString());
+			throw e;
 		} catch (SQLException e){
-			logger.error("Wrong input Photo:" + photo.toString());
+			logger.error("Exception accours while inputing Photo:" + photo.toString());
 			throw e;
 		} finally {
 			db.close(pstmt);
