@@ -154,7 +154,7 @@ public class FlickrAreaCancelableJob {
 
 	}
 
-	/* too expensive!
+
 	public FlickrAreaResult countTag(Date sessionTimestamp, SessionMutex sessionMutex, FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
 
 		checkInterruption(sessionTimestamp, sessionMutex);
@@ -181,8 +181,9 @@ public class FlickrAreaCancelableJob {
 			}
 		}
 		return areaResult;
-	}*/
+	}
 
+	/* 
 	public FlickrAreaResult countTag(Date sessionTimestamp, SessionMutex sessionMutex, FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
 
 		checkInterruption(sessionTimestamp, sessionMutex);
@@ -213,7 +214,7 @@ public class FlickrAreaCancelableJob {
 			}
 		}
 		return areaResult;
-	}
+	}*/
 
 	private void checkInterruption(Date sessionTimestamp, SessionMutex sessionMutex) throws InterruptedException {
 		try {
