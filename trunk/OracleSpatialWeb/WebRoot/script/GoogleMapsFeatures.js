@@ -298,16 +298,12 @@ function loadXml(xml) {
 					arrayPolygons[pol] = (pts);
 				});
 			$(this).find('center').each(function() {
-				var n = 0;
 				var lng = new Array();
 				var lat = new Array();
 				$(this).find('point').each(function() {
-					lng[n] = $(this).attr('lng');
-					lat[n] = $(this).attr('lat');
-					center[pol] = new google.maps.LatLng(parseFloat(lat[n]), parseFloat(lng[n]));
+					center[pol] = new google.maps.LatLng($(this).attr('lat'), $(this).attr('lng'));
 					var distanceWidget = new DistanceWidget(center[pol], sel[id[pol]]);
 					//console.log("circles.length: "+circles.length);
-						n++;
 					});
 				pol++;
 			});
