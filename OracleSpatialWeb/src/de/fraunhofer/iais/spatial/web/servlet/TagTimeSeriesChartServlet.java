@@ -71,8 +71,8 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
-			logger.info("requestUrl:" + request.getRequestURL() + " |areaid:" + areaid + " |tag:" + tag + " |smooth:" + smooth); //$NON-NLS-1$
 			tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
+			logger.info("requestUrl:" + request.getRequestURL() + " |areaid:" + areaid + " |tag:" + tag + " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
 
@@ -80,7 +80,7 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(areaid, radius);
 				if (area != null) {
-					areaMgr.createTagTimeSeriesChartOld(area, tag, areaDto.getYears(), "#" + tag + " Distribution", sos);
+					areaMgr.createTagTimeSeriesChartOld(area, tag, areaDto.getYears(), "'" + tag + "' Tag Distribution", sos);
 				} else {
 					IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
 				}

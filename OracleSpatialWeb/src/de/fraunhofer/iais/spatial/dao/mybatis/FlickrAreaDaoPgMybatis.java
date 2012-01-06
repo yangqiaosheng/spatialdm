@@ -338,7 +338,8 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int num, int offset) {
+	public List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int page, int pageSize) {
+		int offset = (page - 1) * pageSize;
 
 		Level queryLevel = FlickrAreaDao.judgeQueryLevel(queryStr);
 		String dbDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
@@ -354,7 +355,7 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 		parameters.put("queryLevel", queryLevel);
 		parameters.put("queryStr", queryStr);
 		parameters.put("dbDatePatternStr", dbDatePatternStr);
-		parameters.put("num", num);
+		parameters.put("num", pageSize);
 		parameters.put("offset", offset);
 
 		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(FlickrPhoto.class.getName() + DB_NAME + ".selectByAreaTagDate", parameters);

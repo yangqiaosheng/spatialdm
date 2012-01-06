@@ -12,11 +12,12 @@
 
 
 		<!--this is jQuery use:)-->
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.1.min.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
 		<!--highstock library-->
-		<script type="text/javascript" src="script/highstock/highstock.js"></script>
+<%--		<script type="text/javascript" src="script/highstock/highstock.js"></script>--%>
+		<script type="text/javascript" src="script/highcharts/highcharts.js"></script>
 
 		<!--tags library-->
 		<script src="script/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script>

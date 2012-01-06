@@ -56,7 +56,7 @@
 		limit 30
 	 -->
 
-	 <select id="selectByTagAreaDate" resultType="FlickrPhoto" parameterType="map" useCache="false">
+	 <select id="selectByAreaTagDate" resultType="FlickrPhoto" parameterType="map" useCache="false">
 		<![CDATA[
 		select
 			p.PHOTO_ID as "id",
@@ -68,11 +68,11 @@
 			p.TITLE,
 			p.VIEWED
  		from flickr_world_spilt_tag t, flickr_world p
-		where p.REGION_${radius}_ID = #{areaid}
+		where t.REGION_${radius}_ID = #{areaid}
 			and t.tag = #{tag}
-			and p.TAKEN_DATE >= to_timestamp(#{queryStr}, #{dbDatePatternStr})
-		 	and p.TAKEN_DATE <  to_timestamp(#{queryStr}, #{dbDatePatternStr}) + interval '1' ${queryLevel}
-			and t.photo_id = t.photo_id
+			and t.TAKEN_DATE >= to_timestamp(#{queryStr}, #{dbDatePatternStr})
+		 	and t.TAKEN_DATE <  to_timestamp(#{queryStr}, #{dbDatePatternStr}) + interval '1' ${queryLevel}
+			and t.photo_id = p.photo_id
 		order by t.TAKEN_DATE desc
 		limit #{num}
 		offset #{offset}

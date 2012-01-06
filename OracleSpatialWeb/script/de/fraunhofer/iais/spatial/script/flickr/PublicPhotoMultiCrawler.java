@@ -369,7 +369,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		PreparedStatement pstmt = db
 				.getPstmt(
 						conn,
-						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, DESCRIPTION, TAGS, TAGSNUM SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, DESCRIPTION, TAGS, TAGSNUM, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		try {
 			int i = 1;
 			pstmt.setLong(i++, NumberUtils.toLong(photo.getId()));

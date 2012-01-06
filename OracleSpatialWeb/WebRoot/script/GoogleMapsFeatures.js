@@ -39,8 +39,8 @@ var infowindowClick = new google.maps.InfoWindow( {
 var timeOut;
 var AGGREGATION = true;
 var TagExistance = true;
-
 var seriesOptions = [], yAxisOptions = [], seriesCounter = 0, colors = Highcharts.getOptions().colors;
+var tagChartExist = false;
 
 function initialize1() {
 	var myLatlng = new google.maps.LatLng(50.80, 7.12);
@@ -68,6 +68,12 @@ function agregationPolygonsAdd() {
 		infowindow.close();
 		infowindowClick.close();
 		removeCircles();
+		TagChartHide();
+		cleanPhotos();
+		hidemoveCarousel();
+		ids = "";
+		readyToExecute_A = true;
+		readyToExecute_B = true;
 		var bounds = map.getBounds();
 		var center = map.getCenter();
 		var zoomLevel = map.getZoom();
@@ -348,7 +354,6 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 			$("#tagClick").html("");
 			infowindowClick.close();
 			unSelectAllThePolygons();
-			cleanPhotos();
 			$("#maxContainer").show();
 			Polygon.setOptions( {
 				fillColor : "#0000FF",
@@ -358,6 +363,7 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 			globalvar = nrPolOntheScreen;
 			globalPolygonSelected = idp;
 			ids = "";
+			TagChartHide();
 			if (boolSelected[globalPolygonSelected] == 1) {
 				ids = ids + "" + globalPolygonSelected;
 			}
@@ -365,40 +371,40 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 		}
 	});
 	google.maps.event.addListener(Polygon, 'mouseover', function(event) {
-		console.log("m " + readyToExecute_A + " " + readyToExecute_B);
-		infowindow.close();
-		if ((readyToExecute_A == true) && (readyToExecute_B == true)) {
-			readyToExecute = true;
-		} else {
-			readyToExecute = false;
-		}
-		if (readyToExecute == true) {
-			Polygon.setOptions( {
-				fillColor : "#0055FF",
-				fillOpacity : 0.35
-			});
-			var nr = 1;
-			var centerP = center[nrPolOntheScreen];
-			var totalP = total[nrPolOntheScreen];
-			var selectedPolygons = selc[nrPolOntheScreen];
-			timeOut = setTimeout(function innerFunction() {
-				if (readyToExecute_A == true) {
-					askForTags(idp, 30, centerP, totalP, selectedPolygons, 1);
-				}
-			}, 500);
-		}
-	});
+//		console.log("m " + readyToExecute_A + " " + readyToExecute_B);
+			infowindow.close();
+			if ((readyToExecute_A == true) && (readyToExecute_B == true)) {
+				readyToExecute = true;
+			} else {
+				readyToExecute = false;
+			}
+			if (readyToExecute == true) {
+				Polygon.setOptions( {
+					fillColor : "#0055FF",
+					fillOpacity : 0.35
+				});
+				var nr = 1;
+				var centerP = center[nrPolOntheScreen];
+				var totalP = total[nrPolOntheScreen];
+				var selectedPolygons = selc[nrPolOntheScreen];
+				timeOut = setTimeout(function innerFunction() {
+					if (readyToExecute_A == true) {
+						askForTags(idp, 30, centerP, totalP, selectedPolygons, 1);
+					}
+				}, 500);
+			}
+		});
 	google.maps.event.addListener(Polygon, 'mouseout', function(event) {
-		console.log("o " + readyToExecute_A + " " + readyToExecute_B);
-		clearTimeout(timeOut);
-		infowindow.close();
-		if (boolSelected[idp] == 0) {
-			Polygon.setOptions( {
-				fillOpacity : 0.01,
-				fillColor : "#FF0000" //red
-			});
-		}
-	});
+//		console.log("o " + readyToExecute_A + " " + readyToExecute_B);
+			clearTimeout(timeOut);
+			infowindow.close();
+			if (boolSelected[idp] == 0) {
+				Polygon.setOptions( {
+					fillOpacity : 0.01,
+					fillColor : "#FF0000" //red
+				});
+			}
+		});
 	History.push(Polygon);
 	Polygon.setMap(map);
 	if (History.length == pol) {
@@ -470,19 +476,22 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		var shuffledVector = new Array();
 		shuffledVector = arrayShuffle(vector);
 		for ( var i = 0; i < contorK; i++) {
-			var weight = (Math.log(eval(tags[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs))) / (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
+			var weight = (Math.log(eval(tags[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs)))
+					/ (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
 			tags[eval(shuffledVector[i])].fontSize = eval(minFontSize) + Math.round((eval(maxFontSize) - eval(minFontSize)) * eval(weight));
 		}
 		$("#tag").html("");
 
 		for ( var i = 0; i < contorK; i++) {
 			$("#tag").append(
-					"<span  id = '" + tags[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick(" + eval(shuffledVector[i]) + "," + idp
-							+ ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i]) + ")' OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i])
-							+ ")' style='cursor: pointer;'><font size=" + tags[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
+					"<span  id = '" + tags[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick("
+							+ eval(shuffledVector[i]) + "," + idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i])
+							+ ")' OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i]) + ")' style='cursor: pointer;'><font size="
+							+ tags[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
 							+ tags[eval(shuffledVector[i])].getNameTag() + " </font></span>");
 		}
-		var contentString1 = "<div id='infoWind'><div style='text-align: center;'>Picures and Tags: <br/> Total: " + total + " Selected: " + selc + "<br/></div>";
+		var contentString1 = "<div id='infoWind'><div style='text-align: center;'>Picures and Tags: <br/> Total: " + total + " Selected: " + selc
+				+ "<br/></div>";
 		if (($("#tag").html() != "")/*&&($("#tagClick").html()=="")*/) {
 			if (TagExistance == true) {
 				var contentString2 = $("#tag").html();
@@ -526,7 +535,8 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		var shuffledVector = new Array();
 		shuffledVector = arrayShuffle(vector);
 		for ( var i = 0; i < contorK; i++) {
-			var weight = (Math.log(eval(tagsClick[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs))) / (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
+			var weight = (Math.log(eval(tagsClick[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs)))
+					/ (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
 			tagsClick[eval(shuffledVector[i])].fontSize = eval(minFontSize) + Math.round((eval(maxFontSize) - eval(minFontSize)) * eval(weight));
 		}
 		//readyToExecute = false;
@@ -536,9 +546,10 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		if ($("#tag").html() == "") {
 			for ( var i = 0; i < contorK; i++) {
 				$("#tagClick").append(
-						"<span id = '" + tagsClick[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick(" + eval(shuffledVector[i]) + ","
-								+ idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i]) + ")'  OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i])
-								+ ")'><font size=" + tagsClick[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
+						"<span id = '" + tagsClick[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick("
+								+ eval(shuffledVector[i]) + "," + idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i])
+								+ ")'  OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i]) + ")'><font size="
+								+ tagsClick[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
 								+ tagsClick[eval(shuffledVector[i])].getNameTag() + " </font></span>");
 			}
 			var contentString1 = "<div id='infoWind' OnMouseOver='mouseOverTag()' OnMouseOut='mouseOutTag()'><div style='text-align: center;'>Picures and Tags: <br/> Total: "
@@ -570,19 +581,20 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 				createInfoWindowMouseClick(center, contentString);
 			}
 		}
-		$('#numberOfItems').empty().html("<span> Number of pictures selected: " + sel[idp] + " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
+		$('#numberOfItems').empty().html(
+				"<span> Number of pictures selected: " + sel[idp] + " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
 		$("#chart1").html(
-				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=year&width=140&height=80&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
+						+ "&level=year&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
 		$("#chart2").html(
-				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=month&width=140&height=80&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
+						+ "&level=month&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
 		$("#chart3").html(
-				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=day&width=140&height=80&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
+						+ "&level=day&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
 		$("#chart4").html(
-				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=hour&width=140&height=80&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
+						+ "&level=hour&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
 		$("#chart5").html(
 				"<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
 						+ "&level=weekday&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
@@ -606,35 +618,31 @@ function mouseOverTagSpan(num) {
 }
 // create the chart when all data is loaded
 // create the chart when all data is loaded
-function createTagChart() {
 
-	chart = new Highcharts.StockChart( {
+
+function createTagChart(tag) {
+	chart = new Highcharts.Chart( {
 		chart : {
-			renderTo : 'TagChart'
+			renderTo : 'TagChartGraphic',
+			zoomType : 'x',
+			spacingRight : 20,
+			width: 600
 		},
-
+		title : {
+			text : "'" + tag + "' Tag Distribution"
+		},
 		credits : {
 			enabled : false
 		},
-
-		rangeSelector : {
-			buttons : [ {
-				type : 'month',
-				count : 1,
-				text : '1m'
-			}, {
-				type : 'month',
-				count : 3,
-				text : '3m'
-			}, {
-				type : 'all',
-				text : 'All'
-			} ],
-			selected : 2
+		subtitle : {
+			text : document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Drag your finger over the plot to zoom in'
 		},
-
 		xAxis : {
 			type : 'datetime',
+			maxZoom : 14 * 24 * 3600000, // fourteen days
+			title : {
+				text : 'date'
+			},
 			dateTimeLabelFormats : {
 				second : '%%b-%d<br/>%H:%M:%S',
 				minute : '%%b-%d<br/>%H:%M',
@@ -645,60 +653,28 @@ function createTagChart() {
 				year : ''
 			}
 		},
-
-		rangeSelector : {
-			inputStyle : {
-				fontWeight : 'bold'
-			},
-			labelStyle : {
-				color : 'silver',
-				fontWeight : 'bold'
-			},
-			inputDateFormat : '%b-%d',
-			inputEditDateFormat : '%b-%d'
-		},
-
 		yAxis : {
-			plotLines : [ {
-				value : 0,
-				width : 2,
-				color : 'silver'
-			} ]
+			title : {
+				text : 'frequency'
+			},
+			min : 0,
+			startOnTick : false,
+			showFirstLabel : false
 		},
-
-		plotOptions : {
-			series : {
-				allowPointSelect : true,
-				compare : 'value',
-				cursor : 'pointer',
-				events : {
-					click : function(event) {
-						console.log(this.name + ' clicked\n' + event.point.x + ' ' + event.point.y + ' \n' + 'Alt: ' + event.altKey + '\n' + 'Control: ' + event.ctrlKey + '\n'
-								+ 'Shift: ' + event.shiftKey + '\n');
-						alert(this.name + Highcharts.dateFormat('-%m-%d', event.point.x));
-
-					}
-				}
-			}
-		},
-
 		legend : {
 			enabled : true,
 			layout : 'vertical',
-			align : 'right',
-			verticalAlign : 'top',
-			x : -10,
-			y : 100,
+//			align : 'right',
+//			verticalAlign : 'top',
 			borderWidth : 2
 		},
-
 		tooltip : {
+			shared : true,
 			crosshairs : {
 				dashStyle : 'dash'
 			},
-			pointFormat : '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
 			formatter : function() {
-				var s = '<b>' + Highcharts.dateFormat('%A, %b %e', this.x) + '</b>';
+				var s = '<b>' + Highcharts.dateFormat('%b %e', this.x) + '</b>';
 
 				$.each(this.points, function(i, point) {
 					if (point.y > 0) {
@@ -712,37 +688,90 @@ function createTagChart() {
 			}
 		},
 
+		plotOptions : {
+			areaspline : {
+				fillOpacity: 0.5,
+//				fillColor : {
+//					linearGradient : [ 0, 0, 0, 300 ],
+//					stops : [ [ 0, Highcharts.getOptions().colors[0] ], [ 1, 'rgba(2,0,0,0)' ] ]
+//				},
+				lineWidth : 1,
+				marker : {
+					enabled : false,
+					states : {
+						hover : {
+							enabled : true,
+							radius : 5
+						}
+					}
+				},
+				shadow : true,
+				states : {
+					hover : {
+						lineWidth : 3
+					}
+				}
+			},
+			series : {
+				allowPointSelect : true,
+				cursor : 'pointer',
+				events : {
+					click : function(event) {
+						console.log(this.name + ' clicked\n' + event.point.x + ' ' + event.point.y + ' \n' + 'Alt: ' + event.altKey + '\n'
+								+ 'Control: ' + event.ctrlKey + '\n' + 'Shift: ' + event.shiftKey + '\n');
+						var queryDateStr = this.name + Highcharts.dateFormat('-%m-%d', event.point.x);
+						if(event.point.y > 0){
+							setTagCarousel(ids, tag, queryDateStr);
+						}
+					}
+				}
+			}
+		},
 		series : seriesOptions
 	});
 }
+
 function wordClick(num, idp) {
+
 	jQuery("#TagGraphic").html("");
+//	console.log($("#TagChart").html());
 	if (tagsMask[num] == 0) {
 		tagsMask[num] = 1;
 		jQuery("#" + tagsClick[num].getNameTag() + "" + num).css("background-color", "yellow");
-		$.get("TagTimeSeriesData?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime(), function(xml) {
-			$(xml).find('series').each(function() {
-				var data = jQuery.parseJSON($(this).text());
-				var year = $(this).attr("year");
+	 	TagChartShow();
+		$.get("TagTimeSeriesData?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime(),
+				function(xml) {
+					var seriesSize = $(xml).find('series').size();
+					seriesOptions = [];
+					yAxisOptions = [];
+					seriesCounter = 0;
+					colors = Highcharts.getOptions().colors;
 
-				seriesOptions[seriesCounter++] = {
-					name : year,
-					data : data
-				};
+					$(xml).find('series').each(function() {
+						var data = jQuery.parseJSON($(this).text());
+						var year = $(this).attr("year");
 
-				// As we're loading the data asynchronously, we don't know what order it will arrive. So
-					// we keep a counter and create the chart when all the data is loaded.
+						console.log(year);
+						seriesOptions[seriesCounter++] = {
+							type: 'areaspline',
+							name : year,
+							data : data
+						};
 
-					if (seriesCounter == 3) {
-						createTagChart();
-					}
+						// As we're loading the data asynchronously, we don't know what order it will arrive. So
+							// we keep a counter and create the chart when all the data is loaded.
+
+						if (seriesCounter == seriesSize) {
+							createTagChart(tagsClick[num].getNameTag());
+						}
+					});
 				});
-		});
 
-		jQuery("#TagGraphic").append(
-				"<img title='Tag Graph' src='TagChart.png?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime()
-						+ "  '>");
-		$("#TagGraphic").show('slow');
+//		jQuery("#TagGraphic").append(
+//				"<img title='Tag Graph' src='TagChart.png?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime()
+//						+ "  '>");
+//		$("#TagGraphic").show('slow');
+
 	} else {
 		tagsMask[num] = 0;
 		jQuery("#" + tagsClick[num].getNameTag() + "" + num).css("background-color", "white");
@@ -795,27 +824,26 @@ function restorePolygon() {
 			fillColor : "#0000FF",
 			fillOpacity : 0.35
 		});
-		cleanPhotos();
 		ids = "";
 		if (boolSelected[globalPolygonSelected] == 1) {
 			ids = ids + "" + globalPolygonSelected;
 		}
 		//alert("globalvar "+globalvar +" sel[globalvar]"+sel[globalvar]);
 		$('#numberOfItems').empty().html(
-				"<span> Number of pictures selected: " + sel[globalPolygonSelected] + "idpoligon= " + globalPolygonSelected
+				"<span> Number of pictures selected: " + sel[globalPolygonSelected] + " poligon_id= " + globalPolygonSelected
 						+ " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
 		$("#chart1").html(
-				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=year&width=140&height=80&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
+						+ "&level=year&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
 		$("#chart2").html(
-				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=month&width=140&height=80&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
+						+ "&level=month&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
 		$("#chart3").html(
-				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=day&width=140&height=80&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
+						+ "&level=day&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
 		$("#chart4").html(
-				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=hour&width=140&height=80&timestamp="
-						+ new Date().getTime() + "  '>");
+				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
+						+ "&level=hour&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
 		$("#chart5").html(
 				"<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
 						+ "&level=weekday&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
@@ -842,4 +870,12 @@ function classTag() {
 
 function TagGraphicDisappear() {
 	$("#TagGraphic").hide('slow');
+}
+
+function TagChartHide() {
+	$("#TagChart").hide('slow');
+}
+
+function TagChartShow() {
+	$("#TagChart").show('slow');
 }

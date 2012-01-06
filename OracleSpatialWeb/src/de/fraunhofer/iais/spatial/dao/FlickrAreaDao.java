@@ -265,7 +265,7 @@ public abstract class FlickrAreaDao {
 		return photos;
 	}
 
-	public abstract List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int num, int offset);
+	public abstract List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int page, int pageSize);
 
 	public final static String judgeDbDateCountPatternStr(Level queryLevel) {
 		String dbDatePatternStr = null;

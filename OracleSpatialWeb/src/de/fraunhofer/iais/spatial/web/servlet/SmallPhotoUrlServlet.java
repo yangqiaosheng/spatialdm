@@ -65,52 +65,43 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		response.setDateHeader("Expires", 0); // proxy server
 
 		String areaid = request.getParameter("areaid");
-		String page = request.getParameter("page");
-		String pageSize = request.getParameter("page_size");
+		int page = NumberUtils.toInt(request.getParameter("page"));
+		int pageSize = NumberUtils.toInt(request.getParameter("page_size"));
 		PrintWriter out = response.getWriter();
-
+		String tag = StringUtils.defaultString(request.getParameter("tag"));
+		String queryDateStr = StringUtils.defaultString(request.getParameter("queryDateStr"));
 		Document document = new Document();
 		Element rootElement = new Element("response");
 		document.setRootElement(rootElement);
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize + "|tag:" + tag + "|queryDateStr:" + queryDateStr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		if (!StringUtils.isNumeric(areaid) || !StringUtils.isNumeric(page) || Integer.parseInt(page) < 1 || !StringUtils.isNumeric(pageSize) || Integer.parseInt(pageSize) < 1 || Integer.parseInt(pageSize) > MAX_PAGE_SIZE) {
+		if (!StringUtils.isNumeric(areaid) || page == 0 || pageSize == 0 || pageSize > MAX_PAGE_SIZE) {
 			messageElement.setText("ERROR: wrong input parameter!");
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			messageElement.setText("ERROR: please perform a query first!");
 		} else {
+			FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
+			int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
+			Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 			try {
-				String tag = request.getParameter("tag");
-				String queryDateStr = request.getParameter("queryDateStr");
-				String radiusStr = request.getParameter("radius");
-				if (StringUtils.isNotBlank(tag) && StringUtils.isNotBlank(queryDateStr) && StringUtils.isNotBlank(radiusStr)) {
-					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radiusStr));
-					if (area != null) {
-						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, tag, queryDateStr, Integer.parseInt(pageSize),  Integer.parseInt(page) * Integer.parseInt(pageSize));
+				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
+				if (area != null) {
+					if (StringUtils.isNotBlank(tag) && StringUtils.isNotBlank(queryDateStr)) {
+						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, tag, queryDateStr, page, pageSize);
 						buildXmlDoc(document, photos);
 						messageElement.setText("SUCCESS");
 					} else {
-						messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
+						logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
+						buildXmlDoc(document, photos);
+						messageElement.setText("SUCCESS");
 					}
 				} else {
-					FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-					int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
-					Radius radius = FlickrAreaUtil.judgeRadius(zoom);
-
-					logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
-
-					if (area != null) {
-						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, Integer.parseInt(page), Integer.parseInt(pageSize));
-						buildXmlDoc(document, photos);
-						messageElement.setText("SUCCESS");
-					} else {
-						messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
-					}
+					messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
 				}
 			} catch (Exception e) {
 				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$

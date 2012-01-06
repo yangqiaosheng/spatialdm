@@ -30,6 +30,7 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -653,17 +654,24 @@ public class TestFlickrEuropeArea {
 	public void testTagTimeSeriesChart() throws Exception {
 		testRequestXml();
 		Set<String> years = new HashSet<String>();
-		years.add("2005");
-		years.add("2006");
+//		years.add("2005");
+//		years.add("2006");
 		years.add("2009");
-		years.add("2010");
-		years.add("2011");
-		years.add("2007");
-		years.add("2008");
-		FlickrArea area = areaMgr.getAreaDao().getAreaById(811, Radius.R640000);
+//		years.add("2010");
+//		years.add("2011");
+//		years.add("2007");
+//		years.add("2008");
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(18136, Radius.R40000);
 
-		areaMgr.createTagTimeSeriesChartOld(area, "motorsport", years, "canon", new FileOutputStream("temp/tsTagCharty.png"));
-		System.out.println(areaMgr.createTagTimeSeriesData(area, "canon", years));
+		areaMgr.createTagTimeSeriesChartOld(area, "germany", years, "germany", new FileOutputStream("temp/tsTagCharty.png"));
+		System.out.println(areaMgr.createTagTimeSeriesData(area, "germany", years));
+	}
+
+	@Test
+	public void testTagPhotos() throws Exception {
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(18136, Radius.R40000);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, "germany", "2009-08-04", 1,  30);
+		System.out.println(ToStringBuilder.reflectionToString(photos));
 	}
 
 //	@Test
