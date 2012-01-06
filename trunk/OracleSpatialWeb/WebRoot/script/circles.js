@@ -25,31 +25,31 @@ function RadiusWidget(map, center, selectedPictures) {
 	if (map.getZoom() == 1) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
 		// $("#legendInfo").append(" here1 ");
-		raza = 96000;
+		raza = 320000;
 	}
 	if (map.getZoom() == 2) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 96000;
+		raza = 320000
 	}
 	if (map.getZoom() == 3) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 96000;
+		raza = 160000;
 	}
 	if (map.getZoom() == 4) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 48000;
+		raza = 80000;
 	}
 	if (map.getZoom() == 5) {//
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 26000;
+		raza = 40000;
 	}
 	if (map.getZoom() == 6) {//ok
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 14000;
+		raza = 20000;
 	}
 	if (map.getZoom() == 7) {//ok
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 8000;
+		raza = 10000;
 	}
 	if (map.getZoom() == 8) {//ok
 		$("#zoomMapLevel").html(" " + map.getZoom());
@@ -79,33 +79,33 @@ function RadiusWidget(map, center, selectedPictures) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
 		raza = 78.125;
 	}
-	if (map.getZoom() == 15) {//ok
+	if (map.getZoom() == 15) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 39.0625;
+		raza = 78.125;
 	}
-	if (map.getZoom() == 16) {//ok
+	if (map.getZoom() == 16) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 19.53125;
+		raza = 78.125;
 	}
 	if (map.getZoom() == 17) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 19.53125;
+		raza = 78.125;
 	}
 	if (map.getZoom() == 18) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 19.53125;
+		raza = 78.125;
 	}
 	if (map.getZoom() == 19) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 19.53125;
+		raza = 78.125;
 	}
 	if (map.getZoom() == 20) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 19.53125;
+		raza = 78.125;
 	}
 	if (map.getZoom() == 21) {
 		$("#zoomMapLevel").html(" " + map.getZoom());
-		raza = 19.53125;
+		raza = 78.125;
 	}
 	// max 21 zoom levels
 
@@ -115,7 +115,7 @@ function RadiusWidget(map, center, selectedPictures) {
 		fillOpacity : 0.6,
 		center : center,
 		//inverse projectiong scale
-		radius : raza * map.getProjection().fromLatLngToPoint(new google.maps.LatLng(Math.abs(center.lat()), center.lng())).y /100 ,
+		radius : raza * map.getProjection().fromLatLngToPoint(new google.maps.LatLng(Math.abs(center.lat()), center.lng())).y / 100,
 		fillColor : color,
 		zIndex : 1
 	});
