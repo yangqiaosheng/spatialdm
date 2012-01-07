@@ -266,7 +266,7 @@ public class ChartUtil {
 		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
 				"", // Title
 				displayLevel.toString(), // X Label
-				"#PHOTOS", // Y Label
+				"frequency", // Y Label
 				xydataset, // dataset
 				displayLegend, // show Legend
 				false, // generate Tooltips
@@ -275,7 +275,7 @@ public class ChartUtil {
 
 		jfreechart.setBackgroundPaint(Color.WHITE);
 		jfreechart.setBorderPaint(Color.BLACK);
-		jfreechart.setTitle(new TextTitle("#Photos Distribution", new Font("Helvetica", Font.BOLD, 14)));
+		jfreechart.setTitle(new TextTitle("Photos Frequency Distribution", new Font("Helvetica", Font.BOLD, 14)));
 
 		XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
 		xyPlot.setBackgroundPaint(Color.LIGHT_GRAY);
