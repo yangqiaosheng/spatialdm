@@ -1,55 +1,56 @@
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
 	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<title>Spatial Data Visualization</title>
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta http-equiv="expires" content="0">
+		<meta http-equiv="keywords" content="kd-photomap,spatial,data,mining,visualization,fraunhofer,iais">
+		<meta http-equiv="description" content="Spatial Data Visualization">
 		<link rel="shortcut icon" href="images/favicon.ico" />
+
+		<title>Spatial Data Visualization</title>
 		<link rel="stylesheet" type="text/css" href="css/fonts.css" />
 
+		<!-- Google Maps API lib -->
 		<script type="text/javascript" src="http://www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:'sensor=false'}]}"></script>
 
+		<!-- jQuery lib -->
+<%--		<script type="text/javascript" src="script/jquery/jquery-1.7.1.js"></script>--%>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
 
-		<!--this is jQuery use:)-->
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.1.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+		<!-- jQuery-UI plugin -->
+		<script type="text/javascript" src="script/jquery/plugins/js/jquery-ui-1.8.16.custom.min.js"></script>
+		<link type="text/css" rel="stylesheet" href="script/jquery/plugins/css/redmond/jquery-ui-1.8.16.custom.css" />
+		<script type="text/javascript" src="script/init.js"></script>
 
-		<!--highstock library-->
-<%--		<script type="text/javascript" src="script/highstock/highstock.js"></script>--%>
+		<!-- jQuery Date Picker plugin -->
+		<script type="text/javascript" src="script/jquery/plugins/js/jquery.datepick.js"></script>
+		<script type="text/javascript" src="script/jquery/plugins/js/jquery.validate.js"></script>
+		<script type="text/javascript" src="script/jquery/plugins/js/jquery.datepick.validation.js"></script>
+		<link rel="stylesheet" type="text/css" href="script/jquery/plugins/css/jquery.datepick.css" />
+		<link rel="stylesheet" type="text/css" href="script/jquery/plugins/css/redmond.datepick.css" />
+
+		<!-- jQuery Metadata plugin -->
+		<script type="text/javascript" src="script/jquery/plugins/js/jquery.metadata.js"></script>
+
+		<!-- highstock library -->
 		<script type="text/javascript" src="script/highcharts/highcharts.js"></script>
+<%--	<script type="text/javascript" src="script/highstock/highstock.js"></script>--%>
 
-		<!--tags library-->
-		<script src="script/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script>
+		<!-- jQuery Tagcloud plugin -->
+		<script type="text/javascript" charset="utf-8" src="script/jquery/plugins/js/jquery.tagcloud.js"></script>
 
-		<!--using library bt-->
-		<%-- <script type="text/javascript" src="script/bt/jquery.bt.js"></script> --%>
-		<script type="text/javascript" src="script/bt/jquery.bt.min.js"></script>
-		<link type="text/css" rel="stylesheet" href="script/bt/jquery.bt.css" />
-		<script type="text/javascript" src="script/jquery.corner.js"></script>
+		<!--jQuery BeautyTips plugin -->
+		<link type="text/css" rel="stylesheet" href="script/jquery/plugins/css/jquery.bt.css" />
+		<script type="text/javascript" src="script/jquery/plugins/js/jquery.bt.js"></script>
+<%--		<script type="text/javascript" src="script/jquery/plugins/js/jquery.bt.min.js"></script>--%>
 
-		<script type="text/javascript" src="script/GoogleMapsFeatures.js"></script>
-
-
-		<link type="text/css" rel="stylesheet" href="css/tableStyle.css" />
-		<link type="text/css" rel="stylesheet" href="css/controllerTimeStyle.css" />
-
-
-
-		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" type="text/css" href="css/redmond.datepick.css" />
-		<script type="text/javascript" src="script/jquery.datepick.js"></script>
-		<script type="text/javascript" src="script/jquery.metadata.js"></script>
-		<script type="text/javascript" src="script/jquery.validate.js"></script>
-		<script type="text/javascript" src="script/jquery.datepick.validation.js"></script>
-
-
-		<link type="text/css" rel="stylesheet" href="css/general.css" />
-		<link type="text/css" rel="stylesheet" href="css/carousel.css" />
-		<link type="text/css" rel="stylesheet" href="css/calendar.css" />
-		<link type="text/css" rel="stylesheet" href="css/legend.css" />
-		<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
-
+		<!-- jQuery corner plugin -->
+		<script type="text/javascript" src="script/jquery/plugins/js/jquery.corner.js"></script>
 
 		<!-- Core + Skin CSS -->
 		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/carousel/assets/skins/sam/carousel.css">
@@ -66,22 +67,18 @@
 		<!-- Source file -->
 		<script src="http://yui.yahooapis.com/2.8.2r1/build/carousel/carousel-min.js"></script>
 
-		<script type="text/javascript">
+		<script type="text/javascript" src="script/GoogleMapsFeatures.js"></script>
 
-var _gaq = _gaq || [];
-_gaq.push( [ '_setAccount', 'UA-22122163-1' ]);
-_gaq.push( [ '_trackPageview' ]);
+		<link type="text/css" rel="stylesheet" href="css/tableStyle.css" />
+		<link type="text/css" rel="stylesheet" href="css/controllerTimeStyle.css" />
 
-(function() {
-	var ga = document.createElement('script');
-	ga.type = 'text/javascript';
-	ga.async = true;
-	ga.src = ('https:' == document.location.protocol ? 'https://ssl'
-			: 'http://www') + '.google-analytics.com/ga.js';
-	var s = document.getElementsByTagName('script')[0];
-	s.parentNode.insertBefore(ga, s);
-})();
-</script>
+
+
+		<link type="text/css" rel="stylesheet" href="css/general.css" />
+		<link type="text/css" rel="stylesheet" href="css/carousel.css" />
+		<link type="text/css" rel="stylesheet" href="css/calendar.css" />
+		<link type="text/css" rel="stylesheet" href="css/legend.css" />
+		<link type="text/css" rel="stylesheet" href="css/contextMenu.css" />
 		<link type="text/css" rel="stylesheet" href="css/histogram.css" />
 
 
@@ -120,6 +117,23 @@ _gaq.push( [ '_trackPageview' ]);
 			<div class="photoWindowDesc" id="photoWindowDesc"></div>
 			<div class="photoWindowImg" id="photoWindowImg"></div>
 		</div>
+		<div id="dialog-confirm" title="System Requirements">
+			<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+			<div>
+				<div >
+					To use all the functionalities on kd-photomap, you will need a PC with the system requirements as follows:
+				</div>
+				<ul>
+					<li>
+						Display Resolution: 1280 x 1024, or higher <p></p>
+					</li>
+					<li>
+						Web Browser: Mozilla Firefox 3.5, or above
+					</li>
+				</ul>
+			</div>
+		</div>
+
 		<script type="text/javascript" src="script/TimeController.js"></script>
 		<script type="text/javascript" src="script/prepareXMLforServer.js"></script>
 		<script type="text/javascript" src="script/LoadResultsFromServer.js"></script>
@@ -138,6 +152,5 @@ _gaq.push( [ '_trackPageview' ]);
 		<script type="text/javascript" src="script/MouseDragAndDrop.js"></script>
 		<script type="text/javascript" src="script/CalendarJ.js"></script>
 		<script type="text/javascript" src="script/sendToServer.js"></script>
-
 	</body>
 </html>
