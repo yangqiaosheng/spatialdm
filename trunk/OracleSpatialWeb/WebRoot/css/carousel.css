@@ -9,7 +9,9 @@
 	    MARGIN-LEFT: auto;
 	    opacity: 1;
 	}
-
+.yui-carousel-nav {
+	background: url("../script/jquery/plugins/css/redmond/images/ui-bg_gloss-wave_55_5c9ccc_500x100.png") repeat-x scroll 0 0 transparent
+}
 /*.yui-carousel-content{
     height: 150px;
 }*/
@@ -106,6 +108,9 @@
     height: auto;
     top:5%;
     right:5%;
+    border-style: solid;
+	border-color: #8AA8F3; /*blue border*/
+	border-width: 3px
 }
 #pictureMouseOver{
     position:fixed;
@@ -113,4 +118,7 @@
     height: auto;
     top:50%;
     right:5%;
+    border-style: solid;
+	border-color: #8AA8F3; /*blue border*/
+	border-width: 3px;
 }

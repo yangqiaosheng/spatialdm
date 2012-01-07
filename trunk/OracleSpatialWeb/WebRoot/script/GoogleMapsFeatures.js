@@ -70,7 +70,6 @@ function agregationPolygonsAdd() {
 		removeCircles();
 		TagChartHide();
 		cleanPhotos();
-		hidemoveCarousel();
 		ids = "";
 		readyToExecute_A = true;
 		readyToExecute_B = true;
@@ -93,10 +92,8 @@ $(function() {
 	jQuery("#AggregationCheckBox").change(function() {
 		if (jQuery("#AggregationCheckBox").attr("checked") == true) {
 			agregationPolygonsAdd();
-			jQuery("#EnabledOrDisabled").html("Enabled");
 		} else {
 			agregationPolygonsRemove();
-			jQuery("#EnabledOrDisabled").html("Disabled");
 		}
 	});
 
@@ -106,7 +103,6 @@ $(function() {
 	jQuery("#TAGCheckBox").change(function() {
 		if (jQuery("#TAGCheckBox").attr("checked") == true) {
 			TagExistance = true;
-
 		} else {
 			TagExistance = false;
 			$("#tag").html() != "";
@@ -117,57 +113,96 @@ $(function() {
 });
 
 $(function() {
-	$("#timeC7, #timeC1, #timeC2, #timeC3, #tab1ready, #tab2ready, #tab3ready, #tab4ready").hover(function() {
-		$(this).removeClass("timeCstar");
-		$(this).addClass("hover");
-	}, function() {
-		$(this).removeClass("hover");
-		$(this).addClass("timeCstar");
+	jQuery("#ShowCarouselCheckBox").change(function() {
+		if (jQuery("#ShowCarouselCheckBox").attr("checked") == true) {
+			$("#maxContainer").show("slow");
+		} else {
+			$("#maxContainer").hide("slow");
+		}
 	});
+
 });
 
 $(function() {
+	jQuery("#InfoCheckBox").change(function() {
+		if (jQuery("#InfoCheckBox").attr("checked") == true) {
+			$("#infoContainer").show("slow");
+		} else {
+			$("#infoContainer").hide("slow");
+		}
+	});
 
-	$("#CalendarContent").hide();
-	//	$("#histogramContent").hide();
-	$("#SearchBox").hide();
-	$("#table7").css( {
+});
+
+function hideTableObject(label, content) {
+	content.hide(1000);
+	label.css('font-weight', 'lighter');
+	label.css('background-image', 'none');
+	label.css('color', '#777');
+}
+
+function showTableObject(label, content) {
+	content.show(1000);
+	label.css('font-weight', 'bold');
+	label.css('background-image', "url('../images/ui-bg_inset-hard_100_f5f8f9_1x30.png') repeat-x scroll");
+	label.css('color', '#333');
+}
+
+function hideHistogram() {
+	hideTableObject($("#histogramLabel"), $("#histogramContent"));
+	$("#histogramContent").css( {
+		'padding-bottom' : '5px'
+	});
+}
+
+function showHistogram() {
+	showTableObject($("#histogramLabel"), $("#histogramContent"));
+	$("#histogramContent").css( {
 		'padding-bottom' : '40px'
 	});
-	$("#selectedYMDHCheckbox").click(function() {
-		$("#CalendarContent").hide(1000);
-		$("#histogramContent").hide(1000);
-		$("#table7").css( {
-			'padding-bottom' : '0px'
-		});
-	});
-	$("#CalendarcheckBox").toggle(function() {
-		$("#CalendarContent").show(1000);
-		$("#histogramContent").hide(1000);
-		$("#table7").css( {
-			'padding-bottom' : '0px'
-		});
+}
+
+
+$(function() {
+	showHistogram();
+	hideTableObject($("#calendarLabel"), $("#CalendarContent"));
+	hideTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
+	hideTableObject($("#displayOptLabel"), $("#displayOptContent"));
+
+	$("#calendarLabel").toggle(function() {
+		showTableObject($("#calendarLabel"), $("#CalendarContent"));
+		hideHistogram();
 	}, function() {
-		$("#CalendarContent").hide(1000);
-	});
-	$("#histogramCheckbox").toggle(function() {
-		$("#table7").css( {
-			'padding-bottom' : '40px'
-		});
-		$("#histogramContent").show(1000);
-		$("#CalendarContent").hide(1000);
-	}, function() {
-		$("#histogramContent").hide(1000);
-		$("#table7").css( {
-			'padding-bottom' : '0px'
-		});
-	});
-	$("#SearchCheckBox").toggle(function() {
-		$("#SearchBox").show(1000);
-	}, function() {
-		$("#SearchBox").hide(1000);
+		hideTableObject($("#calendarLabel"), $("#CalendarContent"));
 	});
 
+	$("#histogramLabel").toggle(function() {
+		hideHistogram();
+	}, function() {
+		showHistogram();
+		hideTableObject($("#calendarLabel"), $("#CalendarContent"));
+	});
+	$("#displayOptLabel").toggle(function() {
+		showTableObject($("#displayOptLabel"), $("#displayOptContent"));
+	}, function() {
+		hideTableObject($("#displayOptLabel"), $("#displayOptContent"));
+	});
+
+	$("#SearchLocationLabel").toggle(function() {
+		showTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
+	}, function() {
+		hideTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
+	});
+	$("#PolygonChartLabel").toggle(function() {
+		hideTableObject($("#PolygonChartLabel"), $("#PolygonChartContent"));
+	}, function() {
+		showTableObject($("#PolygonChartLabel"), $("#PolygonChartContent"));
+	});
+	$("#controlPanelLabel").toggle(function() {
+		hideTableObject($("#controlPanelLabel"), $("#controlPanelContent"));
+	}, function() {
+		showTableObject($("#controlPanelLabel"), $("#controlPanelContent"));
+	});
 });
 //********************************************************************************************
 function addRemoveElementsFromHistogram() {
@@ -183,12 +218,6 @@ function addRemoveElementsFromHistogram() {
 	$("#histogramContent").append("<div id=parent4></div>");
 	$("#histogramContent").append("<div id=parent5></div>");
 }
-
-/*function start() {
- $("#maxContainer").hide();
- initialize1();
- }
- */
 
 function scaleLevelOnStart() {
 	if (map.getZoom() <= 5) {
@@ -224,30 +253,6 @@ function scaleLevelOnStart() {
 	if (map.getZoom() >= 15) {
 		$("#scaleLevel").html("11");
 	}
-}
-var parLocal = 0;
-function hidemoveCP() {
-	$("#move1").toggle("slow", function() {
-		if (parLocal % 2 == 0) {
-			$("#control").attr('value', 'show');
-			parLocal++
-		} else {
-			$("#control").attr('value', 'hide');
-			parLocal++
-		}
-	});
-}
-var carouselLocal = 0;
-function hidemoveCarousel() {
-	$("#maxContainer").toggle("slow", function() {
-		if (carouselLocal % 2 == 0) {
-			$("#carouselControl").attr('value', 'show');
-			carouselLocal++
-		} else {
-			$("#carouselControl").attr('value', 'hide');
-			carouselLocal++
-		}
-	});
 }
 
 function initboolSelected() {
@@ -350,7 +355,6 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 			$("#tagClick").html("");
 			infowindowClick.close();
 			unSelectAllThePolygons();
-			$("#maxContainer").show();
 			Polygon.setOptions( {
 				fillColor : "#0000FF",
 				fillOpacity : 0.35
@@ -367,7 +371,7 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 		}
 	});
 	google.maps.event.addListener(Polygon, 'mouseover', function(event) {
-//		console.log("m " + readyToExecute_A + " " + readyToExecute_B);
+		//		console.log("m " + readyToExecute_A + " " + readyToExecute_B);
 			infowindow.close();
 			if ((readyToExecute_A == true) && (readyToExecute_B == true)) {
 				readyToExecute = true;
@@ -391,7 +395,7 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 			}
 		});
 	google.maps.event.addListener(Polygon, 'mouseout', function(event) {
-//		console.log("o " + readyToExecute_A + " " + readyToExecute_B);
+		//		console.log("o " + readyToExecute_A + " " + readyToExecute_B);
 			clearTimeout(timeOut);
 			infowindow.close();
 			if (boolSelected[idp] == 0) {
@@ -416,7 +420,6 @@ function loadStart() {
 	number = get_set_number();
 	nameString = loadDataForTable();
 	activateTheHeaderOfTable();
-	$("#maxContainer").hide();
 	initialize1();
 }
 
@@ -472,22 +475,19 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		var shuffledVector = new Array();
 		shuffledVector = arrayShuffle(vector);
 		for ( var i = 0; i < contorK; i++) {
-			var weight = (Math.log(eval(tags[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs)))
-					/ (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
+			var weight = (Math.log(eval(tags[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs))) / (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
 			tags[eval(shuffledVector[i])].fontSize = eval(minFontSize) + Math.round((eval(maxFontSize) - eval(minFontSize)) * eval(weight));
 		}
 		$("#tag").html("");
 
 		for ( var i = 0; i < contorK; i++) {
 			$("#tag").append(
-					"<span  id = '" + tags[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick("
-							+ eval(shuffledVector[i]) + "," + idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i])
-							+ ")' OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i]) + ")' style='cursor: pointer;'><font size="
-							+ tags[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
+					"<span  id = '" + tags[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick(" + eval(shuffledVector[i]) + "," + idp
+							+ ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i]) + ")' OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i])
+							+ ")' style='cursor: pointer;'><font size=" + tags[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
 							+ tags[eval(shuffledVector[i])].getNameTag() + " </font></span>");
 		}
-		var contentString1 = "<div id='infoWind'><div style='text-align: center;'>Picures and Tags: <br/> Total: " + total + " Selected: " + selc
-				+ "<br/></div>";
+		var contentString1 = "<div id='infoWind'><div style='text-align: center;'>Picures and Tags: <br/> Total: " + total + " Selected: " + selc + "<br/></div>";
 		if (($("#tag").html() != "")/*&&($("#tagClick").html()=="")*/) {
 			if (TagExistance == true) {
 				var contentString2 = $("#tag").html();
@@ -531,8 +531,7 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		var shuffledVector = new Array();
 		shuffledVector = arrayShuffle(vector);
 		for ( var i = 0; i < contorK; i++) {
-			var weight = (Math.log(eval(tagsClick[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs)))
-					/ (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
+			var weight = (Math.log(eval(tagsClick[eval(shuffledVector[i])].getSize())) - Math.log(eval(minOccurs))) / (Math.log(eval(maxOccurs)) - Math.log(eval(minOccurs)));
 			tagsClick[eval(shuffledVector[i])].fontSize = eval(minFontSize) + Math.round((eval(maxFontSize) - eval(minFontSize)) * eval(weight));
 		}
 		//readyToExecute = false;
@@ -542,10 +541,9 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 		if ($("#tag").html() == "") {
 			for ( var i = 0; i < contorK; i++) {
 				$("#tagClick").append(
-						"<span id = '" + tagsClick[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick("
-								+ eval(shuffledVector[i]) + "," + idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i])
-								+ ")'  OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i]) + ")'><font size="
-								+ tagsClick[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
+						"<span id = '" + tagsClick[eval(shuffledVector[i])].getNameTag() + "" + eval(shuffledVector[i]) + "' onclick='wordClick(" + eval(shuffledVector[i]) + ","
+								+ idp + ")' OnMouseOver='mouseOverTagSpan(" + eval(shuffledVector[i]) + ")'  OnMouseOut='mouseOutWORD(" + eval(shuffledVector[i])
+								+ ")'><font size=" + tagsClick[eval(shuffledVector[i])].getFontSize() + " face='arial' color='blue'>"
 								+ tagsClick[eval(shuffledVector[i])].getNameTag() + " </font></span>");
 			}
 			var contentString1 = "<div id='infoWind' OnMouseOver='mouseOverTag()' OnMouseOut='mouseOutTag()'><div style='text-align: center;'>Picures and Tags: <br/> Total: "
@@ -577,20 +575,19 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 				createInfoWindowMouseClick(center, contentString);
 			}
 		}
-		$('#numberOfItems').empty().html(
-				"<span> Number of pictures selected: " + sel[idp] + " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
+		$('#numberOfItems').empty().html("<span> Number of pictures selected: " + sel[idp] + " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
 		$("#chart1").html(
-				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=year&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=year&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart2").html(
-				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=month&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=month&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart3").html(
-				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=day&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=day&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart4").html(
-				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=hour&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=hour&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart5").html(
 				"<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
 						+ "&level=weekday&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
@@ -615,14 +612,13 @@ function mouseOverTagSpan(num) {
 // create the chart when all data is loaded
 // create the chart when all data is loaded
 
-
 function createTagChart(tag) {
 	chart = new Highcharts.Chart( {
 		chart : {
 			renderTo : 'TagChartGraphic',
 			zoomType : 'x',
 			spacingRight : 20,
-			width: 600
+			width : 600
 		},
 		title : {
 			text : "'" + tag + "' Tag Distribution"
@@ -660,8 +656,8 @@ function createTagChart(tag) {
 		legend : {
 			enabled : true,
 			layout : 'vertical',
-//			align : 'right',
-//			verticalAlign : 'top',
+			//			align : 'right',
+			//			verticalAlign : 'top',
 			borderWidth : 2
 		},
 		tooltip : {
@@ -686,11 +682,11 @@ function createTagChart(tag) {
 
 		plotOptions : {
 			areaspline : {
-				fillOpacity: 0.5,
-//				fillColor : {
-//					linearGradient : [ 0, 0, 0, 300 ],
-//					stops : [ [ 0, Highcharts.getOptions().colors[0] ], [ 1, 'rgba(2,0,0,0)' ] ]
-//				},
+				fillOpacity : 0.5,
+				//				fillColor : {
+				//					linearGradient : [ 0, 0, 0, 300 ],
+				//					stops : [ [ 0, Highcharts.getOptions().colors[0] ], [ 1, 'rgba(2,0,0,0)' ] ]
+				//				},
 				lineWidth : 1,
 				marker : {
 					enabled : false,
@@ -713,10 +709,10 @@ function createTagChart(tag) {
 				cursor : 'pointer',
 				events : {
 					click : function(event) {
-						console.log(this.name + ' clicked\n' + event.point.x + ' ' + event.point.y + ' \n' + 'Alt: ' + event.altKey + '\n'
-								+ 'Control: ' + event.ctrlKey + '\n' + 'Shift: ' + event.shiftKey + '\n');
+						console.log(this.name + ' clicked\n' + event.point.x + ' ' + event.point.y + ' \n' + 'Alt: ' + event.altKey + '\n' + 'Control: ' + event.ctrlKey + '\n'
+								+ 'Shift: ' + event.shiftKey + '\n');
 						var queryDateStr = this.name + Highcharts.dateFormat('-%m-%d', event.point.x);
-						if(event.point.y > 0){
+						if (event.point.y > 0) {
 							setTagCarousel(ids, tag, queryDateStr);
 						}
 					}
@@ -730,39 +726,38 @@ function createTagChart(tag) {
 function wordClick(num, idp) {
 
 	jQuery("#TagGraphic").html("");
-//	console.log($("#TagChart").html());
+	//	console.log($("#TagChart").html());
 	if (tagsMask[num] == 0) {
 		tagsMask[num] = 1;
 		jQuery("#" + tagsClick[num].getNameTag() + "" + num).css("background-color", "yellow");
-	 	TagChartShow();
-		$.get("TagTimeSeriesData?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime(),
-				function(xml) {
-					var seriesSize = $(xml).find('series').size();
-					seriesOptions = [];
-					yAxisOptions = [];
-					seriesCounter = 0;
-					colors = Highcharts.getOptions().colors;
+		TagChartShow();
+		$.get("TagTimeSeriesData?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime(), function(xml) {
+			var seriesSize = $(xml).find('series').size();
+			seriesOptions = [];
+			yAxisOptions = [];
+			seriesCounter = 0;
+			colors = Highcharts.getOptions().colors;
 
-					$(xml).find('series').each(function() {
-						seriesOptions[seriesCounter++] = {
-							type: 'areaspline',
-							name : $(this).attr("year"),
-							data : jQuery.parseJSON($(this).text())
-						};
+			$(xml).find('series').each(function() {
+				seriesOptions[seriesCounter++] = {
+					type : 'areaspline',
+					name : $(this).attr("year"),
+					data : jQuery.parseJSON($(this).text())
+				};
 
-						// As we're loading the data asynchronously, we don't know what order it will arrive. So
-							// we keep a counter and create the chart when all the data is loaded.
+				// As we're loading the data asynchronously, we don't know what order it will arrive. So
+					// we keep a counter and create the chart when all the data is loaded.
 
-						if (seriesCounter == seriesSize) {
-							createTagChart(tagsClick[num].getNameTag());
-						}
-					});
+					if (seriesCounter == seriesSize) {
+						createTagChart(tagsClick[num].getNameTag());
+					}
 				});
+		});
 
-//		jQuery("#TagGraphic").append(
-//				"<img title='Tag Graph' src='TagChart.png?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime()
-//						+ "  '>");
-//		$("#TagGraphic").show('slow');
+		//		jQuery("#TagGraphic").append(
+		//				"<img title='Tag Graph' src='TagChart.png?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime()
+		//						+ "  '>");
+		//		$("#TagGraphic").show('slow');
 
 	} else {
 		tagsMask[num] = 0;
@@ -825,17 +820,17 @@ function restorePolygon() {
 				"<span> Number of pictures selected: " + sel[globalPolygonSelected] + " poligon_id= " + globalPolygonSelected
 						+ " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
 		$("#chart1").html(
-				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=year&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=year&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart2").html(
-				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=month&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img  title='Month Level'  id = 'IntChartID_2' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=month&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart3").html(
-				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=day&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<img title='Day Level' id = 'IntChartID_3' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=day&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart4").html(
-				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
-						+ "&level=hour&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");
+				"<br><img title='Hours Level' id = 'IntChartID_4' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=hour&width=140&height=80&timestamp="
+						+ new Date().getTime() + "  '>");
 		$("#chart5").html(
 				"<img title='Week Day Level' id = 'IntChartID_5' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId()
 						+ "&level=weekday&width=140&height=80&timestamp=" + new Date().getTime() + "  '>");

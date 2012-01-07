@@ -6,7 +6,7 @@
 <mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrAreaPg">
 
 	<!-- local cache: flushInterval: 24hours -->
- 	<cache eviction="LRU" size="161" readOnly="true" flushInterval="86400000"></cache>
+<!-- 	<cache eviction="LRU" size="161" readOnly="true" flushInterval="86400000"></cache>-->
 
 	<!-- Ehcache: configurated in classpath:ehcache.xml -->
 <!--   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->

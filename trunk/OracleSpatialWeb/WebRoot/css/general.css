@@ -1,11 +1,8 @@
-.hover {
-  background-color: #06A8FA;
-}           
 .timeCstar {
   background-color: #A7BDF7;
 }
 
-#SearchBox{	
+#SearchBox{
 	width: auto;
 	height: auto;
 	padding-left:0cm;
@@ -15,9 +12,9 @@
 input.right {
     float:right;
 }
-         
+
 #absButton{
   position: absolute;
-  bottom: 0; 
+  bottom: 0;
   right: 0
 }

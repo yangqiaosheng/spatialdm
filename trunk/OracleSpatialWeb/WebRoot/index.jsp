@@ -71,9 +71,6 @@
 
 		<link type="text/css" rel="stylesheet" href="css/tableStyle.css" />
 		<link type="text/css" rel="stylesheet" href="css/controllerTimeStyle.css" />
-
-
-
 		<link type="text/css" rel="stylesheet" href="css/general.css" />
 		<link type="text/css" rel="stylesheet" href="css/carousel.css" />
 		<link type="text/css" rel="stylesheet" href="css/calendar.css" />
@@ -89,25 +86,21 @@
 		</div>
 		<div id="map_canvas"></div>
 		<br />
-		<div id="move" class="timeCstar">
-			<div id="QuarryHead" class="tabcontent">
+		<fieldset id="controlPanel" class="timeCstar movable">
+			<legend id="controlPanelLabel" class="controlPanel">
 				<span>Control Panel</span>
-				<input type="button" id="control" value="hide" onclick="hidemoveCP()" />
-				<span>Carousel: </span>
-				<input type="button" id="carouselControl" value="hide" onclick="hidemoveCarousel()" />
-			</div>
-			<div id="move1" class="timeCstar">
+			</legend>
+			<div id="controlPanelContent" class="timeCstar">
 				<div id="tableQuarry">
 					<jsp:include page="table1.jsp" />
 					<jsp:include page="table7.jsp" />
 					<jsp:include page="table3.jsp" />
 					<jsp:include page="table4.jsp" />
 					<jsp:include page="table5.jsp" />
-					<jsp:include page="table6.jsp" />
 				</div>
 			</div>
 
-		</div>
+		</fieldset>
 		<jsp:include page="carousel.jsp" />
 		<jsp:include page="legend.jsp" />
 
@@ -143,10 +136,9 @@
 		<script type="text/javascript" src="script/contextMenu.js"></script>
 		<script type="text/javascript" src="script/DragnDrop.js"></script>
 		<script type="text/javascript" src="script/Resizeble.js"></script>
-		<script type="text/javascript" src="script/Legend.js"></script>
+		<script type="text/javascript" src="script/corner.js"></script>
 		<script type="text/javascript" src="script/LoadPolygons.js"></script>
 		<script type="text/javascript" src="script/Validate.js"></script>
-		<script type="text/javascript" src="script/Aggregation.js"></script>
 		<script type="text/javascript" src="script/HistogrammModel.js"></script>
 		<script type="text/javascript" src="script/Histogramm.js"></script>
 		<script type="text/javascript" src="script/MouseDragAndDrop.js"></script>

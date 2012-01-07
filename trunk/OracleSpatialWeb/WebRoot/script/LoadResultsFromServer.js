@@ -68,8 +68,8 @@ function assignEventsForTheCarouselItems(i, k, t) {
 	itemObj.bind('mouseover', (function() {
 		itemSubObj.css("background-color", "#A7BDF7");
 		$("#pictureMouseOver").html(
-				"<img src='" + smallUrlTotal[t - 1] + "'/><div class='tabcontent'>" + weekdayTotal[t - 1] + " " + dateTotal[t - 1]
-						+ "</div><div class='tabcontent'>" + titlePictureTotal[t - 1] + "</div>");
+				"<img src='" + smallUrlTotal[t - 1] + "'/><div class='tabcontent'>" + weekdayTotal[t - 1] + " " + dateTotal[t - 1] + "</div><div class='tabcontent'>"
+						+ titlePictureTotal[t - 1].substr(0, 30) + "</div>");
 		addPhotoMaker(latitudeTotal[t - 1], longitudeTotal[t - 1], titlePictureTotal[t - 1]);
 	}));
 
@@ -97,8 +97,8 @@ function removePhotoMaker() {
 }
 
 function mycarousel_getItemHTML(i, k, item) {
-	return "<li><div class = 'item' id = 'item" + (i + k) + "'><a href='http://www.flickr.com/photos/" + personId[i - 1] + "/" + photoId[i - 1]
-			+ "' target='_blank'><img src='" + smallUrl[i - 1] + "' height=100% /></a></div></li>";
+	return "<li><div class = 'item' id = 'item" + (i + k) + "'><a href='http://www.flickr.com/photos/" + personId[i - 1] + "/" + photoId[i - 1] + "' target='_blank'><img src='"
+			+ smallUrl[i - 1] + "' height=100% /></a></div></li>";
 }
 
 //this function is called from the sendToServer
@@ -124,6 +124,8 @@ function carouselLoadPictures(xml) {
 		g_jcarousel.render();
 		g_jcarousel.show();
 		g_carouselTotalSize = g_carouselTotalSize + smallUrl.length;
+		$(".yui-carousel-nav").css("background", "url('images/ui-bg_inset-hard_100_f5f8f9_1x30.png') repeat-x scroll 0 0 transparent");
+		$(".yui-carousel-nav").css("height", "30px");
 		//console.log("g_carouselTotalSize: "+g_carouselTotalSize);
 		timeofUpload++;
 		loadTheCarousel(0, g_jcarousel, smallUrl);
