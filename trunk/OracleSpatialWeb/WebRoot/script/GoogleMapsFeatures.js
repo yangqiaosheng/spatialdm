@@ -744,14 +744,10 @@ function wordClick(num, idp) {
 					colors = Highcharts.getOptions().colors;
 
 					$(xml).find('series').each(function() {
-						var data = jQuery.parseJSON($(this).text());
-						var year = $(this).attr("year");
-
-						console.log(year);
 						seriesOptions[seriesCounter++] = {
 							type: 'areaspline',
-							name : year,
-							data : data
+							name : $(this).attr("year"),
+							data : jQuery.parseJSON($(this).text())
 						};
 
 						// As we're loading the data asynchronously, we don't know what order it will arrive. So
