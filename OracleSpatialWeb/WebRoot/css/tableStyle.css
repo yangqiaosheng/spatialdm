@@ -46,6 +46,32 @@ input[type="button"] {
 	height: auto;
 }
 
+fieldset{
+	margin-bottom: 10px;
+	padding: 5px;
+}
+
+legend.controlPanel{
+	font-weight: bold;
+	font-size: medium;
+	border: 2px solid #7A98e3;
+	background: url("../images/ui-bg_inset-hard_100_f5f8f9_1x30.png") repeat-x scroll  50% 50% #A7BDF7;
+	cursor: pointer;
+	margin-bottom: 5px;
+}
+
+legend.tabLabel{
+	font-weight: bold;
+	border: 2px solid #7A98e3;
+	background: url("../images/ui-bg_inset-hard_100_f5f8f9_1x30.png") repeat-x scroll #A7BDF7;
+	cursor: pointer;
+}
+
+legend:hover {
+	background-image: none;
+	background-color: #a7dDd7;
+}
+
 .tabcontent {
 	background-color: #A7BDF7;
 	font-family: sans-serif;
@@ -61,10 +87,6 @@ input[type="button"] {
 	opacity: 1;
 }
 
-#histogramCheckbox,#CalendarcheckBox,#SearchCheckBox {
-	cursor: pointer;
-}
-
 #tab4focus,#tab1focus,#tab2focus,#tab3focus {
 	font-weight: bold;
 	opacity: 0.9;
@@ -78,13 +100,13 @@ html,body,#map_canvas {
 	overflow: hidden; /*important for not scroll*/
 }
 
-#move {
+#controlPanel {
 	border-width: 0.31em;
 	border-style: solid;
 	border-color: #8AA8F3;
 	position: absolute;
-	margin-left: 1%;
-	margin-top: 1%;
+	margin-left: 0%;
+	margin-top: 0%;
 	width: auto; /*500px*/
 	height: auto; /*it wasn't*/
 	top: 0;
@@ -123,13 +145,10 @@ html,body,#map_canvas {
 #table7 {
 	width: auto;
 	height: auto;
-	padding-left: 0cm;
-	padding-right: 0cm;
 }
 
 #address {
 	position: absolute;
-	margin-bottom: 5px;
 	top: 0;
 }
 

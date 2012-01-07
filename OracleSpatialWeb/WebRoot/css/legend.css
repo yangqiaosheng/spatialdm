@@ -8,23 +8,23 @@ label.error {
 
 .legendContainer {
 	position: absolute;
-	width: 20%;
-	height: auto;
+	width: 200px;
+	height: 157px;
 	z-index: 100;
 }
 
 #legendInfo {
-	width: 100%;
+	width: auto;
 	height: auto;
 	border-width: .1em;
 	border-style: solid;
-	border-color: #06A8FA;
+	border-color: #8AA8F3;
 }
 
-#idlegendContainer {
-	border-width: .1em;
+#infoContainer {
+	border-width: 2px;
 	border-style: solid;
-	border-color: #06A8FA;
+	border-color: #8AA8F3;
 	z-index: 100;
 	bottom: 0;
 	right: 0;
