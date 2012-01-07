@@ -386,7 +386,7 @@ function BubbleUpWindow(cls, subSpan) {
 
 function OnMouseOver(cls, spanElementInfo, spanElement, t, subSpan, index, arrayX, numberPhotos, title) {
 	spanElementInfo.onmouseover = function() {
-		subSpan.innerHTML = title + "<br>#pictures: " + arrayX[index].value2;
+		subSpan.innerHTML = title + "<br>#Pictures: " + arrayX[index].value2;
 		BubbleUpWindow(cls, subSpan);
 		if (arrayX[index].label == 0) {
 			if (numberPhotos == 0) {
@@ -688,7 +688,7 @@ Histogramm.prototype.render1 = function(parent, arrayX) {
 			subSpan.className = "Menu" + i;
 			//spanElement[i].appendChild(subSpan);
 			if (tooltip == true) {
-				activateToolTipSimple(0, subSpan, i, arrayX, this.model.data[i].value, 'Year');
+				activateToolTipSimple(0, subSpan, i, arrayX, this.model.data[i].value, 'YEAR');
 			}
 			hystogrammDiv.appendChild(spanElement[i]);
 			hystogrammDivInfo.appendChild(spanElementInfo[i]);
@@ -778,7 +778,7 @@ Histogramm.prototype.render2 = function(parent, arrayX) {
 			subSpan.className = "Menu";
 			//both.appendChild(subSpan);
 			if (tooltip == true) {
-				activateToolTipSimple(7, subSpan, i, arrayX, this.model.data[i].value, 'Month');
+				activateToolTipSimple(7, subSpan, i, arrayX, this.model.data[i].value, 'MONTH');
 			}
 			hystogrammDiv.appendChild(spanElement[k]);
 			hystogrammDivInfo.appendChild(spanElementInfo[k]);
@@ -995,7 +995,7 @@ Histogramm.prototype.render3 = function(parent, arrayX) {
 			subSpan.className = "Menu";
 			//both.appendChild(subSpan);
 			if (tooltip == true) {
-				activateToolTipSimple(19, subSpan, i, arrayX, this.model.data[i].value, 'Day');
+				activateToolTipSimple(19, subSpan, i, arrayX, this.model.data[i].value, 'DAY');
 			}
 			hystogrammDiv.appendChild(spanElement[k]);
 			hystogrammDivInfo.appendChild(spanElementInfo[k]);
@@ -1168,7 +1168,7 @@ Histogramm.prototype.render4 = function(parent, arrayX) {
 			subSpan.className = "Menu";
 			//both.appendChild(subSpan);
 			if (tooltip == true) {
-				activateToolTipSimple(50, subSpan, i, arrayX, this.model.data[i].value, 'Hour');
+				activateToolTipSimple(50, subSpan, i, arrayX, this.model.data[i].value, 'HOUR');
 			}
 			hystogrammDiv.appendChild(spanElement[k]);
 			hystogrammDivInfo.appendChild(spanElementInfo[k]);
@@ -1232,7 +1232,7 @@ Histogramm.prototype.render5 = function(parent, arrayX) {
 			var subSpan = document.createElement('span');
 			subSpan.className = "Menu";
 			if (tooltip == true) {
-				activateToolTipSimple(74, subSpan, i, arrayX, this.model.data[i].value, 'Weekday');
+				activateToolTipSimple(74, subSpan, i, arrayX, this.model.data[i].value, 'WEEKDAY');
 			}
 			hystogrammDiv.appendChild(spanElement[k]);
 			hystogrammDivInfo.appendChild(spanElementInfo[k]);
