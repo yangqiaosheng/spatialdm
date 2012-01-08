@@ -31,7 +31,8 @@
 		<property name="maxActive" value="10" />
 		<property name="minIdle" value="3" />
 		<property name="defaultReadOnly" value="true" />
-		<property name="validationQuery" value="select count(*) from FLICKR_DE_WEST_TABLE_COUNT" />
+		<property name="validationQuery" value="select 1" />
+<!--		<property name="validationQuery" value="select 1 from dual" />-->
 	</bean>
 
 	<!-- C3P0 DataSource configuration -->
@@ -74,7 +75,8 @@
 
 	<!-- JNDI DataSource configuration -->
 	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-      	<property name="jndiName" value="java:comp/env/jdbc/OracleCP"/>
+<!--      	<property name="jndiName" value="java:comp/env/jdbc/OracleCP"/>-->
+      	<property name="jndiName" value="java:comp/env/jdbc/PgCP"/>
       	<property name="resourceRef" value="true" />
 	</bean>
 
@@ -85,8 +87,8 @@
 
 	<!-- Mybatis configuration -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="c3p0DataSource" />
-<!--		<property name="dataSource" ref="jndiDataSource" />-->
+<!--		<property name="dataSource" ref="c3p0DataSource" />-->
+		<property name="dataSource" ref="jndiDataSource" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	<bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
