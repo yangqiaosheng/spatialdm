@@ -56,13 +56,13 @@
 
     <!-- url: The JDBC connection url for connecting to your MySQL dB.  -->
 
-	<!-- DBCP Connection Pool JNDI
-	<Resource name="jdbc/pgCP" auth="Container" type="javax.sql.DataSource"
+	<!-- DBCP Connection Pool JNDI -->
+	<Resource name="jdbc/PgCP" auth="Container" type="javax.sql.DataSource"
               maxActive="28" maxIdle="8" maxWait="10000"
               username="gennady_flickr" password="gennady"
 			  driverClassName="org.postgresql.Driver"
-              url="jdbc:postgresql:kdphotomap"/>
-	-->
+              url="jdbc:postgresql:kdphotomap2"/>
+
 
 	<!-- Oracle Implicit Connection Caching(ICC) DataSource configuration -->
 	<Resource name="jdbc/OracleCP" auth="Container" type="oracle.jdbc.pool.OracleDataSource"

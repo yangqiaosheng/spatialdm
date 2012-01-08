@@ -75,7 +75,7 @@ public class TestFlickrEuropeArea {
 //		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans_oracle.xml" });
 		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
-
+		builder.bind("java:comp/env/jdbc/PgCP", context.getBean("dbcpDataSource"));
 		areaMgr = context.getBean("flickrAreaMgr", FlickrAreaMgr.class);
 	}
 
