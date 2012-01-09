@@ -42,8 +42,8 @@ public class SplitFlickrByTags {
 
 	final static int FETCH_SIZE = 1;
 	final static int BATCH_SIZE = 1000;
-	static String PHOTO_TABLE_NAME = "flickr_europe_topviewed_1m_with_region_id";
-	static String SPLIT_TABLE_NAME = "flickr_europe_topviewed_1m_spilt_tag";
+	static String PHOTO_TABLE_NAME = "flickr_world_topviewed_5m";
+	static String SPLIT_TABLE_NAME = "flickr_world_topviewed_5m_spilt_tag";
 	static long start = System.currentTimeMillis();
 
 	static int rownum = 1;
