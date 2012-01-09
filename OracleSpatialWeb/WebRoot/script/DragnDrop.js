@@ -9,7 +9,8 @@ $(document).ready(function() {
 		opacity : 1
 	});
 	$("#TagChart").draggable( {
-		opacity : 1
+		opacity : 1,
+		handle: "#TagChartMenu"
 	});
 //	$("#photoWindow").draggable( {
 //		opacity : 1
