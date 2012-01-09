@@ -8,18 +8,14 @@ $(document).ready(function() {
 	$("#maxContainer").draggable( {
 		opacity : 1
 	});
-	$("#photoWindow").draggable( {
-		opacity : 1
-	});
-	$("#pictureMouseOver").draggable( {
-		opacity : 1
-	});
+//	$("#photoWindow").draggable( {
+//		opacity : 1
+//	});
 
 	setMovableStyle($("#controlPanel"));
 	setMovableStyle($("#infoContainer"));
 	setMovableStyle($("#maxContainer"));
-	setMovableStyle($("#photoWindow"));
-	setMovableStyle($("#pictureMouseOver"));
+//	setMovableStyle($("#photoWindow"));
 });
 
 function setMovableStyle(obj) {

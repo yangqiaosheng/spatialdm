@@ -135,9 +135,7 @@
 		<script type="text/javascript" src="script/circles.js"></script>
 		<script type="text/javascript" src="script/contextMenu.js"></script>
 		<script type="text/javascript" src="script/DragnDrop.js"></script>
-		<script type="text/javascript" src="script/Resizeble.js"></script>
 		<script type="text/javascript" src="script/corner.js"></script>
-		<script type="text/javascript" src="script/LoadPolygons.js"></script>
 		<script type="text/javascript" src="script/Validate.js"></script>
 		<script type="text/javascript" src="script/HistogrammModel.js"></script>
 		<script type="text/javascript" src="script/Histogramm.js"></script>

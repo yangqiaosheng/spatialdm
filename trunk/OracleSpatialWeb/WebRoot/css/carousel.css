@@ -112,13 +112,4 @@
 	border-color: #8AA8F3; /*blue border*/
 	border-width: 3px
 }
-#pictureMouseOver{
-    position:fixed;
-    width: auto;
-    height: auto;
-    top:50%;
-    right:5%;
-    border-style: solid;
-	border-color: #8AA8F3; /*blue border*/
-	border-width: 3px;
-}
+

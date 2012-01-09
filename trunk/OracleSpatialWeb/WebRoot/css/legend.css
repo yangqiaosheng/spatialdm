@@ -51,3 +51,30 @@ label.error {
 	cursor: pointer;
 	padding: 10px;
 }
+
+#TimeSeriesGraphic{
+	display: none;
+    position:fixed;
+    top:10%;
+    right:5%;
+    border-style: solid;
+	border-color: #8AA8F3; /*blue border*/
+	border-width: 3px;
+	text-align: right;
+	cursor: no-drop;
+	cursor: -moz-zoom-out;
+}
+
+#pictureMouseOver{
+	text-align: center;
+	display: none;
+    position:fixed;
+    top:40%;
+    right:5%;
+    border-style: solid;
+	border-color: #8AA8F3; /*blue border*/
+	border-width: 3px;
+	text-align: right;
+	cursor: no-drop;
+	cursor: -moz-zoom-out;
+}
