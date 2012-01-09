@@ -67,6 +67,7 @@ function agregationPolygonsAdd() {
 	listenerHandle = google.maps.event.addListener(map, 'idle', function() {
 		infowindow.close();
 		infowindowClick.close();
+		$("#maxContainer").removeClass('visible').addClass('invisible');
 		removeCircles();
 		TagChartHide();
 		cleanPhotos();
@@ -162,46 +163,59 @@ function showHistogram() {
 	});
 }
 
-
 $(function() {
-	showHistogram();
+	if (screen.height < 1024) {
+		hideHistogram();
+	}
 	hideTableObject($("#calendarLabel"), $("#CalendarContent"));
 	hideTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
 	hideTableObject($("#displayOptLabel"), $("#displayOptContent"));
 
-	$("#calendarLabel").toggle(function() {
-		showTableObject($("#calendarLabel"), $("#CalendarContent"));
-		hideHistogram();
-	}, function() {
-		hideTableObject($("#calendarLabel"), $("#CalendarContent"));
+	$("#calendarLabel").click(function() {
+		if (!($("#CalendarContent")).is(":visible")) {
+			showTableObject($("#calendarLabel"), $("#CalendarContent"));
+			hideHistogram();
+		} else {
+			hideTableObject($("#calendarLabel"), $("#CalendarContent"));
+		}
 	});
 
-	$("#histogramLabel").toggle(function() {
-		hideHistogram();
-	}, function() {
-		showHistogram();
-		hideTableObject($("#calendarLabel"), $("#CalendarContent"));
+	$("#histogramLabel").click(function() {
+		if (!($("#histogramContent")).is(":visible")) {
+			showHistogram();
+			hideTableObject($("#calendarLabel"), $("#CalendarContent"));
+		} else {
+			hideHistogram();
+		}
 	});
-	$("#displayOptLabel").toggle(function() {
-		showTableObject($("#displayOptLabel"), $("#displayOptContent"));
-	}, function() {
-		hideTableObject($("#displayOptLabel"), $("#displayOptContent"));
+	$("#displayOptLabel").click(function() {
+		if (!($("#displayOptContent")).is(":visible")) {
+			showTableObject($("#displayOptLabel"), $("#displayOptContent"));
+		} else {
+			hideTableObject($("#displayOptLabel"), $("#displayOptContent"));
+		}
 	});
 
-	$("#SearchLocationLabel").toggle(function() {
-		showTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
-	}, function() {
-		hideTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
+	$("#SearchLocationLabel").click(function() {
+		if (!($("#SearchLocationContent")).is(":visible")) {
+			showTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
+		} else {
+			hideTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
+		}
 	});
-	$("#PolygonChartLabel").toggle(function() {
-		hideTableObject($("#PolygonChartLabel"), $("#PolygonChartContent"));
-	}, function() {
-		showTableObject($("#PolygonChartLabel"), $("#PolygonChartContent"));
+	$("#PolygonChartLabel").click(function() {
+		if (!($("#PolygonChartContent")).is(":visible")) {
+			showTableObject($("#PolygonChartLabel"), $("#PolygonChartContent"));
+		} else {
+			hideTableObject($("#PolygonChartLabel"), $("#PolygonChartContent"));
+		}
 	});
-	$("#controlPanelLabel").toggle(function() {
-		hideTableObject($("#controlPanelLabel"), $("#controlPanelContent"));
-	}, function() {
-		showTableObject($("#controlPanelLabel"), $("#controlPanelContent"));
+	$("#controlPanelLabel").click(function() {
+		if (!($("#controlPanelContent")).is(":visible")) {
+			showTableObject($("#controlPanelLabel"), $("#controlPanelContent"));
+		} else {
+			hideTableObject($("#controlPanelLabel"), $("#controlPanelContent"));
+		}
 	});
 });
 //********************************************************************************************
@@ -575,7 +589,7 @@ function loadTags(idp, xml, center, total, selc, mouseString) {
 				createInfoWindowMouseClick(center, contentString);
 			}
 		}
-		$('#numberOfItems').empty().html("<span> Number of pictures selected: " + sel[idp] + " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
+		$('#numberOfItems').empty().html("<span> Number of pictures selected: " + sel[idp] + "<span style='color:#999999'> polygon_id= " + getId()+ " </span>" + " <img src='images/89.gif' height='20' width='20'/> </span>"); //globalvar
 		$("#chart1").html(
 				"<img title='Year Level' id = 'IntChartID_1' class='InteriorChart' src='TimeSeriesChart.png?areaid=" + getId() + "&level=year&width=140&height=80&timestamp="
 						+ new Date().getTime() + "  '>");
@@ -709,11 +723,9 @@ function createTagChart(tag) {
 				cursor : 'pointer',
 				events : {
 					click : function(event) {
-						console.log(this.name + ' clicked\n' + event.point.x + ' ' + event.point.y + ' \n' + 'Alt: ' + event.altKey + '\n' + 'Control: ' + event.ctrlKey + '\n'
-								+ 'Shift: ' + event.shiftKey + '\n');
 						var queryDateStr = this.name + Highcharts.dateFormat('-%m-%d', event.point.x);
 						if (event.point.y > 0) {
-							setTagCarousel(ids, tag, queryDateStr);
+							setTagCarousel(ids, tag, queryDateStr, event.point.y);
 						}
 					}
 				}
@@ -748,7 +760,7 @@ function wordClick(num, idp) {
 				// As we're loading the data asynchronously, we don't know what order it will arrive. So
 					// we keep a counter and create the chart when all the data is loaded.
 
-					if (seriesCounter == seriesSize) {
+					if (seriesCounter >= seriesSize) {
 						createTagChart(tagsClick[num].getNameTag());
 					}
 				});

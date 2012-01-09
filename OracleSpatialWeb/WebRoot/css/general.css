@@ -9,6 +9,10 @@
 	padding-right:0cm;
 	padding-bottom:0cm;
 }
+
+#searchLocationInput{
+	width: 100px;
+}
 input.right {
     float:right;
 }

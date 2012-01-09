@@ -1,6 +1,6 @@
-$(document).ready(function(){   
-    $("#idlegendContainer").resizable();
+$(document).ready(function(){
+    $("#infoContainer").resizable();
     $("#move").resizable();
     $("#maxContainer").resizable();
-    $("#photoWindow").resizable();
+//    $("#photoWindow").resizable();
 });

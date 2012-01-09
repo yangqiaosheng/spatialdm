@@ -35,6 +35,7 @@ var globalPolygonSelected = -1;
 var isTagCarousel = false;
 var selectedTag = null;
 var selectedQueryDateStr = null;
+var tagNum = 0;
 
 function scrollEvtHandler(obj) {
 	//console.log("SmallPhotos 1");
@@ -58,8 +59,14 @@ function loadTheCarousel(k, g_jcarousel, smallUrl) {
 		g_jcarousel.show();
 		assignEventsForTheCarouselItems(i, k, i + k);
 	}
+	var tagInfo = "";
+	var selectedNum = sel[globalPolygonSelected];
+	if(selectedTag != null){
+		tagInfo = "with tag '" + selectedTag + "' on " + selectedQueryDateStr;
+		selectedNum = tagNum;
+	}
 	$('#numberOfItems').empty().html(
-			"<span> Number of pictures selected: " + sel[globalPolygonSelected] + "</span><span style='color:#999999'> polygon_id= " + globalPolygonSelected + " </span>");//globalvar
+			"<span> Number of pictures selected: " + selectedNum + "</span> " + tagInfo + " <span style='color:#999999'> polygon_id= " + globalPolygonSelected + " </span>");//globalvar
 }
 
 function assignEventsForTheCarouselItems(i, k, t) {
@@ -70,10 +77,12 @@ function assignEventsForTheCarouselItems(i, k, t) {
 		$("#pictureMouseOver").html(
 				"<img src='" + smallUrlTotal[t - 1] + "'/><div class='tabcontent'>" + weekdayTotal[t - 1] + " " + dateTotal[t - 1] + "</div><div class='tabcontent'>"
 						+ titlePictureTotal[t - 1].substr(0, 30) + "</div>");
+		$("#pictureMouseOver").show();
 		addPhotoMaker(latitudeTotal[t - 1], longitudeTotal[t - 1], titlePictureTotal[t - 1]);
 	}));
 
 	itemObj.bind('mouseout', (function() {
+		$("#pictureMouseOver").hide();
 		$("#pictureMouseOver").html("");
 		itemSubObj.css("background-color", "#CCFFFF");
 		removePhotoMaker();
@@ -208,6 +217,9 @@ function getId() {
 }
 
 function setCarousel(ids) {
+	selectedTag = null;
+    selectedQueryDateStr = null;
+    tagNum = 0;
 	isTagCarousel = false;
 	g_carouselTotalSize = 0;
 	//console.log("SmallPhotos 2");
@@ -217,8 +229,12 @@ function setCarousel(ids) {
 	sendToServerFromCarousel(ids, page_size, page);
 }
 
-function setTagCarousel(ids, tag, queryDateStr) {
+function setTagCarousel(ids, tag, queryDateStr, num) {
+	$('#numberOfItems').empty().html(
+				"<span> Number of pictures selected: " + num + " tag '" + tag + "' on " + queryDateStr + "<span style='color:#999999'> polygon_id= " + ids+ " </span>"
+						+ " <img src='images/89.gif' height='20' width='20'/> </span>");
 	isTagCarousel = true;
+	tagNum = num;
 	selectedTag = tag;
 	selectedQueryDateStr = queryDateStr;
 	g_carouselTotalSize = 0;

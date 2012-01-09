@@ -1,6 +1,7 @@
 
-<div id="pictureMouseOver" class='tabcontent'></div>
 <div id="pictureContainer" class='tabcontent'>
+	<div id="pictureMouseOver"></div>
+	<div id="TimeSeriesGraphic" onclick='hideTimeSeriesGraphic()'></div>
 	<div id="TagGraphic" onclick='TagGraphicDisappear()'></div>
 	<div id="TagChart">
 		<div id="TagChartCloseButton" onclick="TagChartHide()">

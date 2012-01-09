@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jdom.Document;
@@ -28,7 +27,6 @@ import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
-import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
@@ -40,7 +38,6 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 289355222687198395L;
 
-	private static final int MAX_PAGE_SIZE = 200;
 	private static FlickrAreaMgr areaMgr = null;
 
 	@Override
