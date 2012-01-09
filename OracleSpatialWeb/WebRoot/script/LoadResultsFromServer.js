@@ -216,7 +216,10 @@ function getId() {
 	return ids;
 }
 
-function setCarousel(ids) {
+function setCarousel(showCarousel, ids) {
+	if(showCarousel == true){
+		$("#maxContainer").show("slow");
+	}
 	selectedTag = null;
     selectedQueryDateStr = null;
     tagNum = 0;
@@ -229,7 +232,10 @@ function setCarousel(ids) {
 	sendToServerFromCarousel(ids, page_size, page);
 }
 
-function setTagCarousel(ids, tag, queryDateStr, num) {
+function setTagCarousel(showCarousel, ids, tag, queryDateStr, num) {
+	if(showCarousel == true){
+		$("#maxContainer").show("slow");
+	}
 	$('#numberOfItems').empty().html(
 				"<span> Number of pictures selected: " + num + " tag '" + tag + "' on " + queryDateStr + "<span style='color:#999999'> polygon_id= " + ids+ " </span>"
 						+ " <img src='images/89.gif' height='20' width='20'/> </span>");

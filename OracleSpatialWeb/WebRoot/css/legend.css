@@ -40,24 +40,41 @@ label.error {
 }
 
 #TagChart {
-	background-color: white;
+	width: 600px;
 	z-index: 100;
 	display: none;
-	text-align: right;
+	position: fixed;
+	top: 5%;
+	right: 5%;
+	border-style: solid;
+	border-color: #8AA8F3; /*blue border*/
+	border-width: 3px
+}
 
+#TagChartMenu {
+	width: 600px;
+	text-align: right;
+	background: url('../images/ui-bg_inset-hard_100_f5f8f9_1x30.png')
+		repeat-x scroll 0 0 transparent;
+	background-color: #A7BDF7;
 }
 
 #TagChartCloseButton {
+	position: relative;
+	right: 0;
 	cursor: pointer;
 	padding: 10px;
+	width: 15px;
+	height: 15px;
 }
 
-#TimeSeriesGraphic{
+#TimeSeriesGraphic {
+	background-color: #A7BDF7;
 	display: none;
-    position:fixed;
-    top:10%;
-    right:5%;
-    border-style: solid;
+	position: fixed;
+	top: 10%;
+	right: 5%;
+	border-style: solid;
 	border-color: #8AA8F3; /*blue border*/
 	border-width: 3px;
 	text-align: right;
@@ -65,13 +82,14 @@ label.error {
 	cursor: -moz-zoom-out;
 }
 
-#pictureMouseOver{
+#pictureMouseOver {
+	background-color: #A7BDF7;
 	text-align: center;
 	display: none;
-    position:fixed;
-    top:40%;
-    right:5%;
-    border-style: solid;
+	position: fixed;
+	top: 40%;
+	right: 5%;
+	border-style: solid;
 	border-color: #8AA8F3; /*blue border*/
 	border-width: 3px;
 	text-align: right;
