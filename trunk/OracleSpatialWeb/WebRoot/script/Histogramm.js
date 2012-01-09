@@ -22,7 +22,6 @@ var maxW = 1;
 var globId = 0;
 var ApplyPolygons = false;
 var YEAR = true;
-var once = true;
 
 var myArray1;
 var myArray2;
@@ -339,6 +338,10 @@ function init() {
 	$("#parent5").empty().html("");
 	view5.render5(document.getElementById('parent5'), myArray5);
 	//console.log("step 1");
+
+	$("#histogramContent").append(
+							"<div id='absButton'><input type='button' style= onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+
 	if (ApplyPolygons == false) {
 		ApplyPolygons = true;
 		if (AGGREGATION == true) {
@@ -441,11 +444,6 @@ function OnClick(spanElementInfo, spanElement, t, subSpan, index, arrayX, number
 				globalArray[arrayX[index].indexVal]++
 				arrayX[index].label = arrayX[index].label % 2; // instead of 1
 				globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal] % 2;
-				if (once == true) {
-					$("#histogramContent").append(
-							"<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-					once = false;
-				}
 			} else {
 				spanElementInfo.style.background = '#DDDDDD';
 				spanElement.style.background = '#DDDDDD';
@@ -453,11 +451,6 @@ function OnClick(spanElementInfo, spanElement, t, subSpan, index, arrayX, number
 				globalArray[arrayX[index].indexVal]++
 				arrayX[index].label = arrayX[index].label % 2; // instead of 1
 				globalArray[arrayX[index].indexVal] = globalArray[arrayX[index].indexVal] % 2;
-				if (once == true) {
-					$("#histogramContent").append(
-							"<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-					once = false;
-				}
 			}
 		} else {
 			if (numberPhotos == 0) {
@@ -576,14 +569,14 @@ function setElementsForRender(thisL) {
 	borderStyle = thisL.options.borderStyle;
 	borderWidth = thisL.options.borderWidth;
 	verticalAlign = thisL.options.verticalAlign;
-	information = document.createElement("div");
+	information = document.createElement("span");
 	information.className = "histogramInfoButtons1";
 	information.style.display = "block";
 	information.style.cssFloat = "left";
 }
 
 function setElementsForRenderSecondo(thisL, i, k) {
-	both = document.createElement('div');
+	both = document.createElement('span');
 	both.style.display = "block";
 	both.style.cssFloat = "left";
 	both.style.bottom = "0px";
@@ -1271,10 +1264,7 @@ function selectAllWeekDays() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function de_selectAllWeekDays() {
@@ -1301,10 +1291,7 @@ function de_selectAllWeekDays() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function mirrorAllWeekDays() {
@@ -1345,10 +1332,7 @@ function mirrorAllWeekDays() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function selectAllHours() {
@@ -1375,10 +1359,7 @@ function selectAllHours() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function de_selectAllHours() {
@@ -1405,10 +1386,7 @@ function de_selectAllHours() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function mirrorAllHours() {
@@ -1449,10 +1427,7 @@ function mirrorAllHours() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function selectAllDays() {
@@ -1479,10 +1454,7 @@ function selectAllDays() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function de_selectAllDays() {
@@ -1508,10 +1480,6 @@ function de_selectAllDays() {
 			} else {
 			}
 		}
-	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
 	}
 }
 
@@ -1553,10 +1521,6 @@ function mirrorAllDays() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
 }
 
 function selectAllMonths() {
@@ -1583,10 +1547,7 @@ function selectAllMonths() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function de_selectAllMonths() {
@@ -1614,10 +1575,7 @@ function de_selectAllMonths() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function mirrorAllMonths() {
@@ -1658,10 +1616,7 @@ function mirrorAllMonths() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 /*this changes the color and the selection value 0 or 1*/
 function selectAllYear() {
@@ -1687,10 +1642,7 @@ function selectAllYear() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function de_selectAllYear() {
@@ -1716,10 +1668,7 @@ function de_selectAllYear() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function mirrorAllYear() {
@@ -1759,10 +1708,7 @@ function mirrorAllYear() {
 			}
 		}
 	}
-	if (once == true) {
-		$("#histogramContent").append("<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
-		once = false;
-	}
+
 }
 
 function histogramReset() {

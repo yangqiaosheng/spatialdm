@@ -8,6 +8,9 @@ $(document).ready(function() {
 	$("#maxContainer").draggable( {
 		opacity : 1
 	});
+	$("#TagChart").draggable( {
+		opacity : 1
+	});
 //	$("#photoWindow").draggable( {
 //		opacity : 1
 //	});
@@ -15,6 +18,8 @@ $(document).ready(function() {
 	setMovableStyle($("#controlPanel"));
 	setMovableStyle($("#infoContainer"));
 	setMovableStyle($("#maxContainer"));
+	setMovableStyle($("#TagChartMenu"));
+
 //	setMovableStyle($("#photoWindow"));
 });
 
