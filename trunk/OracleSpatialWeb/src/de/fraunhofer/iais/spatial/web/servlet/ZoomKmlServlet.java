@@ -83,7 +83,7 @@ public class ZoomKmlServlet extends HttpServlet {
 
 				FlickrAreaDto areaDto = new FlickrAreaDto();
 
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
+				logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
 				areaMgr.parseXmlRequest(xml.toString(), areaDto);
 

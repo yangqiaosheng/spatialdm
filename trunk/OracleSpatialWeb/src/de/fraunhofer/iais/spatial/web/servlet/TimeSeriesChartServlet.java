@@ -66,12 +66,13 @@ public class TimeSeriesChartServlet extends HttpServlet {
 			height = MAX_HEIGHT;
 		}
 
+		logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + ToStringBuilder.reflectionToString(areaids) + " |level:" + level + " |smooth:" + smooth); //$NON-NLS-1$
+
 		if (ArrayUtils.isEmpty(areaids) || StringUtils.isEmpty(level)) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
-			logger.info("requestUrl:" + request.getRequestURL() + " |areaids:" + ToStringBuilder.reflectionToString(areaids) + " |level:" + level + " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				List<FlickrArea> areas = new ArrayList<FlickrArea>();
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
