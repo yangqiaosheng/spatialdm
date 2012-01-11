@@ -20,7 +20,7 @@
 
 		<!-- jQuery lib -->
 <%--		<script type="text/javascript" src="script/jquery/jquery-1.7.1.js"></script>--%>
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 
 		<!-- jQuery-UI plugin -->
 		<script type="text/javascript" src="script/jquery/plugins/js/jquery-ui-1.8.16.custom.min.js"></script>
