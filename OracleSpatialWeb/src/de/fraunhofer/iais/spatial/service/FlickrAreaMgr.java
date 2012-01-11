@@ -460,10 +460,8 @@ public class FlickrAreaMgr {
 		}
 
 		Map<String, Map<String, Integer>> daysTagsCount = area.getDaysTagsCount();
-//		System.out.println(daysTagsCount);
 
 		Set<String> displayYears = defineDisplayYears(tag, years, daysTagsCount);
-		System.out.println("displayYears:" + displayYears);
 
 		// init
 		for (String year : displayYears) {

@@ -93,8 +93,6 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 						buildXmlDoc(document, photos);
 						messageElement.setText("SUCCESS");
 					} else {
-						logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
 						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
 						buildXmlDoc(document, photos);
 						messageElement.setText("SUCCESS");

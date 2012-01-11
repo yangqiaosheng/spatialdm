@@ -65,6 +65,7 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 		if (height > MAX_HEIGHT) {
 			height = MAX_HEIGHT;
 		}
+		logger.info("requestUrl:" + request.getRequestURL() + " |areaid:" + areaid + " |tag:" + tag + " |smooth:" + smooth); //$NON-NLS-1$
 
 		if (areaid <= 0 || StringUtils.isEmpty(tag)) {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
@@ -72,7 +73,6 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 			IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning2.png"), sos);
 		} else {
 			tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
-			logger.info("requestUrl:" + request.getRequestURL() + " |areaid:" + areaid + " |tag:" + tag + " |smooth:" + smooth); //$NON-NLS-1$
 			try {
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
 

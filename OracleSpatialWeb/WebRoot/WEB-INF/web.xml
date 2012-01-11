@@ -102,19 +102,7 @@
 	<filter-mapping>
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<servlet>
-		<description>Retrieve the data to create a kml with different zoom levels</description>
-		<display-name>PolygonKml</display-name>
-		<servlet-name>PolygonKml</servlet-name>
-		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.PolygonKmlServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>PolygonKml</servlet-name>
-		<url-pattern>/PolygonKml</url-pattern>
-	</servlet-mapping>
+	</filter-mapping> 
 
 	<servlet>
 		<description>Retrieve the data to create a kml with different zoom levels</description>

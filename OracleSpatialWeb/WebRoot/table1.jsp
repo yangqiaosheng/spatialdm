@@ -3,7 +3,7 @@
 	<div id="displayOptContent">
 		<div>
 			<input type="checkbox" id="AggregationCheckBox" checked></input>
-			<b>Aggregation depends on scale</b>
+			<b>Automatic Update on Screen Changes</b>
 		</div>
 		<div>
 			<input type="checkbox" id="TAGCheckBox" checked></input>

@@ -44,7 +44,7 @@ public class TagServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 289355222687198395L;
 
-	private static final int MAX_SIZE = 50;
+	private static final int MAX_SIZE = 150;
 	private static final int DEFAULT_SIZE = 20;
 	private static FlickrAreaMgr areaMgr = null;
 
@@ -100,6 +100,8 @@ public class TagServlet extends HttpServlet {
 
 		if (!StringUtils.isNumeric(areaid)) {
 			messageElement.setText("ERROR: wrong input parameter!");
+		} else if (size > MAX_SIZE) {
+			messageElement.setText("ERROR: the size excceed " + MAX_SIZE + " !");
 		} else if (request.getSession().getAttribute("areaDto") == null) {
 			messageElement.setText("ERROR: please perform a query first!");
 		} else {
@@ -107,8 +109,6 @@ public class TagServlet extends HttpServlet {
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
-
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|radius:" + radius ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 

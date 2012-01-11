@@ -89,7 +89,7 @@ public class PolygonXmlServlet extends HttpServlet {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 
-		logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
+		logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
 		if (StringUtils.isEmpty(xml)) {
 			messageElement.setText("ERROR: wrong input parameter!");

@@ -243,7 +243,6 @@ public abstract class FlickrAreaDao {
 		for (int i = tempQueryStrs.size() - idx; photos.size() < pageSize && i >= 0; i--) {
 			if (count != null && count.get(tempQueryStrs.get(i)) != null && count.get(tempQueryStrs.get(i)) > 0) {
 				List<FlickrPhoto> tempPhotos = this.getPhotos(area, tempQueryStrs.get(i), pageSize - photos.size() + (start - pos));
-				System.out.println("getPhoto():" + tempQueryStrs.get(i) + "|HasSize: " + count.get(tempQueryStrs.get(i)) + "|limit: " + (pageSize - photos.size() + (start - pos)) + "|gotSize: " + tempPhotos.size());
 				photos.addAll(tempPhotos.subList(start - pos, tempPhotos.size()));
 				pos = start;
 			}
