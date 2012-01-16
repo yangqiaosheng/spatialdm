@@ -3,4 +3,5 @@ $(document).ready(function(){
     $("fieldset").corner('7px');
     $("legend.controlPanel").corner('7px');
     $("legend.tabLabel").corner('5px');
+    $("#maxContainer").corner('7px');
 });
