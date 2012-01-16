@@ -8,5 +8,8 @@
 		<p>Project: <a href="http://www.iais.fraunhofer.de/geokd.html">Geographic Knowledge Discovery</a></p>
 		<p>Major Developers: ......</p>
 		<p>Publication: ......</p>
+		<div class="fb-like" data-href="http://kd-photomap.iais.fraunhofer.de" data-send="false" data-width="450" data-show-faces="false" data-font="arial"></div>
+		<div><a href="https://twitter.com/share" class="twitter-share-button" data-url="kd-photomap.iais.fraunhofer.de" data-text="kd-photomap" data-size="large" data-hashtags="kd-photomap">Tweet</a></div>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 	</div>
 </fieldset>

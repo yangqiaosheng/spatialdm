@@ -147,6 +147,10 @@ html,body,#map_canvas {
 	height: auto;
 }
 
+#AboutUs {
+	width: 453px;
+}
+
 #address {
 	position: absolute;
 	top: 0;
