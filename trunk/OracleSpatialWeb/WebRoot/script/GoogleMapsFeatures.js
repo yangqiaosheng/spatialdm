@@ -73,6 +73,12 @@ function agregationPolygonsAdd() {
 		removeCircles();
 		TagChartHide();
 		cleanPhotos();
+		hideTimeSeriesGraphic();
+		$("#chart1").html("");
+		$("#chart2").html("");
+		$("#chart3").html("");
+		$("#chart4").html("");
+		$("#chart5").html("");
 		ids = "";
 		readyToExecute_A = true;
 		readyToExecute_B = true;
@@ -173,6 +179,7 @@ $(function() {
 	} else {
 		showHistogram();
 	}
+	hideTableObject($("#AboutUsLabel"), $("#AboutUsContent"));
 	hideTableObject($("#calendarLabel"), $("#CalendarContent"));
 	hideTableObject($("#SearchLocationLabel"), $("#SearchLocationContent"));
 	hideTableObject($("#displayOptLabel"), $("#displayOptContent"));
@@ -216,6 +223,14 @@ $(function() {
 			hideTableObject($("#PolygonChartLabel"), $("#PolygonChartContent"));
 		}
 	});
+	$("#AboutUsLabel").click(function() {
+		if (!($("#AboutUsContent")).is(":visible")) {
+			showTableObject($("#AboutUsLabel"), $("#AboutUsContent"));
+		} else {
+			hideTableObject($("#AboutUsLabel"), $("#AboutUsContent"));
+		}
+	});
+
 	$("#controlPanelLabel").click(function() {
 		if (!($("#controlPanelContent")).is(":visible")) {
 			showTableObject($("#controlPanelLabel"), $("#controlPanelContent"));
