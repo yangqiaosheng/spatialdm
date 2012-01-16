@@ -1,4 +1,5 @@
 function atacheEventsOnCharts() {
+
 	var obj = $("#TimeSeriesGraphic");
 	$("#chart1").click(function() {
 		obj.show("slow");
@@ -28,5 +29,5 @@ function atacheEventsOnCharts() {
 
 function hideTimeSeriesGraphic() {
 	$("#TimeSeriesGraphic").hide("slow");
-	$("#TimeSeriesGraphic").html("");
+//	$("#TimeSeriesGraphic").html("");
 }

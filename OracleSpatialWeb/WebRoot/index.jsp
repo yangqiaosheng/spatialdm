@@ -97,6 +97,7 @@
 					<jsp:include page="table3.jsp" />
 					<jsp:include page="table4.jsp" />
 					<jsp:include page="table5.jsp" />
+					<jsp:include page="aboutUs.jsp" />
 				</div>
 			</div>
 

@@ -69,7 +69,8 @@ label.error {
 }
 
 #TimeSeriesGraphic {
-	background-color: #A7BDF7;
+	background: url('../images/89.gif')	no-repeat center #A7BDF7;
+	back
 	display: none;
 	position: fixed;
 	top: 10%;
@@ -80,6 +81,8 @@ label.error {
 	text-align: right;
 	cursor: no-drop;
 	cursor: -moz-zoom-out;
+	width:	600px;
+	height: 300px
 }
 
 #pictureMouseOver {
