@@ -1,0 +1,114 @@
+<?xml version='1.0'?>
+
+<ObjectData>
+
+<Object>
+	<id>001</id>
+	<name>001</name>
+	<shape closed="true">
+		<point><xCoord>4.359510</xCoord><yCoord>43.81519</yCoord></point>
+		<point><xCoord>4.359397</xCoord><yCoord>43.81567</yCoord></point>
+		<point><xCoord>4.360353</xCoord><yCoord>43.81579</yCoord></point>
+		<point><xCoord>4.360244</xCoord><yCoord>43.81620</yCoord></point>
+		<point><xCoord>4.360864</xCoord><yCoord>43.81630</yCoord></point>
+		<point><xCoord>4.361135</xCoord><yCoord>43.81541</yCoord></point>
+	</shape>
+	<centroid><xCoord>4.360719</xCoord><yCoord>43.81556</yCoord></centroid>
+	<neighbor>002</neighbor>
+	<neighbor>003</neighbor>
+	<existenceTime>
+		<begin> <date year="2011" month="8" day="5" hour="16" minute="00" second="00" /> </begin>
+		<end> <date year="2011" month="8" day="5" hour="23" minute="00" second="00" /> </end>
+	</existenceTime>
+	<property name="N visits" type="numeric">202</property>
+</Object>
+
+<Object>
+	<id>002</id>
+	<name>002</name>
+	<shape closed="true">
+		<point><xCoord>4.359510</xCoord><yCoord>43.81519</yCoord></point>
+		<point><xCoord>4.357797</xCoord><yCoord>43.81497</yCoord></point>
+		<point><xCoord>4.357607</xCoord><yCoord>43.81588</yCoord></point>
+		<point><xCoord>4.358198</xCoord><yCoord>43.81597</yCoord></point>
+		<point><xCoord>4.358328</xCoord><yCoord>43.81553</yCoord></point>
+		<point><xCoord>4.359397</xCoord><yCoord>43.81567</yCoord></point>
+	</shape>
+	<centroid><xCoord>4.358100</xCoord><yCoord>43.81527</yCoord></centroid>
+	<neighbor>001</neighbor>
+	<neighbor>004</neighbor>
+	<existenceTime>
+		<begin> <date year="2011" month="8" day="5" hour="16" minute="00" second="00" /> </begin>
+		<end> <date year="2011" month="8" day="5" hour="23" minute="00" second="00" /> </end>
+	</existenceTime>
+	<property name="N visits" type="numeric">215</property>
+</Object>
+
+<Object>
+	<id>003</id>
+	<name>003</name>
+	<shape closed="true">
+		<point><xCoord>4.360864</xCoord><yCoord>43.81630</yCoord></point>
+		<point><xCoord>4.360244</xCoord><yCoord>43.81620</yCoord></point>
+		<point><xCoord>4.360116</xCoord><yCoord>43.81662</yCoord></point>
+		<point><xCoord>4.359137</xCoord><yCoord>43.81651</yCoord></point>
+		<point><xCoord>4.358991</xCoord><yCoord>43.81699</yCoord></point>
+		<point><xCoord>4.359777</xCoord><yCoord>43.81709</yCoord></point>
+		<point><xCoord>4.360594</xCoord><yCoord>43.81718</yCoord></point>
+	</shape>
+	<centroid><xCoord>4.360326</xCoord><yCoord>43.81690</yCoord></centroid>
+	<neighbor>001</neighbor>
+	<neighbor>004</neighbor>
+	<neighbor>005</neighbor>
+	<existenceTime>
+		<begin> <date year="2011" month="8" day="5" hour="16" minute="00" second="00" /> </begin>
+		<end> <date year="2011" month="8" day="5" hour="23" minute="00" second="00" /> </end>
+	</existenceTime>
+	<property name="N visits" type="numeric">224</property>
+</Object>
+
+<Object>
+	<id>004</id>
+	<name>004</name>
+	<shape closed="true">
+		<point><xCoord>4.358198</xCoord><yCoord>43.81597</yCoord></point>
+		<point><xCoord>4.357607</xCoord><yCoord>43.81588</yCoord></point>
+		<point><xCoord>4.357356</xCoord><yCoord>43.81677</yCoord></point>
+		<point><xCoord>4.358279</xCoord><yCoord>43.81690</yCoord></point>
+		<point><xCoord>4.358991</xCoord><yCoord>43.81699</yCoord></point>
+		<point><xCoord>4.359137</xCoord><yCoord>43.81651</yCoord></point>
+		<point><xCoord>4.358114</xCoord><yCoord>43.81636</yCoord></point>
+	</shape>
+	<centroid><xCoord>4.357724</xCoord><yCoord>43.81657</yCoord></centroid>
+	<neighbor>002</neighbor>
+	<neighbor>003</neighbor>
+	<neighbor>005</neighbor>
+	<existenceTime>
+		<begin> <date year="2011" month="8" day="5" hour="16" minute="00" second="00" /> </begin>
+		<end> <date year="2011" month="8" day="5" hour="23" minute="00" second="00" /> </end>
+	</existenceTime>
+	<property name="N visits" type="numeric">116</property>
+</Object>
+
+<Object>
+	<id>005</id>
+	<name>005</name>
+	<shape closed="true">
+		<point><xCoord>4.359777</xCoord><yCoord>43.81709</yCoord></point>
+		<point><xCoord>4.358991</xCoord><yCoord>43.81699</yCoord></point>
+		<point><xCoord>4.358279</xCoord><yCoord>43.81690</yCoord></point>
+		<point><xCoord>4.358168</xCoord><yCoord>43.81726</yCoord></point>
+		<point><xCoord>4.359686</xCoord><yCoord>43.81745</yCoord></point>
+	</shape>
+	<centroid><xCoord>4.358949</xCoord><yCoord>43.81716</yCoord></centroid>
+	<neighbor>003</neighbor>
+	<neighbor>004</neighbor>
+	<existenceTime>
+		<begin> <date year="2011" month="8" day="5" hour="16" minute="00" second="00" /> </begin>
+		<end> <date year="2011" month="8" day="5" hour="23" minute="00" second="00" /> </end>
+	</existenceTime>
+	<property name="N visits" type="numeric">398</property>
+</Object>
+
+
+</ObjectData>
