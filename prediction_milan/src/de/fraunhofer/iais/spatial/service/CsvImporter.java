@@ -50,8 +50,8 @@ public class CsvImporter {
 		Map<Long, Map<String, Integer>> areaEvents = Maps.newHashMap();
 		List<Area> areas = Lists.newArrayList();
 
-		importAreaEvents(areaEvents, "data/places_presence_predicted_2011_09_19-25.csv");
-		importAreas(areas, null, "data/areas1000.xml");
+		importAreaEvents(areaEvents, "WebRoot/data/places_presence_predicted_2011_09_19-25.csv");
+		importAreas(areas, null, "WebRoot/data/areas1000.xml");
 		initAreas(areaEvents, areas);
 		List<AreaResult> areaResults = ModelManager.createAreaResults(areas);
 		System.out.println(ModelManager.buildKmlFile(areaResults, "temp/milan", "1250", null, "/", false));
