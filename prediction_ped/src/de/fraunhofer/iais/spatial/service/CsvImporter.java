@@ -51,8 +51,8 @@ public class CsvImporter {
 		Map<Long, Map<String, Integer>> areaEvents = Maps.newHashMap();
 		List<Area> areas = Lists.newArrayList();
 
-		importAreaEvents(areaEvents, "data/ped_presence_predicted_2011_08_05.csv");
-		importAreas(areas, null, "data/ped.xml");
+		importAreaEvents(areaEvents, "WebRoot/data/ped_presence_predicted_2011_08_05.csv");
+		importAreas(areas, null, "WebRoot/data/ped.xml");
 		initAreas(areaEvents, areas);
 
 		List<AreaResult> areaResults = ModelManager.createAreaResults(areas);
