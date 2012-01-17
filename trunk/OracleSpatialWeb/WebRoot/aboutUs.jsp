@@ -12,6 +12,21 @@
 			<a href="http://www.iais.fraunhofer.de/geokd.html">Geographic Knowledge Discovery</a>
 		</p>
 		<p>
+			Development Platforms:
+		</p>
+		<ul>
+			<li>
+				<a href="http://code.google.com/apis/maps/documentation/javascript/">Google Maps JavaScript API</a>
+			</li>
+
+			<li>
+				<a href="http://tomcat.apache.org/">Apache Tomcat</a>
+			</li>
+			<li>
+				<a href="http://www.oracle.com/technetwork/database/">Oracle Database with Spatial Extension</a>
+			</li>
+		</ul>
+		<p>
 			Major Developers:
 		</p>
 		<ul>

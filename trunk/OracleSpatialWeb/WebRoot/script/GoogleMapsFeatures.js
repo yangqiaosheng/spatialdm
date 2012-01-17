@@ -155,7 +155,7 @@ function hideTableObject(label, content) {
 function showTableObject(label, content) {
 	content.show(1000);
 	label.css('font-weight', 'bold');
-	label.css('background-image', "url('../images/ui-bg_inset-hard_100_f5f8f9_1x30.png') repeat-x scroll");
+	label.css('background', "url('images/ui-bg_inset-hard_100_f5f8f9_1x30.png') repeat-x scroll");
 	label.css('color', '#333');
 }
 
