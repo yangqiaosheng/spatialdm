@@ -39,7 +39,7 @@ Sample request xml:
 		<months>
 			<month>December</month>
 		</months>
-		<days>0
+		<days>
 			<day>01</day>
 		</days>
 		<hours>
@@ -93,11 +93,29 @@ Sample request xml:
 		<months>
 			<month>December</month>
 		</months>
-		<days>0
+		<days>
 			<day>01</day>
-			<day>05</day>
+			<day>02</day>
+			<day>03</day>
 		</days>
 		<hours>
+			<hour>00</hour>
+			<hour>01</hour>
+			<hour>02</hour>
+			<hour>03</hour>
+			<hour>04</hour>
+			<hour>05</hour>
+			<hour>06</hour>
+			<hour>07</hour>
+			<hour>08</hour>
+			<hour>09</hour>
+			<hour>10</hour>
+			<hour>11</hour>
+			<hour>12</hour>
+			<hour>13</hour>
+			<hour>14</hour>
+			<hour>15</hour>
+			<hour>16</hour>
 			<hour>17</hour>
 			<hour>18</hour>
 			<hour>19</hour>
@@ -148,7 +166,7 @@ Sample request xml:
 		<months>
 			<month>August</month>
 		</months>
-		<days>0
+		<days>
 			<day>05</day>
 		</days>
 		<hours>

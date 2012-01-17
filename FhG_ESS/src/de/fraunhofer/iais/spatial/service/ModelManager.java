@@ -166,7 +166,7 @@ public class ModelManager {
 				} else if (areaResult.getSelectCount() < 1000) {
 //					r = (double) Math.log10(area.getSelectCount() + 1) / 80.0 * scale;
 					icon = remoteBasePath + "images/circle_gr.ico";
-				} else if (areaResult.getSelectCount() < 10000) {
+				} else if (areaResult.getSelectCount() < 4000) {
 //					r = (double) Math.log10(area.getSelectCount() + 1) / 70.0 * scale;
 					icon = remoteBasePath + "images/circle_lgr.ico";
 				} else {
@@ -174,7 +174,7 @@ public class ModelManager {
 					icon = remoteBasePath + "images/circle_or.ico";
 				}
 
-				r = (double) Math.log10(areaResult.getSelectCount() + 1) / 50.0 * scale;
+				r = (double) Math.log10(areaResult.getSelectCount() + 1) / 70.0 * scale;
 
 				Element hrefElement = new Element("href", namespace).addContent(icon);
 				iconElement.addContent(hrefElement);
@@ -313,7 +313,7 @@ public class ModelManager {
 //		}
 
 		String img = "<img src='" +
-		"http://kd-photomap.iais.fraunhofer.de/chart_engine/chart" + 	//chart engine
+		"https://chart.googleapis.com/chart" + 	//chart engine
 				"?chtt=" + displayLevel + //chart title
 				"&cht=bvs" + //chart type
 				"&chs=" + width + "x" + height + //chart size(pixel)

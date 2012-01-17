@@ -83,13 +83,14 @@ public class RequestKmlServlet extends HttpServlet {
 		document.setRootElement(rootElement);
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
+		logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
+
 		if (StringUtils.isEmpty(xml)) {
 			messageElement.setText("ERROR: 'xml' parameter is missing!");
 		} else {
 			try {
 				String filenamePrefix = StringUtil.genId();
 
-				logger.debug("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
 				AreaDto areaDto = new AreaDto();
 				parseXmlRequest(StringUtil.FullMonth2Num(xml), areaDto);
