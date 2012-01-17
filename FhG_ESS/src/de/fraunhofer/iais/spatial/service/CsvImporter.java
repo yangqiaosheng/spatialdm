@@ -49,9 +49,9 @@ public class CsvImporter {
 		Map<Long, Map<String, Integer>> areaEvents = Maps.newHashMap();
 		List<Area> areas = Lists.newArrayList();
 
-		importAreaEvents(areaEvents, "data/place_loads_1.csv");
+		importAreaEvents(areaEvents, "WebRoot/data/place_loads_1.csv");
 
-		importAreas(areas, null, "data/places.xml");
+		importAreas(areas, null, "WebRoot/data/places.xml");
 		initAreas(areaEvents, areas);
 //		System.out.println(buildKmlString(areas, Radius.R1250, ""));
 		System.out.println(buildKmlFile(areas, "temp/place_loads_1", "1250", null, false));
