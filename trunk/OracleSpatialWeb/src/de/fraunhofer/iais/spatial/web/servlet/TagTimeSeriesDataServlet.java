@@ -64,7 +64,7 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
 			@Override
-			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response, Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
+			public void doInXmlServlet(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement) throws Exception {
 				int areaid = NumberUtils.toInt(request.getParameter("areaid"), -1);
 				String tag = request.getParameter("tag");
 

@@ -33,7 +33,7 @@ public class XmlServletTemplate {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 		try {
-			callback.doInXmlServlet(request, response, logger, rootElement, messageElement, callback);
+			callback.doInXmlServlet(request, logger, rootElement, messageElement);
 
 		} catch (IllegalInputParameterException e) {
 			rootElement.addContent(new Element("description").setText(e.getMessage()));

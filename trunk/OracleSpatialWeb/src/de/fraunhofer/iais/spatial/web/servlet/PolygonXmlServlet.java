@@ -31,6 +31,8 @@ import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.FlickrAreaCancelableJobCallback;
+import de.fraunhofer.iais.spatial.web.FlickrAreaCancelableJobTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
@@ -59,97 +61,60 @@ public class PolygonXmlServlet extends HttpServlet {
 		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
 			@Override
-			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response, Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
-				String xml = request.getParameter("xml");
-				String persist = request.getParameter("persist");
+			public void doInXmlServlet(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement) throws Exception {
+				new FlickrAreaCancelableJobTemplate().doExecute(request, logger, rootElement, messageElement, new FlickrAreaCancelableJobCallback() {
 
-				if (StringUtils.isEmpty(xml)) {
-					String errMsg = "ERROR: 'xml' parameter is missing!";
-					messageElement.setText(errMsg);
-					throw new IllegalInputParameterException(errMsg);
-				} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
-					String errMsg = "ERROR: session has time out, please perform a query first!";
-					messageElement.setText(errMsg);
-					throw new IllegalInputParameterException(errMsg);
-				}
+					@Override
+					public void doCancelableJob(HttpServletRequest request, Logger logger, SessionMutex sessionMutex, Date timestamp, Element rootElement, Element messageElement) throws Exception {
 
-				logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
-				FlickrAreaDto areaDto = null;
-				if ("true".equals(persist) && request.getSession().getAttribute("areaDto") != null) {
-					logger.trace("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
-					areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-				} else {
-					areaDto = new FlickrAreaDto();
-				}
+						String xml = request.getParameter("xml");
+						String persist = request.getParameter("persist");
 
-				HttpSession session = request.getSession();
-				Date timestamp = new Date();
-				timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
-				SessionMutex sessionMutex = null;
-				synchronized (this) {
-					if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID) == null) {
-						session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
-					}
-					sessionMutex = (SessionMutex) session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
-					if (sessionMutex.getTimestamp().before(timestamp)) {
-						sessionMutex.setTimestamp(timestamp);
-					}
-				}
-
-				try {
-					areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
-
-					if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) != null) {
-						int waitSec = 5;
-						for (int i = 1; i <= waitSec; i++) {
-							Thread.sleep(1000);
-							if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
-								break;
-							} else {
-								if (i == waitSec) {
-									throw new TimeoutException("Blocked until:" + waitSec + "s");
-								}
-								if (!sessionMutex.getTimestamp().equals(timestamp)) {
-									throw new InterruptedException("Interrupted before");
-								}
-							}
+						if (StringUtils.isEmpty(xml)) {
+							String errMsg = "ERROR: 'xml' parameter is missing!";
+							messageElement.setText(errMsg);
+							throw new IllegalInputParameterException(errMsg);
+						} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
+							String errMsg = "ERROR: session has time out, please perform a query first!";
+							messageElement.setText(errMsg);
+							throw new IllegalInputParameterException(errMsg);
 						}
+
+						logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
+						FlickrAreaDto areaDto = null;
+						if ("true".equals(persist) && request.getSession().getAttribute("areaDto") != null) {
+							logger.trace("doGet(HttpServletRequest, HttpServletResponse) - persist:true");
+							areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
+						} else {
+							areaDto = new FlickrAreaDto();
+						}
+						areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+
+						int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(),
+								areaDto.isCrossDateLine());
+						if (size > 2000) {
+							String errMsg = "The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>";
+							messageElement.setText(errMsg);
+							throw new IllegalInputParameterException(errMsg);
+						}
+
+						List<FlickrArea> areas = null;
+						if (areaDto.getZoom() > 2) {
+							areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(),
+									areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(), areaDto.isCrossDateLine());
+						} else {
+							areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
+						}
+
+						List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
+						areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
+						addAreas2Xml(areaResults, rootElement, areaDto, areaMgr.getAreaDao().getTotalWorldPhotoNum());
+
+						request.getSession().setAttribute("areaDto", areaDto);
+						messageElement.setText("SUCCESS");
+
 					}
-
-					session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
-
-					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(),
-							areaDto.isCrossDateLine());
-					if (size > 2000) {
-						throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
-					}
-
-					List<FlickrArea> areas = null;
-					if (areaDto.getZoom() > 2) {
-						areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(),
-								areaDto.getRadius(), areaDto.isCrossDateLine());
-					} else {
-						areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
-					}
-
-					List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
-					areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
-					addAreas2Xml(areaResults, rootElement, areaDto, areaMgr.getAreaDao().getTotalWorldPhotoNum());
-
-					session.setAttribute("areaDto", areaDto);
-					session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
-					messageElement.setText("SUCCESS");
-				} catch (TimeoutException e) {
-					messageElement.setText("INFO: Rejected until Timeout!");
-					rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-					rootElement.addContent(new Element("description").setText(e.getMessage()));
-				} catch (InterruptedException e) {
-					messageElement.setText("INFO: interupted by another query!");
-//					rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-//					rootElement.addContent(new Element("description").setText(e.getMessage()));
-				} finally {
-					session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK);
-				}
+				});
 			}
 		});
 	}
@@ -260,8 +225,8 @@ public class PolygonXmlServlet extends HttpServlet {
 				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} catch (InterruptedException e) {
 				messageElement.setText("INFO: interupted by another query!");
-//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-//				rootElement.addContent(new Element("description").setText(e.getMessage()));
+	//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+	//				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} finally {
 				session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK);
 			}
@@ -271,7 +236,7 @@ public class PolygonXmlServlet extends HttpServlet {
 		} catch (Exception e) {
 			logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
 			messageElement.setText("ERROR: wrong input parameter!");
-//			rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+	//			rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 			rootElement.addContent(new Element("description").setText(e.getMessage()));
 		}
 

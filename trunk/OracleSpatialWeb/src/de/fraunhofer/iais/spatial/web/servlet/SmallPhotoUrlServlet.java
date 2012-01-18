@@ -62,7 +62,7 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
 			@Override
-			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response, Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
+			public void doInXmlServlet(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement) throws Exception {
 				String areaid = request.getParameter("areaid");
 				int page = NumberUtils.toInt(request.getParameter("page"));
 				int pageSize = NumberUtils.toInt(request.getParameter("page_size"));
