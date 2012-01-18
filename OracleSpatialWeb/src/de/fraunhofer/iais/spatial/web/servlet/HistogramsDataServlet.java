@@ -39,7 +39,7 @@ import de.fraunhofer.iais.spatial.web.FlickrAreaCancelableJobTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
-public class HistrogramsDataServlet extends HttpServlet {
+public class HistogramsDataServlet extends HttpServlet {
 	/**
 	 *
 	 */
@@ -48,7 +48,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 	/**
 	* Logger for this class
 	*/
-	private static final Logger logger = LoggerFactory.getLogger(HistrogramsDataServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(HistogramsDataServlet.class);
 
 	private static FlickrAreaMgr areaMgr = null;
 	final public static String HISTOGRAM_SESSION_ID = "HISTOGRAM_SESSION_ID";
@@ -295,7 +295,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 	}
 
 	public void setAreaMgr(FlickrAreaMgr areaMgr) {
-		HistrogramsDataServlet.areaMgr = areaMgr;
+		HistogramsDataServlet.areaMgr = areaMgr;
 	}
 
 	/**

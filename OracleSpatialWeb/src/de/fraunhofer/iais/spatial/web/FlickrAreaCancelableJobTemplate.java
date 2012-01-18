@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.util.StringUtil;
-import de.fraunhofer.iais.spatial.web.servlet.HistrogramsDataServlet;
+import de.fraunhofer.iais.spatial.web.servlet.HistogramsDataServlet;
 
 public class FlickrAreaCancelableJobTemplate {
 
@@ -22,21 +22,21 @@ public class FlickrAreaCancelableJobTemplate {
 		timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
 		SessionMutex sessionMutex = null;
 		synchronized (this) {
-			if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID) == null) {
-				session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
+			if (session.getAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_ID) == null) {
+				session.setAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
 			}
-			sessionMutex = (SessionMutex) session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
+			sessionMutex = (SessionMutex) session.getAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_ID);
 			if (sessionMutex.getTimestamp().before(timestamp)) {
 				sessionMutex.setTimestamp(timestamp);
 			}
 		}
 
 		try {
-			if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) != null) {
+			if (session.getAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_LOCK) != null) {
 				int waitSec = 5;
 				for (int i = 1; i <= waitSec; i++) {
 					Thread.sleep(1000);
-					if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
+					if (session.getAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
 						break;
 					} else {
 						if (i == waitSec) {
@@ -48,11 +48,11 @@ public class FlickrAreaCancelableJobTemplate {
 					}
 				}
 			}
-			session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
+			session.setAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
 
 			callback.doCancelableJob(request, logger, sessionMutex, timestamp, rootElement, messageElement);
 
-			session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
+			session.removeAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_ID);
 		} catch (TimeoutException e) {
 			messageElement.setText("INFO: Rejected until Timeout!");
 			rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
@@ -62,7 +62,7 @@ public class FlickrAreaCancelableJobTemplate {
 //			rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 //			rootElement.addContent(new Element("description").setText(e.getMessage()));
 		} finally {
-			session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK);
+			session.removeAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_LOCK);
 		}
 	}
 }

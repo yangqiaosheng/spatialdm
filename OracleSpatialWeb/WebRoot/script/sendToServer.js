@@ -20,7 +20,7 @@ function sendToServerCalendarData(headerXML, bodyXML) {
 		}
 	};
 
-	xmlHttp.open("POST", "SpatialXml");
+	xmlHttp.open("POST", "PolygonXml");
 	// xmlHttp.open("POST",
 	// "http://localhost:8080/OracleSpatialWeb/RequestKml");
 
@@ -153,7 +153,7 @@ function sendToServerCalendarDataHistogram(headerXMLHistogram, bodyXMLHistogram)
 	$("#parent3").empty().html('<img src="images/89.gif" height="50" width="50"  />');
 	$("#parent4").empty().html('<img src="images/89.gif" height="50" width="50"  />');
 	$("#parent5").empty().html('<img src="images/89.gif" height="50" width="50"  />');
-	xmlHttp.open("POST", "HistrogramsData");
+	xmlHttp.open("POST", "HistogramsData");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	xmlHttp.send("xml=" + encodeURIComponent(textToSend) + "&timestamp=" + new Date().getTime());
 }
