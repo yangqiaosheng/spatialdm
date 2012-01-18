@@ -9,5 +9,5 @@ import org.slf4j.Logger;
 
 public interface XmlServletCallback {
 
-	void doInXmlServlet(HttpServletRequest request, HttpServletResponse response, Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception;
+	void doInXmlServlet(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement) throws Exception;
 }

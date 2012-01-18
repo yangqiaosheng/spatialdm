@@ -55,9 +55,8 @@ public class ZoomKmlServlet extends HttpServlet {
 		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
 			@Override
-			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response,Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
+			public void doInXmlServlet(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement) throws Exception {
 				String xml = request.getParameter("xml");
-				String persist = request.getParameter("persist");
 				if (StringUtils.isEmpty(xml)) {
 					String errMsg = "ERROR: 'xml' parameter is missing!";
 					messageElement.setText(errMsg);
