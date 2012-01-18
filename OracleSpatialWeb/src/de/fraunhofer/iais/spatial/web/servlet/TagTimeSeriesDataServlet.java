@@ -76,7 +76,6 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 
 		tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
 		logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|tag:" + tag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
 		if (areaid <= 0 || StringUtils.isEmpty(tag)) {
 			messageElement.setText("ERROR: wrong input parameter!");
 		} else if (request.getSession().getAttribute("areaDto") == null) {
@@ -84,13 +83,14 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 		} else {
 			try {
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
+				System.out.println(areaDto.getQueryStrs());
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(areaid, radius);
 
 				if (area != null) {
-					Map<Date, Integer> seriesData = areaMgr.createTagTimeSeriesData(area, tag, areaDto.getYears());
+					Map<Date, Integer> seriesData = areaMgr.createTagTimeSeriesData(area, tag, areaDto);
 					buildXmlDoc(document, seriesData);
 
 					messageElement.setText("SUCCESS");

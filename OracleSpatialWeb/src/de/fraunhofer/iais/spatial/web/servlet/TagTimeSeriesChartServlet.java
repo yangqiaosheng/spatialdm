@@ -80,7 +80,7 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(areaid, radius);
 				if (area != null) {
-					areaMgr.createTagTimeSeriesChartOld(area, tag, areaDto.getYears(), "'" + tag + "' Tag Distribution", sos);
+					areaMgr.createTagTimeSeriesChartOld(area, tag, areaDto, "'" + tag + "' Tag Distribution", sos);
 				} else {
 					IOUtils.copy(new FileInputStream(webAppPath + "images/tsc-warning1.png"), sos);
 				}

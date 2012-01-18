@@ -252,10 +252,10 @@ public class FlickrAreaMgr {
 			Set<String> queryStrs = areaDto.getQueryStrs();
 
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			areaDto.setQueryLevel(Level.DAY);
+			areaDto.setQueryLevel(Level.HOUR);
 
 			if (intervalMachter.find()) {
-				SimpleDateFormat dayDateFormat = new SimpleDateFormat(FlickrAreaDao.dayDateFormatStr);
+				SimpleDateFormat hourDateFormat = new SimpleDateFormat(FlickrAreaDao.hourDateFormatStr);
 				Date beginDate = inputDateFormat.parse(intervalMachter.group(1));
 				Date endDate = inputDateFormat.parse(intervalMachter.group(2));
 				areaDto.setBeginDate(beginDate);
@@ -265,9 +265,10 @@ public class FlickrAreaMgr {
 				calendar.setTime(beginDate);
 				Calendar end = Calendar.getInstance();
 				end.setTime(endDate);
+				end.add(Calendar.DATE, 1);
 				while (calendar.getTime().before(end.getTime())) {
-					queryStrs.add(dayDateFormat.format(calendar.getTime()));
-					calendar.add(Calendar.DATE, 1);
+					queryStrs.add(hourDateFormat.format(calendar.getTime()));
+					calendar.add(Calendar.HOUR, 1);
 				}
 			}
 		}
@@ -284,12 +285,15 @@ public class FlickrAreaMgr {
 
 			// day of week in English format
 			SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
-			areaDto.setQueryLevel(Level.DAY);
+			areaDto.setQueryLevel(Level.HOUR);
 
 			while (selectedDaysMachter.find()) {
 				Date selectedDay = inputDateFormat.parse(selectedDaysMachter.group());
 				selectedDays.add(selectedDay);
-				queryStrs.add(dayDateFormat.format(selectedDay));
+				String dayStr = dayDateFormat.format(selectedDay);
+				for(String hourStr : DateUtil.allHourIntStrs){
+					queryStrs.add(dayStr + "@" + hourStr);
+				}
 			}
 		}
 
@@ -443,25 +447,25 @@ public class FlickrAreaMgr {
 		ChartUtil.createBarChart(cs, "temp/bar.jpg");
 	}
 
-	public void createTagTimeSeriesChartOld(FlickrArea area, String tag, Set<String> years, String title, OutputStream os) throws ParseException, IOException {
+	public void createTagTimeSeriesChartOld(FlickrArea area, String tag, FlickrAreaDto areaDto, String title, OutputStream os) throws ParseException, IOException {
 
-		Map<Date, Integer> seriesChartData = createTagTimeSeriesData(area, tag, years);
+		Map<Date, Integer> seriesChartData = createTagTimeSeriesData(area, tag, areaDto);
 
 		ChartUtil.createTimeSeriesChartOld(seriesChartData, title, os);
 	}
 
-	public Map<Date, Integer> createTagTimeSeriesData(FlickrArea area, String tag, Set<String> years) throws ParseException {
+	public Map<Date, Integer> createTagTimeSeriesData(FlickrArea area, String tag, FlickrAreaDto areaDto) throws ParseException {
 		Map<Date, Integer> seriesData = new TreeMap<Date, Integer>();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-		if (MapUtils.isEmpty(area.getDaysTagsCount())) {
-			areaDao.loadDaysTagsCount(area);
+		if (MapUtils.isEmpty(area.getHoursTagsCount())) {
+			areaDao.loadHoursTagsCount(area);
 		}
 
-		Map<String, Map<String, Integer>> daysTagsCount = area.getDaysTagsCount();
+		Map<String, Map<String, Integer>> hoursTagsCount = area.getHoursTagsCount();
 
-		Set<String> displayYears = defineDisplayYears(tag, years, daysTagsCount);
+		Set<String> displayYears = defineDisplayYears(tag, areaDto, hoursTagsCount, 10);
 
 		// init
 		for (String year : displayYears) {
@@ -473,11 +477,11 @@ public class FlickrAreaMgr {
 		}
 
 		// fill with values
-		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
+		for (Map.Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
 			if (displayYears.contains(e.getKey().substring(0, 4))) {
-				for (Map.Entry<String, Integer> term : daysTagsCount.get(e.getKey()).entrySet()) {
-					if(term.getKey().equals(tag)){
-						seriesData.put(sdf.parse(e.getKey()), term.getValue());
+				for (Map.Entry<String, Integer> term : hoursTagsCount.get(e.getKey()).entrySet()) {
+					if(term.getKey().equals(tag) && areaDto.getQueryStrs().contains(e.getKey())){
+						seriesData.put(sdf.parse(e.getKey().substring(0, FlickrAreaDao.hourDateFormatStr.length())), term.getValue());
 					}
 				}
 			}
@@ -485,12 +489,17 @@ public class FlickrAreaMgr {
 		return seriesData;
 	}
 
-	private Set<String> defineDisplayYears(String tag, Set<String> years, Map<String, Map<String, Integer>> daysTagsCount) {
+	private Set<String> defineDisplayYears(String tag, FlickrAreaDto areaDto, Map<String, Map<String, Integer>> hoursTagsCount, int num) {
+
+		Set<String> selectedYears = Sets.newTreeSet();
+		for(String queryStr: areaDto.getQueryStrs()){
+			selectedYears.add(queryStr.substring(0, 4));
+		}
 		Set<String> displayYears = Sets.newTreeSet();
 		TreeSet<String> approvedYears = Sets.newTreeSet();
-		for (Map.Entry<String, Map<String, Integer>> e : daysTagsCount.entrySet()) {
-			if (years.contains(e.getKey().substring(0, 4))) {
-				for (Map.Entry<String, Integer> term : daysTagsCount.get(e.getKey()).entrySet()) {
+		for (Map.Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
+			if (selectedYears.contains(e.getKey().substring(0, 4))) {
+				for (Map.Entry<String, Integer> term : hoursTagsCount.get(e.getKey()).entrySet()) {
 					if(term.getKey().equals(tag)){
 						approvedYears.add(e.getKey().substring(0, 4));
 						break;
@@ -499,8 +508,7 @@ public class FlickrAreaMgr {
 			}
 		}
 
-		approvedYears.retainAll(years);
-		int num = 3;
+		approvedYears.retainAll(selectedYears);
 		int i = 0;
 		if (approvedYears.size() > num) {
 			i = approvedYears.size() - num;
