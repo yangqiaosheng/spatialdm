@@ -201,7 +201,7 @@ public class TestFlickrEuropeArea {
 	public void testJdbcDao1() {
 		FlickrArea a = areaMgr.getAreaDao().getAreaById(1000, FlickrArea.Radius.R320000);
 
-		long totalNum = areaMgr.getAreaDao().getTotalEuropePhotoNum();
+		long totalNum = areaMgr.getAreaDao().getTotalWorldPhotoNum();
 		long totalNumPeople = areaMgr.getAreaDao().getTotalPeopleNum();
 
 		String coordinates = "\t";
@@ -564,8 +564,9 @@ public class TestFlickrEuropeArea {
 		document.setRootElement(rootElement);
 		HistrogramsDataServlet histrogramsDataServlet = new HistrogramsDataServlet();
 		histrogramsDataServlet.setAreaMgr(areaMgr);
-		String resultXml = histrogramsDataServlet.histrogramsResponseXml(document, sumHistrograms, true);
-		System.out.println(resultXml);
+		histrogramsDataServlet.histrogramsResponseXml(rootElement, sumHistrograms, true);
+
+		System.out.println(XmlUtil.xml2String(document, false));
 
 		System.out.println("db time:" + (middle - start));
 		System.out.println("histrogram time:" + (System.currentTimeMillis() - middle));

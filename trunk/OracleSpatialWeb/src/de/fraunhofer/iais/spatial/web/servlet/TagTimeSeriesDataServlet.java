@@ -26,9 +26,12 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.XmlServletCallback;
+import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
 public class TagTimeSeriesDataServlet extends HttpServlet {
 	/**
@@ -58,32 +61,26 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		response.setContentType("text/xml");
-		// Prevents caching
-		response.setHeader("Cache-Control", "no-store"); // HTTP1.1
-		response.setHeader("Pragma", "no-cache"); // HTTP1.0
-		response.setDateHeader("Expires", 0); // proxy server
+		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
-		int areaid = NumberUtils.toInt(request.getParameter("areaid"), -1);
-		String tag = request.getParameter("tag");
-		PrintWriter out = response.getWriter();
+			@Override
+			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response, Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
+				int areaid = NumberUtils.toInt(request.getParameter("areaid"), -1);
+				String tag = request.getParameter("tag");
 
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
-		Element messageElement = new Element("message");
-		rootElement.addContent(messageElement);
+				tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
+				logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|tag:" + tag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				if (areaid <= 0 || StringUtils.isEmpty(tag)) {
+					String errMsg = "ERROR: wrong input parameter!";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				} else if (request.getSession().getAttribute("areaDto") == null) {
+					String errMsg = "ERROR: session has timed out, please refresh the page.";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				}
 
-		tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
-		logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|tag:" + tag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		if (areaid <= 0 || StringUtils.isEmpty(tag)) {
-			messageElement.setText("ERROR: wrong input parameter!");
-		} else if (request.getSession().getAttribute("areaDto") == null) {
-			messageElement.setText("ERROR: session has timed out, please refresh the page.");
-		} else {
-			try {
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-				System.out.println(areaDto.getQueryStrs());
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
@@ -91,28 +88,17 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 
 				if (area != null) {
 					Map<Date, Integer> seriesData = areaMgr.createTagTimeSeriesData(area, tag, areaDto);
-					buildXmlDoc(document, seriesData);
-
+					buildXmlDoc(rootElement, seriesData);
 					messageElement.setText("SUCCESS");
 				} else {
 					messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
 				}
-			} catch (Exception e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-				messageElement.setText("ERROR: wrong input parameter!");
-//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				rootElement.addContent(new Element("description").setText(e.getMessage()));
+
 			}
-		}
-
-		out.print(XmlUtil.xml2String(document, true));
-
-		out.flush();
-		out.close();
-		System.gc();
+		});
 	}
 
-	private String buildXmlDoc(Document document, Map<Date, Integer> seriesData) {
+	private void buildXmlDoc(Element rootElement, Map<Date, Integer> seriesData) {
 		// spilt the data by year
 		SimpleDateFormat ysdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
 		Map<Integer, Map<Date, Integer>> countsGroupedMap = new TreeMap<Integer, Map<Date, Integer>>();
@@ -126,7 +112,6 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 		}
 
 		// build XmlDoc
-		Element rootElement = document.getRootElement();
 		Element dataElement = new Element("data");
 		rootElement.addContent(dataElement);
 		for (int year : countsGroupedMap.keySet()) {
@@ -142,17 +127,15 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 				//need to add 1 day to the result, because of the bug from HighCharts
 				dataStr.append(DateUtils.addDays(DateUtils.setYears(e.getKey(), 2000), 1).getTime()); //time
 				dataStr.append(",");
-				dataStr.append(e.getValue());		//value
+				dataStr.append(e.getValue()); //value
 				dataStr.append("]");
-				if(i++ < countsGroupedMap.get(year).size()){
+				if (i++ < countsGroupedMap.get(year).size()) {
 					dataStr.append(",");
 				}
 			}
 			dataStr.append("]");
 			sereisElement.addContent(dataStr.toString());
 		}
-
-		return XmlUtil.xml2String(document, true);
 	}
 
 	/**
