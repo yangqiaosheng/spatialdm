@@ -8,7 +8,7 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.fraunhofer.iais.spatial.web.servlet.ZoomKmlServlet;
+import de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet;
 
 /**
  * Timer Task to delete the old temporary kml files in the kml\ directory
@@ -32,7 +32,7 @@ public class CleanOldKmlsTimerTask extends TimerTask {
 		try {
 			//		File kmlPath = new File("../webapps/OracleSpatialWeb/" + RequestKml.kmlPath);
 //					File kmlPath = new File(System.getProperty("flickr_world.root") + RequestKmlServlet.kmlPath);
-			File kmlPath = new File(this.getClass().getResource("/../../" + ZoomKmlServlet.kmlPath).getPath());
+			File kmlPath = new File(this.getClass().getResource("/../../" + RequestKmlServlet.kmlPath).getPath());
 			File files[] = kmlPath.listFiles();
 			logger.debug("run() - kmlPath:" + kmlPath.getAbsolutePath()); //$NON-NLS-1$
 			long currentDate = Long.parseLong(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));

@@ -57,7 +57,7 @@ import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
-import de.fraunhofer.iais.spatial.web.servlet.HistrogramsDataServlet;
+import de.fraunhofer.iais.spatial.web.servlet.HistogramsDataServlet;
 
 //@ContextConfiguration("classpath:beans.xml")
 public class TestFlickrEuropeArea {
@@ -562,7 +562,7 @@ public class TestFlickrEuropeArea {
 		Document document = new Document();
 		Element rootElement = new Element("response");
 		document.setRootElement(rootElement);
-		HistrogramsDataServlet histrogramsDataServlet = new HistrogramsDataServlet();
+		HistogramsDataServlet histrogramsDataServlet = new HistogramsDataServlet();
 		histrogramsDataServlet.setAreaMgr(areaMgr);
 		histrogramsDataServlet.histrogramsResponseXml(rootElement, sumHistrograms, true);
 

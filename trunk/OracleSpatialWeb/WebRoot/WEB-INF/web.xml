@@ -102,22 +102,22 @@
 	<filter-mapping>
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping> 
+	</filter-mapping>
 
 	<servlet>
 		<description>Retrieve the data to create a kml with different zoom levels</description>
-		<display-name>ZoomedKml</display-name>
-		<servlet-name>ZoomedKml</servlet-name>
-		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.ZoomKmlServlet</servlet-class>
+		<display-name>RequestKml</display-name>
+		<servlet-name>RequestKml</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>ZoomedKml</servlet-name>
+		<servlet-name>RequestKml</servlet-name>
 		<url-pattern>/RequestKml</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<description>Retrieve the data to create a kml with different zoom levels</description>
+		<description>Retrieve the data to create a xml with different zoom levels</description>
 		<display-name>PolygonXml</display-name>
 		<servlet-name>PolygonXml</servlet-name>
 		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.PolygonXmlServlet</servlet-class>
@@ -125,7 +125,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>PolygonXml</servlet-name>
-		<url-pattern>/SpatialXml</url-pattern>
+		<url-pattern>/PolygonXml</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -185,13 +185,13 @@
 
 	<servlet>
 		<description>return the Datasets of Histrograms</description>
-		<display-name>HistrogramsData</display-name>
-		<servlet-name>HistrogramsData</servlet-name>
-		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.HistrogramsDataServlet</servlet-class>
+		<display-name>HistogramsData</display-name>
+		<servlet-name>HistogramsData</servlet-name>
+		<servlet-class>de.fraunhofer.iais.spatial.web.servlet.HistogramsDataServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>HistrogramsData</servlet-name>
-		<url-pattern>/HistrogramsData</url-pattern>
+		<servlet-name>HistogramsData</servlet-name>
+		<url-pattern>/HistogramsData</url-pattern>
 	</servlet-mapping>
 
 	<!-- allow directory listing of this web application only -->

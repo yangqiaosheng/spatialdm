@@ -31,11 +31,11 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
-public class ZoomKmlServlet extends HttpServlet {
+public class RequestKmlServlet extends HttpServlet {
 	/**
 	* Logger for this class
 	*/
-	private static final Logger logger = LoggerFactory.getLogger(ZoomKmlServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(RequestKmlServlet.class);
 
 	private static final long serialVersionUID = -6814809670117597713L;
 
