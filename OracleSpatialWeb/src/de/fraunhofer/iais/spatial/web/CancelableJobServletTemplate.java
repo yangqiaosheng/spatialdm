@@ -14,9 +14,9 @@ import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.web.servlet.HistogramsDataServlet;
 
-public class FlickrAreaCancelableJobTemplate {
+public class CancelableJobServletTemplate {
 
-	public void doExecute(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement, FlickrAreaCancelableJobCallback callback) throws Exception {
+	public void doExecute(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement, CancelableJobServletCallback callback) throws Exception {
 		HttpSession session = request.getSession();
 		Date timestamp = new Date();
 		timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
