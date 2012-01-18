@@ -2,6 +2,7 @@
 //Map example
 
 // google.maps is generic. after that comes the class  which is in the API 3
+var tagChart = null
 var map = null;
 var myOptions = null;
 var geocoder = null;
@@ -650,13 +651,13 @@ function mouseOverTagSpan(num) {
 // create the chart when all data is loaded
 
 function createTagChart(tag) {
-	chart = new Highcharts.Chart( {
+	tagChart = new Highcharts.Chart( {
 		chart : {
 			renderTo : 'TagChartGraphic',
 			zoomType : 'x',
 			spacingRight : 20,
 			width : 800,
-			height: 300
+			height : 300
 		},
 		title : {
 			text : "'" + tag + "' Tag Distribution"
@@ -759,9 +760,15 @@ function createTagChart(tag) {
 	});
 }
 
+function destroyTagChart() {
+	tagChart && tagChart.destroy();
+	tagChart = null;
+}
+
 function wordClick(num, idp) {
 
 	jQuery("#TagGraphic").html("");
+	destroyTagChart();
 	//	console.log($("#TagChart").html());
 	if (tagsMask[num] == 0) {
 		tagsMask[num] = 1;
