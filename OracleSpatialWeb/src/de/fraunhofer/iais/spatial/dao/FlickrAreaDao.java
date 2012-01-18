@@ -161,13 +161,7 @@ public abstract class FlickrAreaDao {
 	 *
 	 * @param area
 	 */
-	public abstract void loadHoursTagsCount(FlickrArea area);
-
-	/**
-	 *
-	 * @param area
-	 */
-	public abstract void loadDaysTagsCount(FlickrArea area);
+	public abstract void loadHoursTagsCount(FlickrArea area, boolean withStopWords);
 
 	/**
 	 * get the total amount of photos uploaded within this area

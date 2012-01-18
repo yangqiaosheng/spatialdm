@@ -72,6 +72,11 @@
 		where ID = #{id}
 	</select>
 
+	<select id="hoursTagsCount_WithoutStopWords" resultType="String" parameterType="FlickrArea" useCache="false">
+		select hour
+		from FLICKR_WORLD_TAGS_COUNT_WITHOUT_STOPWORDS
+		where ID = #{id}
+	</select>
 	<select id="daysTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select day
 		from FLICKR_WORLD_TAGS_COUNT

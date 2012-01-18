@@ -285,12 +285,6 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 	}
 
 	@Override
-	public void loadDaysTagsCount(FlickrArea area) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine) {
 		// TODO Auto-generated method stub
 		return null;
@@ -305,6 +299,12 @@ public class FlickrAreaDaoOracleMybatis extends FlickrAreaDao {
 	@Override
 	public List<FlickrPhoto> getPhotos(FlickrArea area, String tag, String queryStr, int num, int offset) {
 		return null;
+	}
+
+	@Override
+	public void loadHoursTagsCount(FlickrArea area, boolean withStopWords) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
