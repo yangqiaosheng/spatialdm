@@ -5,7 +5,7 @@
 
 <mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrPhotoPg">
 
-	<select id="totalNum" resultType="long" useCache="false">
+	<select id="totalWorldPhotoNum" resultType="long" useCache="false">
 		select n_tup_ins
 		from pg_stat_user_tables
 		where relname = 'flickr_world'

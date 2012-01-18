@@ -2,6 +2,7 @@ package de.fraunhofer.iais.spatial.web.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -23,9 +24,12 @@ import com.google.common.collect.Lists;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
+import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.XmlServletCallback;
+import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
 public class ZoomKmlServlet extends HttpServlet {
 	/**
@@ -43,42 +47,23 @@ public class ZoomKmlServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		if(MapUtils.isEmpty(request.getParameterMap())){
+		if (MapUtils.isEmpty(request.getParameterMap())) {
 			response.sendRedirect("RequestKmlDemo.jsp");
 			return;
 		}
 
-		// web base path for local operation
-//		String localBasePath = getServletContext().getRealPath("/");
-		// web base path for remote access
-		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-		//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
-		response.setContentType("text/xml; charset=UTF-8");
-		// response.setContentType("application/vnd.google-earth.kml+xml");
+		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
-		// Prevents caching
-		response.setHeader("Cache-Control", "no-store"); // HTTP1.1
-		response.setHeader("Pragma", "no-cache"); // HTTP1.0
-		response.setDateHeader("Expires", 0); // proxy server
+			@Override
+			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response,Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
+				String xml = request.getParameter("xml");
+				String persist = request.getParameter("persist");
+				if (StringUtils.isEmpty(xml)) {
+					String errMsg = "ERROR: 'xml' parameter is missing!";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				}
 
-		String xml = request.getParameter("xml");
-		String persist = request.getParameter("persist");
-
-		PrintWriter out = response.getWriter();
-
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
-		Element messageElement = new Element("message");
-		rootElement.addContent(messageElement);
-
-		if (StringUtils.isEmpty(xml)) {
-			messageElement.setText("ERROR: 'xml' parameter is missing!");
-		} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
-			messageElement.setText("ERROR: please perform a query first!");
-		} else {
-
-			try {
 				String filenamePrefix = StringUtil.genId();
 
 				FlickrAreaDto areaDto = new FlickrAreaDto();
@@ -95,9 +80,8 @@ public class ZoomKmlServlet extends HttpServlet {
 					areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
 				} else if (areaDto.getBoundaryRect() != null) {
 					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-					if(size > 2000){
-						throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" +
-								" Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+					if (size > 2000) {
+						throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
 					}
 					areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 				} else {
@@ -106,18 +90,105 @@ public class ZoomKmlServlet extends HttpServlet {
 				List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
 				areaMgr.countSelected(areaResults, areaDto);
 				areaMgr.calculateHistograms(areaResults, areaDto);
+
+				// web base path for local operation
+//				String localBasePath = getServletContext().getRealPath("/");
+
+				// web base path for remote access
+				String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
 				areaMgr.buildKmlFile(areaResults, kmlPath + filenamePrefix, areaDto.getRadius(), areaDto.getTransfromVector(), remoteBasePath, false);
 
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);
 				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
 				messageElement.setText("SUCCESS");
-			} catch (Exception e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-				messageElement.setText("ERROR: wrong input parameter!");
-//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			}
+		});
+	}
+
+	/* use XmlServletTemplate instead
+	@Deprecated
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		// web base path for local operation
+//		String localBasePath = getServletContext().getRealPath("/");
+
+		// web base path for remote access
+		String remoteBasePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+		//		String remoteBasePath = "http://kd-photomap.iais.fraunhofer.de/OracleSpatialWeb/";
+		response.setContentType("text/xml; charset=UTF-8");
+		// response.setContentType("application/vnd.google-earth.kml+xml");
+
+		// Prevents caching
+		response.setHeader("Cache-Control", "no-store"); // HTTP1.1
+		response.setHeader("Pragma", "no-cache"); // HTTP1.0
+		response.setDateHeader("Expires", 0); // proxy server
+		PrintWriter out = response.getWriter();
+
+		Document document = new Document();
+		Element rootElement = new Element("response");
+		document.setRootElement(rootElement);
+		Element messageElement = new Element("message");
+		rootElement.addContent(messageElement);
+		try {
+
+			String xml = request.getParameter("xml");
+			String persist = request.getParameter("persist");
+			if (StringUtils.isEmpty(xml)) {
+				String errMsg = "ERROR: 'xml' parameter is missing!";
+				messageElement.setText(errMsg);
+				throw new IllegalInputParameterException(errMsg);
+			} else if ("true".equals(persist) && request.getSession().getAttribute("areaDto") == null) {
+				String errMsg = "ERROR: session has time out, please perform a query first!";
+				messageElement.setText(errMsg);
+				throw new IllegalInputParameterException(errMsg);
+			}
+
+			String filenamePrefix = StringUtil.genId();
+
+			FlickrAreaDto areaDto = new FlickrAreaDto();
+
+			logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
+
+			areaMgr.parseXmlRequest(xml.toString(), areaDto);
+
+			logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
+
+			List<FlickrArea> areas = null;
+
+			if (areaDto.getPolygon() != null) {
+				areas = areaMgr.getAreaDao().getAreasByPolygon(areaDto.getPolygon(), areaDto.getRadius());
+			} else if (areaDto.getBoundaryRect() != null) {
+				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+				if (size > 2000) {
+					throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+				}
+				areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+			} else {
+				areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
+			}
+			List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
+			areaMgr.countSelected(areaResults, areaDto);
+			areaMgr.calculateHistograms(areaResults, areaDto);
+			areaMgr.buildKmlFile(areaResults, kmlPath + filenamePrefix, areaDto.getRadius(), areaDto.getTransfromVector(), remoteBasePath, false);
+
+			Element urlElement = new Element("url");
+			rootElement.addContent(urlElement);
+			urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
+
+
+
+			messageElement.setText("SUCCESS");
+
+		} catch (IllegalInputParameterException e) {
+			rootElement.addContent(new Element("description").setText(e.getMessage()));
+		} catch (Exception e) {
+			logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+			messageElement.setText("ERROR: wrong input parameter!");
+//			rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+			rootElement.addContent(new Element("description").setText(e.getMessage()));
 		}
 
 		out.print(XmlUtil.xml2String(document, true));
@@ -125,6 +196,7 @@ public class ZoomKmlServlet extends HttpServlet {
 		out.close();
 		System.gc();
 	}
+	*/
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

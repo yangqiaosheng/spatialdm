@@ -31,10 +31,13 @@ import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.XmlServletCallback;
+import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
 public class TagServlet extends HttpServlet {
 	/**
@@ -48,11 +51,6 @@ public class TagServlet extends HttpServlet {
 	private static final int DEFAULT_SIZE = 20;
 	private static FlickrAreaMgr areaMgr = null;
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doGet(req, resp);
-	}
-
 	/**
 		 * The doGet method of the servlet. <br>
 		 *
@@ -65,105 +63,90 @@ public class TagServlet extends HttpServlet {
 		 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Date timestamp = new Date();
-		timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
 
-		HttpSession session = request.getSession();
-		SessionMutex sessionMutex = null;
-		synchronized (this) {
-			if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID) == null) {
-				session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
-			}
-			sessionMutex = (SessionMutex) session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
-			if (sessionMutex.getTimestamp().before(timestamp)) {
-				sessionMutex.setTimestamp(timestamp);
-			}
-		}
+		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
-		response.setContentType("text/xml");
-		// Prevents caching
-		response.setHeader("Cache-Control", "no-store"); // HTTP1.1
-		response.setHeader("Pragma", "no-cache"); // HTTP1.0
-		response.setDateHeader("Expires", 0); // proxy server
-
-		String areaid = request.getParameter("areaid");
-		int size = NumberUtils.toInt(request.getParameter("size"), DEFAULT_SIZE);
-		PrintWriter out = response.getWriter();
-
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
-		Element messageElement = new Element("message");
-		rootElement.addContent(messageElement);
-
-		logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|size:" + size); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-		if (!StringUtils.isNumeric(areaid)) {
-			messageElement.setText("ERROR: wrong input parameter!");
-		} else if (size > MAX_SIZE) {
-			messageElement.setText("ERROR: the size excceed " + MAX_SIZE + " !");
-		} else if (request.getSession().getAttribute("areaDto") == null) {
-			messageElement.setText("ERROR: please perform a query first!");
-		} else {
-			try {
-				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
-				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
-
-				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
-
-				if(session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) != null){
-					int waitSec = 5;
-					for (int i = 1; i <= waitSec; i++) {
-						Thread.sleep(1000);
-						if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
-							break;
-						} else {
-							if (i == waitSec) {
-								throw new TimeoutException("Blocked until:" + waitSec + "s");
-							}
-							if (!sessionMutex.getTimestamp().equals(timestamp)) {
-								throw new InterruptedException("Interrupted before");
-							}
-						}
+			@Override
+			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response, Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
+				String areaid = request.getParameter("areaid");
+				int size = NumberUtils.toInt(request.getParameter("size"), DEFAULT_SIZE);
+				logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|size:" + size); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				if (!StringUtils.isNumeric(areaid)) {
+					String errMsg = "ERROR: wrong input parameter!";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				} else if (size > MAX_SIZE) {
+					String errMsg = "ERROR: the size excceed " + MAX_SIZE + " !";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				} else if (request.getSession().getAttribute("areaDto") == null) {
+					String errMsg = "ERROR: session has timed out, please refresh the page.";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				}
+				HttpSession session = request.getSession();
+				Date timestamp = new Date();
+				timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
+				SessionMutex sessionMutex = null;
+				synchronized (this) {
+					if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID) == null) {
+						session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
+					}
+					sessionMutex = (SessionMutex) session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
+					if (sessionMutex.getTimestamp().before(timestamp)) {
+						sessionMutex.setTimestamp(timestamp);
 					}
 				}
 
-				session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
+				try {
+					FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
+					int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
+					Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 
-				if(area != null){
-					tagsResponseXml(timestamp, sessionMutex, document, area, areaDto, size);
-					messageElement.setText("SUCCESS");
-				}else{
-					messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
+					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
+
+					if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) != null) {
+						int waitSec = 5;
+						for (int i = 1; i <= waitSec; i++) {
+							Thread.sleep(1000);
+							if (session.getAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
+								break;
+							} else {
+								if (i == waitSec) {
+									throw new TimeoutException("Blocked until:" + waitSec + "s");
+								}
+								if (!sessionMutex.getTimestamp().equals(timestamp)) {
+									throw new InterruptedException("Interrupted before");
+								}
+							}
+						}
+					}
+
+					session.setAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
+
+					if (area != null) {
+						tagsResponseXml(timestamp, sessionMutex, rootElement, area, areaDto, size);
+						messageElement.setText("SUCCESS");
+					} else {
+						messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
+					}
+					session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
+				} catch (TimeoutException e) {
+					messageElement.setText("INFO: Rejected until Timeout!");
+					rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+					rootElement.addContent(new Element("description").setText(e.getMessage()));
+				} catch (InterruptedException e) {
+					messageElement.setText("INFO: interupted by another query!");
+//						rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+//						rootElement.addContent(new Element("description").setText(e.getMessage()));
+				} finally {
+					session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK);
 				}
-				session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_ID);
-			} catch (TimeoutException e) {
-				messageElement.setText("INFO: Rejected until Timeout!");
-				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				rootElement.addContent(new Element("description").setText(e.getMessage()));
-			} catch (InterruptedException e) {
-				messageElement.setText("INFO: interupted by another query!");
-//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-//				rootElement.addContent(new Element("description").setText(e.getMessage()));
-			} catch (Exception e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-				messageElement.setText("ERROR: wrong input parameter!");
-//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				rootElement.addContent(new Element("description").setText(e.getMessage()));
-			} finally {
-				session.removeAttribute(HistrogramsDataServlet.HISTOGRAM_SESSION_LOCK);
 			}
-		}
-
-		out.print(XmlUtil.xml2String(document, false));
-
-		out.flush();
-		out.close();
-		System.gc();
+		});
 	}
 
-	private String tagsResponseXml(Date timestamp, SessionMutex sessionMutex, Document document, FlickrArea area, FlickrAreaDto areaDto, int size) throws InterruptedException {
+	private void tagsResponseXml(Date timestamp, SessionMutex sessionMutex, Element rootElement, FlickrArea area, FlickrAreaDto areaDto, int size) throws InterruptedException {
 
 		FlickrAreaResult areaResult = areaMgr.getAreaCancelableJob().countTag(timestamp, sessionMutex, area, areaDto);
 
@@ -178,11 +161,11 @@ public class TagServlet extends HttpServlet {
 		});
 
 		Element tagsElement = new Element("tags");
-		document.getRootElement().addContent(tagsElement);
+		rootElement.addContent(tagsElement);
 
 		int num = 0;
-		for(Map.Entry<String, Integer> entry : entries){
-			if(num++ > size){
+		for (Map.Entry<String, Integer> entry : entries) {
+			if (num++ > size) {
 				break;
 			}
 			Element tagElement = new Element("tag");
@@ -190,8 +173,11 @@ public class TagServlet extends HttpServlet {
 			tagElement.setAttribute("name", entry.getKey());
 			tagElement.setAttribute("num", String.valueOf(entry.getValue()));
 		}
+	}
 
-		return XmlUtil.xml2String(document, true);
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doGet(req, resp);
 	}
 
 	/**

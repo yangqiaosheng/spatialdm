@@ -282,16 +282,6 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	}
 
 	@Override
-	public long getTotalEuropePhotoNum() {
-		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME + ".totalNum");
-		long num = 0;
-		if (numObj != null) {
-			num = (Long) numObj;
-		}
-		return num;
-	}
-
-	@Override
 	public long getTotalWorldPhotoNum() {
 		Object numObj = sessionTemplate.selectOne(FlickrPhoto.class.getName() + DB_NAME + ".totalWorldPhotoNum");
 		long num = 0;

@@ -29,10 +29,13 @@ import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.Histograms;
+import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.XmlServletCallback;
+import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
 public class HistrogramsDataServlet extends HttpServlet {
 	/**
@@ -40,16 +43,15 @@ public class HistrogramsDataServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 6872890630342702006L;
 
-
 	/**
 	* Logger for this class
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(HistrogramsDataServlet.class);
 
-
 	private static FlickrAreaMgr areaMgr = null;
 	final public static String HISTOGRAM_SESSION_ID = "HISTOGRAM_SESSION_ID";
 	final public static String HISTOGRAM_SESSION_LOCK = "HISTOGRAM_SESSION_LOCK";
+
 //	public static StringBuffer idStrBuf = null;
 
 	@Override
@@ -69,30 +71,105 @@ public class HistrogramsDataServlet extends HttpServlet {
 		 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Date timestamp = new Date();
-		timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
+		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
+			@Override
+			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response, Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
+				String xml = request.getParameter("xml");
 
-		HttpSession session = request.getSession();
-		SessionMutex sessionMutex = null;
-		synchronized (this) {
-			if(session.getAttribute(HISTOGRAM_SESSION_ID) == null){
-				session.setAttribute(HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
+				//Google Chart
+				String hasChart = request.getParameter("chart");
+				logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+				if (StringUtils.isEmpty(xml)) {
+					String errMsg = "ERROR: 'xml' parameter is missing!";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				}
+				FlickrAreaDto areaDto = new FlickrAreaDto();
+
+				HttpSession session = request.getSession();
+				Date timestamp = new Date();
+				timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
+				SessionMutex sessionMutex = null;
+				synchronized (this) {
+					if (session.getAttribute(HISTOGRAM_SESSION_ID) == null) {
+						session.setAttribute(HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
+					}
+					sessionMutex = (SessionMutex) session.getAttribute(HISTOGRAM_SESSION_ID);
+					if (sessionMutex.getTimestamp().before(timestamp)) {
+						sessionMutex.setTimestamp(timestamp);
+					}
+				}
+				try {
+					areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
+					logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
+
+					if (session.getAttribute(HISTOGRAM_SESSION_LOCK) != null) {
+						int waitSec = 15;
+						for (int i = 1; i <= waitSec; i++) {
+							Thread.sleep(1000);
+							if (session.getAttribute(HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
+								break;
+							} else {
+								if (i == waitSec) {
+									throw new TimeoutException("Blocked until:" + waitSec + "s");
+								}
+								if (!sessionMutex.getTimestamp().equals(timestamp)) {
+									throw new InterruptedException("Interrupted before");
+								}
+							}
+						}
+					}
+
+					session.setAttribute(HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
+
+					int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(),
+							areaDto.isCrossDateLine());
+
+					if (size > 2000) {
+						throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+					}
+
+					List<FlickrArea> areas = null;
+					if (areaDto.getZoom() > 2) {
+						areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(),
+								areaDto.getRadius(), areaDto.isCrossDateLine());
+					} else {
+						areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
+					}
+
+					Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);
+					histrogramsResponseXml(rootElement, sumHistrograms, BooleanUtils.toBoolean(hasChart));
+
+					session.removeAttribute(HISTOGRAM_SESSION_ID);
+					messageElement.setText("SUCCESS");
+
+				} catch (TimeoutException e) {
+					messageElement.setText("INFO: Rejected until Timeout!");
+					rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+					rootElement.addContent(new Element("description").setText(e.getMessage()));
+				} catch (InterruptedException e) {
+					messageElement.setText("INFO: interupted by another query!");
+//					rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+//					rootElement.addContent(new Element("description").setText(e.getMessage()));
+				} finally {
+					session.removeAttribute(HISTOGRAM_SESSION_LOCK);
+				}
 			}
-			sessionMutex = (SessionMutex)session.getAttribute(HISTOGRAM_SESSION_ID);
-			if(sessionMutex.getTimestamp().before(timestamp)){
-				sessionMutex.setTimestamp(timestamp);
-			}
-		}
+		});
+	}
+
+	/* replace by XmlServeltTemplate
+	@Deprecated
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/xml");
 		// Prevents caching
 		response.setHeader("Cache-Control", "no-store"); // HTTP1.1
 		response.setHeader("Pragma", "no-cache"); // HTTP1.0
 		response.setDateHeader("Expires", 0); // proxy server
-
-		String xml = request.getParameter("xml");
-		String hasChart = request.getParameter("chart");
 
 		PrintWriter out = response.getWriter();
 
@@ -101,18 +178,39 @@ public class HistrogramsDataServlet extends HttpServlet {
 		document.setRootElement(rootElement);
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
+		try {
 
-		logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			String xml = request.getParameter("xml");
 
-		if (StringUtils.isEmpty(xml)) {
-			messageElement.setText("ERROR: no xml parameter!");
-		} else {
+			//Google Chart
+			String hasChart = request.getParameter("chart");
+			logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+			if (StringUtils.isEmpty(xml)) {
+				String errMsg = "ERROR: 'xml' parameter is missing!";
+				messageElement.setText(errMsg);
+				throw new IllegalInputParameterException(errMsg);
+			}
 			FlickrAreaDto areaDto = new FlickrAreaDto();
+
+			HttpSession session = request.getSession();
+			Date timestamp = new Date();
+			timestamp.setTime(NumberUtils.toLong(request.getParameter("timestamp")));
+			SessionMutex sessionMutex = null;
+			synchronized (this) {
+				if (session.getAttribute(HISTOGRAM_SESSION_ID) == null) {
+					session.setAttribute(HISTOGRAM_SESSION_ID, new SessionMutex(timestamp));
+				}
+				sessionMutex = (SessionMutex) session.getAttribute(HISTOGRAM_SESSION_ID);
+				if (sessionMutex.getTimestamp().before(timestamp)) {
+					sessionMutex.setTimestamp(timestamp);
+				}
+			}
 			try {
 				areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
 				logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
-				if(session.getAttribute(HISTOGRAM_SESSION_LOCK) != null){
+				if (session.getAttribute(HISTOGRAM_SESSION_LOCK) != null) {
 					int waitSec = 15;
 					for (int i = 1; i <= waitSec; i++) {
 						Thread.sleep(1000);
@@ -131,7 +229,8 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 				session.setAttribute(HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
 
-				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(), areaDto.isCrossDateLine());
+				int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(),
+						areaDto.isCrossDateLine());
 
 				if (size > 2000) {
 					throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
@@ -139,17 +238,18 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 				List<FlickrArea> areas = null;
 				if (areaDto.getZoom() > 2) {
-					areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(), areaDto.isCrossDateLine());
+					areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(),
+							areaDto.getRadius(), areaDto.isCrossDateLine());
 				} else {
 					areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
 				}
 
 				Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);
 				histrogramsResponseXml(document, sumHistrograms, BooleanUtils.toBoolean(hasChart));
-				messageElement.setText("SUCCESS");
-				session.removeAttribute(HISTOGRAM_SESSION_ID);
 
-//				request.getSession().setAttribute("areaDto", areaDto);
+				session.removeAttribute(HISTOGRAM_SESSION_ID);
+				messageElement.setText("SUCCESS");
+
 			} catch (TimeoutException e) {
 				messageElement.setText("INFO: Rejected until Timeout!");
 				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
@@ -158,14 +258,17 @@ public class HistrogramsDataServlet extends HttpServlet {
 				messageElement.setText("INFO: interupted by another query!");
 //				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
 //				rootElement.addContent(new Element("description").setText(e.getMessage()));
-			} catch (Exception e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-				messageElement.setText("ERROR: wrong input parameter!");
-				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			} finally {
 				session.removeAttribute(HISTOGRAM_SESSION_LOCK);
 			}
+
+		} catch (IllegalInputParameterException e) {
+			rootElement.addContent(new Element("description").setText(e.getMessage()));
+		} catch (Exception e) {
+			logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
+			messageElement.setText("ERROR: wrong input parameter!");
+//			rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
+			rootElement.addContent(new Element("description").setText(e.getMessage()));
 		}
 
 		out.print(XmlUtil.xml2String(document, true));
@@ -175,13 +278,12 @@ public class HistrogramsDataServlet extends HttpServlet {
 
 		System.gc();
 	}
+	 */
 
-	public String histrogramsResponseXml(Document document, Histograms histrograms, boolean hasChart) {
+	public void histrogramsResponseXml(Element rootElement, Histograms histrograms, boolean hasChart) {
 
-		Element rootElement = document.getRootElement();
 		Element histrogramsDataElement = new Element("histrogramsData");
 		rootElement.addContent(histrogramsDataElement);
-
 
 		addHistrogram(histrogramsDataElement, histrograms.getWeekdays(), Level.WEEKDAY);
 		addHistrogram(histrogramsDataElement, histrograms.getHours(), Level.HOUR);
@@ -189,7 +291,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 		addHistrogram(histrogramsDataElement, histrograms.getMonths(), Level.MONTH);
 		addHistrogram(histrogramsDataElement, histrograms.getYears(), Level.YEAR);
 
-		if(hasChart){
+		if (hasChart) {
 			Element histrogramsChartElement = new Element("histrogramsChart");
 			rootElement.addContent(histrogramsChartElement);
 
@@ -199,7 +301,6 @@ public class HistrogramsDataServlet extends HttpServlet {
 			addGoogleHistrogramChart(histrogramsChartElement, "Photos Distribution", 400, 200, histrograms.getMonths(), Level.MONTH);
 			addGoogleHistrogramChart(histrogramsChartElement, "Photos Distribution", 400, 200, histrograms.getYears(), Level.YEAR);
 		}
-		return XmlUtil.xml2String(document, false);
 	}
 
 	private void addHistrogram(Element element, Map<Integer, Integer> histrogramData, Level displayLevel) {
@@ -213,7 +314,7 @@ public class HistrogramsDataServlet extends HttpServlet {
 		histrogramElement.setAttribute("minValue", String.valueOf(minValue));
 		element.addContent(histrogramElement);
 
-		for(Map.Entry<Integer, Integer> e : histrogramData.entrySet()){
+		for (Map.Entry<Integer, Integer> e : histrogramData.entrySet()) {
 			Element valueElement = new Element(levelStr);
 			histrogramElement.addContent(valueElement);
 			valueElement.setAttribute("id", DateUtil.getChartLabelStr(e.getKey(), displayLevel));

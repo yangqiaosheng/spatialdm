@@ -177,12 +177,6 @@ public abstract class FlickrAreaDao {
 	public abstract long getTotalCountWithinArea(long areaid);
 
 	/**
-	 * get the total amount of photos stored in the database
-	 * @return long - number of photos
-	 */
-	public abstract long getTotalEuropePhotoNum();
-
-	/**
 	 * get the total amount of world photos stored in the database
 	 * @return long - number of world photos
 	 */

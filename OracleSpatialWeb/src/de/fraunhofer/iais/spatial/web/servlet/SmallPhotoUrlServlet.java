@@ -24,9 +24,12 @@ import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
+import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
+import de.fraunhofer.iais.spatial.web.XmlServletCallback;
+import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
 public class SmallPhotoUrlServlet extends HttpServlet {
 	/**
@@ -56,70 +59,49 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 		 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		new XmlServletTemplate().doExecute(request, response, logger, new XmlServletCallback() {
 
-		response.setContentType("text/xml");
-		// Prevents caching
-		response.setHeader("Cache-Control", "no-store"); // HTTP1.1
-		response.setHeader("Pragma", "no-cache"); // HTTP1.0
-		response.setDateHeader("Expires", 0); // proxy server
-
-		String areaid = request.getParameter("areaid");
-		int page = NumberUtils.toInt(request.getParameter("page"));
-		int pageSize = NumberUtils.toInt(request.getParameter("page_size"));
-		PrintWriter out = response.getWriter();
-		String tag = StringUtils.defaultString(request.getParameter("tag"));
-		String queryDateStr = StringUtils.defaultString(request.getParameter("queryDateStr"));
-		Document document = new Document();
-		Element rootElement = new Element("response");
-		document.setRootElement(rootElement);
-		Element messageElement = new Element("message");
-		rootElement.addContent(messageElement);
-
-		logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize + "|tag:" + tag + "|queryDateStr:" + queryDateStr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-		if (!StringUtils.isNumeric(areaid) || page == 0 || pageSize == 0 || pageSize > MAX_PAGE_SIZE) {
-			messageElement.setText("ERROR: wrong input parameter!");
-		} else if (request.getSession().getAttribute("areaDto") == null) {
-			messageElement.setText("ERROR: please perform a query first!");
-		} else {
-			FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-			int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
-			Radius radius = FlickrAreaUtil.judgeRadius(zoom);
-			try {
+			@Override
+			public void doInXmlServlet(HttpServletRequest request, HttpServletResponse response, Logger logger, Element rootElement, Element messageElement, XmlServletCallback callback) throws Exception {
+				String areaid = request.getParameter("areaid");
+				int page = NumberUtils.toInt(request.getParameter("page"));
+				int pageSize = NumberUtils.toInt(request.getParameter("page_size"));
+				String tag = StringUtils.defaultString(request.getParameter("tag"));
+				String queryDateStr = StringUtils.defaultString(request.getParameter("queryDateStr"));
+				if (!StringUtils.isNumeric(areaid) || page == 0 || pageSize == 0 || pageSize > MAX_PAGE_SIZE) {
+					String errMsg = "ERROR: wrong input parameter!";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				} else if (request.getSession().getAttribute("areaDto") == null) {
+					String errMsg = "ERROR: session has timed out, please refresh the page.";
+					messageElement.setText(errMsg);
+					throw new IllegalInputParameterException(errMsg);
+				}
+				logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|page:" + page + "|pageSize:" + pageSize + "|tag:" + tag + "|queryDateStr:" + queryDateStr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
+				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
+				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), Radius.valueOf("R" + radius));
 				if (area != null) {
 					if (StringUtils.isNotBlank(tag) && StringUtils.isNotBlank(queryDateStr)) {
 						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, tag, queryDateStr, page, pageSize);
-						buildXmlDoc(document, photos);
+						addPhotos2Xml(rootElement, photos);
 						messageElement.setText("SUCCESS");
 					} else {
 						List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, areaDto, page, pageSize);
-						buildXmlDoc(document, photos);
+						addPhotos2Xml(rootElement, photos);
 						messageElement.setText("SUCCESS");
 					}
 				} else {
 					messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
 				}
-			} catch (Exception e) {
-				logger.error("doGet(HttpServletRequest, HttpServletResponse)", e); //$NON-NLS-1$
-				messageElement.setText("ERROR: wrong input parameter!");
-//				rootElement.addContent(new Element("exceptions").setText(StringUtil.printStackTrace2String(e)));
-				rootElement.addContent(new Element("description").setText(e.getMessage()));
 			}
-		}
-
-		out.print(XmlUtil.xml2String(document, true));
-
-		out.flush();
-		out.close();
-		System.gc();
+		});
 	}
 
-	private String buildXmlDoc(Document document, List<FlickrPhoto> photos) {
+	private void addPhotos2Xml(Element rootElement, List<FlickrPhoto> photos) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleDateFormat weekdayFormat = new SimpleDateFormat("EEE", Locale.ENGLISH);
-
-		Element rootElement = document.getRootElement();
 
 		Element photosElement = new Element("photos");
 		rootElement.addContent(photosElement);
@@ -143,8 +125,6 @@ public class SmallPhotoUrlServlet extends HttpServlet {
 			photoElement.addContent(new Element("viewed").setText(String.valueOf(p.getViewed())));
 			photoElement.addContent(new Element("rawTags").setText(String.valueOf(p.getRawTags())));
 		}
-
-		return XmlUtil.xml2String(document, true);
 	}
 
 	/**
