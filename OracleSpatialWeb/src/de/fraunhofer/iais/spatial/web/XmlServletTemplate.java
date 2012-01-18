@@ -16,6 +16,14 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 
 public class XmlServletTemplate {
 
+	/**
+	 * Execute the action specified by the given action object within a Servelt.
+	 * @param request
+	 * @param response
+	 * @param logger
+	 * @param callback
+	 * @throws IOException
+	 */
 	public void doExecute(HttpServletRequest request, HttpServletResponse response, Logger logger, XmlServletCallback callback) throws IOException {
 
 		response.setContentType("text/xml; charset=UTF-8");

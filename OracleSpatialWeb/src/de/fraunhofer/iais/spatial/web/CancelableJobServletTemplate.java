@@ -16,6 +16,15 @@ import de.fraunhofer.iais.spatial.web.servlet.HistogramsDataServlet;
 
 public class CancelableJobServletTemplate {
 
+	/**
+	 * Execute the Cancelable Job specified by the given action within a Servelt.
+	 * @param request
+	 * @param logger
+	 * @param rootElement
+	 * @param messageElement
+	 * @param callback
+	 * @throws Exception
+	 */
 	public void doExecute(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement, CancelableJobServletCallback callback) throws Exception {
 		HttpSession session = request.getSession();
 		Date timestamp = new Date();
