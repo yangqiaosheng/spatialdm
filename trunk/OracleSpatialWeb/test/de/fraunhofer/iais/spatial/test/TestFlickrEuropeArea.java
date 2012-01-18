@@ -653,7 +653,8 @@ public class TestFlickrEuropeArea {
 	@Test
 	public void testTagTimeSeriesChart() throws Exception {
 		testRequestXml();
-		Set<String> years = new HashSet<String>();
+		FlickrAreaDto areaDto = new FlickrAreaDto();
+		Set<String> years = areaDto.getYears();
 //		years.add("2005");
 //		years.add("2006");
 		years.add("2009");
@@ -662,9 +663,8 @@ public class TestFlickrEuropeArea {
 //		years.add("2007");
 //		years.add("2008");
 		FlickrArea area = areaMgr.getAreaDao().getAreaById(18136, Radius.R40000);
-
-		areaMgr.createTagTimeSeriesChartOld(area, "germany", years, "germany", new FileOutputStream("temp/tsTagCharty.png"));
-		System.out.println(areaMgr.createTagTimeSeriesData(area, "germany", years));
+		areaMgr.createTagTimeSeriesChartOld(area, "germany", areaDto, "germany", new FileOutputStream("temp/tsTagCharty.png"));
+		System.out.println(areaMgr.createTagTimeSeriesData(area, "germany", areaDto));
 	}
 
 	@Test

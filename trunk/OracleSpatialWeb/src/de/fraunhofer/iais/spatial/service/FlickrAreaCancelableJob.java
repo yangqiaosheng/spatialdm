@@ -120,24 +120,8 @@ public class FlickrAreaCancelableJob {
 			checkInterruption(sessionTimestamp, sessionMutex);
 
 			int selectCount = 0;
-			Map<String, Integer> counts = null;
 
-			switch (areaDto.getQueryLevel()) {
-			case HOUR:
-				counts = area.getHoursCount();
-				break;
-			case DAY:
-				counts = area.getDaysCount();
-				break;
-			case MONTH:
-				counts = area.getMonthsCount();
-				break;
-			case YEAR:
-				counts = area.getYearsCount();
-				break;
-			}
-
-			for (Map.Entry<String, Integer> e : counts.entrySet()) {
+			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey())) {
 					selectCount += e.getValue();
 				}
@@ -183,7 +167,7 @@ public class FlickrAreaCancelableJob {
 		return areaResult;
 	}
 
-	/* 
+	/*
 	public FlickrAreaResult countTag(Date sessionTimestamp, SessionMutex sessionMutex, FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
 
 		checkInterruption(sessionTimestamp, sessionMutex);

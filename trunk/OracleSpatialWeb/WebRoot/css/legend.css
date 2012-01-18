@@ -40,7 +40,7 @@ label.error {
 }
 
 #TagChart {
-	width: 600px;
+	width: 800px;
 	z-index: 100;
 	display: none;
 	position: fixed;
@@ -52,7 +52,6 @@ label.error {
 }
 
 #TagChartMenu {
-	width: 600px;
 	text-align: right;
 	background: url('../images/ui-bg_inset-hard_100_f5f8f9_1x30.png')
 		repeat-x scroll 0 0 transparent;
