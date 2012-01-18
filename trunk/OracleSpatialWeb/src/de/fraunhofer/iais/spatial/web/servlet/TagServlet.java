@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -91,6 +92,8 @@ public class TagServlet extends HttpServlet {
 							throw new IllegalInputParameterException(errMsg);
 						}
 						FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
+						areaDto.setWithStopWords(BooleanUtils.toBoolean(StringUtils.defaultString(request.getParameter("stopwords"))));
+
 						int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 						Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 

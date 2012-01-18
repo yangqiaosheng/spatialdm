@@ -460,7 +460,7 @@ public class FlickrAreaMgr {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		if (MapUtils.isEmpty(area.getHoursTagsCount())) {
-			areaDao.loadHoursTagsCount(area);
+			areaDao.loadHoursTagsCount(area, areaDto.isWithStopWords());
 		}
 
 		Map<String, Map<String, Integer>> hoursTagsCount = area.getHoursTagsCount();
