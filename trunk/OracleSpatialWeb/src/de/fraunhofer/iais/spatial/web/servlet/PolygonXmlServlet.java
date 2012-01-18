@@ -31,8 +31,8 @@ import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
-import de.fraunhofer.iais.spatial.web.FlickrAreaCancelableJobCallback;
-import de.fraunhofer.iais.spatial.web.FlickrAreaCancelableJobTemplate;
+import de.fraunhofer.iais.spatial.web.CancelableJobServletCallback;
+import de.fraunhofer.iais.spatial.web.CancelableJobServletTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
@@ -62,7 +62,7 @@ public class PolygonXmlServlet extends HttpServlet {
 
 			@Override
 			public void doInXmlServlet(HttpServletRequest request, Logger logger, Element rootElement, Element messageElement) throws Exception {
-				new FlickrAreaCancelableJobTemplate().doExecute(request, logger, rootElement, messageElement, new FlickrAreaCancelableJobCallback() {
+				new CancelableJobServletTemplate().doExecute(request, logger, rootElement, messageElement, new CancelableJobServletCallback() {
 
 					@Override
 					public void doCancelableJob(HttpServletRequest request, Logger logger, SessionMutex sessionMutex, Date timestamp, Element rootElement, Element messageElement) throws Exception {

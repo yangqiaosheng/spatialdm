@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 
 
-public interface FlickrAreaCancelableJobCallback {
+public interface CancelableJobServletCallback {
 
 	void doCancelableJob(HttpServletRequest request, Logger logger, SessionMutex sessionMutex, Date timestamp, Element rootElement, Element messageElement) throws Exception;
 }
