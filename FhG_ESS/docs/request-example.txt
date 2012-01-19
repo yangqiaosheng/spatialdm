@@ -1,6 +1,5 @@
 http://kd-photomap.iais.fraunhofer.de/ESS/RequestKml?xml=
 
-Step(2): Fetching Model Data
 
 ###########################################################################
 
@@ -75,8 +74,8 @@ Sample request xml:
 3. Fetching kml of model NimesMatchPred1 with paramters:
 	program=NormalTrafficPredictor (time interval 15min)
 	model=models/model_place_presence_15min_intervals.xml
-	start_time=01/12/2011:17:00 (depends on the query)
-	end_time=05/12/2011:23:45 (depends on the query)
+	start_time=01/12/2011:00:00 (depends on the query)
+	end_time=03/12/2011:23:45 (depends on the query)
 	add_noise=true (default)
 
 <request>
