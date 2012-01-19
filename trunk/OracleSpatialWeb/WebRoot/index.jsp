@@ -125,7 +125,7 @@
 			<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
 			<div>
 				<div >
-					To use all the functionalities on kd-photomap, you will need a PC with the system requirements as follows:
+					To display all the functionalities on kd-photomap, you will need a PC with the system requirements as follows:
 				</div>
 				<ul>
 					<li>

@@ -55,6 +55,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.script.db.JoinFlickrAreaTagsCount;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
+import de.fraunhofer.iais.spatial.util.StopWordUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 import de.fraunhofer.iais.spatial.web.servlet.HistogramsDataServlet;
@@ -87,6 +88,13 @@ public class TestFlickrEuropeArea {
 		System.out.println("allDay:" + DateUtil.allDayDates);
 		System.out.println("allMonth:" + DateUtil.allMonthDates);
 		System.out.println("allYear:" + DateUtil.allYearDates);
+	}
+
+	@Test
+	public void testStopwords() throws ParseException {
+
+		System.out.println(StopWordUtil.stopwords);
+		System.out.println("size: " + StopWordUtil.stopwords.size());
 	}
 
 	@Test

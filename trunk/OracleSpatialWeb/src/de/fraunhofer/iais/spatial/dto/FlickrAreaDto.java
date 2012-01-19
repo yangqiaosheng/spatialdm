@@ -35,7 +35,7 @@ public class FlickrAreaDto implements Serializable {
 	JGeometry oracleQueryGeom;
 	String pgQueryGeom;
 	private Point2D transfromVector;
-	boolean withStopWords = false;
+	boolean withStopWords = true;
 
 	public enum Level {
 		HOUR, DAY, MONTH, YEAR, WEEKDAY;
