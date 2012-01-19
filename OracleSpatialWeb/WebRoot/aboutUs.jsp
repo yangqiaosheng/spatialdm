@@ -58,6 +58,9 @@
 				In IEEE Symposium on Visual Analytics Science and Technology (poster), volume 2, pages 289{290, Providence, RI, USA, 2011.
 			</li>
 		</ul>
+		<p>
+			Share this page:
+		</p>
 		<!--
 		<div class="fb-like" data-href="http://kd-photomap.iais.fraunhofer.de" data-send="false" data-width="450" data-show-faces="false" data-font="arial"></div>
 		<p></p>

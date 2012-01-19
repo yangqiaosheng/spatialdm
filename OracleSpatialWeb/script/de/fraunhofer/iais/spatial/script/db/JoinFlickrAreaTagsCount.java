@@ -8,16 +8,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -38,7 +44,7 @@ public class JoinFlickrAreaTagsCount {
 	static int TAG_LIMIT = 25;
 	static String PHOTO_TABLE_NAME = "flickr_world_topviewed_1m_with_region_id";
 	static String COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_25";
-
+	static String STOPWORD_TABLE_NAME = "flickr_world_topviewed_5m_tags_stopword";
 	static int rownum = 1;
 	static Calendar startDate;
 
@@ -162,10 +168,11 @@ public class JoinFlickrAreaTagsCount {
 //				conn.commit();
 //			} while(updateSize == BATCH_SIZE);
 
-			countDay(selectConn);
-			countMonth(selectConn);
-			countYear(selectConn);
-			countTotal(selectConn);
+//			countDay(selectConn);
+//			countMonth(selectConn);
+//			countYear(selectConn);
+//			countTotal(selectConn);
+//			countTotalSum(selectConn);
 		} catch (SQLException e) {
 			logger.error("begin()", e); //$NON-NLS-1$
 			try {
@@ -299,45 +306,12 @@ public class JoinFlickrAreaTagsCount {
 		db.close(conn);
 	}
 
-	private void countDay(Connection conn) throws SQLException {
+	private void createStopwords(Connection conn) throws SQLException {
 
-		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME + " where radius = 2560000");
 		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
-
-		while (pset.next()) {
-			int id = pset.getInt("id");
-			String radius = pset.getString("radius");
-			String hourStr = pset.getString("hour");
-			System.out.println("id:" + id + "\thourStr:" + hourStr);
-
-			if (hourStr != null) {
-				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
-				SortedMap<String, Map<String, Integer>> datesTagsCount = new TreeMap<String, Map<String, Integer>>();
-
-				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
-
-				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})@\\d{2}");
-					Matcher m = p.matcher(e.getKey());
-					m.find();
-					String key = m.group(1);
-					addToTagsCountsMap(datesTagsCount, key, e.getValue());
-				}
-
-				System.out.println("datesTagsCount:" + datesTagsCount);
-				update(datesTagsCount, Level.DAY.toString(), id, radius);
-			}
-		}
-		db.close(pset);
-		db.close(stmt);
-	}
-
-	private void countMonth(Connection conn) throws SQLException {
-
-		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		stmt.setFetchSize(FETCH_SIZE);
-		ResultSet pset = db.getRs(stmt);
+		Connection connUpdate = db.getConn();
 
 		while (pset.next()) {
 			int id = pset.getInt("id");
@@ -346,83 +320,59 @@ public class JoinFlickrAreaTagsCount {
 
 			if (hourStr != null) {
 				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
-				SortedMap<String, Map<String, Integer>> datesTagsCount = new TreeMap<String, Map<String, Integer>>();
-
+				Map<String, Integer> tagsCount = new HashMap<String, Integer>();
+				List<String> stopwords = new ArrayList<String>();
 				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
 
+				int tagSumNum = 0;
 				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
-					Pattern p = Pattern.compile("(\\d{4}-\\d{2})-\\d{2}@\\d{2}");
-					Matcher m = p.matcher(e.getKey());
-					m.find();
-					String key = m.group(1);
-					addToTagsCountsMap(datesTagsCount, key, e.getValue());
+					for (Entry <String, Integer> item : e.getValue().entrySet()) {
+						tagsCount.put(item.getKey(), MapUtils.getInteger(tagsCount, item.getKey(), 0) +  item.getValue());
+						tagSumNum += item.getValue();
+					}
 				}
 
-				update(datesTagsCount, Level.MONTH.toString(), id, radius);
-			}
-		}
-		db.close(pset);
-		db.close(stmt);
-	}
+				Map<String, Integer> sortedTagsCount = FlickrAreaDao.sortTagsCountByValuesDesc(tagsCount);
 
-	private void countYear(Connection conn) throws SQLException {
-
-		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		stmt.setFetchSize(FETCH_SIZE);
-		ResultSet pset = db.getRs(stmt);
-
-		while (pset.next()) {
-			int id = pset.getInt("id");
-			String radius = pset.getString("radius");
-			String hourStr = pset.getString("hour");
-
-			if (hourStr != null) {
-				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
-				SortedMap<String, Map<String, Integer>> datesTagsCount = new TreeMap<String, Map<String, Integer>>();
-
-				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
-
-				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
-					Pattern p = Pattern.compile("(\\d{4})-\\d{2}-\\d{2}@\\d{2}");
-					Matcher m = p.matcher(e.getKey());
-					m.find();
-					String key = m.group(1);
-					addToTagsCountsMap(datesTagsCount, key, e.getValue());
+				int limitNum = 52;
+				int i = 0;
+				for (Entry<String, Integer> e : sortedTagsCount.entrySet()) {
+					if(i++ > limitNum || e.getValue() < 100){
+						break;
+					}
+					stopwords.add(e.getKey());
 				}
+				String stopwordsStr = StringUtils.join(stopwords, ',');
 
-				update(datesTagsCount, Level.YEAR.toString(), id, radius);
+				System.out.println("id:" + id + " radius:" + radius);
+				System.out.println("stopwordsStr:" + stopwordsStr);
+//				System.out.println("hourStr:" + hourStr);
+//				System.out.println("tagsCount:" + tagsCount);
+
+/*
+				PreparedStatement updateStmt = db.getPstmt(connUpdate, "update " + COUNTS_TABLE_NAME + " set tag_num = ?, tag_sum_num = ? where id = ? and radius = ?");
+				updateStmt.setInt(1, tagNum);
+				updateStmt.setInt(2, tagSumNum);
+				updateStmt.setInt(3, id);
+				updateStmt.setInt(4, Integer.parseInt(radius));
+				System.out.println("id:" + id);
+				System.out.println("radius:" + radius);
+				System.out.println("executeUpdate:" + updateStmt.executeUpdate());
+				db.close(updateStmt);
+*/
+				PreparedStatement insertStmt = db.getPstmt(connUpdate, "insert into " + STOPWORD_TABLE_NAME + " (stopword, id, radius) values (?, ?, ?)");
+				insertStmt.setString(1, stopwordsStr);
+				insertStmt.setInt(2, id);
+				insertStmt.setInt(3, Integer.parseInt(radius));
+
+				//		System.out.println("countStr:" + countStr);
+				System.out.println("id:" + id);
+				System.out.println("radius:" + radius);
+				System.out.println("executeInsert:" + insertStmt.executeUpdate());
+				db.close(insertStmt);
 			}
 		}
-		db.close(pset);
-		db.close(stmt);
-	}
 
-	private void countTotal(Connection conn) throws SQLException {
-
-		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-		stmt.setFetchSize(FETCH_SIZE);
-		ResultSet pset = db.getRs(stmt);
-
-		while (pset.next()) {
-			int id = pset.getInt("id");
-			String radius = pset.getString("radius");
-			String hourStr = pset.getString("hour");
-
-			if (hourStr != null) {
-				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
-				SortedMap<String, Map<String, Integer>> datesTagsCount = new TreeMap<String, Map<String, Integer>>();
-
-				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
-
-				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
-					addToTagsCountsMap(datesTagsCount, "total", e.getValue());
-				}
-				System.out.println("hourStr:" + hourStr);
-				System.out.println("areasTagsCount:" + datesTagsCount);
-
-				update(datesTagsCount, "total", id, radius);
-			}
-		}
 		db.close(pset);
 		db.close(stmt);
 	}
@@ -437,23 +387,6 @@ public class JoinFlickrAreaTagsCount {
 		db.close(stmt);
 	}*/
 
-	private void update(SortedMap<String, Map<String, Integer>> countsMap, String queryLevel, int id, String radius) throws SQLException {
-
-		Connection conn = db.getConn();
-		String countStr = FlickrAreaDao.createDatesTagsCountDbString(countsMap);
-
-		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
-		updateStmt.setString(1, countStr);
-		updateStmt.setInt(2, id);
-		updateStmt.setInt(3, Integer.parseInt(radius));
-
-		//		System.out.println("countStr:" + countStr);
-		System.out.println("id:" + id);
-		System.out.println("radius:" + radius);
-		System.out.println("executeUpdate:" + updateStmt.executeUpdate());
-		db.close(updateStmt);
-		db.close(conn);
-	}
 
 	public static void mergeTagsCountsMap(SortedMap<String, Map<String, Integer>> countsMap, Map<String, Map<String, Integer>> countsMapToAdd) {
 		for (Entry<String, Map<String, Integer>> entry : countsMapToAdd.entrySet()) {
@@ -471,5 +404,4 @@ public class JoinFlickrAreaTagsCount {
 			countsMap.put(key, value);
 		}
 	}
-
 }

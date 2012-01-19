@@ -6,18 +6,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.aop.ThrowsAdvice;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
@@ -317,6 +317,10 @@ public abstract class FlickrAreaDao {
 	}
 
 	public final static void parseHoursTagsCountDbString(String count, SortedMap<String, Map<String, Integer>> hoursTagsCount) {
+		parseHoursTagsCountDbString(count, hoursTagsCount, null);
+	}
+
+	public final static void parseHoursTagsCountDbString(String count, SortedMap<String, Map<String, Integer>> hoursTagsCount, List<Set<String>> stopwordsList) {
 /* using regex consumes too much memory
 //		hourTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}@\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
 //		Matcher m = Pattern.compile(hourTagsRegExPatternStr).matcher(count);
@@ -329,9 +333,22 @@ public abstract class FlickrAreaDao {
 			String content = terms.substring(15, terms.length() - 1);
 			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 			for (String term : StringUtils.split(content, ",")) {
-				tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
+				boolean isStopword = false;
+				if (CollectionUtils.isNotEmpty(stopwordsList)) {
+					for (Set<String> stopwords : stopwordsList) {
+						if (stopwords.contains(StringUtils.substringBefore(term, "|"))) {
+							isStopword = true;
+							break;
+						}
+					}
+				}
+				if (isStopword == false) {
+					tagsCount.put(StringUtils.substringBefore(term, "|"), NumberUtils.toInt(StringUtils.substringAfter(term, "|")));
+				}
 			}
-			hoursTagsCount.put(key, tagsCount);
+			if (tagsCount.size() > 0) {
+				hoursTagsCount.put(key, tagsCount);
+			}
 		}
 	}
 
@@ -386,7 +403,7 @@ public abstract class FlickrAreaDao {
 		return strBuffer.toString();
 	}
 
-	private static Map<String, Integer> sortTagsCountByValuesDesc(Map<String, Integer> unsortTagsCount) {
+	public static Map<String, Integer> sortTagsCountByValuesDesc(Map<String, Integer> unsortTagsCount) {
 
 		List<Map.Entry<String, Integer>> entries = Lists.newLinkedList(unsortTagsCount.entrySet());
 
