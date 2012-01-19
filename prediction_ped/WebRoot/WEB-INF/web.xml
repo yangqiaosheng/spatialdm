@@ -17,7 +17,7 @@
 	-->
 	<context-param>
 		<param-name>webAppRootKey</param-name>
-		<param-value>prediction_ped.root</param-value> 
+		<param-value>prediction_ped.root</param-value>
 	</context-param>
 
 	<!--
@@ -79,6 +79,19 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+
+	<filter>
+		<filter-name>UrchinFilter</filter-name>
+		<filter-class>com.cj.urchin.UrchinFilter</filter-class>
+		<init-param>
+			<param-name>code</param-name>
+			<param-value>UA-22122163-1</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>UrchinFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
 
 	<servlet>
 		<description>Retrieve the data to create a kml with different zoom levels</description>
