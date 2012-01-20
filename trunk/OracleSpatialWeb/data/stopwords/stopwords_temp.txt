@@ -1,4 +1,6 @@
 ; temp
+male
+female
 man
 men
 woman
@@ -41,3 +43,13 @@ roads
 light
 nikkor
 logo
+logos
+label
+labels
+evening
+afternoon
+late
+early
+leute
+good
+nice
