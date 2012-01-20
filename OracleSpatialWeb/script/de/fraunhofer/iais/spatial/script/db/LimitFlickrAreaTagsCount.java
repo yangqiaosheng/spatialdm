@@ -30,7 +30,7 @@ import de.fraunhofer.iais.spatial.util.StopWordUtil;
 
 public class LimitFlickrAreaTagsCount {
 
-	private static final int TAGS_NUM = 15;
+	private static final int TAGS_NUM = 25;
 
 	/**
 	* Logger for this class
@@ -38,8 +38,9 @@ public class LimitFlickrAreaTagsCount {
 	private static final Logger logger = LoggerFactory.getLogger(LimitFlickrAreaTagsCount.class);
 
 	final static int FETCH_SIZE = 1;
-	final static String INPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_5m_tags_count";
-	final static String OUTPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_5m_tags_count_stopword_15";
+	final static String INPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count";
+	final static String OUTPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_25";
+	final static String OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_without_stopword_25";
 	static String STOPWORD_TABLE_NAME = "flickr_world_topviewed_5m_tags_stopword";
 	static Calendar startDate;
 
@@ -88,7 +89,7 @@ public class LimitFlickrAreaTagsCount {
 				updateStmt.setInt(2, id);
 				updateStmt.setInt(3, Integer.parseInt(radius));
 
-				System.out.println("countStr:" + countStr);
+				System.out.println("countStr:" + StringUtils.substring(countStr, 0, 200));
 				System.out.println("id:" + id);
 				System.out.println("radius:" + radius);
 				System.out.println("executeUpdate:" + updateStmt.executeUpdate());
@@ -119,7 +120,7 @@ public class LimitFlickrAreaTagsCount {
 				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 
 				List<Set<String>> stopwordsList = new ArrayList<Set<String>>();
-				stopwordsList.add(StopWordUtil.stopwords);
+				stopwordsList.add(StopWordUtil.stopwordsGloble);
 
 				PreparedStatement areaStmt = db.getPstmt(conn, "select t1.id as pid from flickr_world_area_2560000 t1, flickr_world_area t2 where t2.id = ? and ST_Intersects(t1.geom, t2.geom)");
 				areaStmt.setInt(1, id);
@@ -136,12 +137,31 @@ public class LimitFlickrAreaTagsCount {
 
 				String countStr = FlickrAreaDao.createDatesTagsCountDbString(hoursTagsCount, TAGS_NUM);
 
+				PreparedStatement updateStmt = db.getPstmt(updateConn, "update " + OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME + " set hour = ? where id = ? and radius = ?");
+				updateStmt.setString(1, countStr);
+				updateStmt.setInt(2, id);
+				updateStmt.setInt(3, Integer.parseInt(radius));
+
+				System.out.println("countStr_without_stopwords:" + StringUtils.substring(countStr, 0, 200));
+				System.out.println("id:" + id);
+				System.out.println("radius:" + radius);
+				System.out.println("executeUpdate:" + updateStmt.executeUpdate());
+				db.close(updateStmt);
+			}
+
+			if (hourStr != null) {
+				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
+
+				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
+
+				String countStr = FlickrAreaDao.createDatesTagsCountDbString(hoursTagsCount, TAGS_NUM);
+
 				PreparedStatement updateStmt = db.getPstmt(updateConn, "update " + OUTPUT_COUNTS_TABLE_NAME + " set hour = ? where id = ? and radius = ?");
 				updateStmt.setString(1, countStr);
 				updateStmt.setInt(2, id);
 				updateStmt.setInt(3, Integer.parseInt(radius));
 
-				System.out.println("countStr:" + countStr);
+				System.out.println("countStr:" + StringUtils.substring(countStr, 0, 200));
 				System.out.println("id:" + id);
 				System.out.println("radius:" + radius);
 				System.out.println("executeUpdate:" + updateStmt.executeUpdate());
