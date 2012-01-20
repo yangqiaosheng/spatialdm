@@ -75,7 +75,7 @@ public class TagTimeSeriesChartServlet extends HttpServlet {
 			tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
 			try {
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-				areaDto.setWithStopWords(BooleanUtils.toBoolean(StringUtils.defaultString(request.getParameter("stopwords"))));
+				areaDto.setWithoutStopWords(BooleanUtils.toBoolean(StringUtils.defaultString(request.getParameter("stopwords"))));
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);

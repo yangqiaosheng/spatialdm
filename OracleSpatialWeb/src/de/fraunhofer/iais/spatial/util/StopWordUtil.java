@@ -1,5 +1,6 @@
 package de.fraunhofer.iais.spatial.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,6 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+
+import de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -22,12 +25,17 @@ public class StopWordUtil {
 	public static Set<String> stopwordsGloble = new HashSet<String>();
 
 	static {
-		String filenameFlickr = "data/stopwords/stopwords_flickr.txt";
-		String filenameCamera = "data/stopwords/stopwords_camera.txt";
-		String filenameDe = "data/stopwords/stopwords_de.txt";
-		String filenameEn = "data/stopwords/stopwords_en.txt";
-		String filenameIt = "data/stopwords/stopwords_it.txt";
-		String filenameTemp = "data/stopwords/stopwords_temp.txt";
+		String basePath = "WebRoot/";
+		if(!new File("data/stopwords").isDirectory()){
+
+			basePath = StopWordUtil.class.getResource("/../../").getPath();
+		}
+		String filenameFlickr = basePath + "data/stopwords/stopwords_flickr.txt";
+		String filenameCamera =  basePath + "data/stopwords/stopwords_camera.txt";
+		String filenameDe =  basePath + "data/stopwords/stopwords_de.txt";
+		String filenameEn =  basePath + "data/stopwords/stopwords_en.txt";
+		String filenameIt =  basePath + "data/stopwords/stopwords_it.txt";
+		String filenameTemp =  basePath + "data/stopwords/stopwords_temp.txt";
 
 		initStopwords(stopwordsCamera, filenameCamera);
 		initStopwords(stopwordsFlickr, filenameFlickr);

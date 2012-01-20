@@ -35,6 +35,7 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
+import de.fraunhofer.iais.spatial.util.StopWordUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 import de.fraunhofer.iais.spatial.web.CancelableJobServletCallback;
@@ -92,7 +93,7 @@ public class TagServlet extends HttpServlet {
 							throw new IllegalInputParameterException(errMsg);
 						}
 						FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-						areaDto.setWithStopWords(BooleanUtils.toBoolean(StringUtils.defaultString(request.getParameter("stopwords"))));
+						areaDto.setWithoutStopWords(BooleanUtils.toBoolean(StringUtils.defaultString(request.getParameter("stopwords"))));
 
 						int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 						Radius radius = FlickrAreaUtil.judgeRadius(zoom);
@@ -131,9 +132,14 @@ public class TagServlet extends HttpServlet {
 
 		int num = 0;
 		for (Map.Entry<String, Integer> entry : entries) {
+			if(areaDto.isWithoutStopWords() && StopWordUtil.stopwordsTemp.contains(entry.getKey())){
+				continue;
+			}
+
 			if (num++ > size) {
 				break;
 			}
+
 			Element tagElement = new Element("tag");
 			tagsElement.addContent(tagElement);
 			tagElement.setAttribute("name", entry.getKey());

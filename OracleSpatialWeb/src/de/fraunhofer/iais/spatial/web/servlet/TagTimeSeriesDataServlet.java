@@ -82,7 +82,7 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 				}
 
 				FlickrAreaDto areaDto = SerializationUtils.clone((FlickrAreaDto) request.getSession().getAttribute("areaDto"));
-				areaDto.setWithStopWords(BooleanUtils.toBoolean(StringUtils.defaultString(request.getParameter("stopwords"))));
+				areaDto.setWithoutStopWords(BooleanUtils.toBoolean(StringUtils.defaultString(request.getParameter("stopwords"))));
 
 				int zoom = NumberUtils.toInt(request.getParameter("zoom"), areaDto.getZoom());
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
