@@ -3,6 +3,7 @@
 
 // google.maps is generic. after that comes the class  which is in the API 3
 var tagChart = null
+var stopwords = true;
 var map = null;
 var myOptions = null;
 var geocoder = null;
@@ -472,7 +473,7 @@ function askForTags(ids, numberOfTags, center, total, selc, number) {
 	xmlHttp.open("POST", "Tag");
 	xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 	//console.log("areaid=" + ids + "&size=" + numberOfTags);
-	xmlHttp.send("areaid=" + ids + "&size=" + numberOfTags + "&timestamp=" + new Date().getTime());
+	xmlHttp.send("areaid=" + ids + "&size=" + numberOfTags + "&stopwords=" + stopwords + "&timestamp=" + new Date().getTime());
 	xmlHttp.onreadystatechange = function() {
 		if (xmlHttp.readyState == 4) {
 			var xmlDoc = xmlHttp.responseText;
@@ -774,7 +775,7 @@ function wordClick(num, idp) {
 		tagsMask[num] = 1;
 		jQuery("#" + tagsClick[num].getNameTag() + "" + num).css("background-color", "yellow");
 		TagChartShow();
-		$.get("TagTimeSeriesData?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&timestamp=" + new Date().getTime(), function(xml) {
+		$.get("TagTimeSeriesData?areaid=" + idp + "&tag=" + encodeURIComponent(tagsClick[num].getNameTag()) + "&stopwords=" + stopwords + "&timestamp=" + new Date().getTime(), function(xml) {
 			var seriesSize = $(xml).find('series').size();
 			seriesOptions = [];
 			yAxisOptions = [];

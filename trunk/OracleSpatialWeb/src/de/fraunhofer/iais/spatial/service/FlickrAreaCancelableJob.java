@@ -148,7 +148,7 @@ public class FlickrAreaCancelableJob {
 		Map<String, Integer> tagsCount = areaResult.getTagsCount();
 
 		if (MapUtils.isEmpty(area.getHoursTagsCount())) {
-			flickrAreaDao.loadHoursTagsCount(area, areaDto.isWithStopWords());
+			flickrAreaDao.loadHoursTagsCount(area, areaDto.isWithoutStopWords());
 		}
 		hoursTagsCount = area.getHoursTagsCount();
 

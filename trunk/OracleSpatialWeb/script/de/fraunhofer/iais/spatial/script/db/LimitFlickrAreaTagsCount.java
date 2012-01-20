@@ -107,7 +107,7 @@ public class LimitFlickrAreaTagsCount {
 		Connection updateConn = db.getConn();
 		Map<Integer, Set<String>> areasStopwords = loadAreasStopwords(conn);
 		conn.setAutoCommit(false);
-		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + INPUT_COUNTS_TABLE_NAME);
+		PreparedStatement stmt = db.getPstmt(conn, "select t1.id, t1.radius, t1.hour from " + INPUT_COUNTS_TABLE_NAME + " t1 ," + OUTPUT_COUNTS_TABLE_NAME + " t2 where t2.hour is null and t2.id = t1.id");
 		stmt.setFetchSize(FETCH_SIZE);
 		ResultSet pset = db.getRs(stmt);
 

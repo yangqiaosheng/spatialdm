@@ -74,7 +74,7 @@
 
 	<select id="hoursTagsCount_WithoutStopWords" resultType="String" parameterType="FlickrArea" useCache="false">
 		select hour
-		from FLICKR_WORLD_TAGS_COUNT_WITHOUT_STOPWORDS
+		from FLICKR_WORLD_TAGS_COUNT_STOPWORD
 		where ID = #{id}
 	</select>
 	<select id="daysTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">

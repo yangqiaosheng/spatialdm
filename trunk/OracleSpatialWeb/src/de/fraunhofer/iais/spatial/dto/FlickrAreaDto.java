@@ -35,7 +35,7 @@ public class FlickrAreaDto implements Serializable {
 	JGeometry oracleQueryGeom;
 	String pgQueryGeom;
 	private Point2D transfromVector;
-	boolean withStopWords = true;
+	boolean withoutStopWords = true;
 
 	public enum Level {
 		HOUR, DAY, MONTH, YEAR, WEEKDAY;
@@ -188,12 +188,12 @@ public class FlickrAreaDto implements Serializable {
 		this.transfromVector = transfromVector;
 	}
 
-	public boolean isWithStopWords() {
-		return withStopWords;
+	public boolean isWithoutStopWords() {
+		return withoutStopWords;
 	}
 
-	public void setWithStopWords(boolean withStopWords) {
-		this.withStopWords = withStopWords;
+	public void setWithoutStopWords(boolean withStopWords) {
+		this.withoutStopWords = withStopWords;
 	}
 
 }
