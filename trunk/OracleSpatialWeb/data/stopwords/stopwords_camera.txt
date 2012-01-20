@@ -186,5 +186,3 @@ vivitar
 polaroid
 docomo
 kyocra
-
-

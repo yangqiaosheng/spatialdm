@@ -41,9 +41,9 @@ public class JoinFlickrAreaTagsCount {
 	private static final Logger logger = LoggerFactory.getLogger(JoinFlickrAreaTagsCount.class);
 
 	final static int FETCH_SIZE = 1;
-	static int TAG_LIMIT = 25;
+	static int TAG_LIMIT = -1;
 	static String PHOTO_TABLE_NAME = "flickr_world_topviewed_1m_with_region_id";
-	static String COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_25";
+	static String COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count";
 	static String STOPWORD_TABLE_NAME = "flickr_world_topviewed_5m_tags_stopword";
 	static int rownum = 1;
 	static Calendar startDate;
@@ -94,17 +94,17 @@ public class JoinFlickrAreaTagsCount {
 
 		if(PHOTO_TABLE_NAME.contains("world")){
 			System.out.println("For the World");
-			radiusList.add("625");
-			radiusList.add("1250");
-			radiusList.add("2500");
-			radiusList.add("5000");
-			radiusList.add("10000");
-			radiusList.add("20000");
-			radiusList.add("40000");
-			radiusList.add("80000");
-			radiusList.add("160000");
-			radiusList.add("320000");
-			radiusList.add("640000");
+//			radiusList.add("625");
+//			radiusList.add("1250");
+//			radiusList.add("2500");
+//			radiusList.add("5000");
+//			radiusList.add("10000");
+//			radiusList.add("20000");
+//			radiusList.add("40000");
+//			radiusList.add("80000");
+//			radiusList.add("160000");
+//			radiusList.add("320000");
+//			radiusList.add("640000");
 			radiusList.add("1280000");
 			radiusList.add("2560000");
 		} else if(PHOTO_TABLE_NAME.contains("europe")){
@@ -156,7 +156,7 @@ public class JoinFlickrAreaTagsCount {
 //				conn.commit();
 
 				for (String radius : radiusList) {
-//					countHoursTags(conn, radius);
+					countHoursTags(conn, radius);
 				}
 
 //				 REGION_CHECKED = 2 : already indexed
@@ -251,7 +251,7 @@ public class JoinFlickrAreaTagsCount {
 
 			logger.debug("radius:" + radiusString + "|areaid:" + areaId + "|level:" + Level.HOUR + "|already checked:" + checkedSize++);
 			logger.debug("rownum to:" + rownum);
-			logger.debug("hoursTagsCount:" + hoursTagsCount);
+			logger.debug("hoursTagsCount:" + StringUtils.substring(hoursTagsCount.toString(), 0, 200));
 			logger.debug("start time:" + startDate.getTime());
 			conn.commit();
 		}
