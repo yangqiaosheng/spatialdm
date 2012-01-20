@@ -92,7 +92,7 @@ public class TestFlickrEuropeArea {
 
 	@Test
 	public void testStopwords() throws ParseException {
-
+		System.out.println(StopWordUtil.stopwordsTemp);
 		System.out.println(StopWordUtil.stopwordsGloble);
 		System.out.println("size: " + StopWordUtil.stopwordsGloble.size());
 	}
