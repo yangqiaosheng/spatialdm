@@ -118,6 +118,8 @@ public class RequestKmlServlet extends HttpServlet {
 				ModelManager.calculateHistograms(areaResults, areaDto);
 				ModelManager.buildKmlFile(areaResults, kmlPath + filenamePrefix, areaDto.getRadius(), areaDto.getTransfromVector(), remoteBasePath, false);
 
+				addAveElement(rootElement, areaResults);
+
 				Element urlElement = new Element("url");
 				rootElement.addContent(urlElement);
 				urlElement.setText(remoteBasePath + kmlPath + filenamePrefix + ".kml");
@@ -149,6 +151,57 @@ public class RequestKmlServlet extends HttpServlet {
 		out.flush();
 		out.close();
 		System.gc();
+	}
+
+	private void addAveElement(Element rootElement, List<AreaResult> areaResults) {
+		int allMin = Integer.MAX_VALUE;
+		int allMax = Integer.MIN_VALUE;
+		int allSum = 0;
+		int allNum = 0;
+		for (AreaResult areaResult : areaResults) {
+			Map<Integer, Integer> hoursCount = areaResult.getHistograms().getHours();
+			int min = Integer.MAX_VALUE;
+			int max = Integer.MIN_VALUE;
+			int sum = 0;
+			int num = 0;
+			for (int houtCount : hoursCount.values()) {
+				if (houtCount > max) {
+					max = houtCount;
+				}
+
+				if (houtCount > 0) {
+					if (houtCount < min) {
+						min = houtCount;
+					}
+					num++;
+					sum += houtCount;
+				}
+			}
+			int avg = sum / num;
+
+			if (avg > allMax) {
+				allMax = avg;
+			}
+
+			if (avg > 0) {
+				if (avg < allMin) {
+					allMin = avg;
+				}
+				allNum++;
+				allSum += avg;
+			}
+		}
+		int allAvg = allSum / allNum;
+
+		Element avgElement = new Element("avg");
+		rootElement.addContent(avgElement);
+		avgElement.setText(String.valueOf(allAvg));
+		Element minElement = new Element("min");
+		rootElement.addContent(minElement);
+		minElement.setText(String.valueOf(allMin));
+		Element maxElement = new Element("max");
+		rootElement.addContent(maxElement);
+		maxElement.setText(String.valueOf(allMax));
 	}
 
 	public void parseXmlRequest(String xml, AreaDto areaDto) throws JDOMException, IOException, ParseException {

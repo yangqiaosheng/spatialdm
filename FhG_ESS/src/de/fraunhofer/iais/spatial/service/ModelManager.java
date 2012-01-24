@@ -1,6 +1,8 @@
 package de.fraunhofer.iais.spatial.service;
 
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -46,6 +48,7 @@ public class ModelManager {
 		Point2D to = new Point2D.Double(4.359167, 43.816111);
 		Point2D transfromVector = new Point2D.Double((to.getX() - from.getX()) * scale, (to.getY() - from.getY()) * scale);
 		areaDto.setTransfromVector(transfromVector);
+		transformBoundaryRect(areaDto);
 	}
 
 	public static Map<Long, Map<String, Integer>> generateEvents(AreaDto areaDto) throws ParseException {
@@ -57,6 +60,7 @@ public class ModelManager {
 			String endDate = areaDto.getYears().last() + "-" + areaDto.getMonths().last() + "-" + areaDto.getDays().last() + "@" + areaDto.getHours().last() + ":45";
 			areaEvents = NormalTrafficPredictor.generateEvents("models/model_place_presence_15min_intervals.xml", dateFormat.format(areaDtoFormat.parse(beginDate)), dateFormat.format(areaDtoFormat.parse(endDate)), true);
 			setTransfromVector(areaDto);
+			areaDto.getTransfromVector().getY();
 			areaDto.setQueryLevel(Level.MINUTE);
 			areaDto.setMinuteInterval(15);
 			areaDto.setRadius("1000");
@@ -98,6 +102,16 @@ public class ModelManager {
 			throw new IllegalArgumentException("the model name is wrong!");
 		}
 		return areaEvents;
+	}
+
+	private static void transformBoundaryRect(AreaDto areaDto) {
+		Rectangle2D boundaryRect = areaDto.getBoundaryRect();
+		System.out.println(boundaryRect);
+		areaDto.setBoundaryRect(boundaryRect);
+		boundaryRect.setRect(boundaryRect.getMinX() - areaDto.getTransfromVector().getX(), boundaryRect.getMinY() - areaDto.getTransfromVector().getY(), boundaryRect.getWidth(), boundaryRect.getHeight());
+		System.out.println(areaDto.getTransfromVector());
+		System.out.println(boundaryRect);
+
 	}
 
 	public static String buildKmlFile(List<AreaResult> areaResults, String filenamePrefix, String radius, Point2D transfromVector, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
@@ -147,7 +161,7 @@ public class ModelManager {
 		for (AreaResult areaResult : areaResults) {
 			Area area = areaResult.getArea();
 			if (area.getTotalCount() != 0) {
-				String name = String.valueOf(area.getId());
+				String name = "";
 				String description = "";
 
 				Element groundOverlayElement = new Element("GroundOverlay", namespace);
@@ -203,7 +217,28 @@ public class ModelManager {
 		// Polygon
 		for (AreaResult areaResult : areaResults) {
 			Area area = areaResult.getArea();
-			String name = areaResult.getSelectCount() + " / " + area.getTotalCount();
+
+			Map<Integer, Integer> hoursCount = areaResult.getHistograms().getHours();
+			int min = Integer.MAX_VALUE;
+			int max = Integer.MIN_VALUE;
+			int sum = 0;
+			int num = 0;
+			for (int houtCount : hoursCount.values()) {
+				if (houtCount > max) {
+					max = houtCount;
+				}
+
+				if (houtCount > 0) {
+					if (houtCount < min) {
+						min = houtCount;
+					}
+					num++;
+					sum += houtCount;
+				}
+			}
+			int avg = sum / num;
+			String name = avg + " / " + min + " / " + max;
+//			String name = areaResult.getSelectCount() + " / " + area.getTotalCount();
 			String description = buildKmlDescription(areaResult);
 
 //			String polyStyleColor = "440000"; //not transparent
@@ -311,8 +346,7 @@ public class ModelManager {
 //			values += ",$[" + dataName + "]";
 //		}
 
-		String img = "<img src='" +
-		"https://chart.googleapis.com/chart" + 	//chart engine
+		String img = "<img src='" + "https://chart.googleapis.com/chart" + //chart engine
 				"?chtt=" + displayLevel + //chart title
 				"&cht=bvs" + //chart type
 				"&chs=" + width + "x" + height + //chart size(pixel)

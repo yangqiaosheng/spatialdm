@@ -28,8 +28,8 @@ Sample request xml:
 	<model>NimesMatchPred1</model>
 
 	<screen>
-		<!-- boundary from Milan -->
-		<bounds>((45.28811094993348, 8.701339734960925), (45.63630547681248, 9.624877942968737))</bounds>
+		<!-- boundary from Nime -->
+		<bounds>((43.810000000, 4.3513360925), (43.8200000000, 4.3633397349))</bounds>
 	</screen>
 	<calendar>
 		<years>
@@ -50,14 +50,6 @@ Sample request xml:
 			<hour>22</hour>
 			<hour>23</hour>
 		</hours>
-		<minutes>
-			<minute>00</minute>
-			<minute>10</minute>
-			<minute>20</minute>
-			<minute>30</minute>
-			<minute>40</minute>
-			<minute>50</minute>
-		</minutes>
 		<weekdays>
 			<weekday>Sunday</weekday>
 			<weekday>Monday</weekday>
@@ -82,8 +74,8 @@ Sample request xml:
 	<model>MilanUsualTraffic</model>
 
 	<screen>
-		<!-- boundary from Milan -->
-		<bounds>((45.28811094993348, 8.701339734960925), (45.63630547681248, 9.624877942968737))</bounds>
+		<!-- boundary from Nime -->
+		<bounds>((43.810000000, 4.3513360925), (43.8200000000, 4.3633397349))</bounds>
 	</screen>
 	<calendar>
 		<years>
@@ -123,12 +115,6 @@ Sample request xml:
 			<hour>22</hour>
 			<hour>23</hour>
 		</hours>
-		<minutes>
-			<minute>00</minute>
-			<minute>15</minute>
-			<minute>30</minute>
-			<minute>45</minute>
-		</minutes>
 		<weekdays>
 			<weekday>Sunday</weekday>
 			<weekday>Monday</weekday>

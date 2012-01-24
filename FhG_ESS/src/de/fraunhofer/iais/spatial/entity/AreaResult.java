@@ -13,6 +13,9 @@ public class AreaResult {
 
 	private Area area;
 	private long selectedCount;
+	private int avg;
+	private int min;
+	private int max;
 	private Histograms histograms = new Histograms();
 
 	public AreaResult(Area area) {
@@ -25,6 +28,31 @@ public class AreaResult {
 
 	public void setArea(Area area) {
 		this.area = area;
+	}
+
+
+	public int getAvg() {
+		return avg;
+	}
+
+	public void setAvg(int avg) {
+		this.avg = avg;
+	}
+
+	public int getMin() {
+		return min;
+	}
+
+	public void setMin(int min) {
+		this.min = min;
+	}
+
+	public int getMax() {
+		return max;
+	}
+
+	public void setMax(int max) {
+		this.max = max;
 	}
 
 	public long getSelectCount() {

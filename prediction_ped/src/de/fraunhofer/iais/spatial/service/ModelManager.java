@@ -89,7 +89,7 @@ public class ModelManager {
 		for (AreaResult areaResult : areaResults) {
 			Area area = areaResult.getArea();
 			if (area.getTotalCount() != 0) {
-				String name = String.valueOf(area.getId());
+				String name = "";
 				String description = "";
 
 				Element groundOverlayElement = new Element("GroundOverlay", namespace);
@@ -145,7 +145,27 @@ public class ModelManager {
 		// Polygon
 		for (AreaResult areaResult : areaResults) {
 			Area area = areaResult.getArea();
-			String name = areaResult.getSelectCount() + " / " + area.getTotalCount();
+			Map<Integer, Integer> hoursCount = areaResult.getHistograms().getHours();
+			int min = Integer.MAX_VALUE;
+			int max = Integer.MIN_VALUE;
+			int sum = 0;
+			int num = 0;
+			for (int houtCount : hoursCount.values()) {
+				if (houtCount > max) {
+					max = houtCount;
+				}
+
+				if (houtCount > 0) {
+					if (houtCount < min) {
+						min = houtCount;
+					}
+					num++;
+					sum += houtCount;
+				}
+			}
+			int avg = sum / num;
+			String name = avg + " / " + min + " / " + max;
+
 			String description = buildKmlDescription(areaResult);
 
 //			String polyStyleColor = "440000"; //not transparent
