@@ -53,22 +53,22 @@ public class ModelManager {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy;HH:mm");
 		Map<Long, Map<String, Integer>> areaEvents = null;
 		if (StringUtils.equals(areaDto.getModelNamel(), "NimesUsualTraffic")) {
-			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":" + areaDto.getMinutes().first();
-			String endDate = areaDto.getYears().last() + "-" + areaDto.getMonths().last() + "-" + areaDto.getDays().last() + "@" + areaDto.getHours().last() + ":" + areaDto.getMinutes().last();
+			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":00";
+			String endDate = areaDto.getYears().last() + "-" + areaDto.getMonths().last() + "-" + areaDto.getDays().last() + "@" + areaDto.getHours().last() + ":45";
 			areaEvents = NormalTrafficPredictor.generateEvents("models/model_place_presence_15min_intervals.xml", dateFormat.format(areaDtoFormat.parse(beginDate)), dateFormat.format(areaDtoFormat.parse(endDate)), true);
 			setTransfromVector(areaDto);
 			areaDto.setQueryLevel(Level.MINUTE);
 			areaDto.setMinuteInterval(15);
 			areaDto.setRadius("1000");
 		} else if (StringUtils.equals(areaDto.getModelNamel(), "NimesMatchPred1")) {
-			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":" + areaDto.getMinutes().first();
+			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":00";
 			areaEvents = TrafficSimulator.generateEvents("models/sim_model.xml", dateFormat.format(areaDtoFormat.parse(beginDate)), "10000", "10");
 			setTransfromVector(areaDto);
 			areaDto.setQueryLevel(Level.MINUTE);
 			areaDto.setMinuteInterval(10);
 			areaDto.setRadius("1000");
 		} else if (StringUtils.equals(areaDto.getModelNamel(), "NimesMatchPred2")) {
-			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":" + areaDto.getMinutes().first();
+			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":00";
 			areaEvents = TrafficSimulator.generateEvents("models/sim_model_reduced_north.xml", dateFormat.format(areaDtoFormat.parse(beginDate)), "10000", "10");
 			setTransfromVector(areaDto);
 			areaDto.setQueryLevel(Level.MINUTE);
@@ -77,20 +77,19 @@ public class ModelManager {
 		} else if (StringUtils.equals(areaDto.getModelNamel(), "NimesMatchPed1")) {
 			//forward
 		} else if (StringUtils.equals(areaDto.getModelNamel(), "MilanUsualTraffic")) {
-			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":" + areaDto.getMinutes().first();
-			String endDate = areaDto.getYears().last() + "-" + areaDto.getMonths().last() + "-" + areaDto.getDays().last() + "@" + areaDto.getHours().last() + ":" + areaDto.getMinutes().last();
+			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":00";
+			String endDate = areaDto.getYears().last() + "-" + areaDto.getMonths().last() + "-" + areaDto.getDays().last() + "@" + areaDto.getHours().last() + ":45";
 			areaEvents = NormalTrafficPredictor.generateEvents("models/model_place_presence_15min_intervals.xml", dateFormat.format(areaDtoFormat.parse(beginDate)), dateFormat.format(areaDtoFormat.parse(endDate)), true);
 			areaDto.setQueryLevel(Level.MINUTE);
-			areaDto.setMinuteInterval(15);
 			areaDto.setRadius("1000");
 		} else if (StringUtils.equals(areaDto.getModelNamel(), "MilanMatchPred1")) {
-			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":" + areaDto.getMinutes().first();
+			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":00";
 			areaEvents = TrafficSimulator.generateEvents("models/sim_model.xml", dateFormat.format(areaDtoFormat.parse(beginDate)), "10000", "10");
 			areaDto.setQueryLevel(Level.MINUTE);
 			areaDto.setMinuteInterval(10);
 			areaDto.setRadius("1000");
 		} else if (StringUtils.equals(areaDto.getModelNamel(), "MilanMatchPred2")) {
-			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":" + areaDto.getMinutes().first();
+			String beginDate = areaDto.getYears().first() + "-" + areaDto.getMonths().first() + "-" + areaDto.getDays().first() + "@" + areaDto.getHours().first() + ":00";
 			areaEvents = TrafficSimulator.generateEvents("models/sim_model_reduced_north.xml", dateFormat.format(areaDtoFormat.parse(beginDate)), "10000", "10");
 			areaDto.setQueryLevel(Level.MINUTE);
 			areaDto.setMinuteInterval(10);

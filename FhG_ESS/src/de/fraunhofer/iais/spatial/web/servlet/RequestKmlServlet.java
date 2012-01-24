@@ -24,6 +24,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import main.NormalTrafficPredictor;
+import main.TrafficSimulator;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -95,7 +98,6 @@ public class RequestKmlServlet extends HttpServlet {
 				AreaDto areaDto = new AreaDto();
 				parseXmlRequest(StringUtil.FullMonth2Num(xml), areaDto);
 
-				System.out.println(ToStringBuilder.reflectionToString(areaDto));
 
 				if (StringUtils.isBlank(areaDto.getModelNamel())) {
 					String modelsXml = FileUtils.readFileToString(new File(this.getClass().getResource("/../../models.xml").getPath()), "UTF-8");
@@ -106,6 +108,7 @@ public class RequestKmlServlet extends HttpServlet {
 						return;
 					}
 					Map<Long, Map<String, Integer>> areaEvents = ModelManager.generateEvents(areaDto);
+					System.out.println(ToStringBuilder.reflectionToString(areaDto));
 					setCalendarQueryStrs(areaDto);
 
 					List<Area> areas = Lists.newArrayList();
@@ -320,6 +323,11 @@ public class RequestKmlServlet extends HttpServlet {
 		SortedSet<String> tempDays = new TreeSet<String>(areaDto.getDays());
 		SortedSet<String> tempHours = new TreeSet<String>(areaDto.getHours());
 		SortedSet<String> tempMinutes = new TreeSet<String>(areaDto.getMinutes());
+
+
+		if (areaDto.getQueryLevel() == Level.MINUTE) {
+			tempMinutes = new TreeSet<String>(DateUtil.allMinuteIntStrs(areaDto.getMinuteInterval()));
+		}
 
 		/*// complete the options when they are not selected
 		if (tempYears.size() == 0) {
