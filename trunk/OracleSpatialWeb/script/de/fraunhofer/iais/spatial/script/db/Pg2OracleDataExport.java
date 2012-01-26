@@ -17,9 +17,9 @@ import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class Pg2OracleDataExport {
 
-	private static final int BATCH_SIZE = 100;
-	static DBUtil fromDb = new DBUtil("/jdbc_pg.properties", 18, 6);
-	static DBUtil toDb = new DBUtil("/jdbc.properties", 18, 6);
+	private static final int BATCH_SIZE = 20;
+	static DBUtil fromDb = new DBUtil("/jdbc_pg.properties", 3, 1);
+	static DBUtil toDb = new DBUtil("/jdbc.properties", 3, 1);
 
 	public static void main(String[] args) throws IOException, SQLException {
 		Date startDate = new Date();

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -132,10 +133,13 @@ public class TagServlet extends HttpServlet {
 
 		int num = 0;
 		for (Map.Entry<String, Integer> entry : entries) {
+			//random
+			if(entries.size() > size * 5 && num > 9 && Math.random() * (Math.sqrt(num)) < 1){
+				continue;
+			}
 			if(areaDto.isWithoutStopWords() && StopWordUtil.stopwordsTemp.contains(entry.getKey())){
 				continue;
 			}
-
 			if (num++ > size) {
 				break;
 			}
