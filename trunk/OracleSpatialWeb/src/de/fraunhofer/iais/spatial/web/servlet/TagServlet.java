@@ -108,7 +108,6 @@ public class TagServlet extends HttpServlet {
 							messageElement.setText("ERROR: the request polygon doesn't exist in the current zoom level!");
 						}
 					}
-
 				});
 			}
 		});
