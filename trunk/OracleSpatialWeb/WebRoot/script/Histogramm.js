@@ -340,7 +340,7 @@ function init() {
 	//console.log("step 1");
 
 	$("#histogramContent").append(
-							"<div id='absButton'><input type='button' style= onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
+							"<div id='absButton'><input type='button' onclick='javascript:askHistogramSelected();' value = 'Submit Query' class='right'></div>");
 
 	if (ApplyPolygons == false) {
 		ApplyPolygons = true;
@@ -475,12 +475,12 @@ function OnClick(spanElementInfo, spanElement, t, subSpan, index, arrayX, number
 function activateToolTipSimple(t, subSpan, index, arrayX, numberPhotos, type) {
 	var k = index + t;
 	var title = type + ": " + spanElementInfo[k].innerHTML;
-	OnMouseOver(".spanElementInfo", spanElementInfo[k], spanElement[k], t, subSpan, index, arrayX, numberPhotos, title);
-	OnMouseOut(spanElementInfo[k], spanElement[k], t, subSpan, index, arrayX, numberPhotos);
+//	OnMouseOver(".spanElementInfo", spanElementInfo[k], spanElement[k], t, subSpan, index, arrayX, numberPhotos, title);
+//	OnMouseOut(spanElementInfo[k], spanElement[k], t, subSpan, index, arrayX, numberPhotos);
 	OnClick(spanElementInfo[k], spanElement[k], t, subSpan, index, arrayX, numberPhotos);
 
 	OnMouseOver(".spanElement", spanElement[k], spanElementInfo[k], t, subSpan, index, arrayX, numberPhotos, title);
-	OnMouseOut(spanElement[k], spanElementInfo[k], t, subSpan, index, arrayX, numberPhotos);
+//	OnMouseOut(spanElement[k], spanElementInfo[k], t, subSpan, index, arrayX, numberPhotos);
 	OnClick(spanElement[k], spanElementInfo[k], t, subSpan, index, arrayX, numberPhotos);
 };
 
