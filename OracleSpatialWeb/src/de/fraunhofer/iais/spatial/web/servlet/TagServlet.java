@@ -131,9 +131,13 @@ public class TagServlet extends HttpServlet {
 		rootElement.addContent(tagsElement);
 
 		int num = 0;
+		int i = 0;
 		for (Map.Entry<String, Integer> entry : entries) {
 			//random
 			if(entries.size() > size * 5 && num > 9 && Math.random() * (Math.sqrt(num)) < 1){
+				continue;
+			}
+			if(areaDto.isWithoutStopWords() && entries.size() > size * 2 && i++ < 2){
 				continue;
 			}
 			if(areaDto.isWithoutStopWords() && StopWordUtil.stopwordsTemp.contains(entry.getKey())){
