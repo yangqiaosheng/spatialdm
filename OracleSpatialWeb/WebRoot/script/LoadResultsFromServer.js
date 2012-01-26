@@ -240,7 +240,11 @@ function setTagCarousel(showCarousel, ids, tag, queryDateStr, num) {
 				"<span> Number of pictures selected: " + num + " tag '" + tag + "' on " + queryDateStr + "<span style='color:#999999'> polygon_id= " + ids+ " </span>"
 						+ " <img src='images/89.gif' height='20' width='20'/> </span>");
 	isTagCarousel = true;
-	tagNum = num;
+	if(num > page_size){
+		tagNum = page_size;
+	} else{
+		tagNum = num;
+	}
 	selectedTag = tag;
 	selectedQueryDateStr = queryDateStr;
 	g_carouselTotalSize = 0;
@@ -248,5 +252,5 @@ function setTagCarousel(showCarousel, ids, tag, queryDateStr, num) {
 	$("#maxContainer").removeClass('invisible').addClass('visible');
 	page = 1;
 	cleanPhotos();
-	sendToServerFromTagCarousel(ids, page_size, page, selectedTag, selectedQueryDateStr);
+	sendToServerFromTagCarousel(ids, tagNum, page, selectedTag, selectedQueryDateStr);
 }
