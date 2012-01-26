@@ -27,7 +27,7 @@
 		This content changes dynamically.
 	</div>
 	<div id="mapInfo" class="tabcontent">
-		<span>Currently at scale level <span id="scaleLevel"></span> of 11.
+		<span>Currently at scale level <span id="scaleLevel"></span> of 13.
 		<%--		Map zoom: <span id="zoomMapLevel"> </span>--%> </span>
 	</div>
 </div>

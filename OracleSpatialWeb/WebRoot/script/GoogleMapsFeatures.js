@@ -111,13 +111,25 @@ $(function() {
 });
 
 $(function() {
-	jQuery("#TAGCheckBox").change(function() {
-		if (jQuery("#TAGCheckBox").attr("checked") == true) {
+	jQuery("#TagCheckBox").change(function() {
+		if (jQuery("#TagCheckBox").attr("checked") == true) {
 			TagExistance = true;
+			jQuery("#StopwordCheckBox").attr('disabled', false);
+			jQuery("#StopwordCheckBoxText").css('color', 'black');
 		} else {
 			TagExistance = false;
 			$("#tag").html() != "";
 			$("#tagClick").html() != "";
+			jQuery("#StopwordCheckBox").attr('disabled', true);
+			jQuery("#StopwordCheckBoxText").css('color', 'grey');
+		}
+	});
+
+	jQuery("#StopwordCheckBox").change(function() {
+		if (jQuery("#StopwordCheckBox").attr("checked") == true) {
+			stopwords = true;
+		} else {
+			stopwords = false;
 		}
 	});
 
@@ -257,38 +269,44 @@ function addRemoveElementsFromHistogram() {
 }
 
 function scaleLevelOnStart() {
-	if (map.getZoom() <= 5) {
+	if (map.getZoom() <= 2) {
 		$("#scaleLevel").html("1");
 	}
-	if (map.getZoom() == 6) {
+	if (map.getZoom() == 3) {
 		$("#scaleLevel").html("2");
 	}
-	if (map.getZoom() == 7) {
+	if (map.getZoom() == 4) {
 		$("#scaleLevel").html("3");
 	}
-	if (map.getZoom() == 8) {
+	if (map.getZoom() == 5) {
 		$("#scaleLevel").html("4");
 	}
-	if (map.getZoom() == 9) {
+	if (map.getZoom() == 6) {
 		$("#scaleLevel").html("5");
 	}
-	if (map.getZoom() == 10) {
+	if (map.getZoom() == 7) {
 		$("#scaleLevel").html("6");
 	}
-	if (map.getZoom() == 11) {
+	if (map.getZoom() == 8) {
 		$("#scaleLevel").html("7");
 	}
-	if (map.getZoom() == 12) {
+	if (map.getZoom() == 9) {
 		$("#scaleLevel").html("8");
 	}
-	if (map.getZoom() == 13) {
+	if (map.getZoom() == 10) {
 		$("#scaleLevel").html("9");
 	}
-	if (map.getZoom() == 14) {
+	if (map.getZoom() == 11) {
 		$("#scaleLevel").html("10");
 	}
-	if (map.getZoom() >= 15) {
+	if (map.getZoom() == 12) {
 		$("#scaleLevel").html("11");
+	}
+	if (map.getZoom() == 13) {
+		$("#scaleLevel").html("12");
+	}
+	if (map.getZoom() >= 14) {
+		$("#scaleLevel").html("13");
 	}
 }
 

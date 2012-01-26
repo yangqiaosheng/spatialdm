@@ -65,10 +65,8 @@ public class FlickrAreaDaoPgMybatis extends FlickrAreaDao {
 	public void loadHoursTagsCount(FlickrArea area, boolean withoutStopWords) {
 		String count = null;
 		if(withoutStopWords){
-			System.out.println("b");
 			count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hoursTagsCount_WithoutStopWords", area);
 		}else{
-			System.out.println("a");
 			count = (String) sessionTemplate.selectOne(FlickrArea.class.getName() + DB_NAME + ".hoursTagsCount", area);
 		}
 		if (count != null) {
