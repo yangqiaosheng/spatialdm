@@ -202,7 +202,6 @@ public class ModelManager {
 				Element southElement = new Element("south", namespace).addContent(Double.toString(area.getCenter().getY() + transformVector.getY() - r * 0.55));
 				Element eastElement = new Element("east", namespace).addContent(Double.toString(area.getCenter().getX() + transformVector.getX() + r));
 				Element westElement = new Element("west", namespace).addContent(Double.toString(area.getCenter().getX() + transformVector.getX() - r));
-				;
 				latLonBoxElement.addContent(northElement);
 				latLonBoxElement.addContent(southElement);
 				latLonBoxElement.addContent(eastElement);
@@ -236,7 +235,13 @@ public class ModelManager {
 					sum += houtCount;
 				}
 			}
-			int avg = sum / num;
+			int avg = 0;
+			if (num > 0) {
+				avg = sum / num;
+			}else{
+				min = 0;
+				max = 0;
+			}
 			String name = avg + " / " + min + " / " + max;
 //			String name = areaResult.getSelectCount() + " / " + area.getTotalCount();
 			String description = buildKmlDescription(areaResult);

@@ -177,7 +177,13 @@ public class RequestKmlServlet extends HttpServlet {
 					sum += houtCount;
 				}
 			}
-			int avg = sum / num;
+			int avg = 0;
+			if (num > 0) {
+				avg = sum / num;
+			} else {
+				min = 0;
+				max = 0;
+			}
 
 			if (avg > allMax) {
 				allMax = avg;
@@ -191,7 +197,13 @@ public class RequestKmlServlet extends HttpServlet {
 				allSum += avg;
 			}
 		}
-		int allAvg = allSum / allNum;
+		int allAvg = 0;
+		if (allNum > 0) {
+			allAvg = allSum / allNum;
+		} else {
+			allSum = 0;
+			allNum = 0;
+		}
 
 		Element avgElement = new Element("avg");
 		rootElement.addContent(avgElement);

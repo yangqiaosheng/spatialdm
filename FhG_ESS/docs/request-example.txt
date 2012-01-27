@@ -62,6 +62,44 @@ Sample request xml:
 	</calendar>
 </request>
 
+
+<request>
+	<model>NimesMatchPred1</model>
+
+	<screen>
+		<!-- boundary from Nime -->
+		<bounds>((42.810000000, 4.1513360925), (44.8200000000, 4.7633397349))</bounds>
+	</screen>
+	<calendar>
+		<years>
+			<year>2012</year>
+		</years>
+		<months>
+			<month>December</month>
+		</months>
+		<days>
+			<day>01</day>
+		</days>
+		<hours>
+			<hour>17</hour>
+			<hour>18</hour>
+			<hour>19</hour>
+			<hour>20</hour>
+			<hour>21</hour>
+			<hour>22</hour>
+			<hour>23</hour>
+		</hours>
+		<weekdays>
+			<weekday>Sunday</weekday>
+			<weekday>Monday</weekday>
+			<weekday>Tuesday</weekday>
+			<weekday>Wednesday</weekday>
+			<weekday>Thursday</weekday>
+			<weekday>Friday</weekday>
+			<weekday>Saturday</weekday>
+		</weekdays>
+	</calendar>
+</request>
 ###########################################################################
 3. Fetching kml of model NimesMatchPred1 with paramters:
 	program=NormalTrafficPredictor (time interval 15min)

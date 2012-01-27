@@ -39,9 +39,9 @@ public class ModelManager {
 
 	public static String buildKmlFile(List<AreaResult> areaResults, String filenamePrefix, String radius, Point2D transfromVector, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = "";
-		try{
+		try {
 			localBasePath = ModelManager.class.getResource("/../../").getPath();
-		}catch(Throwable t){
+		} catch (Throwable t) {
 		}
 
 		if (StringUtils.isEmpty(remoteBasePath)) {
@@ -163,7 +163,13 @@ public class ModelManager {
 					sum += houtCount;
 				}
 			}
-			int avg = sum / num;
+			int avg = 0;
+			if (num > 0) {
+				avg = sum / num;
+			} else {
+				min = 0;
+				max = 0;
+			}
 			String name = avg + " / " + min + " / " + max;
 
 			String description = buildKmlDescription(areaResult);
@@ -269,8 +275,7 @@ public class ModelManager {
 //			values += ",$[" + dataName + "]";
 //		}
 
-		String img = "<img src='" +
-				"https://chart.googleapis.com/chart" + 	//chart engine
+		String img = "<img src='" + "https://chart.googleapis.com/chart" + //chart engine
 				"?chtt=" + displayLevel + //chart title
 				"&cht=bvs" + //chart type
 				"&chs=" + width + "x" + height + //chart size(pixel)

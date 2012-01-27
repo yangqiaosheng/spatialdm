@@ -94,10 +94,8 @@ public class RequestKmlServlet extends HttpServlet {
 			try {
 				String filenamePrefix = StringUtil.genId();
 
-
 				AreaDto areaDto = new AreaDto();
 				parseXmlRequest(StringUtil.FullMonth2Num(xml), areaDto);
-
 
 				if (StringUtils.isBlank(areaDto.getModelNamel())) {
 					String modelsXml = FileUtils.readFileToString(new File(this.getClass().getResource("/../../models.xml").getPath()), "UTF-8");
@@ -181,7 +179,13 @@ public class RequestKmlServlet extends HttpServlet {
 					sum += houtCount;
 				}
 			}
-			int avg = sum / num;
+			int avg = 0;
+			if (num > 0) {
+				avg = sum / num;
+			} else {
+				min = 0;
+				max = 0;
+			}
 
 			if (avg > allMax) {
 				allMax = avg;
@@ -195,7 +199,13 @@ public class RequestKmlServlet extends HttpServlet {
 				allSum += avg;
 			}
 		}
-		int allAvg = allSum / allNum;
+		int allAvg = 0;
+		if (allNum > 0) {
+			allAvg = allSum / allNum;
+		} else {
+			allSum = 0;
+			allNum = 0;
+		}
 
 		Element avgElement = new Element("avg");
 		rootElement.addContent(avgElement);
@@ -378,7 +388,6 @@ public class RequestKmlServlet extends HttpServlet {
 		SortedSet<String> tempHours = new TreeSet<String>(areaDto.getHours());
 		SortedSet<String> tempMinutes = new TreeSet<String>(areaDto.getMinutes());
 
-
 		if (areaDto.getQueryLevel() == Level.MINUTE) {
 			tempMinutes = new TreeSet<String>(DateUtil.allMinuteIntStrs(areaDto.getMinuteInterval()));
 		}
@@ -409,12 +418,12 @@ public class RequestKmlServlet extends HttpServlet {
 			for (String m : tempMonths) {
 				for (String d : tempDays) {
 					for (String h : tempHours) {
-						if(areaDto.getQueryLevel() == Level.HOUR){
+						if (areaDto.getQueryLevel() == Level.HOUR) {
 							calendar.set(Calendar.YEAR, Integer.parseInt(y));
 							calendar.set(Calendar.MONTH, Integer.parseInt(m) - 1);
 							calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(d));
 							calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(h));
-							calendar.set(Calendar.MINUTE,  0);
+							calendar.set(Calendar.MINUTE, 0);
 							calendar.set(Calendar.SECOND, 0);
 
 							try {
@@ -426,7 +435,7 @@ public class RequestKmlServlet extends HttpServlet {
 							} catch (IllegalArgumentException e) {
 								// omit the wrong date
 							}
-						} else if(areaDto.getQueryLevel() == Level.MINUTE){
+						} else if (areaDto.getQueryLevel() == Level.MINUTE) {
 							for (String mi : tempMinutes) {
 								if (!DateUtil.allMinuteIntStrs(areaDto.getMinuteInterval()).contains(mi)) {
 									throw new IllegalArgumentException("Only the following minute parameters are acceptable:" + DateUtil.allMinuteIntStrs(areaDto.getMinuteInterval()));
@@ -435,7 +444,7 @@ public class RequestKmlServlet extends HttpServlet {
 								calendar.set(Calendar.MONTH, Integer.parseInt(m) - 1);
 								calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(d));
 								calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(h));
-								calendar.set(Calendar.MINUTE,  Integer.parseInt(mi));
+								calendar.set(Calendar.MINUTE, Integer.parseInt(mi));
 								calendar.set(Calendar.SECOND, 0);
 
 								try {
