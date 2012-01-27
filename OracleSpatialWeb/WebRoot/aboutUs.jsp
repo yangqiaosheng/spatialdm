@@ -52,7 +52,7 @@
 		</p>
 		<ul>
 			<li>
-				<a href="http://ieeexplore.ieee.org/search/srchabstract.jsp?tp=&arnumber=6102479&openedRefinements%3D*%26filter%3DAND%28AND%28NOT%284283010803%29%29%2CAND%28NOT%284283010803%29%29%29%26pageNumber%3D4%26rowsPerPage%3D100%26queryText%3D%28visual+analytics%29&tag=1">KD-Photomap:
+				<a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6102479">KD-Photomap:
 					Exploring Photographs in Space and Time.</a>
 				<br />
 				In IEEE Symposium on Visual Analytics Science and Technology (poster), volume 2, pages 289{290, Providence, RI, USA, 2011.

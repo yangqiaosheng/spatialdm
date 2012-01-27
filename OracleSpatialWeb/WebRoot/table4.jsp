@@ -6,7 +6,7 @@
 		<span>
 			To City / Country:
 		</span>
-		<input name="search" type="text" id="searchLocationInput" size="25" maxlength="10" onKeyPress="keyEvent(event)" />
+		<input name="search" type="text" id="searchLocationInput" size="25" maxlength="25" onKeyPress="keyEvent(event)" />
 		<button name="button1x" onclick="SearchLocation()">
 			Go
 		</button>
