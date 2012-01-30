@@ -117,7 +117,8 @@ public class VoronoiPolygonsFromPointClusters extends PointGrouper {
 		}
 		core.getUI().showMessage("Building Voronoi polygons; wait...", false);
 		long t0 = System.currentTimeMillis();
-		Voronoi voronoi = new Voronoi(points);
+//		Voronoi voronoi = new Voronoi(points);
+		VoronoiNew voronoi = new VoronoiNew(points);
 		if (!voronoi.isValid()) {
 			core.getUI().showMessage("Failed to triangulate!", true);
 			return null;

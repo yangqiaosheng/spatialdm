@@ -77,7 +77,8 @@ public class VoronoiPolygonsFromPoints extends GeoCalculator {
 			return null;
 		}
 		long t0 = System.currentTimeMillis();
-		Voronoi voronoi = new Voronoi(points);
+//		Voronoi voronoi = new Voronoi(points);
+		VoronoiNew voronoi = new VoronoiNew(points);
 		if (!voronoi.isValid()) {
 			ui.showMessage("Failed to triangulate!", true);
 			return null;
