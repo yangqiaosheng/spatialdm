@@ -61,7 +61,7 @@ import de.fraunhofer.iais.spatial.util.XmlUtil;
 import de.fraunhofer.iais.spatial.web.servlet.HistogramsDataServlet;
 
 //@ContextConfiguration("classpath:beans.xml")
-public class TestFlickrEuropeArea {
+public class TestFlickrArea {
 
 //	@Resource(name = "flickrAreaMgr")
 	private static FlickrAreaMgr areaMgr = null;
