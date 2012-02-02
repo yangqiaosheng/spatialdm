@@ -17,7 +17,7 @@ import de.fraunhofer.iais.spatial.util.DBUtil;
 
 public class Pg2OracleDataExport {
 
-	private static final int BATCH_SIZE = 20;
+	private static final int BATCH_SIZE = 1;
 	static DBUtil fromDb = new DBUtil("/jdbc_pg.properties", 3, 1);
 	static DBUtil toDb = new DBUtil("/jdbc.properties", 3, 1);
 
@@ -25,10 +25,6 @@ public class Pg2OracleDataExport {
 		Date startDate = new Date();
 		long start = System.currentTimeMillis();
 
-//		copyFlickrEurope("FLICKR_EUROPE_area_320000");
-//		copyFlickrEurope("FLICKR_EUROPE");
-//		copyFlickrEurope("FLICKR_PHOTO");
-//		copyFlickrEurope("FLICKR_EUROPE");
 //		copyFlickrEurope("FLICKR_EUROPE_COUNT");
 		String tableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
 		System.out.println("TableName:" + tableName);
