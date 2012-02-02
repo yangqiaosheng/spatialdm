@@ -5,7 +5,7 @@
 CREATE TABLE flickr_world_tags_count
 (
   id integer NOT NULL,
-  radius integer,
+  radius integer NOT NULL,
   person text,
   "hour" text,
   "day" text,
