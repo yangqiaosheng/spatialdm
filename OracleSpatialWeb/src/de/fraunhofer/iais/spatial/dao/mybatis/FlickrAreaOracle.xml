@@ -3,7 +3,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="de.fraunhofer.iais.spatial.entity.FlickrAreaOracle">
+<mapper namespace="de.fraunhofer.iais.spatial.dao.mybatis.FlickrAreaDaoMybatisOracle">
 
 	<!-- local cache: flushInterval: 24hours -->
 	<cache eviction="LRU" size="256" readOnly="true" flushInterval="86400000"></cache>
