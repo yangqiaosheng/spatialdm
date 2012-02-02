@@ -15,10 +15,10 @@ create index on flickr_europe_region_id
 --dirty result
 select photo_id from flickr_europe_region_id group by photo_id having count(*) > 11;
 
-delete from flickr_europe where photo_id = 
+delete from flickr_europe where photo_id in
 (select photo_id from flickr_europe_region_id group by photo_id having count(*) > 11);
 
-delete from flickr_europe_region_id where photo_id = 
+delete from flickr_europe_region_id where photo_id in
 (select photo_id from flickr_europe_region_id group by photo_id having count(*) > 11);
 
 

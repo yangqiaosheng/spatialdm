@@ -1,6 +1,6 @@
 
     create table "GENNADY_FLICKR"."FLICKR_EUROPE"(
-        "PHOTO_ID" NUMBER not null,
+       "PHOTO_ID" NUMBER not null,
        "USER_ID" VARCHAR2(20),
        "LONGITUDE" FLOAT(126) not null,
        "LATITUDE" FLOAT(126) not null,
