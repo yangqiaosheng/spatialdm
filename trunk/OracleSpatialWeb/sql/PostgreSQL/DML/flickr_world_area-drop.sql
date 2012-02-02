@@ -1,0 +1,14 @@
+drop table flickr_world_area;
+drop table flickr_world_area_2560000;
+drop table flickr_world_area_1280000;
+drop table flickr_world_area_640000;
+drop table flickr_world_area_320000;
+drop table flickr_world_area_160000;
+drop table flickr_world_area_80000;
+drop table flickr_world_area_20000;
+drop table flickr_world_area_40000;
+drop table flickr_world_area_10000;
+drop table flickr_world_area_5000;
+drop table flickr_world_area_2500;
+drop table flickr_world_area_1250;
+drop table flickr_world_area_625;
