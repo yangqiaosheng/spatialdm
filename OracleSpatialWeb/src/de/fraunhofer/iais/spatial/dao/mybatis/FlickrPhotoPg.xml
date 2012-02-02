@@ -67,7 +67,7 @@
 			p.SMALLURL,
 			p.TITLE,
 			p.VIEWED
- 		from flickr_world_spilt_tag t, flickr_world p
+ 		from flickr_world_split_tag t, flickr_world p
 		where t.REGION_${radius}_ID = #{areaid}
 			and t.tag = #{tag}
 			and t.TAKEN_DATE >= to_timestamp(#{queryStr}, #{dbDatePatternStr})
@@ -89,7 +89,7 @@
 			p.SMALLURL,
 			p.TITLE,
 			p.VIEWED
-		from flickr_world_spilt_tag t, flickr_world p
+		from flickr_world_split_tag t, flickr_world p
 		where t.REGION_320000_ID = 100
 			and t.tag = 'london'
 			and t.TAKEN_DATE >= to_timestamp('2008-11-12', 'yyyy-mm-dd')
