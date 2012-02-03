@@ -72,8 +72,8 @@ public class TestFlickrArea {
 		System.setProperty("flickr_world.root", System.getProperty("user.dir") + "/");
 		System.out.println("flickr_world.root:" + System.getProperty("flickr_world.root"));
 
-		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans.xml" });
-//		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans_oracle.xml" });
+//		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans.xml" });
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans_oracle.xml" });
 		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
 		builder.bind("java:comp/env/jdbc/PgCP", context.getBean("dbcpDataSource"));
@@ -451,7 +451,7 @@ public class TestFlickrArea {
 		long start = System.currentTimeMillis();
 
 		FlickrAreaDto areaDto = new FlickrAreaDto();
-		Set<String> hours = areaDto.getHours();
+		Set<String> hours = areaDto.getQueryStrs();
 		hours.add("2007-08-11@13");
 		hours.add("2007-08-11@11");
 		hours.add("2007-05-09@13");
@@ -466,7 +466,7 @@ public class TestFlickrArea {
 				}
 			}
 		}
-		System.out.println(photosResponseXml(811, Radius.R640000, areaDto, 100));
+		System.out.println(photosResponseXml(1, Radius.R2560000, areaDto, 100));
 	}
 
 	private String photosResponseXml(int areaid, Radius radius, FlickrAreaDto areaDto, int num) {
@@ -587,9 +587,11 @@ public class TestFlickrArea {
 		System.out.println("flickr_world.root:" + System.getProperty("flickr_world.root"));
 		areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(FileUtils.readFileToString(new File("FlickrDateHistrogramRequest3.xml"))), areaDto);
 		List<FlickrArea> areas = null;
-		if (areaDto.getBoundaryRect() == null) {
-			areas = areaMgr.getAreaDao().getAllAreas(areaDto.getRadius());
-		} else {
+		if (areaDto.getBoundaryRect() != null) {
+			int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
+			if (size > 2000) {
+				throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+			}
 			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
 		List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
@@ -604,20 +606,6 @@ public class TestFlickrArea {
 //		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
 	}
 
-	@Test
-	@Ignore
-	public void testSelectAll() {
-		List<FlickrArea> as = areaMgr.getAreaDao().getAllAreas(Radius.R160000);
-		for (FlickrArea a : as) {
-			String coordinates = "\t";
-			for (Point2D point : a.getGeom()) {
-				coordinates += point.getX() + ", " + point.getY() + "0\n";
-			}
-
-			System.out.println(a.getId() + " radius:" + a.getRadius() + " area:" + a.getArea() + "\t" + "cx:" + a.getCenter().getX() + "\t" + "cy:" + a.getCenter().getY());
-			System.out.println(coordinates + "\n");
-		}
-	}
 
 	@Test
 	public void testSelectById() {
@@ -662,23 +650,37 @@ public class TestFlickrArea {
 	@Test
 	public void testTagTimeSeriesChart() throws Exception {
 		testRequestXml();
-		FlickrAreaDto areaDto = new FlickrAreaDto();
-		Set<String> years = areaDto.getYears();
-//		years.add("2005");
-//		years.add("2006");
-		years.add("2009");
-//		years.add("2010");
-//		years.add("2011");
-//		years.add("2007");
-//		years.add("2008");
-		FlickrArea area = areaMgr.getAreaDao().getAreaById(18136, Radius.R40000);
-		areaMgr.createTagTimeSeriesChartOld(area, "germany", areaDto, "germany", new FileOutputStream("temp/tsTagCharty.png"));
-		System.out.println(areaMgr.createTagTimeSeriesData(area, "germany", areaDto));
+		FlickrAreaDto areaDto1 = new FlickrAreaDto();
+		FlickrAreaDto areaDto2 = new FlickrAreaDto();
+		Set<String> hours1 = areaDto1.getQueryStrs();
+		Set<String> hours2 = areaDto2.getQueryStrs();
+		areaDto1.setQueryLevel(Level.HOUR);
+		areaDto2.setQueryLevel(Level.HOUR);
+
+		for (int i = 2005; i < 2010; i++) {
+			for (int j = 10; j <= 12; j++) {
+				for (int k = 10; k < 30; k++) {
+					for (int l = 10; l < 24; l++) {
+						hours1.add(i + "-" + j + "-" + k + "@" + l);
+						hours2.add(i + "-" + j + "-" + k + "@" + l);
+					}
+				}
+			}
+		}
+		areaDto1.setWithoutStopWords(false);
+		FlickrArea area = areaMgr.getAreaDao().getAreaById(1, Radius.R2560000);
+		areaMgr.createTagTimeSeriesChartOld(area, "london", areaDto1, "london", new FileOutputStream("temp/tsTagCharty.png"));
+		Assert.assertTrue(areaMgr.createTagTimeSeriesData(area, "uk", areaDto1).size() > 0);
+
+		areaDto2.setWithoutStopWords(true);
+		System.out.println();
+		Assert.assertEquals(0, areaMgr.createTagTimeSeriesData(area, "uk", areaDto2).size());
 	}
 
 	@Test
 	public void testTagPhotos() throws Exception {
 		FlickrArea area = areaMgr.getAreaDao().getAreaById(18136, Radius.R40000);
+		System.out.println(ToStringBuilder.reflectionToString(area));
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, "germany", "2009-08-04", 1,  30);
 		System.out.println(ToStringBuilder.reflectionToString(photos));
 	}

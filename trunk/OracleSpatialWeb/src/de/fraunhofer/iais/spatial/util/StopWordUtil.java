@@ -26,8 +26,7 @@ public class StopWordUtil {
 
 	static {
 		String basePath = "WebRoot/";
-		if(!new File("data/stopwords").isDirectory()){
-
+		if(!new File(basePath + "data/stopwords").isDirectory()){
 			basePath = StopWordUtil.class.getResource("/../../").getPath();
 		}
 		String filenameFlickr = basePath + "data/stopwords/stopwords_flickr.txt";

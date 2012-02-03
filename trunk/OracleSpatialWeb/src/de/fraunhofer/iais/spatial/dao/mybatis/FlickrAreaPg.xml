@@ -11,23 +11,6 @@
 	<!-- Ehcache: configurated in classpath:ehcache.xml -->
 <!--   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
 
-	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
-		select
-			ID,
-			NAME,
-			GEOM,
-			AREA,
-			center(m.geom) as "center",
-			'R${radius}' as "radius"
-		from FLICKR_WORLD_AREA_${radius} m
-	</select>
-
-	<select id="selectAllIds" resultType="int" parameterType="FlickrAreaDto" useCache="false">
-		select
-			ID
-		from FLICKR_WORLD_AREA_${radius} m
-	</select>
-
 	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="true">
 		select
 			ID,
@@ -38,18 +21,6 @@
 			'R${radius}' as "radius"
 		from FLICKR_WORLD_AREA_${radius} m
 		where m.ID = #{areaid}
-	</select>
-
-	<select id="selectByGeom" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
-		select
-			ID,
-			NAME,
-			GEOM,
-			AREA,
-			center(m.geom) as "center",
-			'R${radius}' as "radius"
-		from FLICKR_WORLD_AREA_${radius} m
-		where ST_Intersects(m.geom, '${pgQueryGeom}')
 	</select>
 
 	<select id="selectIdsByGeom" resultType="int" parameterType="FlickrAreaDto" useCache="false">
@@ -74,9 +45,10 @@
 
 	<select id="hoursTagsCount_WithoutStopWords" resultType="String" parameterType="FlickrArea" useCache="false">
 		select hour
-		from FLICKR_WORLD_TAGS_COUNT_STOPWORD
+		from FLICKR_WORLD_TAGS_COUNT_SW
 		where ID = #{id}
 	</select>
+
 	<select id="daysTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
 		select day
 		from FLICKR_WORLD_TAGS_COUNT

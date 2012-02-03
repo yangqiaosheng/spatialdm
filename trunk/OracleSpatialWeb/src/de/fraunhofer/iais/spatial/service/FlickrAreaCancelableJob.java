@@ -33,17 +33,6 @@ public class FlickrAreaCancelableJob {
 		this.flickrAreaDao = areaDao;
 	}
 
-	public List<FlickrArea> getAllAreas(Date sessionTimestamp, SessionMutex sessionMutex, Radius radius) throws InterruptedException {
-
-		List<FlickrArea> areas = new ArrayList<FlickrArea>();
-		for (int areaid : flickrAreaDao.getAllAreaIds(radius)) {
-			checkInterruption(sessionTimestamp, sessionMutex);
-			areas.add(flickrAreaDao.getAreaById(areaid, radius));
-		}
-
-		return areas;
-	}
-
 	public List<FlickrArea> getAreasByRect(Date sessionTimestamp, SessionMutex sessionMutex, double x1, double y1, double x2, double y2, Radius radius,  boolean crossDateLine) throws InterruptedException {
 
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
@@ -147,9 +136,7 @@ public class FlickrAreaCancelableJob {
 		Map<String, Map<String, Integer>> hoursTagsCount = null;
 		Map<String, Integer> tagsCount = areaResult.getTagsCount();
 
-		if (MapUtils.isEmpty(area.getHoursTagsCount())) {
-			flickrAreaDao.loadHoursTagsCount(area, areaDto.isWithoutStopWords());
-		}
+		flickrAreaDao.loadHoursTagsCount(area, areaDto.isWithoutStopWords());
 		hoursTagsCount = area.getHoursTagsCount();
 
 		int i = 0;
@@ -176,9 +163,7 @@ public class FlickrAreaCancelableJob {
 		Map<String, Map<String, Integer>> daysTagsCount = null;
 		Map<String, Integer> tagsCount = areaResult.getTagsCount();
 
-		if (MapUtils.isEmpty(area.getDaysTagsCount())) {
-			flickrAreaDao.loadDaysTagsCount(area);
-		}
+		flickrAreaDao.loadDaysTagsCount(area);
 		daysTagsCount = area.getDaysTagsCount();
 
 		Set<String> dayQueryStrs = new TreeSet<String>();

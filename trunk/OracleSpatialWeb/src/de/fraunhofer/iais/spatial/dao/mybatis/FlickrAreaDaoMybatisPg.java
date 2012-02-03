@@ -47,12 +47,6 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		}
 	}
 
-	private void initAreas(List<FlickrArea> areas) {
-		for (FlickrArea a : areas) {
-			initArea(a);
-		}
-	}
-
 	private void initPhotos(List<FlickrPhoto> photos, FlickrArea area) {
 		for (FlickrPhoto photo : photos) {
 			photo.setArea(area);
@@ -61,6 +55,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 
 	@Override
 	public void loadHoursTagsCount(FlickrArea area, boolean withoutStopWords) {
+		area.getHoursTagsCount().clear();
 		String count = null;
 		if(withoutStopWords){
 			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".hoursTagsCount_WithoutStopWords", area);
@@ -108,35 +103,6 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	}
 
 	@Override
-	public List<Integer> getAllAreaIds(Radius radius) {
-
-		FlickrAreaDto areaDto = new FlickrAreaDto();
-		areaDto.setRadius(radius);
-
-		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".selectAllIds", areaDto);
-	}
-
-	@Override
-	@Deprecated
-	public List<FlickrArea> getAllAreas(Radius radius) {
-
-		/*
-		 * couldn't make use of the mybatis object cache
-		FlickrEuropeAreaDto areaDto = new FlickrEuropeAreaDto();
-		areaDto.setRadius(radius);
-		List<FlickrArea> areas = (List<FlickrArea>) sessionTemplate.selectList(this.getClass().getName() + ".selectAll", areaDto);
-		initAreas(areas, radius);
-		*/
-
-		List<FlickrArea> areas = new ArrayList<FlickrArea>();
-		for (int areaid : getAllAreaIds(radius)) {
-			areas.add(getAreaById(areaid, radius));
-		}
-
-		return areas;
-	}
-
-	@Override
 	public FlickrArea getAreaById(int areaid, Radius radius) {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaDto.setAreaid(areaid);
@@ -159,7 +125,6 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	}
 
 	@Override
-	@Deprecated
 	public List<FlickrArea> getAreasByPoint(double x, double y, Radius radius) {
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
 		for (int areaid : getAreaIdsByPoint(x, y, radius)) {
@@ -169,6 +134,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	}
 
 	@Override
+	@Deprecated
 	public int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius) {
 
 		FlickrAreaDto areaDto = new FlickrAreaDto();
@@ -196,6 +162,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	}
 
 	@Override
+	@Deprecated
 	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius) {
 
 		FlickrAreaDto areaDto = new FlickrAreaDto();
@@ -220,7 +187,6 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	}
 
 	@Override
-	@Deprecated
 	public List<FlickrArea> getAreasByRect(double x1, double y1, double x2, double y2, Radius radius) {
 
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();

@@ -11,79 +11,71 @@
 	<!-- Ehcache: configurated in classpath:ehcache.xml -->
 <!--   		<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
 
-	<select id="selectAll" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
-		select
-			ID,
-			NAME,
-			GEOM,
-			AREA,
-			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "CENTER"
-		from FLICKR_EUROPE_AREA_${radius} m, user_sdo_geom_metadata d
-		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}'
-	</select>
-
 	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
 		select
 			ID,
 			NAME,
 			GEOM,
 			AREA,
-			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "CENTER"
-		from FLICKR_EUROPE_AREA_${radius} m, user_sdo_geom_metadata d
-		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}' and m.ID = #{areaid}
+			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "CENTER",
+			'R${radius}' as "RADIUS"
+		from FLICKR_WORLD_AREA_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_WORLD_AREA_${radius}' and m.ID = #{areaid}
 	</select>
 
-	<select id="selectByGeom" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
+	<select id="selectIdsByGeom" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
-			ID,
-			NAME,
-			GEOM,
-			AREA,
-			SDO_GEOM.SDO_CENTROID(m.geom, d.diminfo) as "CENTER"
-		from FLICKR_EUROPE_AREA_${radius} m, user_sdo_geom_metadata d
-		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}' and sdo_relate(m.geom, #{oracleQueryGeom},'mask=anyinteract') = 'TRUE'
+			ID
+		from FLICKR_WORLD_AREA_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_WORLD_AREA_${radius}' and sdo_relate(m.geom, #{oracleQueryGeom},'mask=anyinteract') = 'TRUE'
 	</select>
 
 	<select id="selectByGeomSize" resultType="int" parameterType="FlickrAreaDto" useCache="false">
 		select
 			COUNT(*)
-		from FLICKR_EUROPE_AREA_${radius} m, user_sdo_geom_metadata d
-		where d.table_name = 'FLICKR_EUROPE_AREA_${radius}' and sdo_relate(m.geom, #{oracleQueryGeom},'mask=anyinteract') = 'TRUE'
+		from FLICKR_WORLD_AREA_${radius} m, user_sdo_geom_metadata d
+		where d.table_name = 'FLICKR_WORLD_AREA_${radius}' and sdo_relate(m.geom, #{oracleQueryGeom},'mask=anyinteract') = 'TRUE'
 	</select>
 
 	<select id="hoursTagsCount" resultType="String" parameterType="FlickrArea">
 		select hour
-		from FLICKR_EUROPE_TAGS_COUNT
-		where ID = #{id} and RADIUS = #{radius}
+		from FLICKR_WORLD_TAGS_COUNT
+		where ID = #{id}
+	</select>
+
+	<select id="hoursTagsCount_WithoutStopWords" resultType="String" parameterType="FlickrArea" useCache="false">
+		select hour
+		from FLICKR_WORLD_TAGS_COUNT_SW
+		where ID = #{id}
 	</select>
 
 	<select id="hoursCount" resultType="String" parameterType="FlickrArea">
 		select hour
-		from FLICKR_EUROPE_COUNT
-		where ID = #{id} and RADIUS = #{radius}
+		from FLICKR_WORLD_COUNT
+		where ID = #{id}
 	</select>
 
 	<select id="daysCount" resultType="String" parameterType="FlickrArea">
 		select day
-		from FLICKR_EUROPE_COUNT
-		where ID = #{id} and RADIUS = #{radius}
+		from FLICKR_WORLD_COUNT
+		where ID = #{id}
 	</select>
 
 	<select id="monthsCount" resultType="String" parameterType="FlickrArea">
 		select month
-		from FLICKR_EUROPE_COUNT
-		where ID = #{id} and RADIUS = #{radius}
+		from FLICKR_WORLD_COUNT
+		where ID = #{id}
 	</select>
 
 	<select id="yearsCount" resultType="String" parameterType="FlickrArea">
 		select year
-		from FLICKR_EUROPE_COUNT
-		where ID = #{id} and RADIUS = #{radius}
+		from FLICKR_WORLD_COUNT
+		where ID = #{id}
 	</select>
 
 	<select id="totalCount" resultType="long" parameterType="FlickrArea">
 		select total
-		from FLICKR_EUROPE_COUNT
-		where ID = #{areaid} and RADIUS = #{radius}
+		from FLICKR_WORLD_COUNT
+		where ID = #{areaid}
 	</select>
 </mapper>

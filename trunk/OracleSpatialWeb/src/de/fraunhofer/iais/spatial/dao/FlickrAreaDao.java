@@ -48,19 +48,6 @@ public abstract class FlickrAreaDao {
 	public static String dayTagsRegExPatternStr = "(\\d{4}-\\d{2}-\\d{2}):<(([\\p{L} \\p{Nd}]+\\|\\d+,?)+)>;";
 
 	/**
-	 * Returns a List of all the FlickrArea ids
-	 * @return List<Integer>
-	 */
-	public abstract List<Integer> getAllAreaIds(Radius radius);
-
-	/**
-	 * Returns a List of all the FlickrArea instances
-	 * @return List<FlickrArea>
-	 */
-	@Deprecated
-	public abstract List<FlickrArea> getAllAreas(Radius radius);
-
-	/**
 	 * Returns the instance of FlickrArea related to that areaid
 	 * @param areaid
 	 * @return FlickrArea

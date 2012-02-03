@@ -100,15 +100,15 @@ public class HistogramsDataServlet extends HttpServlet {
 								areaDto.isCrossDateLine());
 
 						if (size > 2000) {
-							throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
+							String errMsg = "The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>";
+							messageElement.setText(errMsg);
+							throw new IllegalInputParameterException(errMsg);
 						}
 
 						List<FlickrArea> areas = null;
 						if (areaDto.getZoom() > 2) {
 							areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(),
 									areaDto.getRadius(), areaDto.isCrossDateLine());
-						} else {
-							areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
 						}
 
 						Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);

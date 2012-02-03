@@ -413,8 +413,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 			PreparedStatement selectPstmt = null;
 			ResultSet selectRs = null;
 			try {
+				//Oracle
 //				selectPstmt = oracleDb.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_EUROPE_AREA_" + radius
 //						+ "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
+				//PostGIS
 				selectPstmt = db.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT("+x+" "+y+")'), t.geom::geometry)");
 //				selectPstmt.setDouble(1, x);
 //				selectPstmt.setDouble(2, y);

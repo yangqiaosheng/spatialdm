@@ -34,34 +34,6 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 		this.db = db;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getAllAreas(Radius)
-	 */
-	@Override
-	public List<FlickrArea> getAllAreas(Radius radius) {
-		List<FlickrArea> as = new ArrayList<FlickrArea>();
-		Connection conn = db.getConn();
-		PreparedStatement pstmt = db.getPstmt(conn, "select ID, NAME, GEOM, NUMBER_OF_EVENTS, SDO_GEOM.SDO_AREA(c.geom, 0.005) as area, SDO_GEOM.SDO_CENTROID(c.geom, m.diminfo) as center" + " from FLICKR_DE_WEST_TABLE_" + radius
-				+ " c, user_sdo_geom_metadata m" + " where m.table_name = 'FLICKR_DE_WEST_TABLE_" + radius + "'");
-		ResultSet rs = db.getRs(pstmt);
-
-		try {
-			while (rs.next()) {
-				FlickrArea a = new FlickrArea();
-				a.setRadius(radius);
-				initAreaFromRs(a, rs);
-				as.add(a);
-			}
-			initAreas(as);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			db.close(rs);
-			db.close(pstmt);
-			db.close(conn);
-		}
-		return as;
-	}
 
 	/* (non-Javadoc)
 	 * @see de.fraunhofer.iais.spatial.dao.jdbc.FlickrDeWestAreaDao#getAreaById(java.lang.String, Radius)
@@ -532,11 +504,6 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 		return 0;
 	}
 
-	@Override
-	public List<Integer> getAllAreaIds(Radius radius) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public List<Integer> getAreaIdsByPoint(double x, double y, Radius radius) {
