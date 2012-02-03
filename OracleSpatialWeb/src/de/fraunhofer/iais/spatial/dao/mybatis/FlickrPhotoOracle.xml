@@ -5,16 +5,10 @@
 
 <mapper namespace="de.fraunhofer.iais.spatial.dao.mybatis.FlickrAreaDaoMybatisOracle">
 
-	<select id="totalNum" resultType="long" useCache="false">
-		select NUM_ROWS
-		from user_tables
-		where TABLE_NAME = 'FLICKR_EUROPE'
-	</select>
-
 	<select id="totalWorldPhotoNum" resultType="long" useCache="false">
 		select NUM_ROWS
 		from user_tables
-		where TABLE_NAME = 'FLICKR_PHOTO'
+		where TABLE_NAME = 'FLICKR_WORLD'
 	</select>
 
 	<select id="totalPeopleNum" resultType="long" useCache="false">
@@ -35,12 +29,12 @@
 			TITLE,
 			VIEWED
  		from (
- 			select p.* from
- 					FLICKR_EUROPE p
+ 			select p.*
+ 			from FLICKR_WORLD p
 			where p.REGION_${radius}_ID = #{areaid}
-			 		and p.TAKEN_DATE >= to_date(#{queryStr}, #{oracleDatePatternStr})
-			 		and p.TAKEN_DATE <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
-			 order by p.TAKEN_DATE desc
+		 		and p.TAKEN_DATE >= to_date(#{queryStr}, #{oracleDatePatternStr})
+		 		and p.TAKEN_DATE <  to_date(#{queryStr}, #{oracleDatePatternStr}) + interval '1' ${queryLevel}
+			order by p.TAKEN_DATE desc
 			 )
 		where rownum <= #{num}
 		]]>
@@ -48,22 +42,69 @@
 
 	<!-- Test Query:
 		select
-				TAKEN_DATE as "date",
-				LATITUDE,
-				LONGITUDE,
-				USER_ID as "personId",
-				SMALLURL,
-				TITLE,
-				VIEWED
+			TAKEN_DATE as "date",
+			LATITUDE,
+			LONGITUDE,
+			USER_ID as "personId",
+			SMALLURL,
+			TITLE,
+			VIEWED
 	      from (
-	        select p.* from
-	            FLICKR_EUROPE p
-	        where p.REGION_5000_ID = 512
+	        select p.*
+	        from FLICKR_WORLD p
+	        where p.REGION_2560000_ID = 1
 	            and p.TAKEN_DATE >= to_date('2008-11-12', 'yyyy-mm-dd')
 	            and p.TAKEN_DATE <  to_date('2008-11-12', 'yyyy-mm-dd') + interval '1' month
 	        order by p.TAKEN_DATE desc
 	      )
 		where rownum <= 30
+	 -->
+
+	 <select id="selectByAreaTagDate" resultType="FlickrPhoto" parameterType="map" useCache="false">
+		<![CDATA[
+		select PHOTO_ID as "id",
+		       TAKEN_DATE as "date",
+		       LATITUDE,
+		       LONGITUDE,
+		       USER_ID as "personId",
+		       SMALLURL,
+		       TITLE,
+		       VIEWED
+ 		from (select t1.*, rownum rn
+		          from (select p.*
+		                  from FLICKR_WORLD p, flickr_world_split_tag t
+		where t.REGION_${radius}_ID = #{areaid}
+			and t.tag = #{tag}
+			and t.TAKEN_DATE >= to_timestamp(#{queryStr}, #{dbDatePatternStr})
+		 	and t.TAKEN_DATE <  to_timestamp(#{queryStr}, #{dbDatePatternStr}) + interval '1' ${queryLevel}
+			and t.photo_id = p.photo_id
+		order by t.TAKEN_DATE desc) t1)
+		where rn between #{offset} + 1 and #{num} +  #{offset}
+		]]>
+	</select>
+
+	<!-- Test Query:
+		select PHOTO_ID as "id",
+		       TAKEN_DATE as "date",
+		       LATITUDE,
+		       LONGITUDE,
+		       USER_ID as "personId",
+		       SMALLURL,
+		       TITLE,
+		       VIEWED
+		  from (select t1.*, rownum rn
+		          from (select p.*
+		                  from FLICKR_WORLD p, flickr_world_split_tag t
+		                 where t.REGION_2560000_ID = 1
+		                   and t.TAG = 'london'
+		                   and t.TAKEN_DATE >= to_date('2008-11-12', 'yyyy-mm-dd')
+		                   and t.TAKEN_DATE <
+		                       to_date('2008-11-12', 'yyyy-mm-dd') + interval '1'
+		                 month
+		                   and t.PHOTO_ID = p.PHOTO_ID
+		                 order by p.TAKEN_DATE desc) t1)
+		 where rn between 11 and 11 + 5
+
 	 -->
 
 </mapper>

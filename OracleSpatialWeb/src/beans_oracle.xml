@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd"
-		default-lazy-init="true">
+	default-lazy-init="true">
 
 	<!-- JDBC database connection configuration file -->
-<!--	<context:property-placeholder location="classpath*:jdbc.properties" />-->
-	<context:property-placeholder location="classpath*:jdbc.properties" />
+	<!--	<context:property-placeholder location="classpath*:jdbc.properties" />-->
+		<context:property-placeholder location="classpath*:jdbc.properties" />
+
+<!--	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+<!--		<property name="locations" value="classpath:jdbc.properties" />-->
+<!--	</bean>-->
 
 	<!-- JDBC DataSource configuration -->
 	<bean id="jdbcDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -31,7 +33,8 @@
 		<property name="maxActive" value="10" />
 		<property name="minIdle" value="3" />
 		<property name="defaultReadOnly" value="true" />
-		<property name="validationQuery" value="select count(*) from FLICKR_DE_WEST_TABLE_COUNT" />
+		<property name="validationQuery" value="select 1" />
+		<!--		<property name="validationQuery" value="select 1 from dual" />-->
 	</bean>
 
 	<!-- C3P0 DataSource configuration -->
@@ -74,8 +77,9 @@
 
 	<!-- JNDI DataSource configuration -->
 	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-      	<property name="jndiName" value="java:comp/env/jdbc/OracleCP"/>
-      	<property name="resourceRef" value="true" />
+		<property name="jndiName" value="java:comp/env/jdbc/OracleCP"/>
+<!--		<property name="jndiName" value="java:comp/env/jdbc/PgCP" />-->
+		<property name="resourceRef" value="true" />
 	</bean>
 
 	<!-- DataSource Selector -->
@@ -86,25 +90,29 @@
 	<!-- Mybatis configuration -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="oracleIccDataSource" />
-<!--		<property name="dataSource" ref="jndiDataSource" />-->
+		<!--		<property name="dataSource" ref="jndiDataSource" />-->
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	<bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
-	<!-- FlickrEurope -->
-	<bean id="flickrEuropeAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrEuropeAreaDaoOracleJdbc">
+	<!-- Flickr -->
+	<bean id="flickrAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc">
 		<property name="db" ref="db" />
 	</bean>
-	<bean id="flickrEuropeAreaDaoOracleMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrEuropeAreaDaoOracleMybatis">
+	<bean id="flickrAreaDaoMybatisOracleImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrAreaDaoMybatisOracle">
 		<property name="sessionTemplate" ref="sessionTemplate" />
 	</bean>
-	<bean id="flickrEuropeAreaDaoPgMybatisImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrEuropeAreaDaoPgMybatis">
+	<bean id="flickrAreaDaoMybatisPgImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrAreaDaoMybatisPg">
 		<property name="sessionTemplate" ref="sessionTemplate" />
 	</bean>
-	<bean id="flickrEuropeAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrEuropeAreaMgr">
-		<property name="areaDao" ref="flickrEuropeAreaDaoOracleMybatisImpl" />
+	<bean id="flickrAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrAreaMgr">
+		<property name="areaDao" ref="flickrAreaDaoMybatisOracleImpl" />
+		<property name="areaCancelableJob" ref="flickrAreaCancelableJob" />
+	</bean>
+	<bean id="flickrAreaCancelableJob" class="de.fraunhofer.iais.spatial.service.FlickrAreaCancelableJob">
+		<property name="areaDao" ref="flickrAreaDaoMybatisPgImpl" />
 	</bean>
 
 </beans>
