@@ -131,7 +131,6 @@ public class UpdateFlickrRegionId {
 //				if(updatedNum/SELECT_BATCH_SIZE == 0){
 //					conn.commit();
 //				}
-				break;
 			}
 //			conn.commit();
 		} catch (SQLException e) {
