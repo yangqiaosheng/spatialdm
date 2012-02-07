@@ -90,7 +90,7 @@
 	<!-- Mybatis configuration -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="oracleIccDataSource" />
-		<!--		<property name="dataSource" ref="jndiDataSource" />-->
+<!--		<property name="dataSource" ref="jndiDataSource" />-->
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	<bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
@@ -112,7 +112,7 @@
 		<property name="areaCancelableJob" ref="flickrAreaCancelableJob" />
 	</bean>
 	<bean id="flickrAreaCancelableJob" class="de.fraunhofer.iais.spatial.service.FlickrAreaCancelableJob">
-		<property name="areaDao" ref="flickrAreaDaoMybatisPgImpl" />
+		<property name="areaDao" ref="flickrAreaDaoMybatisOracleImpl" />
 	</bean>
 
 </beans>
