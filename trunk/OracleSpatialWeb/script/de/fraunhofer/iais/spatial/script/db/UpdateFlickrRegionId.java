@@ -72,9 +72,9 @@ public class UpdateFlickrRegionId {
 		selectConn.setAutoCommit(false);
 //		conn.setAutoCommit(false);
 		//Oracle
-		PreparedStatement countStmt = db.getPstmt(conn, "select NUM_ROWS as num from user_tables where TABLE_NAME = '"+ PHOTOS_TABLE_NAME.toUpperCase() + "'" );
+//		PreparedStatement countStmt = db.getPstmt(conn, "select NUM_ROWS as num from user_tables where TABLE_NAME = '"+ PHOTOS_TABLE_NAME.toUpperCase() + "'" );
 		//PostGIS
-//		PreparedStatement countStmt = db.getPstmt(conn, "select n_tup_ins as num from pg_stat_user_tables where relname = '"+ PHOTOS_TABLE_NAME.toLowerCase() + "'" );
+		PreparedStatement countStmt = db.getPstmt(conn, "select n_tup_ins as num from pg_stat_user_tables where relname = '"+ PHOTOS_TABLE_NAME.toLowerCase() + "'" );
 		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME);
 		selectStmt.setFetchSize(SELECT_BATCH_SIZE);
 		ResultSet countRs = db.getRs(countStmt);
@@ -99,12 +99,12 @@ public class UpdateFlickrRegionId {
 				System.out.println("totalNum/updatedNum: " + totalNum + "/" + updatedNum++);
 
 				//Oracle
-				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select ID from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
-				selectAreaIdPstmt.setDouble(1, longitude);
-				selectAreaIdPstmt.setDouble(2, latitude);
+//				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select ID, RADIUS from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
+//				selectAreaIdPstmt.setDouble(1, longitude);
+//				selectAreaIdPstmt.setDouble(2, latitude);
 
 				//PostGIS
-//				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from " + AREAS_TABLE_NAME + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
+				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from " + AREAS_TABLE_NAME + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
 
 				ResultSet areaIdRs = db.getRs(selectAreaIdPstmt);
 				Map<String, String> paraMaps = new HashMap<String, String>();
