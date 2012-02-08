@@ -23,43 +23,6 @@
 		<property name="password" value="${password}" />
 	</bean>
 
-	<!-- DBCP DataSource configuration -->
-	<bean id="dbcpDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${driver}" />
-		<property name="url" value="${url}" />
-		<property name="username" value="${username}" />
-		<property name="password" value="${password}" />
-
-		<property name="maxActive" value="10" />
-		<property name="minIdle" value="3" />
-		<property name="defaultReadOnly" value="true" />
-		<property name="validationQuery" value="select 1" />
-		<!--		<property name="validationQuery" value="select 1 from dual" />-->
-	</bean>
-
-	<!-- C3P0 DataSource configuration -->
-	<bean id="c3p0DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<property name="driverClass" value="${driver}" />
-		<property name="jdbcUrl" value="${url}" />
-		<property name="user" value="${username}" />
-		<property name="password" value="${password}" />
-
-		<property name="maxPoolSize" value="10" />
-		<property name="minPoolSize" value="3"></property>
-	</bean>
-
-	<!-- BoneCP DataSource configuration -->
-	<bean id="bonecpDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-		<property name="driverClass" value="${driver}" />
-		<property name="jdbcUrl" value="${url}" />
-		<property name="username" value="${username}" />
-		<property name="password" value="${password}" />
-
-		<property name="maxConnectionsPerPartition" value="3" />
-		<property name="minConnectionsPerPartition" value="1" />
-		<property name="partitionCount" value="3" />
-	</bean>
-
 	<!-- Oracle Implicit Connection Caching(ICC) DataSource configuration -->
 	<bean id="oracleIccDataSource" class="oracle.jdbc.pool.OracleDataSource" destroy-method="close">
 		<property name="connectionCachingEnabled" value="true" />
@@ -78,7 +41,6 @@
 	<!-- JNDI DataSource configuration -->
 	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:comp/env/jdbc/OracleCP"/>
-<!--		<property name="jndiName" value="java:comp/env/jdbc/PgCP" />-->
 		<property name="resourceRef" value="true" />
 	</bean>
 
@@ -102,9 +64,6 @@
 		<property name="db" ref="db" />
 	</bean>
 	<bean id="flickrAreaDaoMybatisOracleImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrAreaDaoMybatisOracle">
-		<property name="sessionTemplate" ref="sessionTemplate" />
-	</bean>
-	<bean id="flickrAreaDaoMybatisPgImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrAreaDaoMybatisPg">
 		<property name="sessionTemplate" ref="sessionTemplate" />
 	</bean>
 	<bean id="flickrAreaMgr" class="de.fraunhofer.iais.spatial.service.FlickrAreaMgr">
