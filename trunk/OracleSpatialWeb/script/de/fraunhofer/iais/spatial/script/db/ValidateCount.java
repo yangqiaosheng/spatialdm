@@ -21,12 +21,13 @@ public class ValidateCount {
 
 	private static final int LINE_LENGTH = 10000;
 	private static final int TAG_NUM = 500;
-	static DBUtil db = new DBUtil("/jdbc_pg.properties", 4, 1);
+	static DBUtil db = new DBUtil("/jdbc.properties", 4, 1);
 
 	public static void main(String[] args) throws Exception {
-		photoExport();
+//		photoExport();
 //		countYear();
 //		tagCountExport();
+		select();
 	}
 
 	private static void tagCountExport() throws Exception {
@@ -71,6 +72,20 @@ public class ValidateCount {
 		CSVWriter writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream("temp/flickr_world_region_id_15175_r40000_1000.csv"), "UTF-8")), ';');
 		writer.writeAll(pset, true);
 		writer.close();
+		db.close(pset);
+		db.close(personStmt);
+		db.close(conn);
+	}
+
+	private static void select() throws Exception {
+		Connection conn = db.getConn();
+
+		PreparedStatement personStmt = db.getPstmt(conn, "select title from flickr_europe_201108 t where t.photo_id = 3216703021");
+		ResultSet pset = db.getRs(personStmt);
+
+		if(pset.next()){
+			System.out.println(pset.getString(1));
+		}
 		db.close(pset);
 		db.close(personStmt);
 		db.close(conn);
