@@ -71,8 +71,8 @@ public class TestFlickrArea {
 		System.setProperty("flickr_world.root", System.getProperty("user.dir") + "/");
 		System.out.println("flickr_world.root:" + System.getProperty("flickr_world.root"));
 
-//		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans.xml" });
-		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans_oracle.xml" });
+		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans_pg.xml" });
+//		ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "classpath:beans_oracle.xml" });
 		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
 		builder.bind("java:comp/env/jdbc/OracleCP", context.getBean("oracleIccDataSource"));
 		builder.bind("java:comp/env/jdbc/PgCP", context.getBean("dbcpDataSource"));

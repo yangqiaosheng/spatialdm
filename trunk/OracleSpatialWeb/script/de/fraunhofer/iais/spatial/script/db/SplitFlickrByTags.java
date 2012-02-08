@@ -42,14 +42,15 @@ public class SplitFlickrByTags {
 
 	final static int FETCH_SIZE = 1;
 	final static int BATCH_SIZE = 1000;
-	static String PHOTO_TABLE_NAME = "flickr_world_topviewed_5m";
-	static String SPLIT_TABLE_NAME = "flickr_world_topviewed_5m_spilt_tag";
+	static String PHOTO_TABLE_NAME = "flickr_world_100000";
+	static String SPLIT_TABLE_NAME = "flickr_world_100000_split_tag";
 	static long start = System.currentTimeMillis();
 
 	static int rownum = 1;
 	static Calendar startDate;
 
-	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
+//	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
+	static DBUtil db = new DBUtil("/jdbc.properties", 18, 3);
 
 	public static void main(String[] args) throws IOException {
 
