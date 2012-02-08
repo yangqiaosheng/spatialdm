@@ -28,13 +28,12 @@ public class UpdateFlickrRegionId {
 
 	final static int SELECT_BATCH_SIZE = 400;
 	static String AREAS_TABLE_NAME = "flickr_world_area";
-	static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_5m";
+	static String PHOTOS_TABLE_NAME = "flickr_world_100000";
 	static Calendar startDate;
 
-	static DBUtil db = new DBUtil("/jdbc.properties", 3, 1);
+	static DBUtil db = new DBUtil("/jdbc_pg.properties", 3, 1);
 
 	public static void main(String[] args) throws SQLException, IOException {
-
 		System.out.println("\nPlease input the Area TableName:\n[Default: " + AREAS_TABLE_NAME + "]");
 		String areaTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
 		if (StringUtils.isNotEmpty(areaTableName)){
@@ -73,6 +72,7 @@ public class UpdateFlickrRegionId {
 //		conn.setAutoCommit(false);
 		//Oracle
 //		PreparedStatement countStmt = db.getPstmt(conn, "select NUM_ROWS as num from user_tables where TABLE_NAME = '"+ PHOTOS_TABLE_NAME.toUpperCase() + "'" );
+
 		//PostGIS
 		PreparedStatement countStmt = db.getPstmt(conn, "select n_tup_ins as num from pg_stat_user_tables where relname = '"+ PHOTOS_TABLE_NAME.toLowerCase() + "'" );
 		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME);
@@ -99,9 +99,7 @@ public class UpdateFlickrRegionId {
 				System.out.println("totalNum/updatedNum: " + totalNum + "/" + updatedNum++);
 
 				//Oracle
-//				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select ID, RADIUS from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
-//				selectAreaIdPstmt.setDouble(1, longitude);
-//				selectAreaIdPstmt.setDouble(2, latitude);
+//				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select ID, RADIUS from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME.toUpperCase() + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(" + longitude + ", " + latitude + ", NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
 
 				//PostGIS
 				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from " + AREAS_TABLE_NAME + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
@@ -114,6 +112,10 @@ public class UpdateFlickrRegionId {
 					paraMaps.put(radius, " region_" + radius + "_id = " + areaId);
 				}
 
+				if(paraMaps.size() == 0){
+					continue;
+				}
+
 				List<String> paraStrs = new ArrayList<String>();
 
 				for(Map.Entry<String, String> entry : paraMaps.entrySet()){
@@ -121,16 +123,16 @@ public class UpdateFlickrRegionId {
 				}
 
 				String updateStr = "update " + PHOTOS_TABLE_NAME + " set" + StringUtils.join(paraStrs, ",") + " where photo_id = ?";
-//				PreparedStatement updateStmt = db.getPstmt(conn, updateStr);
-//				updateStmt.setLong(1, photoId);
+				PreparedStatement updateStmt = db.getPstmt(conn, updateStr);
+				updateStmt.setLong(1, photoId);
 				System.out.println("photo_id: " + photoId + "\t|updateStr: " + updateStr);
-//				updateStmt.executeUpdate();
-//				db.close(updateStmt);
+				updateStmt.executeUpdate();
+				db.close(updateStmt);
 				db.close(areaIdRs);
 				db.close(selectAreaIdPstmt);
-//				if(updatedNum/SELECT_BATCH_SIZE == 0){
-//					conn.commit();
-//				}
+				if(updatedNum/SELECT_BATCH_SIZE == 0){
+					conn.commit();
+				}
 			}
 //			conn.commit();
 		} catch (SQLException e) {

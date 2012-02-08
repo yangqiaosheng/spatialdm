@@ -42,13 +42,14 @@ public class JoinFlickrAreaTagsCount {
 
 	final static int FETCH_SIZE = 1;
 	static int TAG_LIMIT = -1;
-	static String PHOTO_TABLE_NAME = "flickr_world_topviewed_1m_with_region_id";
-	static String COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count";
+	static String PHOTO_TABLE_NAME = "flickr_world_100000";
+	static String COUNTS_TABLE_NAME = "flickr_world_100000_tags_count";
 	static String STOPWORD_TABLE_NAME = "flickr_world_topviewed_5m_tags_stopword";
 	static int rownum = 1;
 	static Calendar startDate;
 
-	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
+	static DBUtil db = new DBUtil("/jdbc.properties", 18, 3);
+//	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("\nPlease input the Count TableName:\n[Default: " + COUNTS_TABLE_NAME + "]");
@@ -94,17 +95,17 @@ public class JoinFlickrAreaTagsCount {
 
 		if(PHOTO_TABLE_NAME.contains("world")){
 			System.out.println("For the World");
-//			radiusList.add("625");
-//			radiusList.add("1250");
-//			radiusList.add("2500");
-//			radiusList.add("5000");
-//			radiusList.add("10000");
-//			radiusList.add("20000");
-//			radiusList.add("40000");
-//			radiusList.add("80000");
-//			radiusList.add("160000");
-//			radiusList.add("320000");
-//			radiusList.add("640000");
+			radiusList.add("625");
+			radiusList.add("1250");
+			radiusList.add("2500");
+			radiusList.add("5000");
+			radiusList.add("10000");
+			radiusList.add("20000");
+			radiusList.add("40000");
+			radiusList.add("80000");
+			radiusList.add("160000");
+			radiusList.add("320000");
+			radiusList.add("640000");
 			radiusList.add("1280000");
 			radiusList.add("2560000");
 		} else if(PHOTO_TABLE_NAME.contains("europe")){
@@ -193,21 +194,20 @@ public class JoinFlickrAreaTagsCount {
 		PreparedStatement selectDateStmt = db.getPstmt(conn, "select DISTINCT to_char(t.TAKEN_DATE,?) d from " + PHOTO_TABLE_NAME + " t where t.region_" + radiusString + "_id = ? order by d");
 
 		//PostGIS: to_timestamp()
+//		PreparedStatement selectTagsStmt = db.getPstmt(conn,
+//				"select tags from " + PHOTO_TABLE_NAME + " t " +
+//					"where t.region_" + radiusString + "_id = ? and " +
+//						  "t.taken_date >= to_timestamp(?,'yyyy-MM-dd@HH24') and " +
+//						  "t.taken_date <= to_timestamp(?,'yyyy-MM-dd@HH24') + interval '1' " + Level.HOUR);
+
+		//Oracle: to_date()
+		/* */
 		PreparedStatement selectTagsStmt = db.getPstmt(conn,
 				"select tags from " + PHOTO_TABLE_NAME + " t " +
 					"where t.region_" + radiusString + "_id = ? and " +
-						  "t.taken_date >= to_timestamp(?,'yyyy-MM-dd@HH24') and " +
-						  "t.taken_date <= to_timestamp(?,'yyyy-MM-dd@HH24') + interval '1' " + Level.HOUR);
-
-		//Oralce: to_date()
-		/*
-		PreparedStatement selectTagsStmt = db.getPstmt(conn,
-				"select tags from " + PHOTOS_TABLE_NAME + " t " +
-					"where t.region_5000_id = ? and " +
-						  "t.REGION_CHECKED = ? and " +
 						  "t.taken_date >= to_date(?,'yyyy-MM-dd@HH24') and " +
 						  "t.taken_date <= to_date(?,'yyyy-MM-dd@HH24') + interval '1' " + Level.HOUR);
-		 */
+
 
 		int areaId = -1;
 		int checkedSize = 0;
@@ -231,7 +231,7 @@ public class JoinFlickrAreaTagsCount {
 				Map<String, Integer> tagsCount = new HashMap<String, Integer>();
 
 				while (selectTagsRs.next()) {
-					for(String tag : StringUtils.split(selectTagsRs.getString("tags"), ",")){
+					for(String tag : StringUtils.split(StringUtils.defaultString(selectTagsRs.getString("tags")), ",")){
 						tagsCount.put(tag, MapUtils.getIntValue(tagsCount, tag) + 1);
 					}
 				}

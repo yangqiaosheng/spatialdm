@@ -32,12 +32,13 @@ public class JoinFlickrWorldAreaCount {
 	final static int BEGIN_REGION_CHECKED_CODE = 1;
 	final static int FINISH_REGION_CHECKED_CODE = 2;
 	final static int TEMP_REGION_CHECKED_CODE = 1;
-	final static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_50m_taken_date_hour";
-	final static String COUNTS_TABLE_NAME = "flickr_world_topviewed_50m_count";
+	final static String PHOTOS_TABLE_NAME = "flickr_world_100000_dth";
+	final static String COUNTS_TABLE_NAME = "flickr_world_100000_count";
 	static int rownum = 1;
 	static Calendar startDate;
 
-	static DbJdbcUtil db = new DbJdbcUtil("/jdbc_pg.properties");
+//	static DbJdbcUtil db = new DbJdbcUtil("/jdbc_pg.properties");
+	static DbJdbcUtil db = new DbJdbcUtil("/jdbc.properties");
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
