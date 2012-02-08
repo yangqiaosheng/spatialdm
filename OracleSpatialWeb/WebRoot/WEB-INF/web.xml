@@ -54,8 +54,8 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 <!--		classpath:net/bull/javamelody/monitoring-spring.xml-->
-			classpath:beans_oracle.xml
-<!--			classpath:beans_pg.xml-->
+<!--			classpath:beans_oracle.xml-->
+			classpath:beans_pg.xml
 			classpath:schedulingContext-timer.xml
 	    </param-value>
 	</context-param>
