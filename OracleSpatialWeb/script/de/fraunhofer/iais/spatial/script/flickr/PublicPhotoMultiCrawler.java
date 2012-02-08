@@ -6,11 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -51,13 +53,16 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static final long MAX_NUM_RETRY = 99999999;
 	static final int MAX_TITLE_LENGTH = 1024;
 
-	static final int BEGIN_PHOTO_UPDATE_CHECKED = 0;
-	static final int FINISH_PHOTO_UPDATE_CHECKED = 1;
+	static final int BEGIN_PHOTO_UPDATE_CHECKED = 1;
+	static final int FINISH_PHOTO_UPDATE_CHECKED = 2;
 
 	static final double MIN_LONGITUDE = -13.119622;
 	static final double MIN_LATITUDE = 34.26329;
 	static final double MAX_LONGITUDE = 35.287624;
 	static final double MAX_LATITUDE = 72.09216;
+
+	static String PEOPLE_TABLE_NAME = "FLICKR_PEOPLE";
+	static String PHOTO_TABLE_NAME = "FLICKR_WORLD";
 
 	static Calendar beginTakenDateLimit;
 	static Calendar endTakenDateLimit;
@@ -195,10 +200,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 	private void selectPeople(int threadId, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
 		//Oracle
-//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(ora_hash(USER_ID), ?)) = ?");
+//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from " + PEOPLE_TABLE_NAME + " t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(ora_hash(USER_ID), ?)) = ?");
 
 		//PostGIS
-		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(hashtext(USER_ID), ?)) = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from " + PEOPLE_TABLE_NAME + " t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(hashtext(USER_ID), ?)) = ?");
 
 		conn.setAutoCommit(false);
 		pstmt.setFetchSize(PG_FETCH_SIZE);
@@ -322,7 +327,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			for (Photo photo : worldPhotos) {
 				if (!worldPhotosId.contains(photo.getId())) {
-					insertPhoto(conn, photo, "FLICKR_WORLD");
+					insertPhoto(conn, photo, PHOTO_TABLE_NAME);
 					worldPhotosId.add(photo.getId());
 					addWorldNum++;
 				} else {
@@ -363,7 +368,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 			pstmt.setInt(i++, photo.getViews());
 			Collection<Tag> tags = photo.getTags();
-			String tagsStr = StringUtils.join(tags, ',');
+			List<String> tagStrs = new ArrayList<String>();
+			for(Tag tag : photo.getTags()){
+				tagStrs.add(tag.getValue());
+			}
+			String tagsStr = StringUtils.join(tagStrs, ',');
 			pstmt.setString(i++, StringUtils.substring(photo.getTitle(), 0, MAX_TITLE_LENGTH));
 			pstmt.setString(i++, photo.getDescription());
 			pstmt.setString(i++, tagsStr);
@@ -431,7 +440,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	}
 
 	private void updatePeoplesInfo(Connection conn, String userId, int photoCheckedFlag, int addWorldNum, int addEuropeNum) throws SQLException {
-		PreparedStatement pstmt = db.getPstmt(conn, "update FLICKR_PEOPLE set PHOTO_UPDATE_CHECKED = ?, PHOTO_UPDATE_CHECKED_DATE = ?, WORLD_NUM = WORLD_NUM + ?, EUROPE_NUM = EUROPE_NUM + ? where USER_ID = ?");
+		PreparedStatement pstmt = db.getPstmt(conn, "update " + PEOPLE_TABLE_NAME + " set PHOTO_UPDATE_CHECKED = ?, PHOTO_UPDATE_CHECKED_DATE = ?, WORLD_NUM = WORLD_NUM + ?, EUROPE_NUM = EUROPE_NUM + ? where USER_ID = ?");
 		PreparedStatement updatePeoplePhotoCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_photo_checked_num'");
 		try {
 
@@ -453,8 +462,13 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	public static void main(String[] args) throws IOException {
 
+		if(args.length == 1){
+			PHOTO_TABLE_NAME += args[0];
+			PEOPLE_TABLE_NAME += args[0];
+		}
+
 		beginTakenDateLimit = Calendar.getInstance();
-		beginTakenDateLimit.set(2005, 00, 01);
+		beginTakenDateLimit.set(2008, 00, 01);
 
 		endTakenDateLimit = Calendar.getInstance();
 		endTakenDateLimit.set(2012, 00, 01);

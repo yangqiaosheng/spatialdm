@@ -22,54 +22,54 @@
     alter table FLICKR_WORLD_SPLIT_TAG
      	add constraint FLICKR_WORLD_SPLIT_TAG_PK primary key (PHOTO_ID, TAG);
 
-    create index FW_SPLIT_TAG_R2560000_ID_IDX
+    create index FW_SPLIT_TAG_R2560000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_2560000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R1280000_ID_IDX
+    create index FW_SPLIT_TAG_R1280000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_1280000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R640000_ID_IDX
+    create index FW_SPLIT_TAG_R640000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_640000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R320000_ID_IDX
+    create index FW_SPLIT_TAG_R320000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_320000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R160000_ID_IDX
+    create index FW_SPLIT_TAG_R160000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_160000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R80000_ID_IDX
+    create index FW_SPLIT_TAG_R80000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_80000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R40000_ID_IDX
+    create index FW_SPLIT_TAG_R40000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_40000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R20000_ID_IDX
+    create index FW_SPLIT_TAG_R20000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_20000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R10000_ID_IDX
+    create index FW_SPLIT_TAG_R10000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_10000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R5000_ID_IDX
+    create index FW_SPLIT_TAG_R5000_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_5000_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R2500_ID_IDX
+    create index FW_SPLIT_TAG_R2500_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_2500_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R1250_ID_IDX
+    create index FW_SPLIT_TAG_R1250_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_1250_ID, TAG, TAKEN_DATE desc);
 
-    create index FW_SPLIT_TAG_R625_ID_IDX
+    create index FW_SPLIT_TAG_R625_IDX
      	on FLICKR_WORLD_SPLIT_TAG
      	(REGION_625_ID, TAG, TAKEN_DATE desc);
