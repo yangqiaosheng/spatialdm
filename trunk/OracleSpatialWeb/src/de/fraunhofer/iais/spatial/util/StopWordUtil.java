@@ -9,8 +9,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet;
-
 import au.com.bytecode.opencsv.CSVReader;
 
 public class StopWordUtil {
@@ -26,15 +24,15 @@ public class StopWordUtil {
 
 	static {
 		String basePath = "WebRoot/";
-		if(!new File(basePath + "data/stopwords").isDirectory()){
+		if (!new File(basePath + "data/stopwords").isDirectory()) {
 			basePath = StopWordUtil.class.getResource("/../../").getPath();
 		}
 		String filenameFlickr = basePath + "data/stopwords/stopwords_flickr.txt";
-		String filenameCamera =  basePath + "data/stopwords/stopwords_camera.txt";
-		String filenameDe =  basePath + "data/stopwords/stopwords_de.txt";
-		String filenameEn =  basePath + "data/stopwords/stopwords_en.txt";
-		String filenameIt =  basePath + "data/stopwords/stopwords_it.txt";
-		String filenameTemp =  basePath + "data/stopwords/stopwords_temp.txt";
+		String filenameCamera = basePath + "data/stopwords/stopwords_camera.txt";
+		String filenameDe = basePath + "data/stopwords/stopwords_de.txt";
+		String filenameEn = basePath + "data/stopwords/stopwords_en.txt";
+		String filenameIt = basePath + "data/stopwords/stopwords_it.txt";
+		String filenameTemp = basePath + "data/stopwords/stopwords_temp.txt";
 
 		initStopwords(stopwordsCamera, filenameCamera);
 		initStopwords(stopwordsFlickr, filenameFlickr);
@@ -50,7 +48,7 @@ public class StopWordUtil {
 		stopwordsGloble.addAll(stopwordsIt);
 	}
 
-	private static void initStopwords(Set<String> stopwords, String filename){
+	private static void initStopwords(Set<String> stopwords, String filename) {
 		CSVReader readerDe = null;
 		try {
 			readerDe = new CSVReader(new FileReader(filename));
@@ -65,7 +63,7 @@ public class StopWordUtil {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally{
+		} finally {
 			try {
 				readerDe.close();
 			} catch (IOException e) {

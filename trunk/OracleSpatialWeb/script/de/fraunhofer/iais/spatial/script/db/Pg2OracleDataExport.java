@@ -39,7 +39,7 @@ public class Pg2OracleDataExport {
 		Connection fromConn = fromDb.getConn();
 		fromConn.setAutoCommit(false);
 		Connection toConn = toDb.getConn();
-		PreparedStatement fromCountStmt = fromDb.getPstmt(fromConn, "select n_tup_ins as num from pg_stat_user_tables where relname = '"+ tableName + "'" );
+		PreparedStatement fromCountStmt = fromDb.getPstmt(fromConn, "select n_tup_ins as num from pg_stat_user_tables where relname = '" + tableName + "'");
 		PreparedStatement fromSelectStmt = fromDb.getPstmt(fromConn, "select * from " + tableName);
 		fromSelectStmt.setFetchSize(BATCH_SIZE);
 		PreparedStatement pgInsertStmt = null;
@@ -81,7 +81,7 @@ public class Pg2OracleDataExport {
 						System.out.println("int:" + rsMetaData.getColumnLabel(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
 					} else {
 						pgInsertStmt.setString(i, fromRs.getString(i));
-						System.out.println("string:" + rsMetaData.getColumnLabel(i) + " | "+ rsMetaData.getColumnClassName(i) + " | " + rsMetaData.getColumnName(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
+						System.out.println("string:" + rsMetaData.getColumnLabel(i) + " | " + rsMetaData.getColumnClassName(i) + " | " + rsMetaData.getColumnName(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
 					}
 				}
 //				pgInsertStmt.executeUpdate();

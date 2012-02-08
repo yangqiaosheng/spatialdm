@@ -1,26 +1,21 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +32,6 @@ import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.StopWordUtil;
-import de.fraunhofer.iais.spatial.util.StringUtil;
-import de.fraunhofer.iais.spatial.util.XmlUtil;
 import de.fraunhofer.iais.spatial.web.CancelableJobServletCallback;
 import de.fraunhofer.iais.spatial.web.CancelableJobServletTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
@@ -79,7 +72,7 @@ public class TagServlet extends HttpServlet {
 					public void doCancelableJob(HttpServletRequest request, Logger logger, SessionMutex sessionMutex, Date timestamp, Element rootElement, Element messageElement) throws Exception {
 						String areaid = request.getParameter("areaid");
 						int size = NumberUtils.toInt(request.getParameter("size"), DEFAULT_SIZE);
-						logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|size:" + size); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|size:" + size); //$NON-NLS-1$ //$NON-NLS-2$ 
 						if (!StringUtils.isNumeric(areaid)) {
 							String errMsg = "ERROR: wrong input parameter!";
 							messageElement.setText(errMsg);
@@ -134,13 +127,13 @@ public class TagServlet extends HttpServlet {
 		int i = 0;
 		for (Map.Entry<String, Integer> entry : entries) {
 			//random
-			if(entries.size() > size * 5 && num > 9 && Math.random() * (Math.sqrt(num)) < 1){
+			if (entries.size() > size * 5 && num > 9 && Math.random() * (Math.sqrt(num)) < 1) {
 				continue;
 			}
-			if(areaDto.isWithoutStopWords() && entries.size() > size * 2 && i++ < 2){
+			if (areaDto.isWithoutStopWords() && entries.size() > size * 2 && i++ < 2) {
 				continue;
 			}
-			if(areaDto.isWithoutStopWords() && StopWordUtil.stopwordsTemp.contains(entry.getKey())){
+			if (areaDto.isWithoutStopWords() && StopWordUtil.stopwordsTemp.contains(entry.getKey())) {
 				continue;
 			}
 			if (num++ > size) {

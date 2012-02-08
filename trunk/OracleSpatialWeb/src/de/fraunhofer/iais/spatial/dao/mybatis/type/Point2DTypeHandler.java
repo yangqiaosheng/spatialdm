@@ -26,9 +26,8 @@ public class Point2DTypeHandler implements TypeHandler {
 		} else if (resultObj instanceof PGpoint) {
 			PGpoint point = (PGpoint) resultObj;
 			return new Point2D.Double(point.x, point.y);
-		} else {
+		} else
 			throw new ClassFormatError("Error in converting the column:" + columnName + " to a Point2D Object");
-		}
 
 	}
 
@@ -43,9 +42,8 @@ public class Point2DTypeHandler implements TypeHandler {
 		} else if (resultObj instanceof PGpoint) {
 			PGpoint point = (PGpoint) resultObj;
 			return new Point2D.Double(point.x, point.y);
-		} else {
+		} else
 			throw new ClassFormatError("Error in converting the column with Index:" + columnIndex + " to a Point2D Object");
-		}
 	}
 
 	@Override

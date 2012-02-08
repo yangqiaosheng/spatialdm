@@ -11,7 +11,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -108,20 +107,18 @@ public class PublicPhotoMultiCrawler extends Thread {
 	}
 
 	public boolean checkDate(Date takenDate, Date uploadDate) {
-		if (takenDate != null && uploadDate != null && !takenDate.before(beginTakenDateLimit.getTime()) && !takenDate.after(endTakenDateLimit.getTime()) && uploadDate.after(takenDate)) {
+		if (takenDate != null && uploadDate != null && !takenDate.before(beginTakenDateLimit.getTime()) && !takenDate.after(endTakenDateLimit.getTime()) && uploadDate.after(takenDate))
 			return true;
-		} else {
+		else
 			return false;
-		}
 	}
 
 	public boolean checkLocation(GeoData geoData) {
 
-		if (geoData != null && geoData.getLongitude() > MIN_LONGITUDE && geoData.getLongitude() < MAX_LONGITUDE && geoData.getLatitude() > MIN_LATITUDE && geoData.getLatitude() < MAX_LATITUDE) {
+		if (geoData != null && geoData.getLongitude() > MIN_LONGITUDE && geoData.getLongitude() < MAX_LONGITUDE && geoData.getLatitude() > MIN_LATITUDE && geoData.getLatitude() < MAX_LATITUDE)
 			return true;
-		} else {
+		else
 			return false;
-		}
 	}
 
 	@Override
@@ -275,7 +272,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 				increaseNumTotalQuery();
 
 				for (int i = 0; i < photos.size(); i++) {
-					Photo p = (Photo) photos.get(i);
+					Photo p = photos.get(i);
 
 					if (checkDate(p.getDateTaken(), p.getDatePosted()) && p.getGeoData() != null) {
 						insertWorldPhotos.add(p);
@@ -369,7 +366,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setInt(i++, photo.getViews());
 			Collection<Tag> tags = photo.getTags();
 			List<String> tagStrs = new ArrayList<String>();
-			for(Tag tag : photo.getTags()){
+			for (Tag tag : photo.getTags()) {
 				tagStrs.add(tag.getValue());
 			}
 			String tagsStr = StringUtils.join(tagStrs, ',');
@@ -462,7 +459,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	public static void main(String[] args) throws IOException {
 
-		if(args.length == 1){
+		if (args.length == 1) {
 			PHOTO_TABLE_NAME += args[0];
 			PEOPLE_TABLE_NAME += args[0];
 		}

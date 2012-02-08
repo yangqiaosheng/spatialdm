@@ -42,19 +42,8 @@ public class FlickrPhoto {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).
-	       append("index", index).
-	       append("id", id).
-	       append("area", area).
-	       append("longitude", longitude).
-	       append("latitude", latitude).
-	       append("date", date).
-	       append("personId", personId).
-	       append("viewed", viewed).
-	       append("title", title).
-	       append("smallUrl", smallUrl).
-	       append("rawTags", rawTags).
-	       toString();
+		return new ToStringBuilder(this).append("index", index).append("id", id).append("area", area).append("longitude", longitude).append("latitude", latitude).append("date", date).append("personId", personId).append("viewed", viewed).append(
+				"title", title).append("smallUrl", smallUrl).append("rawTags", rawTags).toString();
 	}
 
 	public int getIndex() {

@@ -6,18 +6,18 @@ import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.util.DateUtil;
 
-public class Histograms{
+public class Histograms {
 	private Map<Integer, Integer> years = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> months = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> days = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> hours = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> weekdays = Maps.newLinkedHashMap();
 
-	public Histograms(){
+	public Histograms() {
 		init();
 	}
 
-	private void init(){
+	private void init() {
 		// init
 		for (int year : DateUtil.allYearInts) {
 			years.put(year, 0);
@@ -43,15 +43,19 @@ public class Histograms{
 	public Map<Integer, Integer> getYears() {
 		return years;
 	}
+
 	public Map<Integer, Integer> getMonths() {
 		return months;
 	}
+
 	public Map<Integer, Integer> getDays() {
 		return days;
 	}
+
 	public Map<Integer, Integer> getHours() {
 		return hours;
 	}
+
 	public Map<Integer, Integer> getWeekdays() {
 		return weekdays;
 	}

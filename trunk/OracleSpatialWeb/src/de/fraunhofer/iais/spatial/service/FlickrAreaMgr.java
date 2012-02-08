@@ -2,7 +2,6 @@ package de.fraunhofer.iais.spatial.service;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -23,16 +22,13 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -71,7 +67,7 @@ public class FlickrAreaMgr {
 		this.areaDao = areaDao;
 	}
 
-	public void countSelected(List<FlickrAreaResult> areaResults, FlickrAreaDto areaDto) throws InterruptedException{
+	public void countSelected(List<FlickrAreaResult> areaResults, FlickrAreaDto areaDto) throws InterruptedException {
 		Date timestamp = new Date();
 		SessionMutex sessionMutex = new SessionMutex(timestamp);
 		this.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
@@ -85,7 +81,6 @@ public class FlickrAreaMgr {
 		}
 		return areaResults;
 	}
-
 
 	/**
 	 * calculate the histograms DataSets for each FlickrArea
@@ -130,7 +125,6 @@ public class FlickrAreaMgr {
 		}
 	}
 
-
 	public List<FlickrAreaResult> countTags(List<FlickrArea> areas, FlickrAreaDto areaDto) throws Exception {
 		List<FlickrAreaResult> areaResults = Lists.newArrayList();
 		for (FlickrArea area : areas) {
@@ -145,8 +139,6 @@ public class FlickrAreaMgr {
 		SessionMutex sessionMutex = new SessionMutex(timestamp);
 		return this.getAreaCancelableJob().countTag(timestamp, sessionMutex, area, areaDto);
 	}
-
-
 
 	@SuppressWarnings("unchecked")
 	public void parseXmlRequest(String xml, FlickrAreaDto areaDto) throws JDOMException, IOException, ParseException {
@@ -186,7 +178,7 @@ public class FlickrAreaMgr {
 				}
 			}
 
-			if(!areaDto.getBoundaryRect().contains(areaDto.getCenter())){
+			if (!areaDto.getBoundaryRect().contains(areaDto.getCenter())) {
 				areaDto.setCrossDateLine(true);
 			}
 
@@ -201,13 +193,13 @@ public class FlickrAreaMgr {
 		}
 
 		/*
-//		<transform>
-//		    <move>
-//		      	<from> 45.478158, 9.1237</from>
-//		      	<to> 43.816111, 4.359167</to>
-//		    </move>
-//		    <scale>1.0</scale>
-//		</transform>*/
+		//		<transform>
+		//		    <move>
+		//		      	<from> 45.478158, 9.1237</from>
+		//		      	<to> 43.816111, 4.359167</to>
+		//		    </move>
+		//		    <scale>1.0</scale>
+		//		</transform>*/
 
 		Element transformElement = rootElement.getChild("transform");
 		if (transformElement != null) {
@@ -273,7 +265,6 @@ public class FlickrAreaMgr {
 			}
 		}
 
-
 		// <selected_days>Sep 08 2010,Sep 10 2010,Oct 14 2010,Oct 19 2010,Sep 24 2010,Sep 22 2005,Sep 09 2005</selected_days>
 		String selectedDaysStr = rootElement.getChildText("selected_days");
 		if (StringUtils.isNotBlank(selectedDaysStr)) {
@@ -291,12 +282,11 @@ public class FlickrAreaMgr {
 				Date selectedDay = inputDateFormat.parse(selectedDaysMachter.group());
 				selectedDays.add(selectedDay);
 				String dayStr = dayDateFormat.format(selectedDay);
-				for(String hourStr : DateUtil.allHourIntStrs){
+				for (String hourStr : DateUtil.allHourIntStrs) {
 					queryStrs.add(dayStr + "@" + hourStr);
 				}
 			}
 		}
-
 
 		// <calendar>
 		Element calendarElement = rootElement.getChild("calendar");
@@ -309,9 +299,8 @@ public class FlickrAreaMgr {
 				for (Element yearElement : yearElements) {
 					String year = yearElement.getText().trim();
 					if (StringUtils.isNotBlank(year)) {
-						if(!DateUtil.allYearIntStrs.contains(year)){
+						if (!DateUtil.allYearIntStrs.contains(year))
 							throw new IllegalArgumentException("wrong string of year:" + year);
-						}
 						areaDto.getYears().add(year);
 					}
 				}
@@ -324,9 +313,8 @@ public class FlickrAreaMgr {
 				for (Element monthElement : monthElements) {
 					String month = monthElement.getText().trim();
 					if (StringUtils.isNotBlank(month)) {
-						if(!DateUtil.allMonthIntStrs.contains(month)){
+						if (!DateUtil.allMonthIntStrs.contains(month))
 							throw new IllegalArgumentException("wrong string of month:" + month);
-						}
 						areaDto.getMonths().add(month);
 					}
 				}
@@ -339,9 +327,8 @@ public class FlickrAreaMgr {
 				for (Element dayElement : dayElements) {
 					String day = dayElement.getText().trim();
 					if (StringUtils.isNotBlank(day)) {
-						if(!DateUtil.allDayIntStrs.contains(day)){
+						if (!DateUtil.allDayIntStrs.contains(day))
 							throw new IllegalArgumentException("wrong string of day:" + day);
-						}
 						areaDto.getDays().add(day);
 					}
 				}
@@ -354,9 +341,8 @@ public class FlickrAreaMgr {
 				for (Element hourElement : hourElements) {
 					String hour = hourElement.getText().trim();
 					if (StringUtils.isNotBlank(hour)) {
-						if(!DateUtil.allHourIntStrs.contains(hour)){
+						if (!DateUtil.allHourIntStrs.contains(hour))
 							throw new IllegalArgumentException("wrong string of hour:" + hour);
-						}
 						areaDto.getHours().add(hour);
 					}
 				}
@@ -369,9 +355,8 @@ public class FlickrAreaMgr {
 				for (Element weekdayElement : weekdayElements) {
 					String weekday = weekdayElement.getText().trim();
 					if (StringUtils.isNotBlank(weekday)) {
-						if(!DateUtil.allWeekdayFullStrs.contains(weekday)){
+						if (!DateUtil.allWeekdayFullStrs.contains(weekday))
 							throw new IllegalArgumentException("wrong string of weekday:" + weekday);
-						}
 						areaDto.getWeekdays().add(weekday);
 					}
 				}
@@ -469,7 +454,7 @@ public class FlickrAreaMgr {
 		for (String year : displayYears) {
 			for (int j : DateUtil.allMonthInts) {
 				for (int k : DateUtil.allDayInts) {
-					seriesData.put(sdf.parse(year + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k)), 0);
+					seriesData.put(sdf.parse(year + "-" + new DecimalFormat("00").format(j) + "-" + new DecimalFormat("00").format(k)), 0);
 				}
 			}
 		}
@@ -478,7 +463,7 @@ public class FlickrAreaMgr {
 		for (Map.Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
 			if (displayYears.contains(e.getKey().substring(0, 4))) {
 				for (Map.Entry<String, Integer> term : hoursTagsCount.get(e.getKey()).entrySet()) {
-					if(term.getKey().equals(tag) && areaDto.getQueryStrs().contains(e.getKey())){
+					if (term.getKey().equals(tag) && areaDto.getQueryStrs().contains(e.getKey())) {
 						seriesData.put(sdf.parse(e.getKey().substring(0, FlickrAreaDao.hourDateFormatStr.length())), term.getValue());
 					}
 				}
@@ -490,7 +475,7 @@ public class FlickrAreaMgr {
 	private Set<String> defineDisplayYears(String tag, FlickrAreaDto areaDto, Map<String, Map<String, Integer>> hoursTagsCount, int num) {
 
 		Set<String> selectedYears = Sets.newTreeSet();
-		for(String queryStr: areaDto.getQueryStrs()){
+		for (String queryStr : areaDto.getQueryStrs()) {
 			selectedYears.add(queryStr.substring(0, 4));
 		}
 		Set<String> displayYears = Sets.newTreeSet();
@@ -498,7 +483,7 @@ public class FlickrAreaMgr {
 		for (Map.Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
 			if (selectedYears.contains(e.getKey().substring(0, 4))) {
 				for (Map.Entry<String, Integer> term : hoursTagsCount.get(e.getKey()).entrySet()) {
-					if(term.getKey().equals(tag)){
+					if (term.getKey().equals(tag)) {
 						approvedYears.add(e.getKey().substring(0, 4));
 						break;
 					}
@@ -519,7 +504,6 @@ public class FlickrAreaMgr {
 		}
 		return displayYears;
 	}
-
 
 	@Deprecated
 	public void createTimeSeriesChartOld(FlickrArea area, Set<String> years, OutputStream os) throws ParseException, IOException {
@@ -560,7 +544,7 @@ public class FlickrAreaMgr {
 					}
 				}
 
-				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+				for (Map.Entry<Integer, Integer> e : intCounts.entrySet()) {
 					dateCounts.put(DateUtil.createHour(e.getKey()), e.getValue());
 				}
 				break;
@@ -579,7 +563,7 @@ public class FlickrAreaMgr {
 					}
 				}
 
-				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+				for (Map.Entry<Integer, Integer> e : intCounts.entrySet()) {
 					dateCounts.put(DateUtil.createDay(e.getKey()), e.getValue());
 				}
 				break;
@@ -598,7 +582,7 @@ public class FlickrAreaMgr {
 					}
 				}
 
-				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+				for (Map.Entry<Integer, Integer> e : intCounts.entrySet()) {
 					dateCounts.put(DateUtil.createMonth(e.getKey()), e.getValue());
 				}
 				break;
@@ -617,7 +601,7 @@ public class FlickrAreaMgr {
 					}
 				}
 
-				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+				for (Map.Entry<Integer, Integer> e : intCounts.entrySet()) {
 					dateCounts.put(DateUtil.createYear(e.getKey()), e.getValue());
 				}
 				break;
@@ -642,7 +626,7 @@ public class FlickrAreaMgr {
 					}
 				}
 
-				for (Map.Entry<Integer, Integer> e: intCounts.entrySet()){
+				for (Map.Entry<Integer, Integer> e : intCounts.entrySet()) {
 					dateCounts.put(DateUtil.createWeekday(e.getKey()), e.getValue());
 				}
 				break;
@@ -650,95 +634,94 @@ public class FlickrAreaMgr {
 			displayCountsMap.put("Area ID: " + area.getRadius() + "-" + area.getId(), dateCounts);
 		}
 
-
 		ChartUtil.createTimeSeriesChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, icon, os);
 	}
 
 	@Deprecated
 	public void createXYLineChart(List<FlickrArea> areas, Level displayLevel, FlickrAreaDto areaDto, int width, int height, boolean displayLegend, boolean smooth, OutputStream os) throws ParseException, IOException {
 
-			Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
+		Map<String, Map<Integer, Integer>> displayCountsMap = new LinkedHashMap<String, Map<Integer, Integer>>();
 
-			int queryStrsLength = areaDto.getQueryStrsLength();
+		int queryStrsLength = areaDto.getQueryStrsLength();
 
-			for (FlickrArea area : areas) {
+		for (FlickrArea area : areas) {
 
-				Map<Integer, Integer> displayCounts = new TreeMap<Integer, Integer>();
-				switch (displayLevel) {
-				case HOUR:
-					// init
-					for (int hour : DateUtil.allHourInts) {
-						displayCounts.put(hour, 0);
-					}
-
-					//set values
-					for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
-						if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-							int hour = Integer.parseInt(e.getKey().substring(11, 13));
-							displayCounts.put(hour, e.getValue() + displayCounts.get(hour));
-						}
-					}
-					break;
-
-				case DAY:
-					// init
-					for (int day : DateUtil.allDayInts) {
-						displayCounts.put(day, 0);
-					}
-
-					//set values
-					for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
-						if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-							int day = Integer.parseInt(e.getKey().substring(8, 10));
-							displayCounts.put(day, e.getValue() + displayCounts.get(day));
-						}
-					}
-					break;
-
-				case MONTH:
-					// init
-					for (int month : DateUtil.allMonthInts) {
-						displayCounts.put(month, 0);
-					}
-
-					//set values
-					for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
-						if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-							int month = Integer.parseInt(e.getKey().substring(5, 7));
-							displayCounts.put(month, e.getValue() + displayCounts.get(month));
-						}
-					}
-					break;
-
-				case YEAR:
-					// init
-					for (int year : DateUtil.allYearInts) {
-						displayCounts.put(year, 0);
-					}
-
-					//set values
-					for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
-						if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
-							int year = Integer.parseInt(e.getKey().substring(0, 4));
-							displayCounts.put(year, e.getValue() + displayCounts.get(year));
-						}
-					}
-					break;
+			Map<Integer, Integer> displayCounts = new TreeMap<Integer, Integer>();
+			switch (displayLevel) {
+			case HOUR:
+				// init
+				for (int hour : DateUtil.allHourInts) {
+					displayCounts.put(hour, 0);
 				}
-				displayCountsMap.put("Area ID: " + area.getRadius() + "-" + area.getId(), displayCounts);
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int hour = Integer.parseInt(e.getKey().substring(11, 13));
+						displayCounts.put(hour, e.getValue() + displayCounts.get(hour));
+					}
+				}
+				break;
+
+			case DAY:
+				// init
+				for (int day : DateUtil.allDayInts) {
+					displayCounts.put(day, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int day = Integer.parseInt(e.getKey().substring(8, 10));
+						displayCounts.put(day, e.getValue() + displayCounts.get(day));
+					}
+				}
+				break;
+
+			case MONTH:
+				// init
+				for (int month : DateUtil.allMonthInts) {
+					displayCounts.put(month, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int month = Integer.parseInt(e.getKey().substring(5, 7));
+						displayCounts.put(month, e.getValue() + displayCounts.get(month));
+					}
+				}
+				break;
+
+			case YEAR:
+				// init
+				for (int year : DateUtil.allYearInts) {
+					displayCounts.put(year, 0);
+				}
+
+				//set values
+				for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+					if (areaDto.getQueryStrs().contains(e.getKey().substring(0, queryStrsLength))) {
+						int year = Integer.parseInt(e.getKey().substring(0, 4));
+						displayCounts.put(year, e.getValue() + displayCounts.get(year));
+					}
+				}
+				break;
 			}
-
-	//		Map<Integer, Integer> cumulativeCounts = new TreeMap<Integer, Integer>();
-	//		int cumulativeValue = 0;
-	//		for (Map.Entry<Integer, Integer> e : displayCounts.entrySet()) {
-	//			System.out.println(e.getKey() + ":" + e.getValue());
-	//			cumulativeValue += e.getValue();
-	//			cumulativeCounts.put(e.getKey(), cumulativeValue);
-	//		}
-	//		displayCountsMap.put("cumulative", cumulativeCounts);
-
-			ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
+			displayCountsMap.put("Area ID: " + area.getRadius() + "-" + area.getId(), displayCounts);
 		}
+
+		//		Map<Integer, Integer> cumulativeCounts = new TreeMap<Integer, Integer>();
+		//		int cumulativeValue = 0;
+		//		for (Map.Entry<Integer, Integer> e : displayCounts.entrySet()) {
+		//			System.out.println(e.getKey() + ":" + e.getValue());
+		//			cumulativeValue += e.getValue();
+		//			cumulativeCounts.put(e.getKey(), cumulativeValue);
+		//		}
+		//		displayCountsMap.put("cumulative", cumulativeCounts);
+
+		ChartUtil.createXYLineChart(displayCountsMap, displayLevel, width, height, displayLegend, smooth, os);
+	}
 
 	public String buildKmlFile(List<FlickrAreaResult> areaResults, String filenamePrefix, Radius radius, Point2D transfromVector, String remoteBasePath, boolean compress) throws UnsupportedEncodingException {
 		String localBasePath = this.getClass().getResource("/../../").getPath();
@@ -748,11 +731,11 @@ public class FlickrAreaMgr {
 
 		Document document = createKmlDoc(areaResults, radius, transfromVector, remoteBasePath);
 
-		if(filenamePrefix != null){
-			if(StringUtils.isNotEmpty(filenamePrefix)){
-				if(compress == true){
+		if (filenamePrefix != null) {
+			if (StringUtils.isNotEmpty(filenamePrefix)) {
+				if (compress == true) {
 					XmlUtil.xml2Kmz(document, localBasePath + filenamePrefix, true);
-				}else {
+				} else {
 					XmlUtil.xml2File(document, localBasePath + filenamePrefix + ".kml", false);
 				}
 			}
@@ -768,7 +751,7 @@ public class FlickrAreaMgr {
 	}
 
 	private Document createKmlDoc(List<FlickrAreaResult> areaResults, Radius radius, Point2D transformVector, String remoteBasePath) {
-		if(transformVector == null){
+		if (transformVector == null) {
 			transformVector = new Point2D.Double();
 		}
 
@@ -826,9 +809,10 @@ public class FlickrAreaMgr {
 				Element latLonBoxElement = new Element("LatLonBox", namespace);
 				groundOverlayElement.addContent(latLonBoxElement);
 				Element northElement = new Element("north", namespace).addContent(Double.toString(area.getCenter().getY() + transformVector.getY() + r * 0.55));
-				Element southElement = new Element("south", namespace).addContent(Double.toString(area.getCenter().getY() + transformVector.getY()  - r * 0.55));
-				Element eastElement = new Element("east", namespace).addContent(Double.toString(area.getCenter().getX() + transformVector.getX()  + r));
-				Element westElement = new Element("west", namespace).addContent(Double.toString(area.getCenter().getX() + transformVector.getX()  - r));;
+				Element southElement = new Element("south", namespace).addContent(Double.toString(area.getCenter().getY() + transformVector.getY() - r * 0.55));
+				Element eastElement = new Element("east", namespace).addContent(Double.toString(area.getCenter().getX() + transformVector.getX() + r));
+				Element westElement = new Element("west", namespace).addContent(Double.toString(area.getCenter().getX() + transformVector.getX() - r));
+				;
 				latLonBoxElement.addContent(northElement);
 				latLonBoxElement.addContent(southElement);
 				latLonBoxElement.addContent(eastElement);
@@ -855,8 +839,8 @@ public class FlickrAreaMgr {
 			String coordinates = "\n";
 
 			List<Point2D> shape = area.getGeom();
-			for (Point2D point: shape) {
-				coordinates += (point.getX() + transformVector.getX()) + "," + (point.getY() + transformVector.getY())  + "0\n";
+			for (Point2D point : shape) {
+				coordinates += (point.getX() + transformVector.getX()) + "," + (point.getY() + transformVector.getY()) + "0\n";
 			}
 
 			// create kml
@@ -911,7 +895,7 @@ public class FlickrAreaMgr {
 	}
 
 	private void addKmlExtendedElement(Element extendedDataElement, Namespace namespace, Map<Integer, Integer> chartData, Level displayLevel) {
-		for(Map.Entry<Integer, Integer> e : chartData.entrySet()){
+		for (Map.Entry<Integer, Integer> e : chartData.entrySet()) {
 			String dataName = displayLevel + "_" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
 			Element dataElement = new Element("Data", namespace).setAttribute("name", dataName);
 			dataElement.addContent(new Element("displayName", namespace).addContent(DateUtil.getChartLabelStr(e.getKey(), displayLevel)));
@@ -922,8 +906,8 @@ public class FlickrAreaMgr {
 
 	private String buildKmlDescription(FlickrAreaResult areaResult) {
 		int width = 640;
-		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, areaResult.getHistograms().getWeekdays(), Level.WEEKDAY);
-		String yearChartImg = createGoogleChartImg("Photos Distribution", width/2, 160, areaResult.getHistograms().getYears(), Level.YEAR);
+		String weekdayChartImg = createGoogleChartImg("Photos Distribution", width / 2, 160, areaResult.getHistograms().getWeekdays(), Level.WEEKDAY);
+		String yearChartImg = createGoogleChartImg("Photos Distribution", width / 2, 160, areaResult.getHistograms().getYears(), Level.YEAR);
 		String monthChartImg = createGoogleChartImg("Photos Distribution", width, 160, areaResult.getHistograms().getMonths(), Level.MONTH);
 		String dayChartImg = createGoogleChartImg("Photos Distribution", width, 160, areaResult.getHistograms().getDays(), Level.DAY);
 		String hourChartImg = createGoogleChartImg("Photos Distribution", width, 160, areaResult.getHistograms().getHours(), Level.HOUR);
@@ -937,7 +921,7 @@ public class FlickrAreaMgr {
 		String labels = "";
 		int maxValue = new TreeSet<Integer>(histrogramData.values()).last();
 		int barWithd = (int) (width / histrogramData.size() / 1.3);
-		for(Map.Entry<Integer, Integer> e : histrogramData.entrySet()){
+		for (Map.Entry<Integer, Integer> e : histrogramData.entrySet()) {
 			labels += "|" + DateUtil.getChartLabelStr(e.getKey(), displayLevel);
 			values += "," + e.getValue();
 		}
@@ -948,20 +932,19 @@ public class FlickrAreaMgr {
 //			values += ",$[" + dataName + "]";
 //		}
 
-		String img = "<img src='" +
-		"http://chart.apis.google.com/chart" + 	//chart engine
+		String img = "<img src='" + "http://chart.apis.google.com/chart" + //chart engine
 //		"http://kd-photomap.iais.fraunhofer.de/chart_engine/chart" + 	//chart engine
-		"?chtt=" + displayLevel +				//chart title
-		"&cht=bvs" +							//chart type
-		"&chs=" + width + "x" + height +		//chart size(pixel)
-		"&chd=t:" + values.substring(1) + 		//values
-		"&chxt=x,y" +							//display axises
-		"&chxl=0:" + labels +					//labels in x axis
-		"&chbh=" + barWithd +					//chbh=<bar_width_or_scale>,<space_between_bars>,<space_between_groups>
-		"&chm=N,444444,-1,,12" +				//data marker chm= <marker_type>,<color>,<series_index>,<which_points>,<size>,<z_order>,<placement>
-		"&chds=0," + maxValue * 1.2 +			//scale of y axis (default 1-100)
-		"&chxr=1,0," + maxValue * 1.2 +			//scale in value (default 1-100)
-		"'/>";
+				"?chtt=" + displayLevel + //chart title
+				"&cht=bvs" + //chart type
+				"&chs=" + width + "x" + height + //chart size(pixel)
+				"&chd=t:" + values.substring(1) + //values
+				"&chxt=x,y" + //display axises
+				"&chxl=0:" + labels + //labels in x axis
+				"&chbh=" + barWithd + //chbh=<bar_width_or_scale>,<space_between_bars>,<space_between_groups>
+				"&chm=N,444444,-1,,12" + //data marker chm= <marker_type>,<color>,<series_index>,<which_points>,<size>,<z_order>,<placement>
+				"&chds=0," + maxValue * 1.2 + //scale of y axis (default 1-100)
+				"&chxr=1,0," + maxValue * 1.2 + //scale in value (default 1-100)
+				"'/>";
 
 		return img;
 	}

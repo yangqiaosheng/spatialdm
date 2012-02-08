@@ -36,14 +36,14 @@ public class UpdateFlickrRegionId {
 	public static void main(String[] args) throws SQLException, IOException {
 		System.out.println("\nPlease input the Area TableName:\n[Default: " + AREAS_TABLE_NAME + "]");
 		String areaTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
-		if (StringUtils.isNotEmpty(areaTableName)){
+		if (StringUtils.isNotEmpty(areaTableName)) {
 			AREAS_TABLE_NAME = areaTableName;
 		}
 		System.out.println("Area Table:" + AREAS_TABLE_NAME);
 
 		System.out.println("\nPlease input the Photo TableName:\n[Default: " + PHOTOS_TABLE_NAME + "]");
 		String photoTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
-		if (StringUtils.isNotEmpty(photoTableName)){
+		if (StringUtils.isNotEmpty(photoTableName)) {
 			PHOTOS_TABLE_NAME = photoTableName;
 		}
 		System.out.println("Photo Table:" + PHOTOS_TABLE_NAME);
@@ -74,7 +74,7 @@ public class UpdateFlickrRegionId {
 //		PreparedStatement countStmt = db.getPstmt(conn, "select NUM_ROWS as num from user_tables where TABLE_NAME = '"+ PHOTOS_TABLE_NAME.toUpperCase() + "'" );
 
 		//PostGIS
-		PreparedStatement countStmt = db.getPstmt(conn, "select n_tup_ins as num from pg_stat_user_tables where relname = '"+ PHOTOS_TABLE_NAME.toLowerCase() + "'" );
+		PreparedStatement countStmt = db.getPstmt(conn, "select n_tup_ins as num from pg_stat_user_tables where relname = '" + PHOTOS_TABLE_NAME.toLowerCase() + "'");
 		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME);
 		selectStmt.setFetchSize(SELECT_BATCH_SIZE);
 		ResultSet countRs = db.getRs(countStmt);
@@ -112,13 +112,13 @@ public class UpdateFlickrRegionId {
 					paraMaps.put(radius, " region_" + radius + "_id = " + areaId);
 				}
 
-				if(paraMaps.size() == 0){
+				if (paraMaps.size() == 0) {
 					continue;
 				}
 
 				List<String> paraStrs = new ArrayList<String>();
 
-				for(Map.Entry<String, String> entry : paraMaps.entrySet()){
+				for (Map.Entry<String, String> entry : paraMaps.entrySet()) {
 					paraStrs.add(entry.getValue());
 				}
 
@@ -130,7 +130,7 @@ public class UpdateFlickrRegionId {
 				db.close(updateStmt);
 				db.close(areaIdRs);
 				db.close(selectAreaIdPstmt);
-				if(updatedNum/SELECT_BATCH_SIZE == 0){
+				if (updatedNum / SELECT_BATCH_SIZE == 0) {
 					conn.commit();
 				}
 			}
@@ -145,7 +145,7 @@ public class UpdateFlickrRegionId {
 			db.close(conn);
 		}
 		Date endDate = new Date();
-		logger.info("updateRegionId() endDate" + endDate +" |cost:" + (endDate.getTime() - beginDate.getTime()) / 1000 + " seconds");
+		logger.info("updateRegionId() endDate" + endDate + " |cost:" + (endDate.getTime() - beginDate.getTime()) / 1000 + " seconds");
 	}
 
 }

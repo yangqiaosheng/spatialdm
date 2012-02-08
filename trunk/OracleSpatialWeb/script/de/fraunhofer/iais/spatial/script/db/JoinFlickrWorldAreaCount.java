@@ -45,7 +45,6 @@ public class JoinFlickrWorldAreaCount {
 		startDate = Calendar.getInstance();
 		startDate.setTimeInMillis(start);
 
-
 		JoinFlickrWorldAreaCount t = new JoinFlickrWorldAreaCount();
 		t.begin();
 
@@ -58,7 +57,7 @@ public class JoinFlickrWorldAreaCount {
 		logger.info("main(String[]) - escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
 	}
 
-	public void begin(){
+	public void begin() {
 
 		ArrayList<String> radiusList = new ArrayList<String>();
 		radiusList.add("625");
@@ -81,8 +80,8 @@ public class JoinFlickrWorldAreaCount {
 
 			int updateSize = 0;
 //			do {
-				// REGION_CHECKED = -1 : building the index
-				/* Oracle */
+			// REGION_CHECKED = -1 : building the index
+			/* Oracle */
 //				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
 //						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = ? where t.photo_id in (" +
 //							"select t2.photo_id from (" +
@@ -111,16 +110,16 @@ public class JoinFlickrWorldAreaCount {
 //				db.close(updateStmt1);
 //				conn.commit();
 
-				for (String radius : radiusList) {
-					count(conn, Level.HOUR, radius);
-					conn.commit();
+			for (String radius : radiusList) {
+				count(conn, Level.HOUR, radius);
+				conn.commit();
 //					count(conn, Level.DAY, radius);
 //					conn.commit();
 //					count(conn, Level.MONTH, radius);
 //					conn.commit();
 //					count(conn, Level.YEAR, radius);
 //					conn.commit();
-				}
+			}
 
 //				 REGION_CHECKED = 2 : already indexed
 //				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
@@ -154,7 +153,6 @@ public class JoinFlickrWorldAreaCount {
 //		selectAreaStmt.setInt(1, TEMP_REGION_CHECKED_CODE);
 		ResultSet selectAreaRs = db.getRs(selectAreaStmt);
 
-
 //		PreparedStatement selectFlickrStmt = db.getPstmt(conn,
 //				"select date_str, count(*) as num from ("
 //				+ " select to_char(t.TAKEN_DATE, ?) as date_str"
@@ -165,17 +163,12 @@ public class JoinFlickrWorldAreaCount {
 //				+ " select to_char(t.TAKEN_DATE, ?) as date_str"
 //				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?) temp "
 //				+ "group by date_str");
-		PreparedStatement selectFlickrStmt = db.getPstmt(conn,
-				"select date_str, count(*) as num from ("
-				+ " select date_str"
-				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?) temp "
-				+ "group by date_str");
+		PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select date_str, count(*) as num from (" + " select date_str" + " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?) temp " + "group by date_str");
 
 		int areaId = -1;
 		int checkedSize = 0;
 		while (selectAreaRs.next()) {
 			areaId = selectAreaRs.getInt("id");
-
 
 //			selectFlickrStmt.setString(1, FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel));
 			selectFlickrStmt.setInt(1, areaId);
@@ -244,7 +237,6 @@ public class JoinFlickrWorldAreaCount {
 		updateStmt.setInt(2, id);
 		updateStmt.setInt(3, Integer.parseInt(radius));
 
-
 		System.out.println("countStr:" + countStr);
 		System.out.println("id:" + id);
 		System.out.println("radius:" + radius);
@@ -253,14 +245,12 @@ public class JoinFlickrWorldAreaCount {
 		db.close(updateStmt);
 	}
 
-
 	private void insertHour(Connection conn, SortedMap<String, Integer> countsMapToAdd, int id, String radius) throws SQLException {
 		PreparedStatement updateStmt = db.getPstmt(conn, "insert into " + COUNTS_TABLE_NAME + " (id, radius, hour) values (?, ?, ?)");
 		String countStr = FlickrAreaDao.createDatesCountDbString(countsMapToAdd);
 		updateStmt.setInt(1, id);
 		updateStmt.setInt(2, Integer.parseInt(radius));
 		updateStmt.setString(3, countStr);
-
 
 		System.out.println("countStr:" + countStr);
 		System.out.println("id:" + id);
@@ -419,7 +409,7 @@ public class JoinFlickrWorldAreaCount {
 				updateStmt.setInt(3, Integer.parseInt(radius));
 //				updateStmt.executeUpdate();
 				updateStmt.addBatch();
-				if((numUpdate++) % 200 == 0){
+				if ((numUpdate++) % 200 == 0) {
 					updateStmt.executeBatch();
 				}
 			}
@@ -439,7 +429,6 @@ public class JoinFlickrWorldAreaCount {
 		updateStmt.setString(1, countStr);
 		updateStmt.setInt(2, id);
 		updateStmt.setInt(3, Integer.parseInt(radius));
-
 
 		System.out.println("countStr:" + countStr);
 		System.out.println("id:" + id);

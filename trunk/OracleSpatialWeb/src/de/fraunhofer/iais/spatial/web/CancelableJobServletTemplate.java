@@ -48,12 +48,10 @@ public class CancelableJobServletTemplate {
 					if (session.getAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_LOCK) == null && sessionMutex.getTimestamp().equals(timestamp)) {
 						break;
 					} else {
-						if (i == waitSec) {
+						if (i == waitSec)
 							throw new TimeoutException("Blocked until:" + waitSec + "s");
-						}
-						if (!sessionMutex.getTimestamp().equals(timestamp)) {
+						if (!sessionMutex.getTimestamp().equals(timestamp))
 							throw new InterruptedException("Interrupted before");
-						}
 					}
 				}
 			}

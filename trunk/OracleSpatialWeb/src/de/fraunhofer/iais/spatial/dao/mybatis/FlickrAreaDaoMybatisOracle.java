@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 
-import org.apache.commons.collections.MapUtils;
 import org.jdom.IllegalDataException;
 import org.mybatis.spring.SqlSessionTemplate;
 
@@ -59,9 +58,9 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 	public void loadHoursTagsCount(FlickrArea area, boolean withoutStopWords) {
 		area.getHoursTagsCount().clear();
 		String count = null;
-		if(withoutStopWords){
+		if (withoutStopWords) {
 			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".hoursTagsCount_WithoutStopWords", area);
-		}else{
+		} else {
 			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".hoursTagsCount", area);
 		}
 		if (count != null) {
@@ -147,8 +146,8 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 
 		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".selectByGeomSize", areaDto);
 		int num = 0;
-		if(numObj != null){
-			num = (Integer)numObj;
+		if (numObj != null) {
+			num = (Integer) numObj;
 		}
 		return num;
 	}
@@ -201,7 +200,6 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 		return areas;
 	}
 
-
 	@Override
 	public List<Integer> getAreaIdsByPolygon(List<Point2D> polygon, Radius radius) {
 		int[] elemInfo = { 1, 1003, 1 };
@@ -237,10 +235,10 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaDto.setAreaid(areaid);
 
-		Object numObj = sessionTemplate.selectOne(this.getClass().getName()  + ".totalCount", areaDto);
+		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".totalCount", areaDto);
 		long num = 0;
-		if(numObj != null){
-			num = (Long)numObj;
+		if (numObj != null) {
+			num = (Long) numObj;
 		}
 		return num;
 	}
@@ -249,8 +247,8 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 	public long getTotalWorldPhotoNum() {
 		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".totalWorldPhotoNum");
 		long num = 0;
-		if(numObj != null){
-			num = (Long)numObj;
+		if (numObj != null) {
+			num = (Long) numObj;
 		}
 		return num;
 	}
@@ -259,8 +257,8 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 	public long getTotalPeopleNum() {
 		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".totalPeopleNum");
 		long num = 0;
-		if(numObj != null){
-			num = (Long)numObj;
+		if (numObj != null) {
+			num = (Long) numObj;
 		}
 		return num;
 	}
@@ -294,9 +292,8 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 		String dbDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		Map parameters = new HashMap();
 
-		if (queryLevel == Level.YEAR) {
+		if (queryLevel == Level.YEAR)
 			throw new IllegalDataException("TO_DATE('" + queryStr + "', 'YYYY') in Oracle will returns a wrong result!");
-		}
 
 		parameters.put("areaid", area.getId());
 		parameters.put("radius", area.getRadius());

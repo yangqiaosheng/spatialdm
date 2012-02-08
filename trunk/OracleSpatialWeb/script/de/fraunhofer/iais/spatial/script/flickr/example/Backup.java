@@ -1,4 +1,5 @@
 package de.fraunhofer.iais.spatial.script.flickr.example;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,17 +72,19 @@ public class Backup {
 	}
 
 	public void doBackup(File directory) throws Exception {
-		if (!directory.exists())
+		if (!directory.exists()) {
 			directory.mkdir();
+		}
 
 		RequestContext rc = RequestContext.getRequestContext();
 
 		if (this.authStore != null) {
 			Auth auth = this.authStore.retrieve(this.nsid);
-			if (auth == null)
+			if (auth == null) {
 				this.authorize();
-			else
+			} else {
 				rc.setAuth(auth);
+			}
 		}
 
 		PhotosetsInterface pi = flickr.getPhotosetsInterface();
@@ -101,8 +104,9 @@ public class Backup {
 		while (true) {
 			Collection nis = photoInt.getNotInSet(50, notInSetPage);
 			notInASet.addAll(nis);
-			if (nis.size() < 50)
+			if (nis.size() < 50) {
 				break;
+			}
 			notInSetPage++;
 		}
 		allPhotos.put("NotInASet", notInASet);
@@ -148,9 +152,10 @@ public class Backup {
 		byte[] bad = new byte[] { '\\', '/', '"' };
 		byte replace = '_';
 		for (int i = 0; i < fname.length; i++) {
-			for (int j = 0; j < bad.length; j++) {
-				if (fname[i] == bad[j])
+			for (byte element : bad) {
+				if (fname[i] == element) {
 					fname[i] = replace;
+				}
 			}
 		}
 		return new String(fname);

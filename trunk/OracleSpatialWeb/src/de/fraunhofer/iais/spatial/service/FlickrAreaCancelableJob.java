@@ -5,8 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.collections.MapUtils;
 
@@ -33,7 +31,7 @@ public class FlickrAreaCancelableJob {
 		this.flickrAreaDao = areaDao;
 	}
 
-	public List<FlickrArea> getAreasByRect(Date sessionTimestamp, SessionMutex sessionMutex, double x1, double y1, double x2, double y2, Radius radius,  boolean crossDateLine) throws InterruptedException {
+	public List<FlickrArea> getAreasByRect(Date sessionTimestamp, SessionMutex sessionMutex, double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine) throws InterruptedException {
 
 		List<FlickrArea> areas = new ArrayList<FlickrArea>();
 		for (int areaid : flickrAreaDao.getAreaIdsByRect(x1, y1, x2, y2, radius, crossDateLine)) {
@@ -102,7 +100,7 @@ public class FlickrAreaCancelableJob {
 		return sumHistrograms;
 	}
 
-	public void countSelected(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrAreaResult> areaResults, FlickrAreaDto areaDto) throws InterruptedException{
+	public void countSelected(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrAreaResult> areaResults, FlickrAreaDto areaDto) throws InterruptedException {
 
 		for (FlickrAreaResult areaResult : areaResults) {
 			FlickrArea area = areaResult.getArea();
@@ -126,7 +124,6 @@ public class FlickrAreaCancelableJob {
 		}
 
 	}
-
 
 	public FlickrAreaResult countTag(Date sessionTimestamp, SessionMutex sessionMutex, FlickrArea area, FlickrAreaDto areaDto) throws InterruptedException {
 
@@ -192,9 +189,8 @@ public class FlickrAreaCancelableJob {
 		}
 
 		synchronized (this) {
-			if (!sessionMutex.getTimestamp().equals(sessionTimestamp)) {
+			if (!sessionMutex.getTimestamp().equals(sessionTimestamp))
 				throw new InterruptedException("Interrupted after");
-			}
 		}
 	}
 

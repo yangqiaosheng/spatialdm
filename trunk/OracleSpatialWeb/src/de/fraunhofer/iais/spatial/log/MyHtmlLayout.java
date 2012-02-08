@@ -34,10 +34,8 @@ public class MyHtmlLayout extends org.apache.log4j.HTMLLayout {
 		Pattern pattern = Pattern.compile(rxTimestamp); // RegEx to find the default timestamp
 		Matcher matcher = pattern.matcher(record);
 
-		if (!matcher.find()) // If default timestamp cannot be found,
-		{
+		if (!matcher.find())
 			return record; // Just return the unmodified log record.
-		}
 
 		StringBuffer buffer = new StringBuffer(record);
 

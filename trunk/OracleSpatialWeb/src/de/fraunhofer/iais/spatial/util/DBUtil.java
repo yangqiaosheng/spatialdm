@@ -26,7 +26,6 @@ public class DBUtil {
 	//	private static BoneCPDataSource ds = null;
 	private ComboPooledDataSource ds = null;
 
-
 	/**
 	 * initialize the c3p0 Connection Pool
 	*/

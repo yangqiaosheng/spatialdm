@@ -87,7 +87,7 @@ public class Oracle2PgDataExport {
 
 					} else {
 						pgInsertStmt.setString(i, oracleRs.getString(i));
-						System.out.println(rsMetaData.getColumnLabel(i) + " | "+ rsMetaData.getColumnClassName(i) + " | " + rsMetaData.getColumnName(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
+						System.out.println(rsMetaData.getColumnLabel(i) + " | " + rsMetaData.getColumnClassName(i) + " | " + rsMetaData.getColumnName(i) + " | " + rsMetaData.getColumnTypeName(i) + " | " + rsMetaData.getColumnType(i));
 					}
 				}
 //				pgInsertStmt.executeUpdate();
