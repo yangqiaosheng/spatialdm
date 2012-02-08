@@ -29,10 +29,7 @@ public class InitCountTable {
 		deleteStmt.executeUpdate();
 		db.close(deleteStmt);
 
-
-		PreparedStatement insertStmt = db.getPstmt(conn,
-				"insert into " + COUNTS_TABLE_NAME + " (id, radius)" +
-				" select id, CAST(radius as integer) from " + AREA_TABLE_NAME + " t");
+		PreparedStatement insertStmt = db.getPstmt(conn, "insert into " + COUNTS_TABLE_NAME + " (id, radius)" + " select id, CAST(radius as integer) from " + AREA_TABLE_NAME + " t");
 		insertStmt.executeUpdate();
 		db.close(insertStmt);
 

@@ -148,8 +148,7 @@ public class ChartUtil {
 	@Deprecated
 	private static JFreeChart buildTimeSeriesChartOld(XYDataset xydataset, String title) {
 
-		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
-				title, // Title
+		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(title, // Title
 				"Time", // X Label
 				"#photos", // Y Label
 				xydataset, // dataset
@@ -191,8 +190,7 @@ public class ChartUtil {
 	@Deprecated
 	private static JFreeChart buildXYLineChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth) {
 
-		JFreeChart jfreechart = ChartFactory.createXYLineChart(
-				"#Photos Distribution", // Title
+		JFreeChart jfreechart = ChartFactory.createXYLineChart("#Photos Distribution", // Title
 				displayLevel.toString(), // X Label
 				"#PHOTOS", // Y Label
 				xydataset, // dataset
@@ -263,8 +261,7 @@ public class ChartUtil {
 
 	private static JFreeChart buildTimeSeriesChart(XYDataset xydataset, Level displayLevel, boolean displayLegend, boolean smooth, boolean icon) {
 
-		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
-				"", // Title
+		JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("", // Title
 				displayLevel.toString(), // X Label
 				"frequency", // Y Label
 				xydataset, // dataset
@@ -346,7 +343,7 @@ public class ChartUtil {
 //		    xyPlot.addAnnotation(localXYTitleAnnotation);
 		}
 
-		if(icon){
+		if (icon) {
 			jfreechart.setTitle(new TextTitle(displayLevel.toString(), new Font("Helvetica", Font.BOLD, 7)));
 			jfreechart.setTitle("");
 			xyPlot.getRangeAxis().setLabel("");

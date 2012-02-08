@@ -1,24 +1,19 @@
 package de.fraunhofer.iais.spatial.web.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
-import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.jdom.CDATA;
-import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +28,6 @@ import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
-import de.fraunhofer.iais.spatial.util.XmlUtil;
 import de.fraunhofer.iais.spatial.web.CancelableJobServletCallback;
 import de.fraunhofer.iais.spatial.web.CancelableJobServletTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
@@ -84,7 +78,7 @@ public class HistogramsDataServlet extends HttpServlet {
 						//Google Chart for debug
 						String hasChart = request.getParameter("chart");
 						String xml = request.getParameter("xml");
-						logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$ 
 
 						if (StringUtils.isEmpty(xml)) {
 							String errMsg = "ERROR: 'xml' parameter is missing!";
@@ -93,8 +87,8 @@ public class HistogramsDataServlet extends HttpServlet {
 						}
 						FlickrAreaDto areaDto = new FlickrAreaDto();
 						areaMgr.parseXmlRequest(StringUtil.FullMonth2Num(xml.toString()), areaDto);
-						logger.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
-
+						logger
+								.info("doGet(HttpServletRequest, HttpServletResponse) - years:" + areaDto.getYears() + " |months:" + areaDto.getMonths() + "|days:" + areaDto.getDays() + "|hours:" + areaDto.getHours() + "|weekdays:" + areaDto.getWeekdays()); //$NON-NLS-1$
 
 						int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(),
 								areaDto.isCrossDateLine());
@@ -107,8 +101,8 @@ public class HistogramsDataServlet extends HttpServlet {
 
 						List<FlickrArea> areas = null;
 						if (areaDto.getZoom() > 2) {
-							areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(),
-									areaDto.getRadius(), areaDto.isCrossDateLine());
+							areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(),
+									areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(), areaDto.isCrossDateLine());
 						}
 
 						Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);
@@ -120,7 +114,6 @@ public class HistogramsDataServlet extends HttpServlet {
 			}
 		});
 	}
-
 
 	public void histrogramsResponseXml(Element rootElement, Histograms histrograms, boolean hasChart) {
 

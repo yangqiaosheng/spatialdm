@@ -42,7 +42,6 @@ public class PeopleMultiCrawler extends Thread {
 	static final int INIT_CONTACT_UPDATE_CHECKED = 1;
 	static final int FINISH_CONTACT_UPDATE_CHECKED = 2;
 
-
 	static Calendar beginDateLimit = Calendar.getInstance();
 	static int numReTry = 0;
 	static long numInsertedPeople = 0;
@@ -169,8 +168,8 @@ public class PeopleMultiCrawler extends Thread {
 
 				// assign the task to different thread
 //				if (Math.abs(userId.hashCode() % NUM_THREAD) == threadId) {
-					this.retrievePeopleContacts(contactsInterface, userId);
-					System.out.println("thread_id:" + threadId + "user_id=" + userId + " |numCheckedPeople:" + getNumCheckedPeople() + " |numInsertedPeople:" + increaseNumInsertedPeople());
+				this.retrievePeopleContacts(contactsInterface, userId);
+				System.out.println("thread_id:" + threadId + "user_id=" + userId + " |numCheckedPeople:" + getNumCheckedPeople() + " |numInsertedPeople:" + increaseNumInsertedPeople());
 //				}
 			}
 
@@ -225,7 +224,7 @@ public class PeopleMultiCrawler extends Thread {
 			ResultSet rs = null;
 			try {
 				for (int i = 0; i < memberslist.size(); i++) {
-					Member m = (Member) memberslist.get(i);
+					Member m = memberslist.get(i);
 					selectPstmt.setString(1, m.getId());
 					rs = db.getRs(selectPstmt);
 
@@ -255,7 +254,6 @@ public class PeopleMultiCrawler extends Thread {
 				db.close(updatePeopleContactCheckedNumPstmt);
 				db.close(selectPstmt);
 			}
-
 
 			updatePstmt.setInt(1, FINISH_CONTACT_UPDATE_CHECKED);
 			updatePstmt.setString(2, userId);

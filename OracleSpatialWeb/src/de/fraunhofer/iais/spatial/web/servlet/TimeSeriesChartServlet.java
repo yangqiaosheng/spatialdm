@@ -52,7 +52,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 		response.setHeader("Cache-Control", "no-cache");
 		ServletOutputStream sos = response.getOutputStream();
 
-		String[] areaids = (String[]) ArrayUtils.subarray(request.getParameterValues("areaid"), 0, MAX_NUM_DATASETS);
+		String[] areaids = ArrayUtils.subarray(request.getParameterValues("areaid"), 0, MAX_NUM_DATASETS);
 		String level = request.getParameter("level");
 		int width = NumberUtils.toInt(request.getParameter("width"), DEFAULT_WIDTH);
 		int height = NumberUtils.toInt(request.getParameter("height"), DEFAULT_HEIGHT);
@@ -81,7 +81,7 @@ public class TimeSeriesChartServlet extends HttpServlet {
 				Radius radius = FlickrAreaUtil.judgeRadius(zoom);
 				for (String areaid : areaids) {
 					FlickrArea area = areaMgr.getAreaDao().getAreaById(Integer.parseInt(areaid), radius);
-					if(area != null){
+					if (area != null) {
 						areas.add(area);
 					}
 				}

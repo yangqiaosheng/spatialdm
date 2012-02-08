@@ -36,7 +36,6 @@ public class FlickrAreaResult {
 		this.selectedCount = selectCount;
 	}
 
-
 	public Histograms getHistograms() {
 		return histograms;
 	}
@@ -44,7 +43,6 @@ public class FlickrAreaResult {
 	public void setHistograms(Histograms histograms) {
 		this.histograms = histograms;
 	}
-
 
 	public Map<String, Integer> getTagsCount() {
 		return tagsCount;

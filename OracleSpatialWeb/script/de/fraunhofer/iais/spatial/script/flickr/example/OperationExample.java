@@ -90,7 +90,7 @@ public class OperationExample {
 		PhotoList pl = people.getPhotos(userId, null, null, minTakenDate.getTime(), maxTakenDate.getTime(), extras, 20, 1);
 		System.out.println("total:" + pl.getTotal());
 		for (int i = 0; i < pl.size(); i++) {
-			Photo p = (Photo) pl.get(i);
+			Photo p = pl.get(i);
 			System.out.println(p.getId() + ":" + p.getDateTaken().toLocaleString() + " | " + p.getDatePosted().toLocaleString() + ":" + p.getGeoData() + ":" + p.getDescription() + ":" + p.getPlaceId() + ":" + p.getWoeId());
 
 			for (Tag tag : p.getTags()) {
@@ -114,7 +114,7 @@ public class OperationExample {
 		PhotoList pl = photo.getRecent(Extras.ALL_EXTRAS, 50, 670);
 		System.out.println("pages:" + pl.getPages());
 		for (int i = 1; i < pl.size(); i++) {
-			Photo p = (Photo) pl.get(i);
+			Photo p = pl.get(i);
 
 			System.out.println(p.getId() + "|" + p.getDateTaken() + "|" + p.getDatePosted());
 		}
@@ -128,7 +128,7 @@ public class OperationExample {
 		PhotoList pl = photo.getRecent(Extras.ALL_EXTRAS, 50, 670);
 		System.out.println("pages:" + pl.getPages());
 		for (int i = 1; i < pl.size(); i++) {
-			Photo p = (Photo) pl.get(i);
+			Photo p = pl.get(i);
 
 			System.out.println(p.getId() + "|" + p.getDateTaken() + "|" + p.getDatePosted());
 		}

@@ -282,17 +282,16 @@ public abstract class FlickrAreaDao {
 	}
 
 	protected final static Level judgeQueryLevel(String QueryStr) {
-		if (QueryStr.matches(FlickrAreaDao.hourRegExPatternStr.split(":")[0])) {
+		if (QueryStr.matches(FlickrAreaDao.hourRegExPatternStr.split(":")[0]))
 			return Level.HOUR;
-		} else if (QueryStr.matches(FlickrAreaDao.dayRegExPatternStr.split(":")[0])) {
+		else if (QueryStr.matches(FlickrAreaDao.dayRegExPatternStr.split(":")[0]))
 			return Level.DAY;
-		} else if (QueryStr.matches(FlickrAreaDao.monthRegExPatternStr.split(":")[0])) {
+		else if (QueryStr.matches(FlickrAreaDao.monthRegExPatternStr.split(":")[0]))
 			return Level.MONTH;
-		} else if (QueryStr.matches(FlickrAreaDao.yearRegExPatternStr.split(":")[0])) {
+		else if (QueryStr.matches(FlickrAreaDao.yearRegExPatternStr.split(":")[0]))
 			return Level.YEAR;
-		} else {
+		else
 			return null;
-		}
 
 	}
 
@@ -314,9 +313,8 @@ public abstract class FlickrAreaDao {
 */
 		for (String terms : StringUtils.split(count, ";")) {
 			String key = terms.substring(0, 13);
-			if (!key.matches("\\d{4}-\\d{2}-\\d{2}@\\d{2}")) {
+			if (!key.matches("\\d{4}-\\d{2}-\\d{2}@\\d{2}"))
 				throw new RuntimeException("hour key:" + key);
-			}
 			String content = terms.substring(15, terms.length() - 1);
 			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 			for (String term : StringUtils.split(content, ",")) {
@@ -346,9 +344,8 @@ public abstract class FlickrAreaDao {
 */
 		for (String terms : StringUtils.split(count, ";")) {
 			String key = terms.substring(0, 10);
-			if (!key.matches("\\d{4}-\\d{2}-\\d{2}")) {
+			if (!key.matches("\\d{4}-\\d{2}-\\d{2}"))
 				throw new RuntimeException("day key:" + key);
-			}
 			String content = terms.substring(12, terms.length() - 1);
 			Map<String, Integer> tagsCount = Maps.newLinkedHashMap();
 			for (String term : StringUtils.split(content, ",")) {

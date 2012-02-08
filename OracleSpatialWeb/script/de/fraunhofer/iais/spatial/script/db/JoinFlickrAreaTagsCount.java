@@ -8,22 +8,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -49,26 +42,27 @@ public class JoinFlickrAreaTagsCount {
 	static Calendar startDate;
 
 	static DBUtil db = new DBUtil("/jdbc.properties", 18, 3);
+
 //	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("\nPlease input the Count TableName:\n[Default: " + COUNTS_TABLE_NAME + "]");
 		String countTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
-		if (StringUtils.isNotEmpty(countTableName)){
+		if (StringUtils.isNotEmpty(countTableName)) {
 			COUNTS_TABLE_NAME = countTableName;
 		}
 		System.out.println("Count Table:" + COUNTS_TABLE_NAME);
 
 		System.out.println("\nPlease input the Photo TableName:\n[Default: " + PHOTO_TABLE_NAME + "]");
 		String photoTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
-		if (StringUtils.isNotEmpty(photoTableName)){
+		if (StringUtils.isNotEmpty(photoTableName)) {
 			PHOTO_TABLE_NAME = photoTableName;
 		}
 		System.out.println("Photo Table:" + PHOTO_TABLE_NAME);
 
 		System.out.println("\nPlease input the Tag limit:\n[Default: " + TAG_LIMIT + "]");
 		String tagLimit = new BufferedReader(new InputStreamReader(System.in)).readLine();
-		if (StringUtils.isNotEmpty(tagLimit)){
+		if (StringUtils.isNotEmpty(tagLimit)) {
 			TAG_LIMIT = NumberUtils.toInt(tagLimit);
 		}
 		System.out.println("Tag Limit:" + TAG_LIMIT);
@@ -89,11 +83,11 @@ public class JoinFlickrAreaTagsCount {
 		logger.info("main(String[]) - escaped time:" + (System.currentTimeMillis() - start) / 1000.0); //$NON-NLS-1$
 	}
 
-	public void begin(){
+	public void begin() {
 
 		ArrayList<String> radiusList = new ArrayList<String>();
 
-		if(PHOTO_TABLE_NAME.contains("world")){
+		if (PHOTO_TABLE_NAME.contains("world")) {
 			System.out.println("For the World");
 			radiusList.add("625");
 			radiusList.add("1250");
@@ -108,7 +102,7 @@ public class JoinFlickrAreaTagsCount {
 			radiusList.add("640000");
 			radiusList.add("1280000");
 			radiusList.add("2560000");
-		} else if(PHOTO_TABLE_NAME.contains("europe")){
+		} else if (PHOTO_TABLE_NAME.contains("europe")) {
 			System.out.println("For the Europe");
 			radiusList.add("375");
 			radiusList.add("750");
@@ -126,7 +120,6 @@ public class JoinFlickrAreaTagsCount {
 			return;
 		}
 
-
 		Connection conn = db.getConn();
 		Connection selectConn = db.getConn();
 		try {
@@ -135,8 +128,8 @@ public class JoinFlickrAreaTagsCount {
 
 //			int updateSize = 0;
 //			do {
-				// REGION_CHECKED = -1 : building the index
-				/* Oracle */
+			// REGION_CHECKED = -1 : building the index
+			/* Oracle */
 //				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
 //						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = ? where t.photo_id in (" +
 //							"select t2.photo_id from (" +
@@ -156,9 +149,9 @@ public class JoinFlickrAreaTagsCount {
 //				db.close(updateStmt1);
 //				conn.commit();
 
-				for (String radius : radiusList) {
-					countHoursTags(conn, radius);
-				}
+			for (String radius : radiusList) {
+				countHoursTags(conn, radius);
+			}
 
 //				 REGION_CHECKED = 2 : already indexed
 //				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
@@ -202,12 +195,8 @@ public class JoinFlickrAreaTagsCount {
 
 		//Oracle: to_date()
 		/* */
-		PreparedStatement selectTagsStmt = db.getPstmt(conn,
-				"select tags from " + PHOTO_TABLE_NAME + " t " +
-					"where t.region_" + radiusString + "_id = ? and " +
-						  "t.taken_date >= to_date(?,'yyyy-MM-dd@HH24') and " +
-						  "t.taken_date <= to_date(?,'yyyy-MM-dd@HH24') + interval '1' " + Level.HOUR);
-
+		PreparedStatement selectTagsStmt = db.getPstmt(conn, "select tags from " + PHOTO_TABLE_NAME + " t " + "where t.region_" + radiusString + "_id = ? and " + "t.taken_date >= to_date(?,'yyyy-MM-dd@HH24') and "
+				+ "t.taken_date <= to_date(?,'yyyy-MM-dd@HH24') + interval '1' " + Level.HOUR);
 
 		int areaId = -1;
 		int checkedSize = 0;
@@ -231,13 +220,13 @@ public class JoinFlickrAreaTagsCount {
 				Map<String, Integer> tagsCount = new HashMap<String, Integer>();
 
 				while (selectTagsRs.next()) {
-					for(String tag : StringUtils.split(StringUtils.defaultString(selectTagsRs.getString("tags")), ",")){
+					for (String tag : StringUtils.split(StringUtils.defaultString(selectTagsRs.getString("tags")), ",")) {
 						tagsCount.put(tag, MapUtils.getIntValue(tagsCount, tag) + 1);
 					}
 				}
 
 				// discards the empty tags
-				if(tagsCount.size() > 0){
+				if (tagsCount.size() > 0) {
 					hoursTagsCount.put(dateStr, tagsCount);
 				}
 
@@ -245,7 +234,7 @@ public class JoinFlickrAreaTagsCount {
 			}
 			db.close(selectDateRs);
 
-			if(hoursTagsCount.size() > 0){
+			if (hoursTagsCount.size() > 0) {
 				addToIndex(hoursTagsCount, Level.HOUR.toString(), areaId, radiusString);
 			}
 
@@ -290,12 +279,10 @@ public class JoinFlickrAreaTagsCount {
 
 		String countStr = FlickrAreaDao.createDatesTagsCountDbString(countsMap, TAG_LIMIT);
 
-
 		PreparedStatement updateStmt = db.getPstmt(conn, "update " + COUNTS_TABLE_NAME + " set " + queryLevel.toString() + " = ? where id = ? and radius = ?");
 		updateStmt.setString(1, countStr);
 		updateStmt.setInt(2, id);
 		updateStmt.setInt(3, Integer.parseInt(radius));
-
 
 //		System.out.println("countStr:" + countStr);
 		System.out.println("id:" + id);
@@ -326,8 +313,8 @@ public class JoinFlickrAreaTagsCount {
 
 				int tagSumNum = 0;
 				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
-					for (Entry <String, Integer> item : e.getValue().entrySet()) {
-						tagsCount.put(item.getKey(), MapUtils.getInteger(tagsCount, item.getKey(), 0) +  item.getValue());
+					for (Entry<String, Integer> item : e.getValue().entrySet()) {
+						tagsCount.put(item.getKey(), MapUtils.getInteger(tagsCount, item.getKey(), 0) + item.getValue());
 						tagSumNum += item.getValue();
 					}
 				}
@@ -337,7 +324,7 @@ public class JoinFlickrAreaTagsCount {
 				int limitNum = 52;
 				int i = 0;
 				for (Entry<String, Integer> e : sortedTagsCount.entrySet()) {
-					if(i++ > limitNum || e.getValue() < 100){
+					if (i++ > limitNum || e.getValue() < 100) {
 						break;
 					}
 					stopwords.add(e.getKey());
@@ -386,7 +373,6 @@ public class JoinFlickrAreaTagsCount {
 		stmt.executeUpdate();
 		db.close(stmt);
 	}*/
-
 
 	public static void mergeTagsCountsMap(SortedMap<String, Map<String, Integer>> countsMap, Map<String, Map<String, Integer>> countsMapToAdd) {
 		for (Entry<String, Map<String, Integer>> entry : countsMapToAdd.entrySet()) {

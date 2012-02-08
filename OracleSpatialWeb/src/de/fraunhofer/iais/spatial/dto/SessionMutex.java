@@ -18,5 +18,4 @@ public class SessionMutex {
 		this.timestamp = timestamp;
 	}
 
-
 }

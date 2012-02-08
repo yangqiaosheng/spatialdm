@@ -51,7 +51,6 @@ public class FlickrAreaUtil {
 		return zoom;
 	}
 
-
 	public static Radius judgeRadius(int zoom) {
 		Radius radius = null;
 		if (zoom <= 2) {

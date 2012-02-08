@@ -2,7 +2,6 @@ package de.fraunhofer.iais.spatial.exception;
 
 public class JobTimeOutException extends RuntimeException {
 
-
 	/**
 	 *
 	 */

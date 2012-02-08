@@ -125,7 +125,7 @@ public class LimitFlickrAreaTagsCount {
 				PreparedStatement areaStmt = db.getPstmt(conn, "select t1.id as pid from flickr_world_area_2560000 t1, flickr_world_area t2 where t2.id = ? and ST_Intersects(t1.geom, t2.geom)");
 				areaStmt.setInt(1, id);
 				ResultSet swRs = db.getRs(areaStmt);
-				while(swRs.next()){
+				while (swRs.next()) {
 					int pid = swRs.getInt("pid");
 					stopwordsList.add(areasStopwords.get(pid));
 					System.out.println("id:" + id + " pid" + pid + " stopwords" + areasStopwords.get(pid));
@@ -339,8 +339,8 @@ public class LimitFlickrAreaTagsCount {
 
 				int tagSumNum = 0;
 				for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
-					for (Entry <String, Integer> item : e.getValue().entrySet()) {
-						tagsCount.put(item.getKey(), MapUtils.getInteger(tagsCount, item.getKey(), 0) +  item.getValue());
+					for (Entry<String, Integer> item : e.getValue().entrySet()) {
+						tagsCount.put(item.getKey(), MapUtils.getInteger(tagsCount, item.getKey(), 0) + item.getValue());
 						tagSumNum += item.getValue();
 					}
 				}
@@ -350,7 +350,6 @@ public class LimitFlickrAreaTagsCount {
 //				System.out.println("tagsCount:" + tagsCount);
 
 				int tagNum = tagsCount.size();
-
 
 /*
 				PreparedStatement updateStmt = db.getPstmt(connUpdate, "update " + COUNTS_TABLE_NAME + " set tag_num = ?, tag_sum_num = ? where id = ? and radius = ?");
@@ -399,5 +398,3 @@ public class LimitFlickrAreaTagsCount {
 		db.close(conn);
 	}
 }
-
-

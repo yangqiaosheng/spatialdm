@@ -57,9 +57,9 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	public void loadHoursTagsCount(FlickrArea area, boolean withoutStopWords) {
 		area.getHoursTagsCount().clear();
 		String count = null;
-		if(withoutStopWords){
+		if (withoutStopWords) {
 			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".hoursTagsCount_WithoutStopWords", area);
-		}else{
+		} else {
 			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".hoursTagsCount", area);
 		}
 		if (count != null) {
@@ -268,9 +268,8 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		String dbDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		Map parameters = new HashMap();
 
-		if (queryLevel == Level.YEAR) {
+		if (queryLevel == Level.YEAR)
 			throw new IllegalDataException("TO_DATE('" + queryStr + "', 'YYYY') in Oracle will returns a wrong result!");
-		}
 
 		parameters.put("areaid", area.getId());
 		parameters.put("radius", area.getRadius());
@@ -294,9 +293,8 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		String dbDatePatternStr = FlickrAreaDao.judgeDbDateCountPatternStr(queryLevel);
 		Map parameters = new HashMap();
 
-		if (queryLevel == Level.YEAR) {
+		if (queryLevel == Level.YEAR)
 			throw new IllegalDataException("TO_DATE('" + queryStr + "', 'YYYY') in Oracle will returns a wrong result!");
-		}
 
 		parameters.put("areaid", area.getId());
 		parameters.put("radius", area.getRadius());

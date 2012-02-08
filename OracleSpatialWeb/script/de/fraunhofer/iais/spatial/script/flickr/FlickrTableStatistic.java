@@ -80,19 +80,19 @@ public class FlickrTableStatistic {
 				peoplePhotoUpdateCheckedRs = db.getRs(selectPeoplePhotoUpdateCheckedStmt);
 				peopleContactUpdateCheckedRs = db.getRs(selectPeopleContactUpdateCheckedStmt);
 
-				if(worldRs.next()){
+				if (worldRs.next()) {
 					totalWorldPhotoNum = worldRs.getLong("n_tup_ins");
 				}
-				if(europeRs.next()){
+				if (europeRs.next()) {
 					totalEuropePhotoNum = europeRs.getLong("n_tup_ins");
 				}
-				if(peopleRs.next()){
+				if (peopleRs.next()) {
 					totalPeopleNum = peopleRs.getLong("n_tup_ins");
 				}
-				if(peoplePhotoUpdateCheckedRs.next()){
+				if (peoplePhotoUpdateCheckedRs.next()) {
 					peoplePhotoUpdateCheckedNum = peoplePhotoUpdateCheckedRs.getLong("n_tup_ins");
 				}
-				if(peopleContactUpdateCheckedRs.next()){
+				if (peopleContactUpdateCheckedRs.next()) {
 					peopleContactUpdateCheckedNum = peopleContactUpdateCheckedRs.getLong("n_tup_ins");
 				}
 
@@ -127,7 +127,8 @@ public class FlickrTableStatistic {
 				db.close(conn);
 			}
 
-			logger.debug(new Date() + " |#europe Photo:" + totalEuropePhotoNum + " |#world Photo:" + totalWorldPhotoNum + " |#people:" + totalPeopleNum + " |#people_photo:" + peoplePhotoUpdateCheckedNum + " |#people_contact:" + peopleContactUpdateCheckedNum); //$NON-NLS-1$
+			logger.debug(new Date()
+					+ " |#europe Photo:" + totalEuropePhotoNum + " |#world Photo:" + totalWorldPhotoNum + " |#people:" + totalPeopleNum + " |#people_photo:" + peoplePhotoUpdateCheckedNum + " |#people_contact:" + peopleContactUpdateCheckedNum); //$NON-NLS-1$
 		}
 
 	}

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,7 +34,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -159,7 +157,7 @@ public class TestFlickrArea {
 
 		System.out.println("hoursTagsCount:" + hoursTagsCount);
 
-		for(Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()){
+		for (Entry<String, Map<String, Integer>> e : hoursTagsCount.entrySet()) {
 			Pattern p = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})@\\d{2}");
 			Matcher m = p.matcher(e.getKey());
 			m.find();
@@ -167,7 +165,6 @@ public class TestFlickrArea {
 			System.out.println(key + ":" + e.getValue());
 			JoinFlickrAreaTagsCount.addToTagsCountsMap(daysTagsCount, key, e.getValue());
 		}
-
 
 		String dayStr = FlickrAreaDao.createDatesTagsCountDbString(daysTagsCount);
 		System.out.println("!" + dayStr);
@@ -185,7 +182,7 @@ public class TestFlickrArea {
 			for (int j = 1; j <= 12; j++) {
 				for (int k = 1; k < 30; k++) {
 					for (int l = 1; l < 24; l++) {
-						queryStr.add(i + "-" + new DecimalFormat("00").format(j) + "-" +  new DecimalFormat("00").format(k) + "@" +  new DecimalFormat("00").format(l));
+						queryStr.add(i + "-" + new DecimalFormat("00").format(j) + "-" + new DecimalFormat("00").format(k) + "@" + new DecimalFormat("00").format(l));
 					}
 				}
 			}
@@ -203,7 +200,6 @@ public class TestFlickrArea {
 
 		System.out.println("total:" + total);
 	}
-
 
 	@Test
 	public void testJdbcDao1() {
@@ -272,8 +268,8 @@ public class TestFlickrArea {
 		document.setRootElement(tagsElement);
 
 		int num = 0;
-		for(Map.Entry<String, Integer> entry : entries){
-			if(num++ > size){
+		for (Map.Entry<String, Integer> entry : entries) {
+			if (num++ > size) {
 				break;
 			}
 			Element tagElement = new Element("tag");
@@ -303,7 +299,6 @@ public class TestFlickrArea {
 
 		System.out.println(System.currentTimeMillis() - start);
 	}
-
 
 	@Test
 	public void testPhoto4() {
@@ -554,6 +549,7 @@ public class TestFlickrArea {
 		testHistogram();
 		testHistogram();
 	}
+
 	@Test
 	public void testHistogram() throws JDOMException, IOException, ParseException, InterruptedException {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
@@ -589,9 +585,8 @@ public class TestFlickrArea {
 		List<FlickrArea> areas = null;
 		if (areaDto.getBoundaryRect() != null) {
 			int size = areaMgr.getAreaDao().getAreasByRectSize(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
-			if (size > 2000) {
+			if (size > 2000)
 				throw new IllegalArgumentException("The maximun number of return polygons is exceeded! \n" + " Please choose a smaller Bounding Box <bounds> or a lower zoom value <zoom>");
-			}
 			areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		}
 		List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
@@ -605,7 +600,6 @@ public class TestFlickrArea {
 		System.out.println(System.currentTimeMillis() - start);
 //		System.out.println(areaMgr.createXml(as, "temp/FlickrEuropeArea" + areaDto.getRadius(), areaDto.getRadius()));
 	}
-
 
 	@Test
 	public void testSelectById() {
@@ -643,7 +637,7 @@ public class TestFlickrArea {
 //		areaMgr.createTimeSeriesChart(areas, Level.HOUR, areaDto, 800, 300, true, smmoth, icon, new FileOutputStream("temp/tsCharth.png"));
 //		areaMgr.createTimeSeriesChart(areas, Level.DAY, areaDto, 800, 300, true, smmoth, icon, new FileOutputStream("temp/tsChartd.png"));
 //		areaMgr.createTimeSeriesChart(areas, Level.MONTH, areaDto, 800, 300, true, smmoth, icon, new FileOutputStream("temp/tsChartm.png"));
-		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto,  100, 60, false, smmoth, icon, new FileOutputStream("temp/tsCharty.png"));
+		areaMgr.createTimeSeriesChart(areas, Level.YEAR, areaDto, 100, 60, false, smmoth, icon, new FileOutputStream("temp/tsCharty.png"));
 		areaMgr.createTimeSeriesChart(areas, Level.WEEKDAY, areaDto, 100, 60, false, smmoth, icon, new FileOutputStream("temp/tsChartw.png"));
 	}
 
@@ -681,7 +675,7 @@ public class TestFlickrArea {
 	public void testTagPhotos() throws Exception {
 		FlickrArea area = areaMgr.getAreaDao().getAreaById(18136, Radius.R40000);
 		System.out.println(ToStringBuilder.reflectionToString(area));
-		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, "germany", "2009-08-04", 1,  30);
+		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, "germany", "2009-08-04", 1, 30);
 		System.out.println(ToStringBuilder.reflectionToString(photos));
 	}
 

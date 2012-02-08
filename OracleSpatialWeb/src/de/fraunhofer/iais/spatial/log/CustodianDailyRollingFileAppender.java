@@ -47,8 +47,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * {@link org.apache.log4j.appender.DailyRollingFileAppender} so most of the
  * configuration options can be taken from the documentation on that class.
  */
-public class CustodianDailyRollingFileAppender extends FileAppender
-{
+public class CustodianDailyRollingFileAppender extends FileAppender {
 	// The code assumes that the following constants are in a increasing
 	// sequence.
 	static final int TOP_OF_TROUBLE = -1;
@@ -96,8 +95,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 	/**
 	 * The default constructor does nothing.
 	 */
-	public CustodianDailyRollingFileAppender()
-	{
+	public CustodianDailyRollingFileAppender() {
 	}
 
 	/**
@@ -105,9 +103,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 	 * designated by filename. The opened filename will become the ouput
 	 * destination for this appender.
 	 */
-	public CustodianDailyRollingFileAppender(Layout layout, String filename,
-			String datePattern) throws IOException
-	{
+	public CustodianDailyRollingFileAppender(Layout layout, String filename, String datePattern) throws IOException {
 		super(layout, filename, true);
 		this.datePattern = datePattern;
 		activateOptions();
@@ -117,64 +113,51 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 	 * The DatePattern takes a string in the same format as expected by
 	 * {@link SimpleDateFormat}. This options determines the rollover schedule.
 	 */
-	public void setDatePattern(String pattern)
-	{
+	public void setDatePattern(String pattern) {
 		datePattern = pattern;
 	}
 
 	/** Returns the value of the DatePattern option. */
-	public String getDatePattern()
-	{
+	public String getDatePattern() {
 		return datePattern;
 	}
 
-	public void activateOptions()
-	{
+	@Override
+	public void activateOptions() {
 		super.activateOptions();
-		if (datePattern != null && fileName != null)
-		{
+		if (datePattern != null && fileName != null) {
 			now.setTime(System.currentTimeMillis());
 			sdf = new SimpleDateFormat(datePattern);
 			int type = computeCheckPeriod();
 			printPeriodicity(type);
 			rc.setType(type);
 			File file = new File(fileName);
-			scheduledFilename = fileName
-					+ sdf.format(new Date(file.lastModified()));
+			scheduledFilename = fileName + sdf.format(new Date(file.lastModified()));
 
-		} else
-		{
-			LogLog
-					.error("Either File or DatePattern options are not set for appender ["
-							+ name + "].");
+		} else {
+			LogLog.error("Either File or DatePattern options are not set for appender [" + name + "].");
 		}
 	}
 
-	void printPeriodicity(int type)
-	{
-		switch (type)
-		{
+	void printPeriodicity(int type) {
+		switch (type) {
 		case TOP_OF_MINUTE:
 			LogLog.debug("Appender [" + name + "] to be rolled every minute.");
 			break;
 		case TOP_OF_HOUR:
-			LogLog.debug("Appender [" + name
-					+ "] to be rolled on top of every hour.");
+			LogLog.debug("Appender [" + name + "] to be rolled on top of every hour.");
 			break;
 		case HALF_DAY:
-			LogLog.debug("Appender [" + name
-					+ "] to be rolled at midday and midnight.");
+			LogLog.debug("Appender [" + name + "] to be rolled at midday and midnight.");
 			break;
 		case TOP_OF_DAY:
 			LogLog.debug("Appender [" + name + "] to be rolled at midnight.");
 			break;
 		case TOP_OF_WEEK:
-			LogLog.debug("Appender [" + name
-					+ "] to be rolled at start of week.");
+			LogLog.debug("Appender [" + name + "] to be rolled at start of week.");
 			break;
 		case TOP_OF_MONTH:
-			LogLog.debug("Appender [" + name
-					+ "] to be rolled at start of every month.");
+			LogLog.debug("Appender [" + name + "] to be rolled at start of every month.");
 			break;
 		default:
 			LogLog.warn("Unknown periodicity for appender [" + name + "].");
@@ -190,18 +173,13 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 	// logic is based on comparisons relative to 1970-01-01 00:00:00
 	// GMT (the epoch).
 
-	int computeCheckPeriod()
-	{
-		RollingCalendar rollingCalendar = new RollingCalendar(gmtTimeZone,
-				Locale.ENGLISH);
+	int computeCheckPeriod() {
+		RollingCalendar rollingCalendar = new RollingCalendar(gmtTimeZone, Locale.ENGLISH);
 		// set sate to 1970-01-01 00:00:00 GMT
 		Date epoch = new Date(0);
-		if (datePattern != null)
-		{
-			for (int i = TOP_OF_MINUTE; i <= TOP_OF_MONTH; i++)
-			{
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-						datePattern);
+		if (datePattern != null) {
+			for (int i = TOP_OF_MINUTE; i <= TOP_OF_MONTH; i++) {
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
 				simpleDateFormat.setTimeZone(gmtTimeZone); // do all date
 				// formatting in GMT
 				String r0 = simpleDateFormat.format(epoch);
@@ -210,9 +188,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 				String r1 = simpleDateFormat.format(next);
 				// System.out.println("Type = "+i+", r0 = "+r0+", r1 = "+r1);
 				if (r0 != null && r1 != null && !r0.equals(r1))
-				{
 					return i;
-				}
 			}
 		}
 		return TOP_OF_TROUBLE; // Deliberately head for trouble...
@@ -221,12 +197,10 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 	/**
 	 * Rollover the current file to a new file.
 	 */
-	void rollOver() throws IOException
-	{
+	void rollOver() throws IOException {
 
 		/* Compute filename, but only if datePattern is specified */
-		if (datePattern == null)
-		{
+		if (datePattern == null) {
 			errorHandler.error("Missing DatePattern option in rollOver().");
 			return;
 		}
@@ -236,37 +210,29 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 		// bounds of the current interval. Rollover will occur once the
 		// next interval is reached.
 		if (scheduledFilename.equals(datedFilename))
-		{
 			return;
-		}
 
 		// close current file, and rename it to datedFilename
 		this.closeFile();
 
 		File target = new File(scheduledFilename);
-		if (target.exists())
-		{
+		if (target.exists()) {
 			target.delete();
 		}
 
 		File file = new File(fileName);
 		boolean result = file.renameTo(target);
-		if (result)
-		{
+		if (result) {
 			LogLog.debug(fileName + " -> " + scheduledFilename);
-		} else
-		{
-			LogLog.error("Failed to rename [" + fileName + "] to ["
-					+ scheduledFilename + "].");
+		} else {
+			LogLog.error("Failed to rename [" + fileName + "] to [" + scheduledFilename + "].");
 		}
 
-		try
-		{
+		try {
 			// This will also close the file. This is OK since multiple
 			// close operations are safe.
 			this.setFile(fileName, false, this.bufferedIO, this.bufferSize);
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			errorHandler.error("setFile(" + fileName + ", false) call failed.");
 		}
 		scheduledFilename = datedFilename;
@@ -280,42 +246,34 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 	 * a rollover. If it is, it will schedule the next rollover time and then
 	 * rollover.
 	 * */
-	protected void subAppend(LoggingEvent event)
-	{
+	@Override
+	protected void subAppend(LoggingEvent event) {
 		long n = System.currentTimeMillis();
-		if (n >= nextCheck)
-		{
+		if (n >= nextCheck) {
 			now.setTime(n);
 			nextCheck = rc.getNextCheckMillis(now);
-			try
-			{
+			try {
 				cleanupAndRollOver();
-			}
-			catch (IOException ioe)
-			{
+			} catch (IOException ioe) {
 				LogLog.error("cleanupAndRollover() failed.", ioe);
 			}
 		}
 		super.subAppend(event);
 	}
 
-	public String getCompressBackups()
-	{
+	public String getCompressBackups() {
 		return compressBackups;
 	}
 
-	public void setCompressBackups(String compressBackups)
-	{
+	public void setCompressBackups(String compressBackups) {
 		this.compressBackups = compressBackups;
 	}
 
-	public String getMaxNumberOfDays()
-	{
+	public String getMaxNumberOfDays() {
 		return maxNumberOfDays;
 	}
 
-	public void setMaxNumberOfDays(String maxNumberOfDays)
-	{
+	public void setMaxNumberOfDays(String maxNumberOfDays) {
 		this.maxNumberOfDays = maxNumberOfDays;
 	}
 
@@ -325,45 +283,34 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 	 * then delegates to the rollover method to rollover to a new file if
 	 * required.
 	 */
-	protected void cleanupAndRollOver() throws IOException
-	{
+	protected void cleanupAndRollOver() throws IOException {
 		// Check to see if there are already 5 files
 		File file = new File(fileName);
 		Calendar cal = Calendar.getInstance();
 		int maxDays = 7;
-		try
-		{
+		try {
 			maxDays = Integer.parseInt(getMaxNumberOfDays());
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			// just leave it at 7.
 		}
 		cal.add(Calendar.DATE, -maxDays);
 		Date cutoffDate = cal.getTime();
-		if (file.getParentFile().exists())
-		{
-			File[] files = file.getParentFile().listFiles(
-					new StartsWithFileFilter(file.getName(), false));
+		if (file.getParentFile().exists()) {
+			File[] files = file.getParentFile().listFiles(new StartsWithFileFilter(file.getName(), false));
 			int nameLength = file.getName().length();
-			for (int i = 0; i < files.length; i++)
-			{
+			for (File file2 : files) {
 				String datePart = null;
-				try
-				{
-					datePart = files[i].getName().substring(nameLength);
+				try {
+					datePart = file2.getName().substring(nameLength);
 					Date date = sdf.parse(datePart);
-					if (date.before(cutoffDate))
-					{
-						files[i].delete();
+					if (date.before(cutoffDate)) {
+						file2.delete();
 					}
 					//If we're supposed to zip files and this isn't already a zip
-                    else if(getCompressBackups().equalsIgnoreCase("YES") || getCompressBackups().equalsIgnoreCase("TRUE"))
-                    {
-                        zipAndDelete(files[i]);
-                    }
-				}
-				catch (Exception pe)
-				{
+					else if (getCompressBackups().equalsIgnoreCase("YES") || getCompressBackups().equalsIgnoreCase("TRUE")) {
+						zipAndDelete(file2);
+					}
+				} catch (Exception pe) {
 					// This isn't a file we should touch (it isn't named
 					// correctly)
 				}
@@ -378,45 +325,39 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 	   * leaving only the .zipped archive.
 	   * @param file
 	   */
-	  private void zipAndDelete(File file) throws IOException
-	  {
-	      if(!file.getName().endsWith(".zip"))
-	      {
-	            File zipFile = new File(file.getParent(), file.getName() + ".zip");
-	            FileInputStream fis = new FileInputStream(file);
-	            FileOutputStream fos = new FileOutputStream(zipFile);
-	            ZipOutputStream zos = new ZipOutputStream(fos);
-	            ZipEntry zipEntry = new ZipEntry(file.getName());
-	            zos.putNextEntry(zipEntry);
+	private void zipAndDelete(File file) throws IOException {
+		if (!file.getName().endsWith(".zip")) {
+			File zipFile = new File(file.getParent(), file.getName() + ".zip");
+			FileInputStream fis = new FileInputStream(file);
+			FileOutputStream fos = new FileOutputStream(zipFile);
+			ZipOutputStream zos = new ZipOutputStream(fos);
+			ZipEntry zipEntry = new ZipEntry(file.getName());
+			zos.putNextEntry(zipEntry);
 
-	            byte[] buffer = new byte[4096];
-	            while(true)
-	            {
-	                int bytesRead = fis.read(buffer);
-	                if(bytesRead == -1) break;
-	                else
-	                {
-	                    zos.write(buffer, 0, bytesRead);
-	                }
-	            }
-	            zos.closeEntry();
-	            fis.close();
-	            zos.close();
-	            file.delete();
-	      }
-	  }
+			byte[] buffer = new byte[4096];
+			while (true) {
+				int bytesRead = fis.read(buffer);
+				if (bytesRead == -1) {
+					break;
+				} else {
+					zos.write(buffer, 0, bytesRead);
+				}
+			}
+			zos.closeEntry();
+			fis.close();
+			zos.close();
+			file.delete();
+		}
+	}
 
-	class StartsWithFileFilter implements FileFilter
-	{
+	class StartsWithFileFilter implements FileFilter {
 		private String startsWith;
 		private boolean inclDirs = false;
 
 		/**
-	     *
-	     */
-		public StartsWithFileFilter(String startsWith,
-				boolean includeDirectories)
-		{
+		 *
+		 */
+		public StartsWithFileFilter(String startsWith, boolean includeDirectories) {
 			super();
 			this.startsWith = startsWith.toUpperCase();
 			inclDirs = includeDirectories;
@@ -427,12 +368,10 @@ public class CustodianDailyRollingFileAppender extends FileAppender
 		 *
 		 * @see java.io.FileFilter#accept(java.io.File)
 		 */
-		public boolean accept(File pathname)
-		{
+		public boolean accept(File pathname) {
 			if (!inclDirs && pathname.isDirectory())
-			{
 				return false;
-			} else
+			else
 				return pathname.getName().toUpperCase().startsWith(startsWith);
 		}
 	}
@@ -443,38 +382,31 @@ public class CustodianDailyRollingFileAppender extends FileAppender
  * periodicity type and the current time, it computes the start of the next
  * interval.
  * */
-class RollingCalendar extends GregorianCalendar
-{
+class RollingCalendar extends GregorianCalendar {
 	private static final long serialVersionUID = -3560331770601814177L;
 
 	int type = CustodianDailyRollingFileAppender.TOP_OF_TROUBLE;
 
-	RollingCalendar()
-	{
+	RollingCalendar() {
 		super();
 	}
 
-	RollingCalendar(TimeZone tz, Locale locale)
-	{
+	RollingCalendar(TimeZone tz, Locale locale) {
 		super(tz, locale);
 	}
 
-	void setType(int type)
-	{
+	void setType(int type) {
 		this.type = type;
 	}
 
-	public long getNextCheckMillis(Date now)
-	{
+	public long getNextCheckMillis(Date now) {
 		return getNextCheckDate(now).getTime();
 	}
 
-	public Date getNextCheckDate(Date now)
-	{
+	public Date getNextCheckDate(Date now) {
 		this.setTime(now);
 
-		switch (type)
-		{
+		switch (type) {
 		case CustodianDailyRollingFileAppender.TOP_OF_MINUTE:
 			this.set(Calendar.SECOND, 0);
 			this.set(Calendar.MILLISECOND, 0);
@@ -491,11 +423,9 @@ class RollingCalendar extends GregorianCalendar
 			this.set(Calendar.SECOND, 0);
 			this.set(Calendar.MILLISECOND, 0);
 			int hour = get(Calendar.HOUR_OF_DAY);
-			if (hour < 12)
-			{
+			if (hour < 12) {
 				this.set(Calendar.HOUR_OF_DAY, 12);
-			} else
-			{
+			} else {
 				this.set(Calendar.HOUR_OF_DAY, 0);
 				this.add(Calendar.DAY_OF_MONTH, 1);
 			}

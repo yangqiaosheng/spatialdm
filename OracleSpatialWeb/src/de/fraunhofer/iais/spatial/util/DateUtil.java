@@ -59,7 +59,6 @@ public class DateUtil {
 		allWeekdayDates(allWeekdayDates);
 	}
 
-
 	private static void allYearIntStrs(Set<String> years) {
 		for (int i = 2005; i <= today.get(Calendar.YEAR); i++) {
 			years.add(getYearIntStr(i));
@@ -172,7 +171,7 @@ public class DateUtil {
 	 * create a reference calendar at the date: Mon. 2006-01-01 00:00:00.000
 	 * @return instance of Calendar
 	 */
-	public static Calendar createReferenceCalendar(){
+	public static Calendar createReferenceCalendar() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setLenient(false);
 		calendar.set(2006, 0, 1, 0, 0, 0);
@@ -185,19 +184,18 @@ public class DateUtil {
 	 * @param year eg. 2009
 	 * @return
 	 */
-	public static Date createYear(int year){
+	public static Date createYear(int year) {
 		Calendar calendar = createReferenceCalendar();
 		calendar.set(Calendar.YEAR, year);
 		return calendar.getTime();
 	}
-
 
 	/**
 	 * create a Date Object at the reference calendar by a given month value
 	 * @param month 1 - 12
 	 * @return
 	 */
-	public static Date createMonth(int month){
+	public static Date createMonth(int month) {
 		Calendar calendar = createReferenceCalendar();
 		calendar.set(Calendar.MONTH, month - 1);
 		return calendar.getTime();
@@ -208,7 +206,7 @@ public class DateUtil {
 	 * @param day 1 - 31
 	 * @return
 	 */
-	public static Date createDay(int day){
+	public static Date createDay(int day) {
 		Calendar calendar = createReferenceCalendar();
 		calendar.set(Calendar.DAY_OF_MONTH, day);
 		return calendar.getTime();
@@ -219,7 +217,7 @@ public class DateUtil {
 	 * @param hour 0 - 23
 	 * @return
 	 */
-	public static Date createHour(int hour){
+	public static Date createHour(int hour) {
 		Calendar calendar = createReferenceCalendar();
 		calendar.set(Calendar.HOUR_OF_DAY, hour);
 		return calendar.getTime();
@@ -230,7 +228,7 @@ public class DateUtil {
 	 * @param weekday 1(Calendar.SUNDAY) - 7(Calendar.SATURDAY)
 	 * @return
 	 */
-	public static Date createWeekday(int weekday){
+	public static Date createWeekday(int weekday) {
 		Calendar calendar = createReferenceCalendar();
 		calendar.set(Calendar.DAY_OF_MONTH, weekday);
 		return calendar.getTime();
@@ -296,19 +294,19 @@ public class DateUtil {
 		String weekdayStr = getWeekdayShortStr(date);
 		int weekday = -1;
 
-		if("Sun".equals(weekdayStr)){
+		if ("Sun".equals(weekdayStr)) {
 			weekday = Calendar.SUNDAY;
-		} else if("Mon".equals(weekdayStr)){
+		} else if ("Mon".equals(weekdayStr)) {
 			weekday = Calendar.MONTH;
-		}else if("Tue".equals(weekdayStr)){
+		} else if ("Tue".equals(weekdayStr)) {
 			weekday = Calendar.TUESDAY;
-		}else if("Wed".equals(weekdayStr)){
+		} else if ("Wed".equals(weekdayStr)) {
 			weekday = Calendar.WEDNESDAY;
-		}else if("Thu".equals(weekdayStr)){
+		} else if ("Thu".equals(weekdayStr)) {
 			weekday = Calendar.THURSDAY;
-		}else if("Fri".equals(weekdayStr)){
+		} else if ("Fri".equals(weekdayStr)) {
 			weekday = Calendar.FRIDAY;
-		}else if("Sat".equals(weekdayStr)){
+		} else if ("Sat".equals(weekdayStr)) {
 			weekday = Calendar.SATURDAY;
 		}
 

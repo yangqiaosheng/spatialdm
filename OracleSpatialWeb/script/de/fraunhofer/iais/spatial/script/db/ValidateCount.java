@@ -83,7 +83,7 @@ public class ValidateCount {
 		PreparedStatement personStmt = db.getPstmt(conn, "select title from flickr_europe_201108 t where t.photo_id = 3216703021");
 		ResultSet pset = db.getRs(personStmt);
 
-		if(pset.next()){
+		if (pset.next()) {
 			System.out.println(pset.getString(1));
 		}
 		db.close(pset);
