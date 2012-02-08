@@ -48,7 +48,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	static final int pageSize = 500;
 	static int NUM_THREAD = 0;
-	static final int MAX_NUM_RETRY = 5000;
+	static final long MAX_NUM_RETRY = 99999999;
 	static final int MAX_TITLE_LENGTH = 1024;
 
 	static final int BEGIN_PHOTO_UPDATE_CHECKED = 0;
@@ -59,8 +59,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 	static final double MAX_LONGITUDE = 35.287624;
 	static final double MAX_LATITUDE = 72.09216;
 
-	static Calendar beginDateLimit;
-	static Collection<String> radiusList;
+	static Calendar beginTakenDateLimit;
+	static Calendar endTakenDateLimit;
 	static int numReTry = 0;
 	static long numPeople = 0;
 	static long numPhoto = 0;
@@ -103,7 +103,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 	}
 
 	public boolean checkDate(Date takenDate, Date uploadDate) {
-		if (takenDate != null && uploadDate != null && !takenDate.before(beginDateLimit.getTime()) && !takenDate.after(new Date()) && uploadDate.after(takenDate)) {
+		if (takenDate != null && uploadDate != null && !takenDate.before(beginTakenDateLimit.getTime()) && !takenDate.after(endTakenDateLimit.getTime()) && uploadDate.after(takenDate)) {
 			return true;
 		} else {
 			return false;
@@ -159,7 +159,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 			}
 
 			try {
-				sleep(300 * 1000);
+				sleep((int) (Math.random() * 60 * 1000));
 			} catch (InterruptedException e) {
 				logger.error("main(String[])", e); //$NON-NLS-1$
 			} finally {
@@ -194,8 +194,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	private void selectPeople(int threadId, PeopleInterface peopleInterface) throws IOException, SAXException, FlickrException, SQLException {
 		Connection conn = db.getConn();
-//		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ?");
-//		PreparedStatement pstmt = oracleDb.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(ora_hash(USER_ID), ?)) = ?");
+		//Oracle
+//		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(ora_hash(USER_ID), ?)) = ?");
+
+		//PostGIS
 		PreparedStatement pstmt = db.getPstmt(conn, "select USER_ID, PHOTO_UPDATE_CHECKED_DATE from FLICKR_PEOPLE t where t.PHOTO_UPDATE_CHECKED = ? and abs(mod(hashtext(USER_ID), ?)) = ?");
 
 		conn.setAutoCommit(false);
@@ -210,11 +212,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 				String userId = rs.getString("USER_ID");
 				Date lastUploadDate = rs.getTimestamp("PHOTO_UPDATE_CHECKED_DATE");
 
-				// assign the task to different thread
-//				if (Math.abs(userId.hashCode() % NUM_THREAD) == threadId) {
-					retrievePeoplesPhotos(peopleInterface, userId, lastUploadDate);
-					System.out.println("numPeople:" + increaseNumPeople());
-//				}
+				retrievePeoplesPhotos(peopleInterface, userId, lastUploadDate);
+				System.out.println("numPeople:" + increaseNumPeople());
 			}
 
 			// process finished
@@ -242,15 +241,15 @@ public class PublicPhotoMultiCrawler extends Thread {
 		int total = 0;
 		int num = 0;
 
-		Calendar minUploadDate = beginDateLimit;
+		Calendar minUploadDate = beginTakenDateLimit;
 
-		if (lastUploadDate != null && lastUploadDate.after(beginDateLimit.getTime())) {
+		if (lastUploadDate != null && lastUploadDate.after(beginTakenDateLimit.getTime())) {
 			minUploadDate.setTime(lastUploadDate);
 		}
 
 		Calendar maxUploadDate = Calendar.getInstance();
-		Calendar minTakenDate = beginDateLimit;
-		Calendar maxTakenDate = Calendar.getInstance();
+		Calendar minTakenDate = beginTakenDateLimit;
+		Calendar maxTakenDate = endTakenDateLimit;
 
 		PhotoList insertEuropePhotos = new PhotoList();
 		PhotoList insertWorldPhotos = new PhotoList();
@@ -258,10 +257,12 @@ public class PublicPhotoMultiCrawler extends Thread {
 		try {
 			do {
 				//get all the photo with and without GEO info
-//			photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
+//				photos = peopleInterface.getPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), extras, pageSize, page++);
 
 				//there is bugs in the Search method with bbox option, which will only return the result of accuracy=16
 //			    photos = peopleInterface.getSearchWithGeoPhoto(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), peopleInterface.new Bbox(MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE), extras, pageSize, page++);
+
+				//get all the photo only with GEO info
 				photos = peopleInterface.searchWithGeoPhotos(userId, minUploadDate.getTime(), maxUploadDate.getTime(), minTakenDate.getTime(), maxTakenDate.getTime(), null, extras, pageSize, page++);
 
 				total = photos.getTotal();
@@ -275,10 +276,6 @@ public class PublicPhotoMultiCrawler extends Thread {
 						insertWorldPhotos.add(p);
 					}
 
-					/*
-					if (checkDate(p.getDateTaken(), p.getDatePosted()) && checkLocation(p.getGeoData())) {
-						insertEuropePhotos.add(p);
-					}*/
 				}
 				num += photos.size();
 
@@ -321,28 +318,14 @@ public class PublicPhotoMultiCrawler extends Thread {
 			int addWorldNum = 0;
 
 			//remove duplicate insertPhotos
-			HashSet<String> europePhotosId = new HashSet<String>();
 			HashSet<String> worldPhotosId = new HashSet<String>();
-
-			/*
-			for (Photo photo : europePhotos) {
-				if (!europePhotosId.contains(photo.getId())) {
-					insertPhoto(conn, photo, "FLICKR_EUROPE");
-//					updatePhotoRegionInfo(conn, photo, radiusList);
-					europePhotosId.add(photo.getId());
-					addEuorpeNum++;
-				}else{
-					logger.warn("Duplicate Photo to Euorpe:" + photo.toString());
-				}
-			}
-			*/
 
 			for (Photo photo : worldPhotos) {
 				if (!worldPhotosId.contains(photo.getId())) {
 					insertPhoto(conn, photo, "FLICKR_WORLD");
 					worldPhotosId.add(photo.getId());
 					addWorldNum++;
-				}else{
+				} else {
 					logger.warn("Duplicate Photo to World:" + photo.toString());
 				}
 			}
@@ -366,10 +349,8 @@ public class PublicPhotoMultiCrawler extends Thread {
 	}
 
 	private void insertPhoto(Connection conn, Photo photo, String tableName) throws SQLException {
-		PreparedStatement pstmt = db
-				.getPstmt(
-						conn,
-						"insert into " + tableName + " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, DESCRIPTION, TAGS, TAGSNUM, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		PreparedStatement pstmt = db.getPstmt(conn, "insert into " + tableName
+				+ " (PHOTO_ID, USER_ID, LONGITUDE, LATITUDE, TAKEN_DATE, UPLOAD_DATE, VIEWED, TITLE, DESCRIPTION, TAGS, TAGSNUM, SMALLURL, PLACE_ID, WOE_ID, ACCURACY) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		try {
 			int i = 1;
 			pstmt.setLong(i++, NumberUtils.toLong(photo.getId()));
@@ -393,10 +374,10 @@ public class PublicPhotoMultiCrawler extends Thread {
 			pstmt.setInt(i++, photo.getGeoData().getAccuracy());
 			pstmt.executeUpdate();
 			System.out.println("numPhoto:" + increaseNumPhoto());
-		} catch (PSQLException e){
+		} catch (PSQLException e) {
 			logger.error("Wrong input Photo to PostgreSQL:" + photo.toString());
 			throw e;
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			logger.error("Exception accours while inputing Photo:" + photo.toString());
 			throw e;
 		} finally {
@@ -404,6 +385,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 		}
 	}
 
+	@Deprecated
 	private void updatePhotoRegionInfo(Connection conn, Photo photo, Collection<String> radiuses) throws SQLException {
 
 		double x = photo.getGeoData().getLongitude();
@@ -417,7 +399,7 @@ public class PublicPhotoMultiCrawler extends Thread {
 //				selectPstmt = oracleDb.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = 'FLICKR_EUROPE_AREA_" + radius
 //						+ "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(?, ?, NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
 				//PostGIS
-				selectPstmt = db.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT("+x+" "+y+")'), t.geom::geometry)");
+				selectPstmt = db.getPstmt(conn, "select ID from FLICKR_EUROPE_AREA_" + radius + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + x + " " + y + ")'), t.geom::geometry)");
 //				selectPstmt.setDouble(1, x);
 //				selectPstmt.setDouble(2, y);
 				selectRs = db.getRs(selectPstmt);
@@ -471,17 +453,11 @@ public class PublicPhotoMultiCrawler extends Thread {
 
 	public static void main(String[] args) throws IOException {
 
-		beginDateLimit = Calendar.getInstance();
-		beginDateLimit.set(2005, 00, 01);
+		beginTakenDateLimit = Calendar.getInstance();
+		beginTakenDateLimit.set(2005, 00, 01);
 
-		radiusList = new LinkedHashSet<String>();
-		radiusList.add("5000");
-		radiusList.add("10000");
-		radiusList.add("20000");
-		radiusList.add("40000");
-		radiusList.add("80000");
-		radiusList.add("160000");
-		radiusList.add("320000");
+		endTakenDateLimit = Calendar.getInstance();
+		endTakenDateLimit.set(2012, 00, 01);
 
 		Properties properties = new Properties();
 		properties.load(PeopleMultiCrawler.class.getResourceAsStream("/flickr.properties"));
