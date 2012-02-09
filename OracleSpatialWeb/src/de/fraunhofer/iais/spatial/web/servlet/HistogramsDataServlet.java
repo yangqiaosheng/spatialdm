@@ -33,6 +33,13 @@ import de.fraunhofer.iais.spatial.web.CancelableJobServletTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
+ /**
+ * Provides the Histograms data in xml format
+ *
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class HistogramsDataServlet extends HttpServlet {
 	/**
 	 *
@@ -78,7 +85,7 @@ public class HistogramsDataServlet extends HttpServlet {
 						//Google Chart for debug
 						String hasChart = request.getParameter("chart");
 						String xml = request.getParameter("xml");
-						logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$ 
+						logger.trace("doGet(HttpServletRequest, HttpServletResponse) - xml:" + xml); //$NON-NLS-1$
 
 						if (StringUtils.isEmpty(xml)) {
 							String errMsg = "ERROR: 'xml' parameter is missing!";

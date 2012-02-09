@@ -37,6 +37,13 @@ import de.fraunhofer.iais.spatial.web.CancelableJobServletTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
+/**
+ * Provides the Tags data in xml format
+ *
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class TagServlet extends HttpServlet {
 	/**
 	* Logger for this class
@@ -72,7 +79,7 @@ public class TagServlet extends HttpServlet {
 					public void doCancelableJob(HttpServletRequest request, Logger logger, SessionMutex sessionMutex, Date timestamp, Element rootElement, Element messageElement) throws Exception {
 						String areaid = request.getParameter("areaid");
 						int size = NumberUtils.toInt(request.getParameter("size"), DEFAULT_SIZE);
-						logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|size:" + size); //$NON-NLS-1$ //$NON-NLS-2$ 
+						logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|size:" + size); //$NON-NLS-1$ //$NON-NLS-2$
 						if (!StringUtils.isNumeric(areaid)) {
 							String errMsg = "ERROR: wrong input parameter!";
 							messageElement.setText(errMsg);

@@ -2,6 +2,12 @@ package de.fraunhofer.iais.spatial.dto;
 
 import java.util.Date;
 
+/**
+ * Data Transfer Object (Value Object) which stores mutex
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</a>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class SessionMutex {
 	private Date timestamp;
 

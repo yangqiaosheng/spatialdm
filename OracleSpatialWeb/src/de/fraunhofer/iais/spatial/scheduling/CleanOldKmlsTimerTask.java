@@ -12,7 +12,8 @@ import de.fraunhofer.iais.spatial.web.servlet.RequestKmlServlet;
 
 /**
  * Timer Task to delete the old temporary kml files in the kml\ directory
- * @author haolin_zhi
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</a>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
  *
  */
 public class CleanOldKmlsTimerTask extends TimerTask {

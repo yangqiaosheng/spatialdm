@@ -5,8 +5,10 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * Entity mapped to the table FLICKR_DE_WEST_TABLE and FLICKR_DE_WEST_TABLE_GEOM
- * @author zhi
+ * Entity mapped to table flickr_world
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
  */
 
 public class FlickrPhoto {

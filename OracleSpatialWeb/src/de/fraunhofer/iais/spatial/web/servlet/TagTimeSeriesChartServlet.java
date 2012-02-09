@@ -24,6 +24,15 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 
+/**
+ * Provides the Tag TimeSeriesChart data in png format
+ * @Deprecated @See TagTimeSeriesChartServlet
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
+
+@Deprecated
 public class TagTimeSeriesChartServlet extends HttpServlet {
 	private static final int DEFAULT_HEIGHT = 300;
 	private static final int DEFAULT_WIDTH = 800;

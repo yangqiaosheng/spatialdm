@@ -19,6 +19,12 @@ import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.util.DateUtil;
 
+/**
+ * Fassade Class for all interruptible operations for Servlets
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class FlickrAreaCancelableJob {
 
 	private FlickrAreaDao flickrAreaDao;

@@ -14,6 +14,12 @@ import com.google.common.collect.Sets;
 
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
+/**
+ * Data Transfer Object (Value Object) which stores all the parameters from the servelts' request
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class FlickrAreaDto implements Serializable {
 
 	private SortedSet<String> years = Sets.newTreeSet();
