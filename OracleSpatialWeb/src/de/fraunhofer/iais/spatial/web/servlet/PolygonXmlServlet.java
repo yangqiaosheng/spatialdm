@@ -101,8 +101,10 @@ public class PolygonXmlServlet extends HttpServlet {
 
 						List<FlickrArea> areas = null;
 						if (areaDto.getZoom() > 2) {
-							areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(),
-									areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(), areaDto.isCrossDateLine());
+							areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(),
+									areaDto.getRadius(), areaDto.isCrossDateLine());
+						} else {
+							areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
 						}
 
 						List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);

@@ -100,6 +100,13 @@ public abstract class FlickrAreaDao {
 	public abstract int getAreasByRectSize(double x1, double y1, double x2, double y2, Radius radius, boolean crossDateLine);
 
 	/**
+	 * Returns a List of all FlickrArea ids
+	 * @param radius
+	 * @return
+	 */
+	public abstract List<Integer> getAllAreaIds(Radius radius);
+
+	/**
 	 * Returns a List of FlickrArea ids which interact to this rectangle
 	 * @param x1
 	 * @param y1

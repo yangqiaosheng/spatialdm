@@ -30,7 +30,19 @@ public class ListTypeHandler implements TypeHandler {
 			STRUCT st = (STRUCT) resultObj;
 			JGeometry j_geom = JGeometry.load(st);
 			for (int i = 0; i < j_geom.getOrdinatesArray().length;) {
-				geom.add(new Point2D.Double(j_geom.getOrdinatesArray()[i++], j_geom.getOrdinatesArray()[i++]));
+				double x = j_geom.getOrdinatesArray()[i++];
+				double y = j_geom.getOrdinatesArray()[i++];
+				if (x < -180) {
+					x = -180;
+				} else if (x > 180) {
+					x = 180;
+				}
+				if (y < -85) {
+					y = -85;
+				} else if (y > 85) {
+					y = 85;
+				}
+				geom.add(new Point2D.Double(x, y));
 			}
 			return geom;
 		} else if (resultObj instanceof PGgeometry) {
