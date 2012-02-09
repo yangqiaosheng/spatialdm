@@ -63,6 +63,7 @@ public class CancelableJobServletTemplate {
 			}
 			session.setAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_LOCK, new SessionMutex(timestamp));
 
+			/* Hook-Operation */
 			callback.doCancelableJob(request, logger, sessionMutex, timestamp, rootElement, messageElement);
 
 			session.removeAttribute(HistogramsDataServlet.HISTOGRAM_SESSION_ID);
