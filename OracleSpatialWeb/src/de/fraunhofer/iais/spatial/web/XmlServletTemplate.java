@@ -46,6 +46,7 @@ public class XmlServletTemplate {
 		Element messageElement = new Element("message");
 		rootElement.addContent(messageElement);
 		try {
+			/* Hook-Operation */
 			callback.doInXmlServlet(request, logger, rootElement, messageElement);
 
 		} catch (IllegalInputParameterException e) {
