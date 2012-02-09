@@ -14,6 +14,12 @@ import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.web.servlet.HistogramsDataServlet;
 
+/**
+ * Schablonenmethode
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class CancelableJobServletTemplate {
 
 	/**

@@ -46,6 +46,12 @@ import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.util.StringUtil;
 import de.fraunhofer.iais.spatial.util.XmlUtil;
 
+/**
+ * Fassade Class for all normal operations for Servlets
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class FlickrAreaMgr {
 
 	private FlickrAreaCancelableJob areaCancelableJob;

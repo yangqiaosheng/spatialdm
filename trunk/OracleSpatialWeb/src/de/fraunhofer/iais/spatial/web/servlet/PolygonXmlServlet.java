@@ -30,6 +30,13 @@ import de.fraunhofer.iais.spatial.web.CancelableJobServletTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
+/**
+ * Provides the Polygons data in xml format
+ *
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class PolygonXmlServlet extends HttpServlet {
 	/**
 	* Logger for this class

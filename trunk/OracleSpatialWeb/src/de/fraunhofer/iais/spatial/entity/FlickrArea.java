@@ -9,8 +9,10 @@ import java.util.SortedMap;
 import com.google.common.collect.Maps;
 
 /**
- * Entity mapped to the table FLICKR_DE_WEST_TABLE_RADIUS and FLICKR_DE_WEST_TABLE_COUNT
- * @author zhi
+ * Entity mapped to table flickr_world_area
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
  */
 
 public class FlickrArea implements Serializable {

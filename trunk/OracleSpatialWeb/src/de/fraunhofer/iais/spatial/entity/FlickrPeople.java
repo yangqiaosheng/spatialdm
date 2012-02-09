@@ -1,5 +1,11 @@
 package de.fraunhofer.iais.spatial.entity;
 
+/**
+ * Entity mapped to table flickr_people
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class FlickrPeople {
 
 	private String id;

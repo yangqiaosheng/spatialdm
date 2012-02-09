@@ -25,6 +25,12 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea;
 import de.fraunhofer.iais.spatial.entity.FlickrPhoto;
 import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 
+/**
+ * Data Access Interface to database
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public abstract class FlickrAreaDao {
 
 	public static String dbHourPatternStr = "YYYY-MM-DD@HH24";

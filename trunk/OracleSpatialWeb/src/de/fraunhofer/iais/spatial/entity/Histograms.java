@@ -6,6 +6,12 @@ import com.google.common.collect.Maps;
 
 import de.fraunhofer.iais.spatial.util.DateUtil;
 
+/**
+ * Entity which stores the statistical histograms' data
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class Histograms {
 	private Map<Integer, Integer> years = Maps.newLinkedHashMap();
 	private Map<Integer, Integer> months = Maps.newLinkedHashMap();

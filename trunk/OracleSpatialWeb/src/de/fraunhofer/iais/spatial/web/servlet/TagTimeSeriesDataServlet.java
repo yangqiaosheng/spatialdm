@@ -31,6 +31,12 @@ import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
+/**
+ * Provides the interactable Tag-TimeSeriesChart data in json format
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class TagTimeSeriesDataServlet extends HttpServlet {
 	/**
 	* Logger for this class
@@ -67,7 +73,7 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 				String tag = request.getParameter("tag");
 
 				tag = new String(tag.getBytes("ISO-8859-1"), "utf-8");
-				logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|tag:" + tag); //$NON-NLS-1$ //$NON-NLS-2$ 
+				logger.info("doGet(HttpServletRequest, HttpServletResponse) - areaid:" + areaid + "|tag:" + tag); //$NON-NLS-1$ //$NON-NLS-2$
 				if (areaid <= 0 || StringUtils.isEmpty(tag)) {
 					String errMsg = "ERROR: wrong input parameter!";
 					messageElement.setText(errMsg);

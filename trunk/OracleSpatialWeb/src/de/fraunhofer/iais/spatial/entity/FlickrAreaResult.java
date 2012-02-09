@@ -5,8 +5,9 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * Result of the query related to FlickrArea
- * @author haolin
+ * Entity which stores statistic result of FlickrArea
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
  *
  */
 public class FlickrAreaResult {

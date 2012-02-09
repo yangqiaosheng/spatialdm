@@ -29,6 +29,12 @@ import de.fraunhofer.iais.spatial.entity.FlickrArea.Radius;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
 import de.fraunhofer.iais.spatial.util.FlickrAreaUtil;
 
+/**
+ * Provides the TimeSeriesChart data in png format
+ * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+ * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+ *
+ */
 public class TimeSeriesChartServlet extends HttpServlet {
 	private static final int DEFAULT_HEIGHT = 300;
 	private static final int DEFAULT_WIDTH = 800;
