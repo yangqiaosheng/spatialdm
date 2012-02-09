@@ -7,16 +7,16 @@ function DistanceWidget(center, selectedPictures) {
 function RadiusWidget(map, center, selectedPictures) {
 	var color;
 	var raza;
-	if (selectedPictures >= 10000) {
+	if (selectedPictures >= 100000) {
 		color = '#CC0000'; // red
 	}
-	if ((selectedPictures >= 1000) && (selectedPictures <= 9999)) {
+	if ((selectedPictures >= 10000) && (selectedPictures <= 99999)) {
 		color = '#CCFF00'; // yellow
 	}
-	if ((selectedPictures >= 100) && (selectedPictures <= 999)) {
+	if ((selectedPictures >= 1000) && (selectedPictures <= 9999)) {
 		color = '#00FF00'; // green
 	}
-	if ((selectedPictures >= 1) && (selectedPictures <= 99)) {
+	if ((selectedPictures >= 1) && (selectedPictures <= 999)) {
 		color = '#0000CC'; // blue
 	}
 	if (selectedPictures == 0) {

@@ -676,7 +676,7 @@ public class TestFlickrArea {
 		FlickrArea area = areaMgr.getAreaDao().getAreaById(18136, Radius.R40000);
 		System.out.println(ToStringBuilder.reflectionToString(area));
 		List<FlickrPhoto> photos = areaMgr.getAreaDao().getPhotos(area, "germany", "2009-08-04", 1, 30);
-		System.out.println(ToStringBuilder.reflectionToString(photos));
+		System.out.println(photos.size());
 	}
 
 //	@Test

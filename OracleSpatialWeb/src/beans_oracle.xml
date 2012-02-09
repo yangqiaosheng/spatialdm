@@ -36,11 +36,6 @@
 		<property name="resourceRef" value="true" />
 	</bean>
 
-	<!-- DataSource Selector -->
-	<bean id="db" class="de.fraunhofer.iais.spatial.dao.jdbc.DB">
-		<property name="dataSource" ref="jndiDataSource" />
-	</bean>
-
 	<!-- Mybatis configuration -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="oracleIccDataSource" />
@@ -52,9 +47,6 @@
 	</bean>
 
 	<!-- Flickr -->
-	<bean id="flickrAreaDaoJdbcImpl" class="de.fraunhofer.iais.spatial.dao.jdbc.FlickrAreaDaoOracleJdbc">
-		<property name="db" ref="db" />
-	</bean>
 	<bean id="flickrAreaDaoMybatisOracleImpl" class="de.fraunhofer.iais.spatial.dao.mybatis.FlickrAreaDaoMybatisOracle">
 		<property name="sessionTemplate" ref="sessionTemplate" />
 	</bean>

@@ -450,7 +450,7 @@ function attachMessage(Polygon, nrPolOntheScreen, idp) {
 	if (History.length == pol) {
 		$("#legendInfo")
 				.html(
-						"<span>number of pictures </span><br/> <span> <img src='images/circle_bl.ico' width='20px' height='20px'/> 1-99 </span> <br/><span> <img src='images/circle_gr.ico' width='20px' height='20px' /> 100-999</span><br/><span> <img src='images/circle_lgr.ico' width='20px' height='20px'/> 1000-9999</span> <br/><span> <img src='images/circle_or.ico' width='20px' height='20px'/> > 10000</span>");
+						"<span>number of pictures </span><br/> <span> <img src='images/circle_bl.ico' width='20px' height='20px'/> 1-999 </span> <br/><span> <img src='images/circle_gr.ico' width='20px' height='20px' /> 1000-9999</span><br/><span> <img src='images/circle_lgr.ico' width='20px' height='20px'/> 10000-99999</span> <br/><span> <img src='images/circle_or.ico' width='20px' height='20px'/> > 100000</span>");
 	}
 }
 
