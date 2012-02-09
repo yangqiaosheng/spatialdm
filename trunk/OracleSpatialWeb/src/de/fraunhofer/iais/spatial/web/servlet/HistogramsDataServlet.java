@@ -33,13 +33,13 @@ import de.fraunhofer.iais.spatial.web.CancelableJobServletTemplate;
 import de.fraunhofer.iais.spatial.web.XmlServletCallback;
 import de.fraunhofer.iais.spatial.web.XmlServletTemplate;
 
- /**
- * Provides the Histograms data in xml format
- *
- * @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
- * @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
- *
- */
+/**
+* Provides the Histograms data in xml format
+*
+* @author <a href="mailto:haolin.zhi@iais.fraunhofer.de">Haolin Zhi</A>
+* @author <a href="mailto:iulian.peca@iais.fraunhofer.de">Iulian Peca</a>
+*
+*/
 public class HistogramsDataServlet extends HttpServlet {
 	/**
 	 *
@@ -108,8 +108,10 @@ public class HistogramsDataServlet extends HttpServlet {
 
 						List<FlickrArea> areas = null;
 						if (areaDto.getZoom() > 2) {
-							areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(),
-									areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius(), areaDto.isCrossDateLine());
+							areas = areaMgr.getAreaCancelableJob().getAreasByRect(timestamp, sessionMutex, areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(),
+									areaDto.getRadius(), areaDto.isCrossDateLine());
+						} else {
+							areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
 						}
 
 						Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);

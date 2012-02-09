@@ -162,6 +162,13 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	}
 
 	@Override
+	public List<Integer> getAllAreaIds(Radius radius) {
+		FlickrAreaDto areaDto = new FlickrAreaDto();
+		areaDto.setRadius(radius);
+		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".selectAllIds", areaDto);
+	}
+
+	@Override
 	@Deprecated
 	public List<Integer> getAreaIdsByRect(double x1, double y1, double x2, double y2, Radius radius) {
 

@@ -9,8 +9,15 @@ import java.util.regex.Pattern;
 
 import oracle.spatial.geometry.JGeometry;
 
+import org.jdom.Element;
 import org.jdom.IllegalDataException;
 import org.mybatis.spring.SqlSessionTemplate;
+
+import com.google.common.collect.Lists;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 import de.fraunhofer.iais.spatial.dao.FlickrAreaDao;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
@@ -39,6 +46,7 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 			//initialize the not cached object
 			area.setCached(true);
 			area.setTotalCount(getTotalCountWithinArea(area.getId()));
+			setCenter(area);
 			/*
 			loadYearsCount(area);
 			loadMonthsCount(area);
@@ -46,6 +54,20 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 			*/
 			loadHoursCount(area);
 		}
+	}
+
+	private void setCenter(FlickrArea area) {
+		GeometryFactory geometryFactory = new GeometryFactory();
+		List<Coordinate> coordinates = Lists.newArrayList();
+
+		for (Point2D point : area.getGeom()) {
+			coordinates.add(new Coordinate(point.getX(), point.getY()));
+		}
+
+		LinearRing shell = geometryFactory.createLinearRing(coordinates.toArray(new Coordinate[0]));
+		Polygon polygon = geometryFactory.createPolygon(shell, null);
+		area.setCenter(new Point2D.Double(polygon.getCentroid().getX(), polygon.getCentroid().getY()));
+
 	}
 
 	private void initPhotos(List<FlickrPhoto> photos, FlickrArea area) {
@@ -161,6 +183,13 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 			num = getAreasByRectSize(x1, y1, x2, y2, radius);
 		}
 		return num;
+	}
+
+	@Override
+	public List<Integer> getAllAreaIds(Radius radius) {
+		FlickrAreaDto areaDto = new FlickrAreaDto();
+		areaDto.setRadius(radius);
+		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".selectAllIds", areaDto);
 	}
 
 	@Override

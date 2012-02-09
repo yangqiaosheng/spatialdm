@@ -533,4 +533,10 @@ public class FlickrAreaDaoOracleJdbc extends FlickrAreaDao {
 
 	}
 
+	@Override
+	public List<Integer> getAllAreaIds(Radius radius) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
