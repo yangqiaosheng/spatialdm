@@ -126,11 +126,11 @@ public class JoinFlickrAreaTagsCount {
 			conn.setAutoCommit(false);
 			selectConn.setAutoCommit(false);
 
-			for (String radius : radiusList) {
-				countHoursTags(conn, radius);
-			}
+//			for (String radius : radiusList) {
+//				countHoursTags(conn, radius);
+//			}
 
-//			joinPartition();
+			joinPartition();
 //			countDay(selectConn);
 //			countMonth(selectConn);
 //			countYear(selectConn);
@@ -155,49 +155,51 @@ public class JoinFlickrAreaTagsCount {
 		conn.setAutoCommit(false);
 
 		int tableNum = 5;
-		for (int i = 1; i <= tableNum; i++) {
 
-			PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
-			ResultSet pset = db.getRs(stmt);
+		PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+		ResultSet pset = db.getRs(stmt);
 
+		while (pset.next()) {
 
-			while (pset.next()) {
-				int id = pset.getInt("id");
-				String radius = pset.getString("radius");
+			int id = pset.getInt("id");
+			String radius = pset.getString("radius");
+			SortedMap<String, Map<String, Integer>> hoursTotalTagsCount = new TreeMap<String, Map<String, Integer>>();
+			for (int i = 1; i <= tableNum; i++) {
 				PreparedStatement hourStmt = db.getPstmt(conn, "select hour from " + COUNTS_TABLE_NAME + i + " where id = ? and radius = ?");
 				hourStmt.setFetchSize(FETCH_SIZE);
 				hourStmt.setInt(1, id);
 				hourStmt.setInt(2, Integer.parseInt(radius));
 
 				ResultSet hourRs = db.getRs(hourStmt);
-				SortedMap<String, Map<String, Integer>> hoursTotalTagsCount = new TreeMap<String, Map<String, Integer>>();
+
 				while (hourRs.next()) {
 					String hourStr = hourRs.getString("hour");
 					if (hourStr != null) {
 						SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 						FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
-						mergeTagsCountsMap(hoursTagsCount, hoursTotalTagsCount);
+						mergeTagsCountsMap(hoursTotalTagsCount, hoursTagsCount);
 					}
-					db.close(hourRs);
-					db.close(hourStmt);
+
 				}
 
-				String countStr = FlickrAreaDao.createDatesTagsCountDbString(hoursTotalTagsCount, -1);
-				PreparedStatement updateStmt = db.getPstmt(updateConn, "update " + COUNTS_TABLE_NAME + " set hour = ? where id = ? and radius = ?");
-				updateStmt.setString(1, countStr);
-				updateStmt.setInt(2, id);
-				updateStmt.setInt(3, Integer.parseInt(radius));
-
-				System.out.println("countStr:" + StringUtils.substring(countStr, 0, 200));
-				System.out.println("id:" + id);
-				System.out.println("radius:" + radius);
-				System.out.println("executeUpdate:" + updateStmt.executeUpdate());
-				db.close(updateStmt);
+				db.close(hourRs);
+				db.close(hourStmt);
 			}
-			db.close(pset);
-			db.close(stmt);
+			String countStr = FlickrAreaDao.createDatesTagsCountDbString(hoursTotalTagsCount, -1);
+			PreparedStatement updateStmt = db.getPstmt(updateConn, "update " + COUNTS_TABLE_NAME + " set hour = ? where id = ? and radius = ?");
+			updateStmt.setString(1, countStr);
+			updateStmt.setInt(2, id);
+			updateStmt.setInt(3, Integer.parseInt(radius));
 
+			System.out.println("countStr:" + StringUtils.substring(countStr, 0, 200));
+			System.out.println("id:" + id);
+			System.out.println("radius:" + radius);
+			System.out.println("executeUpdate:" + updateStmt.executeUpdate());
+			db.close(updateStmt);
 		}
+		db.close(pset);
+		db.close(stmt);
+
 		db.close(conn);
 		db.close(updateConn);
 	}
