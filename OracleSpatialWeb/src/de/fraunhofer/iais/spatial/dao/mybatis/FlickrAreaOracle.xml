@@ -6,12 +6,12 @@
 <mapper namespace="de.fraunhofer.iais.spatial.dao.mybatis.FlickrAreaDaoMybatisOracle">
 
 	<!-- local cache: flushInterval: 24hours -->
-	<cache eviction="LRU" size="256" readOnly="true" flushInterval="86400000"></cache>
+<!--	<cache eviction="LRU" size="256" readOnly="true" flushInterval="86400000"></cache>-->
 
 	<!-- Ehcache: configurated in classpath:ehcache.xml -->
-<!--   		<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
 
-	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="false">
+	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto">
 		select
 			ID,
 			NAME,
@@ -49,7 +49,7 @@
 		where ID = #{id}
 	</select>
 
-	<select id="hoursTagsCount_WithoutStopWords" resultType="String" parameterType="FlickrArea" useCache="false">
+	<select id="hoursTagsCount_WithoutStopWords" resultType="String" parameterType="FlickrArea">
 		select hour
 		from FLICKR_WORLD_TAGS_COUNT_SW
 		where ID = #{id}

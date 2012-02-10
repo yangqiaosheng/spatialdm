@@ -9,9 +9,9 @@
 <!-- 	<cache eviction="LRU" size="161" readOnly="true" flushInterval="86400000"></cache>-->
 
 	<!-- Ehcache: configurated in classpath:ehcache.xml -->
-<!--   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+   	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
 
-	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto" useCache="true">
+	<select id="selectById" resultType="FlickrArea" parameterType="FlickrAreaDto">
 		select
 			ID,
 			NAME,
@@ -43,49 +43,49 @@
 		where ST_Intersects(m.geom, '${pgQueryGeom}')
 	</select>
 
-	<select id="hoursTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
+	<select id="hoursTagsCount" resultType="String" parameterType="FlickrArea">
 		select hour
 		from FLICKR_WORLD_TAGS_COUNT
 		where ID = #{id}
 	</select>
 
-	<select id="hoursTagsCount_WithoutStopWords" resultType="String" parameterType="FlickrArea" useCache="false">
+	<select id="hoursTagsCount_WithoutStopWords" resultType="String" parameterType="FlickrArea">
 		select hour
 		from FLICKR_WORLD_TAGS_COUNT_SW
 		where ID = #{id}
 	</select>
 
-	<select id="daysTagsCount" resultType="String" parameterType="FlickrArea" useCache="false">
+	<select id="daysTagsCount" resultType="String" parameterType="FlickrArea">
 		select day
 		from FLICKR_WORLD_TAGS_COUNT
 		where ID = #{id}
 	</select>
 
-	<select id="hoursCount" resultType="String" parameterType="FlickrArea" useCache="false">
+	<select id="hoursCount" resultType="String" parameterType="FlickrArea">
 		select hour
 		from FLICKR_WORLD_COUNT
 		where ID = #{id}
 	</select>
 
-	<select id="daysCount" resultType="String" parameterType="FlickrArea" useCache="false">
+	<select id="daysCount" resultType="String" parameterType="FlickrArea">
 		select day
 		from FLICKR_WORLD_COUNT
 		where ID = #{id}
 	</select>
 
-	<select id="monthsCount" resultType="String" parameterType="FlickrArea" useCache="false">
+	<select id="monthsCount" resultType="String" parameterType="FlickrArea">
 		select month
 		from FLICKR_WORLD_COUNT
 		where ID = #{id}
 	</select>
 
-	<select id="yearsCount" resultType="String" parameterType="FlickrArea" useCache="false">
+	<select id="yearsCount" resultType="String" parameterType="FlickrArea">
 		select year
 		from FLICKR_WORLD_COUNT
 		where ID = #{id}
 	</select>
 
-	<select id="totalCount" resultType="long" parameterType="FlickrArea" useCache="false">
+	<select id="totalCount" resultType="long" parameterType="FlickrArea">
 		select total
 		from FLICKR_WORLD_COUNT
 		where ID = #{areaid}
