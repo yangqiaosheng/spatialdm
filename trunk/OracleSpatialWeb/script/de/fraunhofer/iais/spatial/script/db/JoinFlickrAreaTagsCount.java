@@ -126,42 +126,11 @@ public class JoinFlickrAreaTagsCount {
 			conn.setAutoCommit(false);
 			selectConn.setAutoCommit(false);
 
-//			int updateSize = 0;
-//			do {
-			// REGION_CHECKED = -1 : building the index
-			/* Oracle */
-//				PreparedStatement updateStmt1 = db.getPstmt(conn, "" +
-//						"update " + PHOTOS_TABLE_NAME + " t set t.REGION_CHECKED = ? where t.photo_id in (" +
-//							"select t2.photo_id from (" +
-//								"select t1.photo_id, ROWNUM rn from (" +
-//									"select photo_id from " + PHOTOS_TABLE_NAME + " where region_checked = ?" +
-//								") t1 where ROWNUM < ? " +
-//							") t2 where rn >= ?" +
-//						")");
-//				updateStmt1.setInt(1, TEMP_REGION_CHECKED_CODE);
-//				updateStmt1.setInt(2, BEGIN_REGION_CHECKED_CODE);
-//				updateStmt1.setInt(3, 1 + BATCH_SIZE);
-//				updateStmt1.setInt(4, 1);
-//
-//				updateSize = updateStmt1.executeUpdate();
-//				rownum += updateSize;
-////
-//				db.close(updateStmt1);
-//				conn.commit();
-
 			for (String radius : radiusList) {
 				countHoursTags(conn, radius);
 			}
 
-//				 REGION_CHECKED = 2 : already indexed
-//				PreparedStatement updateStmt2 = db.getPstmt(conn, "update " + PHOTOS_TABLE_NAME + " set REGION_CHECKED = ? where REGION_CHECKED = ?");
-//				updateStmt2.setInt(1, FINISH_REGION_CHECKED_CODE);
-//				updateStmt2.setInt(2, TEMP_REGION_CHECKED_CODE);
-//				updateStmt2.executeUpdate();
-//				db.close(updateStmt2);
-//				conn.commit();
-//			} while(updateSize == BATCH_SIZE);
-
+//			joinPartition();
 //			countDay(selectConn);
 //			countMonth(selectConn);
 //			countYear(selectConn);
@@ -178,6 +147,59 @@ public class JoinFlickrAreaTagsCount {
 			db.close(conn);
 			db.close(selectConn);
 		}
+	}
+
+	private void joinPartition() throws SQLException {
+		Connection conn = db.getConn();
+		Connection updateConn = db.getConn();
+		conn.setAutoCommit(false);
+
+		int tableNum = 5;
+		for (int i = 1; i <= tableNum; i++) {
+
+			PreparedStatement stmt = db.getPstmt(conn, "select id, radius, hour from " + COUNTS_TABLE_NAME);
+			ResultSet pset = db.getRs(stmt);
+
+
+			while (pset.next()) {
+				int id = pset.getInt("id");
+				String radius = pset.getString("radius");
+				PreparedStatement hourStmt = db.getPstmt(conn, "select hour from " + COUNTS_TABLE_NAME + i + " where id = ? and radius = ?");
+				hourStmt.setFetchSize(FETCH_SIZE);
+				hourStmt.setInt(1, id);
+				hourStmt.setInt(2, Integer.parseInt(radius));
+
+				ResultSet hourRs = db.getRs(hourStmt);
+				SortedMap<String, Map<String, Integer>> hoursTotalTagsCount = new TreeMap<String, Map<String, Integer>>();
+				while (hourRs.next()) {
+					String hourStr = hourRs.getString("hour");
+					if (hourStr != null) {
+						SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
+						FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount);
+						mergeTagsCountsMap(hoursTagsCount, hoursTotalTagsCount);
+					}
+					db.close(hourRs);
+					db.close(hourStmt);
+				}
+
+				String countStr = FlickrAreaDao.createDatesTagsCountDbString(hoursTotalTagsCount, -1);
+				PreparedStatement updateStmt = db.getPstmt(updateConn, "update " + COUNTS_TABLE_NAME + " set hour = ? where id = ? and radius = ?");
+				updateStmt.setString(1, countStr);
+				updateStmt.setInt(2, id);
+				updateStmt.setInt(3, Integer.parseInt(radius));
+
+				System.out.println("countStr:" + StringUtils.substring(countStr, 0, 200));
+				System.out.println("id:" + id);
+				System.out.println("radius:" + radius);
+				System.out.println("executeUpdate:" + updateStmt.executeUpdate());
+				db.close(updateStmt);
+			}
+			db.close(pset);
+			db.close(stmt);
+
+		}
+		db.close(conn);
+		db.close(updateConn);
 	}
 
 	private void countHoursTags(Connection conn, String radiusString) throws SQLException {

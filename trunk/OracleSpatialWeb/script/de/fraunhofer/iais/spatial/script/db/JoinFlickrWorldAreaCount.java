@@ -163,7 +163,12 @@ public class JoinFlickrWorldAreaCount {
 //				+ " select to_char(t.TAKEN_DATE, ?) as date_str"
 //				+ " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?) temp "
 //				+ "group by date_str");
-		PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select date_str, count(*) as num from (" + " select date_str" + " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?) temp " + "group by date_str");
+
+		//need table :flickr_world_taken_date_hour (fast and linear time)
+//		PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select date_str, count(*) as num from (" + " select date_str" + " from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?) temp " + "group by date_str");
+
+		//Oracle (index range scan) doesn't need table: flickr_world_taken_date_hour
+		PreparedStatement selectFlickrStmt = db.getPstmt(conn, "select date_str, count(*) as num from ( select to_char(TAKEN_DATE, 'yyyy-mm-dd@hh24') as date_str from " + PHOTOS_TABLE_NAME + " t where t.region_" + radiusString + "_id = ?) temp group by date_str");
 
 		int areaId = -1;
 		int checkedSize = 0;
