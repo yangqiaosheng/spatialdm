@@ -13,16 +13,20 @@ _gaq.push( [ '_trackPageview' ]);
 
 $(function() {
 	var mozilla = false;
+	var chrome = false;
 	var version = 0;
 	jQuery.each(jQuery.browser, function(i, val) {
 		if (i == "mozilla") {
 			mozilla = val;
+		} else if (i == "webkit") {
+			chrome = val;
 		} else if (i == "version") {
 			version = val;
 		}
 	});
 
-	if (mozilla == false || version < 4.0 || screen.height < 1024 || screen.width < 1280) {
+	//if (mozilla == false || version < 4.0 || screen.height < 1024 || screen.width < 1280) {
+	if (chrome == false || screen.height < 1024 || screen.width < 1280) {
 		$("#dialog-confirm").dialog( {
 			resizable : false,
 			width : 420,

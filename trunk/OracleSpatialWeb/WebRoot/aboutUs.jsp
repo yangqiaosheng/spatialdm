@@ -27,13 +27,10 @@
 			</li>
 		</ul>
 		<p>
-			Major Developers:
+			Major Developers:<br>
+			
 		</p>
 		<ul>
-			<li>
-				Katerina Vrotsou
-			</li>
-
 			<li>
 				Haolin Zhi
 			</li>
@@ -41,10 +38,10 @@
 				Iulian Peca
 			</li>
 			<li>
-				Gennady Andrienko
+				Katerina Vrotsou
 			</li>
 			<li>
-				Natalia Andrienko
+				Gennady Andrienko
 			</li>
 		</ul>
 		<p>
@@ -56,6 +53,12 @@
 					Exploring Photographs in Space and Time.</a>
 				<br />
 				In IEEE Symposium on Visual Analytics Science and Technology (poster), volume 2, pages 289{290, Providence, RI, USA, 2011.
+			</li>
+			<li>
+				<a href="http://dl.acm.org/citation.cfm?doid=2254556.2254723">
+					Interactive exploration of events and presence of people in space and time through KD-photomap</a>
+				<br />
+				In AVI 2012 Proceedings of the International Working Conference on Advanced Visual Interfaces, Pages 804-805 
 			</li>
 		</ul>
 		<p>
