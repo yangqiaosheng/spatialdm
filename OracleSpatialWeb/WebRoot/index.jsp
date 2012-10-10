@@ -102,12 +102,12 @@
 			</legend>
 			<div id="controlPanelContent" class="timeCstar">
 				<div id="tableQuarry">
+					<jsp:include page="aboutUs.jsp" />
 					<jsp:include page="table1.jsp" />
 					<jsp:include page="table7.jsp" />
 					<jsp:include page="table3.jsp" />
 					<jsp:include page="table4.jsp" />
-					<jsp:include page="table5.jsp" />
-					<jsp:include page="aboutUs.jsp" />
+					<jsp:include page="table5.jsp" />					
 				</div>
 			</div>
 
@@ -132,7 +132,7 @@
 						Display Resolution: 1280 x 1024, or higher <p></p>
 					</li>
 					<li>
-						Web Browser: Mozilla Firefox 3.5, or above
+						Web Browser: <a href="https://www.google.com/chrome">Google Chrome lastest version</a>
 					</li>
 				</ul>
 			</div>
