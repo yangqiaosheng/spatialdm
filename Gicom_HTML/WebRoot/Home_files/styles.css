@@ -7,20 +7,25 @@
 
 body {
 	color: #555555;
-	font-family: Arial;
+	font-family: 'Open Sans', Verdana, Helvetica, Arial, sans-serif;
 	font-size: 12px;
 	line-height: 1.1em;
+	/*
+	font: 400 14px/1.6 'Open Sans', Verdana, Helvetica, sans-serif;
+	*/
 	background-repeat: repeat;
 	background-color: #E9E9E9;
-	background-image: url(bg_metal_v.jpg);
-	background-image: url(bg_line_white.png);
+	/* background-image: url(bg_metal_v.jpg);*/
+	/*background-image: url(bg_line_white.png);*/
+	background-image: url(bg_grain_200x200.png);
+	/*background-image: url(bg.jpg);*/
 }
 
 #body-bg-masker {
-	background-color: #E0E0E0;
 	width: 100%;
-	/* background-color: rgba(100, 100, 100, 0.32);
-	 background-color: rgba(255, 255, 255, 0.32);*/
+	/* background-color: rgba(100, 100, 100, 0.32);*/
+	background-color: #E0E0E0;
+	background-color: rgba(255, 255, 255, 0.32);
 }
 
 #wrap { /* margin:0 auto; */
@@ -133,10 +138,11 @@ div#footer-content {
 	/* HAUPTNAVIGATION - START*/
 div#mainnavi>ul {
 	height: 32px;
-	background: transparent url(s-buttons_r3.png) repeat-x 0 0;
+	background: transparent url(s-buttons_r4.png) repeat-x 0 0;
 	border: 1px solid #a30c20;
 	left: 0;
 	right: 0;
+	/*background-position: 0 -32px;*/
 }
 
 div#mainnavi>ul>li {
@@ -159,13 +165,16 @@ div#mainnavi>ul>li:hover,div#mainnavi>.current {
 }
 
 div#mainnavi>ul>li>a {
-	background: transparent url(s-buttons_r3.png) repeat-x 0 0;
+	background: transparent url(s-buttons_r4.png) repeat-x 0 0;
 	text-decoration: none;
 	padding: 0 10px;
 	border-right: 1px solid #555;
 	border-left: 1px solid #FF9e9e;
 	display: inline-block;
 	line-height: 32px;
+	-moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.85);
+	-webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.85);
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.85);
 }
 
 div#mainnavi>ul>li>a>span {
@@ -224,7 +233,13 @@ div#mainnavi>ul>li>ul a {
 }
 
 div#mainnavi>ul>li>ul a:hover {
-	background: transparent url(s-buttons_r3_r.png) repeat-x;
+	background: transparent url(s-buttons_r4.png) repeat-x;
+	background-position: 0 -32px;
+	color: white;
+}
+
+div#mainnavi>ul>li>ul a:hover span.highlight,div#mainnavi>ul>li>ul a:hover b
+	{
 	color: white;
 }
 
@@ -250,6 +265,10 @@ div#subnavi-left ul#menu li a.menu {
 	color: #3B3C3E;
 	font-weight: bold;
 	font-size: 13px;
+}
+
+div#subnavi-left ul#menu li a.menu:hover {
+	color: #a20c30;
 }
 
 div#subnavi-left a.menu_active {
@@ -285,7 +304,7 @@ div#subnavi-left a.sub_menu,div#subnavi-left a.sub_menu_active {
 	text-decoration: none;
 }
 
-div#subnavi-left a.sub_menu:hover,div#subnavi-left a.sub_menu_active {
+div#subnavi-left a:hover,div#subnavi-left a.sub_menu_active:hover {
 	color: #a20c30;
 	text-decoration: underline;
 }
@@ -383,12 +402,28 @@ table.branchen_table tr {
 }
 
 table.branchen_table td {
+	font-weight: bold;
 	background-color: #dCdCdD;
 	border-bottom: 1px solid #ECECED;
 	border-right: 1px solid #ECECED;
 	padding: 9px;
 	width: 50%;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.65);
+	-webkit-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.65);
+	box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.65);
+}
 
+table.branchen_table td>img {
+	background-color: #FFFFFF;
+	-webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+	-moz-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.65);
+	-webkit-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.65);
+	box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.65);
 }
 
 table.branchen_table td a {
@@ -403,6 +438,10 @@ table.branchen_table img {
 	margin: 0 10px;
 }
 
+table.branchen_table tr.right img {
+	float: right;
+}
+
 /********************************************************************************/
 	/* SPRACH-MENUE - START */
 span#language {
@@ -413,16 +452,7 @@ span#language {
 	float: right;
 }
 
-span#language span.tx-srlanguagemenu-pi1 {
-
-}
-
-span#language .NO,span#language .SPC,span#language .CUR,span#language .INACT
-	{
-
-}
-
-.tx-srlanguagemenu-pi1 .CUR a,.tx-srlanguagemenu-pi1 .NO a {
+span#language .NO a,span#language .SPC a,span#language .INACT a {
 	color: #848688;
 }
 
@@ -434,8 +464,8 @@ div#blog { /* margin-top: 13px; */
 }
 
 div#blog a,div#blog span {
-	margin-left: 23px;
-	margin-right: 25px;
+	margin-left: 5px;
+	margin-right: 20px;
 }
 
 div#blog a {
@@ -447,7 +477,7 @@ div#blog a {
 
 div#blog .date {
 	font-size: 80%;
-	margin-left: 23px;
+	margin-left: 5px;
 }
 
 div#blog h2 {
@@ -455,7 +485,7 @@ div#blog h2 {
 		transparent;
 	color: #A30C20;
 	font-weight: bold;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 	padding-left: 20px;
 	font-size: 100%;
 	margin-top: 25px;
@@ -468,7 +498,7 @@ a.blog {
 	margin-top: 1px !important;
 	padding-left: 0 !important;
 	text-decoration: none !important;
-	text-transform: uppercase !important;
+	/*text-transform: uppercase !important;*/
 	font-size: 101% !important;
 	margin-left: 0 !important;
 	margin-right: 0 !important;
@@ -481,7 +511,8 @@ div#fair-comany {
 }
 
 div#fair-comany img {
-	margin-left: 20px;
+	margin-left: 25px;
+	margin-bottom: 10px;
 }
 
 /********************************************************************************/
@@ -494,7 +525,16 @@ div#footer ul li {
 	float: left;
 }
 
-div#footer a {
+div#footer div#footer-logo {
+	margin: 10px 30px 25px 240px;
+}
+
+div#footer div#footer-logo a {
+	margin-right: 6px;
+	float: left;
+}
+
+div#footer div#footer-content a {
 	text-decoration: none;
 	color: #7b7c7e;
 	border: 1px solid white;
@@ -615,25 +655,41 @@ div.news-single-item h1 {
 /* NEWS - ENDE*/
 	/********************************************************************************/
 h1 {
-	font-size: 115%;
+	font-family: Georgia, serif;
+	font-size: 20px;
 	color: #a30c20;
 	margin-bottom: 25px;
 	line-height: 1.2em;
 }
 
 h2 {
-	font-size: 101%;
+	font-family: Georgia, serif;
+	font-size: 18px;
 	margin-bottom: 5px;
 }
 
 h3 {
-	font-size: 12px;
+	font-family: Georgia, serif;
+	font-size: 16px;
 	font-weight: bold;
 	color: #a30c20;
 }
 
+a {
+	text-decoration: none;
+}
+
 ul {
 	list-style-type: none;
+}
+
+ul#sub_menu {
+	margin: 5px;
+}
+
+li#hr_red {
+	width: 100%;
+	background: transparent url(gicom-hr_red.png) repeat-x 0 0;;
 }
 
 p {
@@ -670,7 +726,7 @@ div#page a,div#page a:hover,div#page a:active,div#page a:visited {
 	text-decoration: underline;
 }
 
-div#subnav a,div#page a:hover,div#page a:active,div#page a:visited {
+div#subnav a {
 	color: #A20C30;
 	text-decoration: underline;
 }
