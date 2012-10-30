@@ -1,5 +1,11 @@
 @charset "UTF-8";
 
+/*
+	color-logo-red: #940818;
+	color-logo-grey:#CECED6;
+	color-font-grey:#7B7B7B;
+	color-font-grey:#3B3C3E;
+	*/
 * {
 	margin: 0;
 	padding: 0;
@@ -34,7 +40,8 @@ body {
 	overflow: hidden;
 	/*padding: 0 10px;*/
 	position: relative;
-	background: #F2F2F2 url(wrapper-shadow_944.png) left top repeat-y;
+	background-color: #F0F0F0;
+	/*background: #F2F2F2 url(wrapper-shadow_944.png) left top repeat-y;*/
 	-moz-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.85);
 	-webkit-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.85);
 	box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.85);
@@ -42,6 +49,7 @@ body {
 
 div#header {
 	overflow: hidden;
+	background-color: #FFFFFF;
 }
 
 div#logo-img-wrapper {
@@ -69,7 +77,6 @@ div#header-img img {
 }
 
 div#mainnavi_wrap {
-	border: none;
 	overflow: hidden;
 	width: 944px;
 }
@@ -111,7 +118,10 @@ div#content-left {
 }
 
 div#content-middle {
+	/*
 	width: 522px;
+	*/
+	width: 712px;
 }
 
 div#content-right {
@@ -126,38 +136,37 @@ div#page {
 }
 
 div#footer-content {
-	margin: 0 30px 25px 240px;
-	width: 442px;
+	margin: 0 100px 30px 100px;
 	border-top: 1px solid #a30c20;
 	padding-top: 7px;
-	font-size: 80%;
 	overflow: visible;
 }
 
+div#footer-content>span {
+	border-right: 1px solid #A30C20;
+}
 /********************************************************************************/
 	/* HAUPTNAVIGATION - START*/
+
 div#mainnavi>ul {
+	padding-left:50px;
 	height: 32px;
 	background: transparent url(s-buttons_r4.png) repeat-x 0 0;
 	border: 1px solid #a30c20;
-	left: 0;
-	right: 0;
 	/*background-position: 0 -32px;*/
+
+	width: 100%;
 }
 
-div#mainnavi>ul>li {
-	float: left;
-	display: block;
-	/*border: 1px solid #a30c20;
+div#mainnavi>ul>li { /*border: 1px solid #a30c20;
 	border-right: 1px solid white;*/
-	display: list-item;
 	text-align: -webkit-match-parent;
 	list-style: none;
+	display: inline-block;
+	float: left;
 }
 
-div#mainnavi>ul>li.last {
-	border-right: 1px solid #a30c20;
-}
+
 
 div#mainnavi>ul>li:hover,div#mainnavi>.current {
 	/* border-bottom: 1px solid white; */
@@ -165,22 +174,36 @@ div#mainnavi>ul>li:hover,div#mainnavi>.current {
 }
 
 div#mainnavi>ul>li>a {
+	width: 100%;
 	background: transparent url(s-buttons_r4.png) repeat-x 0 0;
 	text-decoration: none;
-	padding: 0 10px;
-	border-right: 1px solid #555;
-	border-left: 1px solid #FF9e9e;
+	padding: 0px;
+	text-align: center;
 	display: inline-block;
 	line-height: 32px;
+	border-right: 1px solid #FF9e9e;
+	border-left: 1px solid #FF9e9e;
 	-moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.85);
 	-webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.85);
 	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.85);
 }
 
+div#mainnavi>ul>li.last {
+	border-right: 1px solid #000;
+}
+
+div#mainnavi>ul>li.last>a {
+	-moz-box-shadow:-2px 0px 3px rgba(0, 0, 0, 0.35), inset -1px 0px 4px rgba(0, 0, 0, 0.55);
+	-webkit-box-shadow:-2px 0px 3px rgba(0, 0, 0, 0.35), inset -1px 0px 4px rgba(0, 0, 0, 0.55);
+	box-shadow:-2px 0px 3px rgba(0, 0, 0, 0.35), inset -1px 0px 4px rgba(0, 0, 0, 0.55);
+}
+
+
 div#mainnavi>ul>li>a>span {
 	height: 100%;
 	width: 100%;
 	color: white;
+	padding: 0px 20px;
 	/*font-weight: bold;
     text-transform: uppercase;*/
 }
@@ -203,30 +226,24 @@ div#mainnavi>ul>li>a:active {
 div#mainnavi>ul>li ul {
 	position: absolute;
 	display: none; /* Hide it by default */
-	margin-top: 1px;
-	padding: 0;
 	list-style: none;
-	border-bottom: 1px solid #A30C20;
+	border-bottom: 3px solid #A30C20;
 	-moz-box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.85);
 	-webkit-box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.85);
 	box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.85);
 }
 
 div#mainnavi>ul>li>ul li { /*float: left;*/
-	border: 1px solid #aaa;
+	border: 1px solid #eee;
 	background-color: rgba(230, 230, 230, 0.95);
-	height: 32px;
+	height: 26px;
 	/*background: transparent url(subnav-buttons.png) repeat-x;*/
-}
-
-div#mainnavi>ul>li>ul li span { /*float: left;*/
-	height: 32px;
 }
 
 div#mainnavi>ul>li>ul a {
 	display: block; /* Making sure a element covers whole li area */
 	height: 15px;
-	padding: 10px 7px 13px 10px;
+	padding: 8px 7px 13px 8px;
 	color: #333;
 	text-decoration: none;
 	border-top: none;
@@ -343,7 +360,8 @@ div#subnavi-right ul#menu li {
 	padding-right: 13px;
 	padding-top: 2px;
 	background: url("red-square.jpg") no-repeat scroll 0 center
-		transparent\9
+		transparent\9
+
 }
 
 div#subnavi-right a.menu:hover,div#subnavi-right a.menu_active {
@@ -372,11 +390,13 @@ div#subnavi-right li#id94 a {
 	height: 23px;
 	padding-top: 10px;
 	width: 120px;
-	width: 140px\9
+	width: 140px\9
+
 }
 
 div#subnavi-right li#id94 a {
-	padding-top: 5px\9
+	padding-top: 5px\9
+
 }
 
 div#subnavi-right ul#menu li#id94 a.menu {
@@ -392,6 +412,7 @@ span#language,div#twitter,div#blog,div#subnavi-right {
 table.branchen_table {
 	border-spacing: 10px;
 	width: 100%;
+	margin: 20px 0px;
 }
 
 table.branchen_table tr {
@@ -407,7 +428,6 @@ table.branchen_table td {
 	border-bottom: 1px solid #ECECED;
 	border-right: 1px solid #ECECED;
 	padding: 9px;
-	width: 50%;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -525,20 +545,19 @@ div#footer ul li {
 	float: left;
 }
 
-div#footer div#footer-logo {
-	margin: 10px 30px 25px 240px;
+div#footer span#footer-logo {
+	float: right;
+	border: 0px;
 }
 
-div#footer div#footer-logo a {
+div#footer span#footer-logo a {
 	margin-right: 6px;
-	float: left;
 }
 
 div#footer div#footer-content a {
 	text-decoration: none;
 	color: #7b7c7e;
 	border: 1px solid white;
-	border-left: 1px solid #A30C20;
 	padding-left: 5px;
 	margin-right: 5px;
 }
@@ -548,8 +567,8 @@ div#footer a:hover,a:active,a:visited {
 }
 
 /* FOOTER-NAVIGATION - ENDE*/
+
 div#footer span#copyright {
-	float: left;
 	margin-right: 6px;
 }
 
@@ -663,16 +682,15 @@ h1 {
 }
 
 h2 {
-	font-family: Georgia, serif;
-	font-size: 18px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 17px;
 	margin-bottom: 5px;
 }
 
 h3 {
-	font-family: Georgia, serif;
-	font-size: 16px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 15px;
 	font-weight: bold;
-	color: #a30c20;
 }
 
 a {
@@ -709,8 +727,8 @@ div#page ol {
 
 hr {
 	border-top: 1px dashed #B13244;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin-top: 40px;
+	margin-bottom: 40px;
 	width: 100%;
 }
 
