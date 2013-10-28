@@ -28,7 +28,7 @@ public class UpdateFlickrRegionId {
 
 	final static int SELECT_BATCH_SIZE = 400;
 	static String AREAS_TABLE_NAME = "flickr_world_area";
-	static String PHOTOS_TABLE_NAME = "flickr_world_100000";
+	static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_15m";
 	static Calendar startDate;
 
 	static DBUtil db = new DBUtil("/jdbc_pg.properties", 3, 1);
@@ -97,6 +97,10 @@ public class UpdateFlickrRegionId {
 				System.out.println("latitude:" + latitude);
 
 				System.out.println("totalNum/updatedNum: " + totalNum + "/" + updatedNum++);
+				
+				if(longitude == 0 || latitude == 0){
+					continue;
+				}
 
 				//Oracle
 				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select ID, RADIUS from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME.toUpperCase() + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(" + longitude + ", " + latitude + ", NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");

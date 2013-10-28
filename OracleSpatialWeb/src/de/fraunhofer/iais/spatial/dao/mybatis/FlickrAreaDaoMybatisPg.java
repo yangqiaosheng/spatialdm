@@ -58,9 +58,9 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		area.getHoursTagsCount().clear();
 		String count = null;
 		if (withoutStopWords) {
-			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".hoursTagsCount_WithoutStopWords", area);
+			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".Area.hoursTagsCount_WithoutStopWords", area);
 		} else {
-			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".hoursTagsCount", area);
+			count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".Area.hoursTagsCount", area);
 		}
 		if (count != null) {
 			parseHoursTagsCountDbString(count, area.getHoursTagsCount());
@@ -69,7 +69,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 
 	private void loadHoursCount(FlickrArea area) {
 
-		String count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".hoursCount", area);
+		String count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".Area.hoursCount", area);
 		if (count != null) {
 			parseCountDbString(count, area.getHoursCount(), hourRegExPattern);
 		}
@@ -78,7 +78,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	@Deprecated
 	private void loadDaysCount(FlickrArea area) {
 
-		String count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".daysCount", area);
+		String count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".Area.daysCount", area);
 		if (count != null) {
 			parseCountDbString(count, area.getDaysCount(), dayRegExPattern);
 		}
@@ -87,7 +87,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	@Deprecated
 	private void loadMonthsCount(FlickrArea area) {
 
-		String count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".monthsCount", area);
+		String count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".Area.monthsCount", area);
 		if (count != null) {
 			parseCountDbString(count, area.getMonthsCount(), monthRegExPattern);
 		}
@@ -96,7 +96,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	@Deprecated
 	private void loadYearsCount(FlickrArea area) {
 
-		String count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".yearsCount", area);
+		String count = (String) sessionTemplate.selectOne(this.getClass().getName() + ".Area.yearsCount", area);
 		if (count != null) {
 			parseCountDbString(count, area.getYearsCount(), yearRegExPattern);
 		}
@@ -108,7 +108,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		areaDto.setAreaid(areaid);
 		areaDto.setRadius(radius);
 
-		FlickrArea area = (FlickrArea) sessionTemplate.selectOne(this.getClass().getName() + ".selectById", areaDto);
+		FlickrArea area = (FlickrArea) sessionTemplate.selectOne(this.getClass().getName() + ".Area.selectById", areaDto);
 		initArea(area);
 
 		return area;
@@ -121,7 +121,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
 
-		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".selectIdsByGeom", areaDto);
+		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".Area.selectIdsByGeom", areaDto);
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
 
-		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".selectByGeomSize", areaDto);
+		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".Area.selectByGeomSize", areaDto);
 		int num = 0;
 		if (numObj != null) {
 			num = (Integer) numObj;
@@ -165,7 +165,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 	public List<Integer> getAllAreaIds(Radius radius) {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaDto.setRadius(radius);
-		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".selectAllIds", areaDto);
+		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".Area.selectAllIds", areaDto);
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
 
-		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".selectIdsByGeom", areaDto);
+		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".Area.selectIdsByGeom", areaDto);
 	}
 
 	@Override
@@ -219,7 +219,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		areaDto.setPgQueryGeom(pgQueryGeom);
 		areaDto.setRadius(radius);
 
-		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".selectIdsByGeom", areaDto);
+		return (List<Integer>) sessionTemplate.selectList(this.getClass().getName() + ".Area.selectIdsByGeom", areaDto);
 	}
 
 	@Override
@@ -239,7 +239,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		FlickrAreaDto areaDto = new FlickrAreaDto();
 		areaDto.setAreaid(areaid);
 
-		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".totalCount", areaDto);
+		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".Area.totalCount", areaDto);
 		long num = 0;
 		if (numObj != null) {
 			num = (Long) numObj;
@@ -249,7 +249,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 
 	@Override
 	public long getTotalWorldPhotoNum() {
-		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".totalWorldPhotoNum");
+		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".Area.totalWorldPhotoNum");
 		long num = 0;
 		if (numObj != null) {
 			num = (Long) numObj;
@@ -259,7 +259,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 
 	@Override
 	public long getTotalPeopleNum() {
-		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".totalPeopleNum");
+		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".Area.totalPeopleNum");
 		long num = 0;
 		if (numObj != null) {
 			num = (Long) numObj;
@@ -285,7 +285,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		parameters.put("dbDatePatternStr", dbDatePatternStr);
 		parameters.put("num", num);
 
-		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(this.getClass().getName() + ".selectByAreaDate", parameters);
+		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(this.getClass().getName() + ".Photo.selectByAreaDate", parameters);
 		this.initPhotos(photos, area);
 
 		return photos;
@@ -312,7 +312,7 @@ public class FlickrAreaDaoMybatisPg extends FlickrAreaDao {
 		parameters.put("num", pageSize);
 		parameters.put("offset", offset);
 
-		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(this.getClass().getName() + ".selectByAreaTagDate", parameters);
+		List<FlickrPhoto> photos = (List<FlickrPhoto>) sessionTemplate.selectList(this.getClass().getName() + ".Photo.selectByAreaTagDate", parameters);
 		this.initPhotos(photos, area);
 
 		return photos;
