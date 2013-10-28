@@ -1,5 +1,8 @@
 package de.fraunhofer.iais.spatial.script.db;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,16 +13,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,30 +34,69 @@ import de.fraunhofer.iais.spatial.util.StopWordUtil;
 
 public class LimitFlickrAreaTagsCount {
 
-	private static final int TAGS_NUM = 25;
 
 	/**
 	* Logger for this class
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(LimitFlickrAreaTagsCount.class);
 
-	final static int FETCH_SIZE = 1;
-	final static String INPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count";
-	final static String OUTPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_25";
-	final static String OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_without_stopword_25";
+	static int FETCH_SIZE = 1;
+	static int TAGS_NUM = 25;
+	static String INPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count";
+	static String OUTPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_25";
+	static String OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_without_stopword_25";
 	static String STOPWORD_TABLE_NAME = "flickr_world_topviewed_5m_tags_stopword";
 	static Calendar startDate;
+	static boolean ISSTOPWORD = false;
 
 	static DBUtil db = new DBUtil("/jdbc_pg.properties", 3, 1);
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, IOException {
+		
+		System.out.println("\nPlease input the INPUT Tag Count TableName:\n[Default: " + INPUT_COUNTS_TABLE_NAME + "]");
+		String intputCountTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
+		if (StringUtils.isNotEmpty(intputCountTableName)){
+			INPUT_COUNTS_TABLE_NAME = intputCountTableName;
+		}
+		System.out.println(" INPUT Tag Count Table:" + INPUT_COUNTS_TABLE_NAME);
+		
+		System.out.println("\nPlease input the OUTPUT Tag Count TableName:\n[Default: " + OUTPUT_COUNTS_TABLE_NAME + "]");
+		String outputCountTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
+		if (StringUtils.isNotEmpty(outputCountTableName)){
+			OUTPUT_COUNTS_TABLE_NAME = outputCountTableName;
+		}
+		System.out.println(" OUTPUT Tag Count Table:" + OUTPUT_COUNTS_TABLE_NAME);
+		
+		System.out.println("\nPlease input the OUTPUT Stopword Tag Count TableName:\n[Default: " + OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME + "]");
+		String outputSWCountTableName = new BufferedReader(new InputStreamReader(System.in)).readLine();
+		if (StringUtils.isNotEmpty(outputSWCountTableName)){
+			OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME = outputSWCountTableName;
+		}
+		System.out.println(" OUTPUT Stopword Tag Count Table:" + OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME);
+		
+		System.out.println("\nPlease input the Tag limit:\n[Default: " + TAGS_NUM + "]");
+		String tagLimit = new BufferedReader(new InputStreamReader(System.in)).readLine();
+		if (StringUtils.isNotEmpty(tagLimit)){
+			TAGS_NUM = NumberUtils.toInt(tagLimit);
+		}
+		System.out.println("Tag Limit:" + TAGS_NUM);
+		
+		System.out.println("\nFor Stopword:\n[Default: " + ISSTOPWORD + "]");
+		String isStopWordStr = new BufferedReader(new InputStreamReader(System.in)).readLine();
+		if (Boolean.parseBoolean(isStopWordStr)){
+			ISSTOPWORD = true;
+		}
+		
 		long start = System.currentTimeMillis();
 		startDate = Calendar.getInstance();
 		startDate.setTimeInMillis(start);
 
 		LimitFlickrAreaTagsCount t = new LimitFlickrAreaTagsCount();
-//		t.limit();
-		t.limitWithStopWords();
+		if(ISSTOPWORD){
+			t.limitWithStopWords();
+		}else{
+			t.limit();
+		}
 
 		long end = System.currentTimeMillis();
 		Calendar endDate = Calendar.getInstance();
