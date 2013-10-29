@@ -1,5 +1,8 @@
 package de.fraunhofer.iais.spatial.script.flickr;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +12,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +22,7 @@ import de.fraunhofer.iais.spatial.util.DbJdbcUtil;
 public class FlickrTableStatistic {
 
 	//logging interval (seconds)
-	private static final int PERIOD = 3600;
+	private static int PERIOD = 300;
 
 	/**
 	 * Logger for this class
@@ -36,8 +41,17 @@ public class FlickrTableStatistic {
 
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		
+		System.out.println("\nPlease input the sampling period (seconds):\n[Default: " + PERIOD + "]");
+		String intputPeroid = new BufferedReader(new InputStreamReader(System.in)).readLine();
+		if (StringUtils.isNotEmpty(intputPeroid)){
+			PERIOD = NumberUtils.toInt(intputPeroid, PERIOD);
+		}
+		System.out.println(" INPUT PERIOD:" + PERIOD);
+		
 
 		new FlickrTableStatistic(PERIOD);
 	}
