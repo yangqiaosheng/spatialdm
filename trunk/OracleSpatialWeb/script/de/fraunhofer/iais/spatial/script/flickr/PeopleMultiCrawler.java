@@ -39,8 +39,8 @@ public class PeopleMultiCrawler extends Thread {
 	static int NUM_THREAD = 0;
 	static final int MAX_NUM_RETRY = 5000;
 	static final int MAX_USERNAME_LENGTH = 200;
-	static final int INIT_CONTACT_UPDATE_CHECKED = 1;
-	static final int FINISH_CONTACT_UPDATE_CHECKED = 2;
+	static final int INIT_CONTACT_UPDATE_CHECKED = 0;
+	static final int FINISH_CONTACT_UPDATE_CHECKED = 1;
 
 	static Calendar beginDateLimit = Calendar.getInstance();
 	static int numReTry = 0;
