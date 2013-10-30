@@ -26,7 +26,7 @@ public class UpdateFlickrRegionId {
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(UpdateFlickrRegionId.class);
 
-	final static int SELECT_BATCH_SIZE = 400;
+	final static int SELECT_BATCH_SIZE = 100;
 	static String AREAS_TABLE_NAME = "flickr_world_area";
 	static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_15m";
 	static Calendar startDate;
@@ -69,7 +69,7 @@ public class UpdateFlickrRegionId {
 		Connection selectConn = db.getConn();
 		Connection conn = db.getConn();
 		selectConn.setAutoCommit(false);
-//		conn.setAutoCommit(false);
+		conn.setAutoCommit(false);
 		//Oracle
 //		PreparedStatement countStmt = db.getPstmt(conn, "select NUM_ROWS as num from user_tables where TABLE_NAME = '"+ PHOTOS_TABLE_NAME.toUpperCase() + "'" );
 
@@ -103,10 +103,10 @@ public class UpdateFlickrRegionId {
 				}
 
 				//Oracle
-				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select ID, RADIUS from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME.toUpperCase() + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(" + longitude + ", " + latitude + ", NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
+//				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select ID, RADIUS from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME.toUpperCase() + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(" + longitude + ", " + latitude + ", NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
 
 				//PostGIS
-//				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from " + AREAS_TABLE_NAME + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
+				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from " + AREAS_TABLE_NAME + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
 
 				ResultSet areaIdRs = db.getRs(selectAreaIdPstmt);
 				Map<String, String> paraMaps = new HashMap<String, String>();
@@ -138,7 +138,7 @@ public class UpdateFlickrRegionId {
 					conn.commit();
 				}
 			}
-//			conn.commit();
+			conn.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
