@@ -38,8 +38,8 @@ public class SplitFlickrByTags {
 	static int rownum = 1;
 	static Calendar startDate;
 
-//	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
-	static DBUtil db = new DBUtil("/jdbc.properties", 18, 1);
+	static DBUtil db = new DBUtil("/jdbc_pg.properties", 18, 3);
+//	static DBUtil db = new DBUtil("/jdbc.properties", 18, 1);
 
 	public static void main(String[] args) throws IOException {
 

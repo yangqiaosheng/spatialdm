@@ -83,7 +83,8 @@
 
 	<!-- DataSource Selector -->
 	<bean id="db" class="de.fraunhofer.iais.spatial.dao.jdbc.DB">
-		<property name="dataSource" ref="jndiDataSource" />
+<!-- 		<property name="dataSource" ref="jndiDataSource" /> -->
+		<property name="dataSource" ref="c3p0DataSource" />
 	</bean>
 
 	<!-- Mybatis configuration -->
