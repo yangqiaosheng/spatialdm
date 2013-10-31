@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,7 @@ public class UpdateFlickrRegionId {
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(UpdateFlickrRegionId.class);
 
-	final static int SELECT_BATCH_SIZE = 100;
+	final static int SELECT_BATCH_SIZE = 2000;
 	static String AREAS_TABLE_NAME = "flickr_world_area";
 	static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_15m";
 	static Calendar startDate;
@@ -69,7 +71,6 @@ public class UpdateFlickrRegionId {
 		Connection selectConn = db.getConn();
 		Connection conn = db.getConn();
 		selectConn.setAutoCommit(false);
-		conn.setAutoCommit(false);
 		//Oracle
 //		PreparedStatement countStmt = db.getPstmt(conn, "select NUM_ROWS as num from user_tables where TABLE_NAME = '"+ PHOTOS_TABLE_NAME.toUpperCase() + "'" );
 
@@ -78,8 +79,27 @@ public class UpdateFlickrRegionId {
 		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME);
 		selectStmt.setFetchSize(SELECT_BATCH_SIZE);
 		ResultSet countRs = db.getRs(countStmt);
-		ResultSet rs = db.getRs(selectStmt);
-
+		ResultSet selectPhotoRs = db.getRs(selectStmt);
+		String updateStr = "update " + PHOTOS_TABLE_NAME + " set" + 
+		        " region_625_id = ?," + 
+				" region_1250_id = ?," +
+				" region_2500_id = ?," +
+				" region_5000_id = ?," +
+				" region_10000_id = ?," +
+				" region_20000_id = ?," +
+				" region_40000_id = ?," +
+				" region_80000_id = ?," +
+				" region_160000_id = ?," +
+				" region_320000_id = ?," +
+				" region_640000_id = ?," +
+				" region_1280000_id = ?," +
+				" region_2560000_id = ?" +
+				" where photo_id = ?";
+		PreparedStatement updateStmt = db.getPstmt(conn, updateStr);
+		
+		PreparedStatement selectAreaIdPstmt = null;
+		ResultSet areaIdRs = null;
+		
 		int totalNum = 0;
 		try {
 			if (countRs.next()) {
@@ -88,11 +108,11 @@ public class UpdateFlickrRegionId {
 			db.close(countRs);
 
 			int updatedNum = 0;
-			while (rs.next()) {
+			while (selectPhotoRs.next()) {
 
-				long photoId = rs.getLong("photo_id");
-				double longitude = rs.getDouble("longitude");
-				double latitude = rs.getDouble("latitude");
+				long photoId = selectPhotoRs.getLong("photo_id");
+				double longitude = selectPhotoRs.getDouble("longitude");
+				double latitude = selectPhotoRs.getDouble("latitude");
 				System.out.println("longitude:" + longitude);
 				System.out.println("latitude:" + latitude);
 
@@ -103,46 +123,54 @@ public class UpdateFlickrRegionId {
 				}
 
 				//Oracle
-//				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select ID, RADIUS from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME.toUpperCase() + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(" + longitude + ", " + latitude + ", NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
+//				selectAreaIdPstmt = db.getPstmt(conn, "select ID, RADIUS from " + AREAS_TABLE_NAME + " c, user_sdo_geom_metadata m" + " WHERE m.table_name = '" + AREAS_TABLE_NAME.toUpperCase() + "' and sdo_relate(c.geom, SDO_geometry(2001,8307,SDO_POINT_TYPE(" + longitude + ", " + latitude + ", NULL),NULL,NULL),'mask=anyinteract') = 'TRUE'");
 
 				//PostGIS
-				PreparedStatement selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from " + AREAS_TABLE_NAME + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
+				selectAreaIdPstmt = db.getPstmt(conn, "select id, radius from " + AREAS_TABLE_NAME + " t where ST_Intersects(ST_GeomFromEWKT('SRID=4326;POINT(" + longitude + " " + latitude + ")'), t.geom::geometry)");
 
-				ResultSet areaIdRs = db.getRs(selectAreaIdPstmt);
-				Map<String, String> paraMaps = new HashMap<String, String>();
+				areaIdRs = db.getRs(selectAreaIdPstmt);
+				
+				Map<String, Integer> paraMaps = new HashMap<String, Integer>();
 				while (areaIdRs.next()) {
 					int areaId = areaIdRs.getInt("id");
 					String radius = areaIdRs.getString("radius");
-					paraMaps.put(radius, " region_" + radius + "_id = " + areaId);
+					paraMaps.put(radius, areaId);
 				}
 
 				if (paraMaps.size() == 0) {
 					continue;
 				}
 
-				List<String> paraStrs = new ArrayList<String>();
-
-				for (Map.Entry<String, String> entry : paraMaps.entrySet()) {
-					paraStrs.add(entry.getValue());
-				}
-
-				String updateStr = "update " + PHOTOS_TABLE_NAME + " set" + StringUtils.join(paraStrs, ",") + " where photo_id = ?";
-				PreparedStatement updateStmt = db.getPstmt(conn, updateStr);
-				updateStmt.setLong(1, photoId);
-				System.out.println("photo_id: " + photoId + "\t|updateStr: " + updateStr);
-				updateStmt.executeUpdate();
-				db.close(updateStmt);
-				db.close(areaIdRs);
-				db.close(selectAreaIdPstmt);
+				//areaId = 0 when no regions are matched
+				updateStmt.setInt(1, MapUtils.getIntValue(paraMaps, "625"));
+				updateStmt.setInt(2, MapUtils.getIntValue(paraMaps, "1250"));
+				updateStmt.setInt(3, MapUtils.getIntValue(paraMaps, "2500"));
+				updateStmt.setInt(4, MapUtils.getIntValue(paraMaps, "5000"));
+				updateStmt.setInt(5, MapUtils.getIntValue(paraMaps, "10000"));
+				updateStmt.setInt(6, MapUtils.getIntValue(paraMaps, "20000"));
+				updateStmt.setInt(7, MapUtils.getIntValue(paraMaps, "40000"));
+				updateStmt.setInt(8, MapUtils.getIntValue(paraMaps, "80000"));
+				updateStmt.setInt(9, MapUtils.getIntValue(paraMaps, "160000"));
+				updateStmt.setInt(10, MapUtils.getIntValue(paraMaps, "320000"));
+				updateStmt.setInt(11, MapUtils.getIntValue(paraMaps, "640000"));
+				updateStmt.setInt(12, MapUtils.getIntValue(paraMaps, "1280000"));
+				updateStmt.setInt(13, MapUtils.getIntValue(paraMaps, "2560000"));
+				updateStmt.setLong(14, photoId);
+				
+				System.out.println("photo_id: " + photoId + "\t|updateStr: " + updateStr + "\t|paraMaps: " + paraMaps);
+				updateStmt.addBatch();
+				
 				if (updatedNum / SELECT_BATCH_SIZE == 0) {
-					conn.commit();
+					updateStmt.executeBatch();
 				}
 			}
-			conn.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			db.close(rs);
+			db.close(areaIdRs);
+			db.close(selectAreaIdPstmt);
+			db.close(updateStmt);
+			db.close(selectPhotoRs);
 			db.close(selectStmt);
 			db.close(countStmt);
 			db.close(selectConn);
