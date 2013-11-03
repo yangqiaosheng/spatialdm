@@ -28,7 +28,7 @@ public class UpdateFlickrRegionId {
 	*/
 	private static final Logger logger = LoggerFactory.getLogger(UpdateFlickrRegionId.class);
 
-	final static int SELECT_BATCH_SIZE = 2000;
+	final static int SELECT_BATCH_SIZE = 500;
 	static String AREAS_TABLE_NAME = "flickr_world_area";
 	static String PHOTOS_TABLE_NAME = "flickr_world_topviewed_15m";
 	static Calendar startDate;
@@ -75,8 +75,16 @@ public class UpdateFlickrRegionId {
 //		PreparedStatement countStmt = db.getPstmt(conn, "select NUM_ROWS as num from user_tables where TABLE_NAME = '"+ PHOTOS_TABLE_NAME.toUpperCase() + "'" );
 
 		//PostGIS
-		PreparedStatement countStmt = db.getPstmt(conn, "select n_tup_ins as num from pg_stat_user_tables where relname = '" + PHOTOS_TABLE_NAME.toLowerCase() + "'");
-		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME);
+		PreparedStatement countStmt = db.getPstmt(conn, "select n_live_tup as num from pg_stat_user_tables where relname = '" + PHOTOS_TABLE_NAME.toLowerCase() + "'");
+		/* non finished 
+		PreparedStatement countStmt = db.getPstmt(conn, "select count(*) as num from " + PHOTOS_TABLE_NAME + " where region_625_id is null");
+		*/
+		
+ 		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME);
+  		/* non finished 
+		PreparedStatement selectStmt = db.getPstmt(selectConn, "select photo_id, longitude, latitude from " + PHOTOS_TABLE_NAME + " where region_625_id is null");
+		*/
+ 		
 		selectStmt.setFetchSize(SELECT_BATCH_SIZE);
 		ResultSet countRs = db.getRs(countStmt);
 		ResultSet selectPhotoRs = db.getRs(selectStmt);
@@ -99,6 +107,9 @@ public class UpdateFlickrRegionId {
 		
 		PreparedStatement selectAreaIdPstmt = null;
 		ResultSet areaIdRs = null;
+		
+		System.out.println(countStmt);
+		
 		
 		int totalNum = 0;
 		try {
@@ -160,10 +171,15 @@ public class UpdateFlickrRegionId {
 				System.out.println("photo_id: " + photoId + "\t|updateStr: " + updateStr + "\t|paraMaps: " + paraMaps);
 				updateStmt.addBatch();
 				
-				if (updatedNum / SELECT_BATCH_SIZE == 0) {
+				if (updatedNum % SELECT_BATCH_SIZE == 0) {
 					updateStmt.executeBatch();
+					System.err.println("Commit Update Batch | Batch Size: " + SELECT_BATCH_SIZE);
 				}
+				
+				db.close(areaIdRs);
+				db.close(selectAreaIdPstmt);
 			}
+			updateStmt.executeBatch();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
