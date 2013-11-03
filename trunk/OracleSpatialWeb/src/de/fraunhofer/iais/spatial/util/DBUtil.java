@@ -1,6 +1,8 @@
 package de.fraunhofer.iais.spatial.util;
 
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -35,12 +37,23 @@ public class DBUtil {
 
 		pros = new Properties();
 		try {
+			FileReader propertiesFile = null;
+			try {
+				propertiesFile = new FileReader(propertieLocation.substring(1));
+			} catch (FileNotFoundException e) {
+				logger.warn("the individual jdbc properties setting is missing");
+				logger.info("using the jdbc properties setting in jar");
+				propertiesFile = new FileReader(DBUtil.class.getResource(propertieLocation).getFile());
+			}
 //			String propertieLocation = "/jdbc_marin.properties";
 //			String propertieLocation = "/jdbc_pg.properties";
 //			String propertieLocation = "/jdbc.properties";
-			pros.load(new FileReader(DBUtil.class.getResource(propertieLocation).getFile()));
+			
+			pros.load(propertiesFile);
+			logger.info("jdbc properties:" + pros);
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.error("e");
 		}
 
 		try {
