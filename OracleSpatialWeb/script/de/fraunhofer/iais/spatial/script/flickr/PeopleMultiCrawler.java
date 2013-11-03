@@ -214,50 +214,69 @@ public class PeopleMultiCrawler extends Thread {
 
 	private void insertPeoples(String userId, MembersList memberslist) {
 		Connection conn = db.getConn();
-		PreparedStatement updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set CONTACT_UPDATE_CHECKED = ? where t.USER_ID = ?");
-
+		PreparedStatement updatePstmt = null;
+		PreparedStatement selectPstmt = null;
+		PreparedStatement insertPeoplePstmt = null;
+		PreparedStatement updatePeopleContactRefNumPstmt = null;
+		PreparedStatement updatePeopleContactNumPstmt = null;
+		PreparedStatement updateStatContactCheckedNumPstmt = null;
+		PreparedStatement insertPeopleRelPstmt = null;
+		ResultSet rs = null;
+		
 		try {
 			conn.setAutoCommit(false);
-			PreparedStatement selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");
-			PreparedStatement insertPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME, CONTACT_UPDATE_CHECKED) values (?, ?, ?)");
-			PreparedStatement updatePeopleContactCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_contact_checked_num'");
-			ResultSet rs = null;
-			try {
-				for (int i = 0; i < memberslist.size(); i++) {
-					Member m = memberslist.get(i);
-					selectPstmt.setString(1, m.getId());
-					rs = db.getRs(selectPstmt);
+			updatePstmt = db.getPstmt(conn, "update FLICKR_PEOPLE t set CONTACT_UPDATE_CHECKED = ? where t.USER_ID = ?");
+			selectPstmt = db.getPstmt(conn, "select USER_ID from FLICKR_PEOPLE t where t.USER_ID = ?");
+			insertPeoplePstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE (USER_ID, USERNAME, CONTACT_UPDATE_CHECKED) values (?, ?, ?)");
+			updatePeopleContactRefNumPstmt = db.getPstmt(conn, "update flickr_people set contact_referenced_num = contact_referenced_num + 1 where user_id = ?");
+			updatePeopleContactNumPstmt = db.getPstmt(conn, "update flickr_people set contact_num = ? where user_id = ?");
+			updateStatContactCheckedNumPstmt = db.getPstmt(conn, "update flickr_statistic_items set value = value + 1 where name = 'people_contact_checked_num'");
+			insertPeopleRelPstmt = db.getPstmt(conn, "insert into FLICKR_PEOPLE_REL_CONTACT (USER_ID, CONTACT_USER_ID) values (?, ?)");
+			
+			for (int i = 0; i < memberslist.size(); i++) {
+				Member m = memberslist.get(i);
+				selectPstmt.setString(1, m.getId());
+				rs = db.getRs(selectPstmt);
 
-					if (rs.next()) {
-						System.out.println(m.getId() + " already existed");
-					} else {
-						String username = m.getUserName();
-						if (username != null && username.length() > MAX_USERNAME_LENGTH) {
-							username = username.substring(0, MAX_USERNAME_LENGTH);
-						}
-
-						insertPstmt.setString(1, m.getId());
-						insertPstmt.setString(2, username);
-						insertPstmt.setInt(3, INIT_CONTACT_UPDATE_CHECKED);
-						insertPstmt.addBatch();
-						increaseNumInsertedPeople();
-						System.out.println(m.getId() + " inserted");
+				if (rs.next()) {
+					System.out.println(m.getId() + " already existed");
+					
+					//update number of contact reference 
+					updatePeopleContactRefNumPstmt.setString(1, m.getId());
+					updatePeopleContactRefNumPstmt.addBatch();
+				} else {
+					String username = m.getUserName();
+					if (username != null && username.length() > MAX_USERNAME_LENGTH) {
+						username = username.substring(0, MAX_USERNAME_LENGTH);
 					}
+
+					insertPeoplePstmt.setString(1, m.getId());
+					insertPeoplePstmt.setString(2, username);
+					insertPeoplePstmt.setInt(3, INIT_CONTACT_UPDATE_CHECKED);
+					insertPeoplePstmt.addBatch();
+					increaseNumInsertedPeople();
+					System.out.println(m.getId() + " inserted");
 				}
-				insertPstmt.executeBatch();
-
-				updatePeopleContactCheckedNumPstmt.executeUpdate();
-
-			} finally {
-				db.close(rs);
-				db.close(insertPstmt);
-				db.close(updatePeopleContactCheckedNumPstmt);
-				db.close(selectPstmt);
+				
+				// add contact relation
+				insertPeopleRelPstmt.setString(1, userId);
+				insertPeopleRelPstmt.setString(2, m.getId());
+				insertPeopleRelPstmt.addBatch();
 			}
+				
+			updateStatContactCheckedNumPstmt.executeUpdate();
+			insertPeoplePstmt.executeBatch();
+			updatePeopleContactRefNumPstmt.executeBatch();
+			insertPeopleRelPstmt.executeBatch();
+
+			updatePeopleContactNumPstmt.setInt(1, memberslist.size());
+			updatePeopleContactNumPstmt.setString(2, userId);
+			updatePeopleContactNumPstmt.executeUpdate();
 
 			updatePstmt.setInt(1, FINISH_CONTACT_UPDATE_CHECKED);
 			updatePstmt.setString(2, userId);
 			updatePstmt.executeUpdate();
+			
 			increaseNumCheckedPeople();
 
 			conn.commit();
@@ -270,7 +289,14 @@ public class PeopleMultiCrawler extends Thread {
 				logger.error("insertPeople()", e); //$NON-NLS-1$
 			}
 		} finally {
+			db.close(rs);
+			db.close(updatePeopleContactRefNumPstmt);
+			db.close(selectPstmt);
+			db.close(insertPeoplePstmt);
+			db.close(updateStatContactCheckedNumPstmt);
+			db.close(selectPstmt);
 			db.close(updatePstmt);
+			db.close(updatePeopleContactNumPstmt);
 			db.close(conn);
 		}
 	}
