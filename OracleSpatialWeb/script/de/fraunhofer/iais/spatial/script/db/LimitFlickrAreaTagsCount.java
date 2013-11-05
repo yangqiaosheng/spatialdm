@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +45,7 @@ public class LimitFlickrAreaTagsCount {
 	static int TAGS_NUM = 25;
 	static String INPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count";
 	static String OUTPUT_COUNTS_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_25";
-	static String OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_without_stopword_25";
+	static String OUTPUT_COUNTS_WITHOUT_STOPWORD_TABLE_NAME = "flickr_world_topviewed_1m_tags_count_sw_25";
 	static String STOPWORD_TABLE_NAME = "flickr_world_topviewed_5m_tags_stopword";
 	static Calendar startDate;
 	static boolean ISSTOPWORD = false;
@@ -86,6 +87,7 @@ public class LimitFlickrAreaTagsCount {
 		if (Boolean.parseBoolean(isStopWordStr)){
 			ISSTOPWORD = true;
 		}
+		System.out.println("For Stopword:" + ISSTOPWORD);
 		
 		long start = System.currentTimeMillis();
 		startDate = Calendar.getInstance();
@@ -162,19 +164,7 @@ public class LimitFlickrAreaTagsCount {
 			if (hourStr != null) {
 				SortedMap<String, Map<String, Integer>> hoursTagsCount = new TreeMap<String, Map<String, Integer>>();
 
-				List<Set<String>> stopwordsList = new ArrayList<Set<String>>();
-				stopwordsList.add(StopWordUtil.stopwordsGloble);
-
-				PreparedStatement areaStmt = db.getPstmt(conn, "select t1.id as pid from flickr_world_area_2560000 t1, flickr_world_area t2 where t2.id = ? and ST_Intersects(t1.geom, t2.geom)");
-				areaStmt.setInt(1, id);
-				ResultSet swRs = db.getRs(areaStmt);
-				while (swRs.next()) {
-					int pid = swRs.getInt("pid");
-					stopwordsList.add(areasStopwords.get(pid));
-					System.out.println("id:" + id + " pid" + pid + " stopwords" + areasStopwords.get(pid));
-				}
-				db.close(swRs);
-				db.close(areaStmt);
+				List<Set<String>> stopwordsList = getStopWordsList(conn, areasStopwords, id);
 
 				FlickrAreaDao.parseHoursTagsCountDbString(hourStr, hoursTagsCount, stopwordsList);
 
@@ -210,6 +200,9 @@ public class LimitFlickrAreaTagsCount {
 				System.out.println("executeUpdate:" + updateStmt.executeUpdate());
 				db.close(updateStmt);
 			}
+			
+			System.out.println("current time:" + new Date());
+			System.out.println("escaped time:" + (System.currentTimeMillis() - startDate.getTimeInMillis()) / 1000.0); //$NON-NLS-1$
 		}
 		db.close(pset);
 		db.close(stmt);
@@ -217,7 +210,24 @@ public class LimitFlickrAreaTagsCount {
 		db.close(updateConn);
 	}
 
-	private Map<Integer, Set<String>> loadAreasStopwords(Connection conn) throws SQLException {
+	public static List<Set<String>> getStopWordsList(Connection conn, Map<Integer, Set<String>> areasStopwords, int id) throws SQLException {
+	    List<Set<String>> stopwordsList = new ArrayList<Set<String>>();
+	    stopwordsList.add(StopWordUtil.stopwordsGloble);
+
+	    PreparedStatement areaStmt = db.getPstmt(conn, "select t1.id as pid from flickr_world_area_2560000 t1, flickr_world_area t2 where t2.id = ? and ST_Intersects(t1.geom, t2.geom)");
+	    areaStmt.setInt(1, id);
+	    ResultSet swRs = db.getRs(areaStmt);
+	    while (swRs.next()) {
+	    	int pid = swRs.getInt("pid");
+	    	stopwordsList.add(areasStopwords.get(pid));
+	    	System.out.println("id:" + id + " pid" + pid + " stopwords" + areasStopwords.get(pid));
+	    }
+	    db.close(swRs);
+	    db.close(areaStmt);
+	    return stopwordsList;
+    }
+
+	public static Map<Integer, Set<String>> loadAreasStopwords(Connection conn) throws SQLException {
 		Map<Integer, Set<String>> areasStopwords = new HashMap<Integer, Set<String>>();
 		PreparedStatement stmt = db.getPstmt(conn, "select id, stopword from " + STOPWORD_TABLE_NAME);
 		ResultSet rs = db.getRs(stmt);
