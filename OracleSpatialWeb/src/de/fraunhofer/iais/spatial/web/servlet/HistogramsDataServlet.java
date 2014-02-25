@@ -19,10 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.google.common.collect.Lists;
+
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto;
 import de.fraunhofer.iais.spatial.dto.SessionMutex;
 import de.fraunhofer.iais.spatial.dto.FlickrAreaDto.Level;
 import de.fraunhofer.iais.spatial.entity.FlickrArea;
+import de.fraunhofer.iais.spatial.entity.FlickrAreaResult;
 import de.fraunhofer.iais.spatial.entity.Histograms;
 import de.fraunhofer.iais.spatial.exception.IllegalInputParameterException;
 import de.fraunhofer.iais.spatial.service.FlickrAreaMgr;
@@ -114,7 +117,9 @@ public class HistogramsDataServlet extends HttpServlet {
 							areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
 						}
 
-						Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);
+						List<FlickrAreaResult> areaResults = Lists.newArrayList();
+						Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaResults, areaDto);
+						request.getSession().setAttribute("areaResults", areaResults);
 						histrogramsResponseXml(rootElement, sumHistrograms, BooleanUtils.toBoolean(hasChart));
 
 						messageElement.setText("SUCCESS");

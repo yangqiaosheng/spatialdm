@@ -62,7 +62,7 @@ public class FlickrAreaCancelableJob {
 	/**
 	 * calculate a Summary Histograms DataSet for all FlickrArea
 	 */
-	public Histograms calculateSumHistogram(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrArea> areas, FlickrAreaDto areaDto) throws InterruptedException {
+	public Histograms calculateSumHistogram(Date sessionTimestamp, SessionMutex sessionMutex, List<FlickrArea> areas, List<FlickrAreaResult> areaResults, FlickrAreaDto areaDto) throws InterruptedException {
 
 		checkInterruption(sessionTimestamp, sessionMutex);
 		Histograms sumHistrograms = new Histograms();
@@ -75,12 +75,27 @@ public class FlickrAreaCancelableJob {
 		Thread.sleep(30);
 		for (FlickrArea area : areas) {
 			checkInterruption(sessionTimestamp, sessionMutex);
-
+			
+			/* calculate histrogram data */
 			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey())) {
 					sumQueryStrData.put(e.getKey(), e.getValue() + sumQueryStrData.get(e.getKey()));
 				}
 			}
+			
+			/* calculate count */
+			FlickrAreaResult areaResult = new FlickrAreaResult(area);
+			areaResults.add(areaResult);
+			
+			int selectCount = 0;
+
+			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
+				if (areaDto.getQueryStrs().contains(e.getKey())) {
+					selectCount += e.getValue();
+				}
+			}
+
+			areaResult.setSelectedCount(selectCount);			
 		}
 
 		Calendar calendar = DateUtil.createReferenceCalendar();

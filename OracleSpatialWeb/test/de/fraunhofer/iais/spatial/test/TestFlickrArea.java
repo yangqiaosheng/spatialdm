@@ -561,7 +561,8 @@ public class TestFlickrArea {
 //		areas = areaMgr.getAreaDao().getAllAreas(Radius.R320000);
 		areas = areaMgr.getAreaDao().getAreasByRect(areaDto.getBoundaryRect().getMinX(), areaDto.getBoundaryRect().getMinY(), areaDto.getBoundaryRect().getMaxX(), areaDto.getBoundaryRect().getMaxY(), areaDto.getRadius());
 		long middle = System.currentTimeMillis();
-		Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaDto);
+		List<FlickrAreaResult> areaResults = Lists.newArrayList();
+		Histograms sumHistrograms = areaMgr.getAreaCancelableJob().calculateSumHistogram(timestamp, sessionMutex, areas, areaResults, areaDto);
 
 		Document document = new Document();
 		Element rootElement = new Element("response");
