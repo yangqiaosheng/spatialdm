@@ -274,7 +274,7 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 
 	@Override
 	public long getTotalWorldPhotoNum() {
-		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".Area.totalWorldPhotoNum");
+		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".Photo.totalWorldPhotoNum");
 		long num = 0;
 		if (numObj != null) {
 			num = (Long) numObj;
@@ -284,7 +284,7 @@ public class FlickrAreaDaoMybatisOracle extends FlickrAreaDao {
 
 	@Override
 	public long getTotalPeopleNum() {
-		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".Area.totalPeopleNum");
+		Object numObj = sessionTemplate.selectOne(this.getClass().getName() + ".Photo.totalPeopleNum");
 		long num = 0;
 		if (numObj != null) {
 			num = (Long) numObj;

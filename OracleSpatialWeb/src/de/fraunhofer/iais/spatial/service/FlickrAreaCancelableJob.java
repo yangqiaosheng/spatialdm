@@ -76,14 +76,6 @@ public class FlickrAreaCancelableJob {
 		for (FlickrArea area : areas) {
 			checkInterruption(sessionTimestamp, sessionMutex);
 			
-			/* calculate histrogram data */
-			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
-				if (areaDto.getQueryStrs().contains(e.getKey())) {
-					sumQueryStrData.put(e.getKey(), e.getValue() + sumQueryStrData.get(e.getKey()));
-				}
-			}
-			
-			/* calculate count */
 			FlickrAreaResult areaResult = new FlickrAreaResult(area);
 			areaResults.add(areaResult);
 			
@@ -91,6 +83,9 @@ public class FlickrAreaCancelableJob {
 
 			for (Map.Entry<String, Integer> e : area.getHoursCount().entrySet()) {
 				if (areaDto.getQueryStrs().contains(e.getKey())) {
+					/* calculate histrogram data */
+					sumQueryStrData.put(e.getKey(), e.getValue() + sumQueryStrData.get(e.getKey()));
+					/* calculate count */
 					selectCount += e.getValue();
 				}
 			}
