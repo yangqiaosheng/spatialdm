@@ -107,11 +107,10 @@ public class PolygonXmlServlet extends HttpServlet {
 							areas = areaMgr.getAreaCancelableJob().getAllAreas(timestamp, sessionMutex, areaDto.getRadius());
 						}
 
-						List<FlickrAreaResult> areaResults = (List<FlickrAreaResult>) request.getSession().getAttribute("areaResults");
-						if(areaResults == null){
-							areaResults = areaMgr.createAreaResults(areas);
-							areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
-						}
+
+						List<FlickrAreaResult> areaResults = areaMgr.createAreaResults(areas);
+						areaMgr.getAreaCancelableJob().countSelected(timestamp, sessionMutex, areaResults, areaDto);
+
 						addAreas2Xml(areaResults, rootElement, areaDto, areaMgr.getAreaDao().getTotalWorldPhotoNum());
 
 						request.getSession().setAttribute("areaDto", areaDto);
