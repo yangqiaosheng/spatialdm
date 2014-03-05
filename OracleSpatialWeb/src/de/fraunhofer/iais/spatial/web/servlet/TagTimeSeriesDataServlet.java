@@ -126,7 +126,7 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 			
 			Element sereisDumpElement = new Element("seriesDump");
 			sereisDumpElement.setAttribute("year", String.valueOf(year));
-			sereisDumpElement.addContent(sereisDumpElement);
+			dataElement.addContent(sereisDumpElement);
 
 			StringBuffer dataStr = new StringBuffer();
 			StringBuffer dataDumpStr = new StringBuffer();
@@ -136,26 +136,24 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 			int i = 1;
 			for (Map.Entry<Date, Integer> e : countsGroupedMap.get(year).entrySet()) {
 				dataStr.append("[");
-				/*
+				
 				//need to add 1 day to the result, because of the bug from HighCharts
 				dataStr.append(DateUtils.addDays(DateUtils.setYears(e.getKey(), 2000), 1).getTime()); //time
-				*/
+				/*
 				dataStr.append(DateUtils.setYears(e.getKey(), 2000).getTime()); //time
-				
+				*/
 				dataStr.append(",");
 				dataStr.append(e.getValue()); //value
 				dataStr.append("]");
 				
-				if(e.getValue() > 0){
-					
+				if(e.getValue() > 0){					
 				
-				dataDumpStr.append("[");
-				/*
-				    //need to add 1 day to the result, because of the bug from HighCharts
+					dataDumpStr.append("[");
+					//need to add 1 day to the result, because of the bug from HighCharts
 					dataDumpStr.append(dsf.format(DateUtils.addDays(DateUtils.setYears(e.getKey(), 2000), 1).getTime())); //time
-				*/
+					/*
 					dataDumpStr.append(dsf.format(DateUtils.setYears(e.getKey(), 2000).getTime())); //time
-
+					*/
 					dataDumpStr.append(",");
 					dataDumpStr.append(e.getValue()); //value
 					dataDumpStr.append("]");
@@ -167,7 +165,9 @@ public class TagTimeSeriesDataServlet extends HttpServlet {
 				}
 			}
 			dataStr.append("]");
+			dataDumpStr.append("]");
 			sereisElement.addContent(dataStr.toString());
+			sereisDumpElement.addContent(dataDumpStr.toString());
 		}
 	}
 
